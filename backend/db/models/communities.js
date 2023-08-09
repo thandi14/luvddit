@@ -10,19 +10,14 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
       Communities.belongsTo(
         models.User,
           { foreignKey: 'userId' }
       );
-      Communities.belongsToMany(
+      Communities.hasMany(
         models.Posts,
-          { through: models.CommunityPosts,
-            foreignKey: 'communityId',
-            otherKey: 'postId'
-          }
-          // additional attributes for the join table can be included in the options
-      );
+          { foreignKey: 'communityId', onDelete: 'CASCADE',  hooks: true }
+      );// additional attributes for the join table can be included in the options
       Communities.belongsToMany(
         models.User,
           { through: models.CommunityMembers,
@@ -35,8 +30,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   Communities.init({
     userId: DataTypes.INTEGER,
-    about: DataTypes.STRING,
-    karma: DataTypes.INTEGER
+    name: DataTypes.STRING,
+    about: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Communities',

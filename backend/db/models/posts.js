@@ -23,20 +23,17 @@ module.exports = (sequelize, DataTypes) => {
         models.PostImages,
           { foreignKey: 'postId', onDelete: 'CASCADE',  hooks: true }
       );
-      Posts.belongsToMany(
+      Posts.belongsTo(
         models.Communities,
-          { through: models.CommunityPosts,
-            foreignKey: 'postsId',
-            otherKey: 'communityId'
-          }
-          // additional attributes for the join table can be included in the options
+          { foreignKey: 'communityId' }
       );
     }
   }
   Posts.init({
+    communityId: DataTypes.INTEGER,
     userId: DataTypes.INTEGER,
-    description: DataTypes.STRING,
-    votes: DataTypes.INTEGER
+    votes: DataTypes.INTEGER,
+    desciption: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Posts',

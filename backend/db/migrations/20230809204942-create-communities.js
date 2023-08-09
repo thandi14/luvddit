@@ -5,29 +5,31 @@ if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;  // define your schema in options object
 }
 
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Posts', {
+    await queryInterface.createTable('Communities', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      userId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'Users',
-          key: 'id',
+      userId:
+        {
+          type: Sequelize.INTEGER,
+          references: {
+            model: 'Users',
+            key: 'id',
+        },
+        onDelete: 'cascade'
       },
-      onDelete: 'cascade'
-      },
-      description: {
+      name: {
         type: Sequelize.STRING
       },
-      votes: {
-        type: Sequelize.INTEGER
+      about: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
@@ -40,7 +42,7 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    options.tableName = "Posts";
-    await queryInterface.dropTable('Posts');
+    options.tableName = "Communities";
+    await queryInterface.dropTable('Communities');
   }
 };
