@@ -7,8 +7,6 @@ const { User } = require('../../db/models');
 
 const router = express.Router();
 
-// backend/routes/api/users.js
-// ...
 
 // Sign up
 router.post(

@@ -13,6 +13,9 @@ const router = express.Router();
 // backend/routes/api/session.js
 // ...
 
+router.use(restoreUser);
+
+
 // Log in
 router.post(
     '/',
@@ -59,6 +62,26 @@ router.delete(
       return res.json({ message: 'success' });
     }
   );
+
+// Restore session user
+router.get(
+    '/',
+    (req, res) => {
+      const { user } = req;
+      console.log(user)
+      if (user) {
+        const safeUser = {
+          id: user.id,
+          email: user.email,
+          username: user.username,
+        };
+        return res.json({
+          user: safeUser
+        });
+      } else return res.json({ user: null });
+    }
+  );
+
 
 
 module.exports = router;
