@@ -36,7 +36,7 @@ module.exports = {
       votes: {
         type: Sequelize.INTEGER
       },
-      desciption: {
+      description: {
         type: Sequelize.STRING
       },
       createdAt: {

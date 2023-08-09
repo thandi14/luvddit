@@ -8,7 +8,6 @@ const { User } = require('../../db/models/index.js');
 router.use(restoreUser);
 
 router.use('/session', sessionRouter);
-
 router.use('/users', usersRouter);
 
 
@@ -18,7 +17,7 @@ router.post('/test', (req, res) => {
 
 router.post('/test', function(req, res) {
     res.json({ requestBody: req.body });
-  });
+});
 
 // GET /api/set-token-cookie
 router.get('/set-token-cookie', async (_req, res) => {

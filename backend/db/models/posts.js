@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     communityId: DataTypes.INTEGER,
     userId: DataTypes.INTEGER,
     votes: DataTypes.INTEGER,
-    desciption: DataTypes.STRING
+    description: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Posts',
