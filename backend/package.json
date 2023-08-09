@@ -178,7 +178,6 @@
     "path-key": "^3.1.1",
     "path-parse": "^1.0.7",
     "path-to-regexp": "^0.1.7",
-    "per-env": "^1.0.2",
     "pg": "^8.11.2",
     "pg-cloudflare": "^1.1.1",
     "pg-connection-string": "^2.6.2",
@@ -282,5 +281,8 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "per-env": "^1.0.2"
+  }
 }
