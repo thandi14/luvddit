@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   CommunityMembers.init({
     communityId: DataTypes.INTEGER,
-    postId: DataTypes.INTEGER
+    userId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'CommunityMembers',

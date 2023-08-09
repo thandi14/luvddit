@@ -23,6 +23,14 @@ module.exports = (sequelize, DataTypes) => {
         models.Communities,
           { foreignKey: 'userId', onDelete: 'CASCADE',  hooks: true }
       );
+      User.belongsToMany(
+        models.Communities,
+          { through: models.CommunityMembers,
+            foreignKey: 'userId',
+            otherKey: 'communityId'
+          }
+          // additional attributes for the join table can be included in the options
+      );
     }
   }
   User.init({

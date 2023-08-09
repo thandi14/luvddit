@@ -18,16 +18,16 @@ module.exports = (sequelize, DataTypes) => {
       Communities.belongsToMany(
         models.Posts,
           { through: models.CommunityPosts,
-            foreignKey: 'bookId',
-            otherKey: 'readerId'
+            foreignKey: 'communityId',
+            otherKey: 'postId'
           }
           // additional attributes for the join table can be included in the options
       );
       Communities.belongsToMany(
-        models.Users,
-          { through: models.CommuntityMembers,
-            foreignKey: 'bookId',
-            otherKey: 'readerId'
+        models.User,
+          { through: models.CommunityMembers,
+            foreignKey: 'communityId',
+            otherKey: 'userId'
           }
           // additional attributes for the join table can be included in the options
       );

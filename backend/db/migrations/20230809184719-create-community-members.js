@@ -10,20 +10,20 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       communityId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'Communities',
-          key: 'id',
+          type: Sequelize.INTEGER,
+          references: {
+            model: 'Communities',
+            key: 'id',
+        },
+        onDelete: 'cascade'
       },
-      onDelete: 'cascade'
-      },
-      postId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'Posts',
-          key: 'id',
-      },
-      onDelete: 'cascade'
+      userId: {
+          type: Sequelize.INTEGER,
+          references: {
+            model: 'Users',
+            key: 'id',
+        },
+        onDelete: 'cascade'
       },
       createdAt: {
         allowNull: false,
