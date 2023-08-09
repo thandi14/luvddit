@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
   Communities.init({
     userId: DataTypes.INTEGER,
     about: DataTypes.STRING,
-    members: DataTypes.STRING
+    karma: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Communities',

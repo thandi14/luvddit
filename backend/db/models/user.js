@@ -29,7 +29,6 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: 'userId',
             otherKey: 'communityId'
           }
-          // additional attributes for the join table can be included in the options
       );
     }
   }
