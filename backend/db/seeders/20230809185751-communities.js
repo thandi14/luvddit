@@ -20,7 +20,7 @@ module.exports = {
       {
         userId: 1,
         name: "FashionFinesse",
-        about: "l/FashionFinesse, where style enthusiasts from around the world gather to celebrate the ever-evolving world of clothing and personal expression. Whether you're a fashionista, a trendsetter, or someone seeking inspiration to upgrade your wardrobe, you've found your digital runway right here."
+        about: "l/FashionFinesse, where style enthusiasts from around the world gather to celebrate the ever-evolving world of clothing and personal expression."
       },
       {
         userId: 3,
