@@ -11,8 +11,6 @@ const { setTokenCookie, restoreUser } = require('../../utils/auth');
 const { User } = require('../../db/models');
 const router = express.Router();
 
-// backend/routes/api/session.js
-// ...
 
 router.use(restoreUser);
 
@@ -63,7 +61,7 @@ router.post(
         user: safeUser
       });
     }
-  );
+);
 
 
 // Log out
@@ -80,7 +78,6 @@ router.get(
     '/',
     (req, res) => {
       const { user } = req;
-      console.log(user)
       if (user) {
         const safeUser = {
           id: user.id,

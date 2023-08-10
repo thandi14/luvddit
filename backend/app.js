@@ -9,6 +9,9 @@ const cookieParser = require('cookie-parser');
 const { environment } = require('./config');
 const isProduction = environment === 'production';
 
+const { ValidationError } = require('sequelize');
+
+
 const app = express();
 
 app.use(morgan('dev'));
@@ -53,10 +56,7 @@ app.use((_req, _res, next) => {
     err.errors = { message: "The requested resource couldn't be found." };
     err.status = 404;
     next(err);
-  });
-
-
-const { ValidationError } = require('sequelize');
+});
 
 
 

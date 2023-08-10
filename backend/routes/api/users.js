@@ -28,7 +28,7 @@ const validateSignup = [
       .isLength({ min: 6 })
       .withMessage('Password must be 6 characters or more.'),
     handleValidationErrors
-  ];
+];
 
 
 // Sign up
