@@ -16,20 +16,23 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      userId:
-        {
-          type: Sequelize.INTEGER,
-          references: {
-            model: 'Users',
-            key: 'id',
-        },
-        onDelete: 'cascade'
+      userId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Communities',
+          key: 'id',
+      },
+      onDelete: 'cascade',
       },
       name: {
         type: Sequelize.STRING
       },
       about: {
         type: Sequelize.STRING
+      },
+      type: {
+        type: Sequelize.STRING,
+        defaultValue: "Public"
       },
       createdAt: {
         allowNull: false,
@@ -41,8 +44,8 @@ module.exports = {
       }
     }, options);
   },
-  async down (queryInterface, Sequelize) {
+  async down(queryInterface, Sequelize) {
     options.tableName = "Communities";
-    return queryInterface.dropTable(options);
+    await queryInterface.dropTable('Communities');
   }
 };

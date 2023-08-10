@@ -63,7 +63,11 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     firstName: DataTypes.STRING,
-    lastName: DataTypes.STRING
+    lastName: DataTypes.STRING,
+    karma: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    }
   }, {
     sequelize,
     modelName: 'User',

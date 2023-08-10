@@ -30,6 +30,10 @@ module.exports = {
       lastName: {
         type: Sequelize.STRING
       },
+      Karma: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

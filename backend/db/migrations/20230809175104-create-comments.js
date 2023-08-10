@@ -35,6 +35,10 @@ module.exports = {
       },
       onDelete: 'cascade'
       },
+      parent: {
+        type: Sequelize.INTEGER,
+        defaultValue: null
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
