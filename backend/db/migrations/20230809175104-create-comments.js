@@ -8,7 +8,7 @@ if (process.env.NODE_ENV === 'production') {
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up (queryInterface, Sequelize) {
     await queryInterface.createTable('Comments', {
       id: {
         allowNull: false,
@@ -43,10 +43,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    });
+    }, options);
   },
   async down(queryInterface, Sequelize) {
     options.tableName = "Comments";
-    await queryInterface.dropTable('Comments');
+    return queryInterface.dropTable(options);
   }
 };

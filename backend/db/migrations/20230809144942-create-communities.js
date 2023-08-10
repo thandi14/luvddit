@@ -39,10 +39,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    });
+    }, options);
   },
-  async down(queryInterface, Sequelize) {
+  async down (queryInterface, Sequelize) {
     options.tableName = "Communities";
-    await queryInterface.dropTable('Communities');
+    return queryInterface.dropTable(options);
   }
 };
