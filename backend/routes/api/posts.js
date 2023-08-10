@@ -81,5 +81,41 @@ router.get("/:id/comments", async (req, res) => {
     return res.json(comments)
 })
 
+router.put("/:id", async (req, res) => {
+    let postId = req.params.id;
+    let postExist = await Posts.findByPk(postId);
+    const { description } = req.body
+
+    if (!postExist) {
+
+    res.status(404).json({"message": "Post couldn't be found"});
+
+    }
+
+    postExist.set({
+        description
+    })
+    await postExist.save()
+
+    return res.json(postExist)
+})
+
+router.delete("/:id", async (req, res) => {
+    let postId = req.params.id;
+    let postExist = await Posts.findByPk(postId);
+
+    if (!postExist) {
+
+    res.status(404).json({"message": "Post couldn't be found"});
+
+    }
+
+    await postExist.destroy()
+
+    res.json({
+        message: "Successfully deleted"
+    })
+
+})
 
 module.exports = router;

@@ -17,7 +17,6 @@ router.use('/posts', postsRouter);
 router.use('/comments', commentsRouter)
 router.use('/communities', communitiesRouter);
 
-
 // GET /api/set-token-cookie
 router.get('/set-token-cookie', async (_req, res) => {
   const user = await User.findOne({
@@ -29,9 +28,7 @@ router.get('/set-token-cookie', async (_req, res) => {
   return res.json({ user: user });
 });
 
-
 // GET /api/restore-user
-
 router.get(
   '/restore-user',
   (req, res) => {
@@ -47,8 +44,6 @@ router.get(
     return res.json(req.user);
   }
 );
-
-
 
 
 module.exports = router;
