@@ -37,12 +37,15 @@ module.exports = {
         name: "Pets",
         about: "Share snapshots of your furry, feathered, or scaly friends in all their adorable glory. From playful antics to heart-melting moments, every pet's personality shines here."
       }
-    ], { validate: true })
+    ], {})
 
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('Communities', null, {});
+    options.tableName = 'Communities';
+    const Op = Sequelize.Op;
+    return queryInterface.bulkDelete(options.tableName, null, {})
+    // await queryInterface.bulkDelete('Communities', null, {});
 
   }
 };

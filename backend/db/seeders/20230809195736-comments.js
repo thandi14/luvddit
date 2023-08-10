@@ -113,11 +113,12 @@ module.exports = {
       {userId: 3, comment: "A familiar topic is reborn through your refreshing perspective.", postId: 2},
       {userId: 1, comment: "Your comment is a mosaic of the diverse colors of understanding.", postId: 40},
       {userId: 2, comment: "Your insights are like puzzle pieces elegantly fitting into the discourse.", postId: 10}
-    ])
+    ], {})
   },
 
   async down (queryInterface, Sequelize) {
-
-    await queryInterface.bulkDelete('Posts', null, {});
+    options.tableName = 'Comments';
+    const Op = Sequelize.Op;
+    return queryInterface.bulkDelete(options.tableName, null, {})
   }
 };

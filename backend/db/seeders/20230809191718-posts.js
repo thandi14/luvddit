@@ -81,12 +81,13 @@ module.exports = {
       { communityId: 1, userId: 1, votes: 2, description: "Exploring culinary fusion with a spicy ramen burger. A flavor explosion that bridges cultures on a single bun. #FoodFusion #RamenBurger" },
       { communityId: 2, userId: 3, votes: 1, description: "Sunny days call for flowing maxi dresses and wide-brimmed hats. Embracing the breeze and sunshine with effortless grace. #MaxiDress #SunnyStyle" }
 
-    ]);
+    ], {});
   },
 
   async down (queryInterface, Sequelize) {
-
-    await queryInterface.bulkDelete('Posts', null, {});
+    options.tableName = 'Posts';
+    const Op = Sequelize.Op;
+    return queryInterface.bulkDelete(options.tableName, null, {})
 
   }
 };

@@ -72,12 +72,14 @@ module.exports = {
           userId: 3,
           communityId: 5
         }
-      ], { validate: true })
+      ], {})
 
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('CommunityMembers', null, {});
+    options.tableName = 'CommunityMembers';
+    const Op = Sequelize.Op;
+    return queryInterface.bulkDelete(options.tableName, null, {})
 
   }
 };
