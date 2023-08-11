@@ -1,12 +1,12 @@
 'use strict';
 
 const { Communities } = require('../models');
-const bcrypt = require("bcryptjs");
 
 let options = {};
 if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;  // define your schema in options object
 }
+
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -38,14 +38,12 @@ module.exports = {
         about: "Share snapshots of your furry, feathered, or scaly friends in all their adorable glory. From playful antics to heart-melting moments, every pet's personality shines here."
       }
     ], {})
-
   },
 
   async down (queryInterface, Sequelize) {
     options.tableName = 'Communities';
     const Op = Sequelize.Op;
-    return queryInterface.bulkDelete(options.tableName, null, {})
-    // await queryInterface.bulkDelete('Communities', null, {});
+    return queryInterface.bulkDelete(options, null, {})
 
   }
 };
