@@ -33,7 +33,19 @@ module.exports = (sequelize, DataTypes) => {
     communityId: DataTypes.INTEGER,
     userId: DataTypes.INTEGER,
     votes: DataTypes.INTEGER,
-    description: DataTypes.STRING
+    downVotes: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
+    title: DataTypes.STRING,
+    description:{
+     type: DataTypes.STRING,
+     defaultValue: null
+    },
+    tags: {
+      type: DataTypes.STRING,
+      defaultValue: null
+    },
   }, {
     sequelize,
     modelName: 'Posts',

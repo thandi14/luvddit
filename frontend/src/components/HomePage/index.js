@@ -5,13 +5,13 @@ import * as communitiesActions from "../../store/communities"
 
 
 function HomePage() {
-    const posts = useSelector((state) => state.posts.posts);
-    const communities = useSelector((state) => state.communities.communities);
+    const { posts } = useSelector((state) => state.posts);
+    const { communities } = useSelector((state) => state.communities);
     const dispatch = useDispatch()
 
     let ePost = Object.values(posts)
 
-    if (!ePost) return <h1>Loading...</h1>
+    if (!ePost.length) return <h1>Loading...</h1>
 
     console.log(ePost)
 
@@ -22,7 +22,7 @@ function HomePage() {
                     <div className="post-content">
                     <p>l/{post.Community.name}</p>
                     <p>Posted by u/{post.User.username}</p>
-                    <p>{post.description}</p>
+                    <p>{post.title}</p>
                     <p>{post.Comments.length} Comments</p>
                     </div>
                 )}
