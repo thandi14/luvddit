@@ -1,0 +1,25 @@
+
+.hidden {
+    display: none
+}
+
+.navigation {
+    background-color: white;
+    position: fixed;
+    width: 100%;
+    top: 0%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    gap: 20px
+}
+
+body {
+    background-color: #DAE0E6;
+    margin: 0;
+    padding: 0;
+}
+
+.splashPage {
+    margin-left: 12%
+}

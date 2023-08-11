@@ -8,9 +8,11 @@ function ProfileButton({ user }) {
   const ulRef = useRef();
 
   const openMenu = () => {
-    if (showMenu) return;
+    if (showMenu) setShowMenu(false);
     setShowMenu(true);
   };
+
+  console.log(showMenu)
 
   useEffect(() => {
     if (!showMenu) return;
@@ -31,7 +33,7 @@ function ProfileButton({ user }) {
     dispatch(sessionActions.logout());
   };
 
-  const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
+  const ulClassName = showMenu ? "profile-dropdown" : " hidden";
 
   return (
     <>
