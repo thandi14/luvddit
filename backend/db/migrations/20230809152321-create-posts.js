@@ -17,34 +17,16 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       communityId: {
-          type: Sequelize.INTEGER,
-          references: {
-            model: 'Communities',
-            key: 'id',
-        },
-        onDelete: 'cascade'
-      },
-      userId:
-        {
-          type: Sequelize.INTEGER,
-          references: {
-            model: 'Users',
-            key: 'id',
-        },
-        onDelete: 'cascade'
-      },
-      votes: {
         type: Sequelize.INTEGER
       },
-      downVotes: {
-        type: Sequelize.INTEGER,
-        defaultValue: 0
+      userId: {
+        type: Sequelize.INTEGER
       },
       title: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       description: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         defaultValue: null
       },
       tags: {
@@ -59,10 +41,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    }, options);
+    });
   },
   async down(queryInterface, Sequelize) {
     options.tableName = "Posts";
-    return queryInterface.dropTable(options);
+    await queryInterface.dropTable(options);
   }
 };

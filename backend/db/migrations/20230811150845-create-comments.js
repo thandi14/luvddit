@@ -9,7 +9,7 @@ if (process.env.NODE_ENV === 'production') {
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Communities', {
+    await queryInterface.createTable('Comments', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -17,22 +17,17 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       userId: {
+        type: Sequelize.INTEGER
+      },
+      comment: {
+        type: Sequelize.TEXT
+      },
+      postId: {
+        type: Sequelize.INTEGER
+      },
+      parent: {
         type: Sequelize.INTEGER,
-        references: {
-          model: 'Communities',
-          key: 'id',
-      },
-      onDelete: 'cascade',
-      },
-      name: {
-        type: Sequelize.STRING
-      },
-      about: {
-        type: Sequelize.STRING
-      },
-      type: {
-        type: Sequelize.STRING,
-        defaultValue: "Public"
+        defaultValue: null
       },
       createdAt: {
         allowNull: false,
@@ -45,7 +40,7 @@ module.exports = {
     }, options);
   },
   async down(queryInterface, Sequelize) {
-    options.tableName = "Communities";
-    await queryInterface.dropTable('Communities');
+    options.tableName = "Comments";
+    await queryInterface.dropTable(options);
   }
 };

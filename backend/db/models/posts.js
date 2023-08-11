@@ -10,7 +10,6 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
       Posts.belongsTo(
         models.User,
           { foreignKey: 'userId' }
@@ -27,25 +26,21 @@ module.exports = (sequelize, DataTypes) => {
         models.Communities,
           { foreignKey: 'communityId' }
       );
+
     }
   }
   Posts.init({
     communityId: DataTypes.INTEGER,
     userId: DataTypes.INTEGER,
-    votes: DataTypes.INTEGER,
-    downVotes: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0,
-    },
-    title: DataTypes.STRING,
-    description:{
-     type: DataTypes.STRING,
-     defaultValue: null
+    title: DataTypes.TEXT,
+    description: {
+      type: DataTypes.TEXT,
+      defaultValue: null
     },
     tags: {
       type: DataTypes.STRING,
       defaultValue: null
-    },
+    }
   }, {
     sequelize,
     modelName: 'Posts',

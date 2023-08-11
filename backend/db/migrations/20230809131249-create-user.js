@@ -8,36 +8,32 @@ if (process.env.NODE_ENV === 'production') {
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('Comments', {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.createTable('Users', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      userId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'Users',
-          key: 'id',
-      },
-      onDelete: 'cascade'
-      },
-      comment: {
+      username: {
         type: Sequelize.STRING
       },
-      postId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'Posts',
-          key: 'id',
+      email: {
+        type: Sequelize.STRING
       },
-      onDelete: 'cascade'
+      hashedPassword: {
+        type: Sequelize.STRING
       },
-      parent: {
+      firstName: {
+        type: Sequelize.STRING
+      },
+      lastName: {
+        type: Sequelize.STRING
+      },
+      karma: {
         type: Sequelize.INTEGER,
-        defaultValue: null
+        defaultValue: 0
       },
       createdAt: {
         allowNull: false,
@@ -50,7 +46,7 @@ module.exports = {
     }, options);
   },
   async down(queryInterface, Sequelize) {
-    options.tableName = "Comments";
-    return queryInterface.dropTable(options);
+    options.tableName = "Users";
+    await queryInterface.dropTable(options);
   }
 };

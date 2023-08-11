@@ -26,16 +26,15 @@ module.exports = (sequelize, DataTypes) => {
           }
           // additional attributes for the join table can be included in the options
       );
-
     }
   }
   Communities.init({
     userId: DataTypes.INTEGER,
     name: DataTypes.STRING,
-    about: DataTypes.STRING,
+    about: DataTypes.TEXT,
     type: {
       type: DataTypes.STRING,
-      defaultValue: "Public",
+      defaultValue: "Public"
     }
   }, {
     sequelize,

@@ -1,7 +1,7 @@
 'use strict';
-
-const { Model, Validator } = require('sequelize');
-
+const {
+  Model
+} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -10,7 +10,6 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
       User.hasMany(
         models.Posts,
           { foreignKey: 'userId', onDelete: 'CASCADE',  hooks: true }
@@ -30,38 +29,13 @@ module.exports = (sequelize, DataTypes) => {
             otherKey: 'communityId'
           }
       );
+
     }
   }
   User.init({
-    username: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-      validate: {
-        len: [4, 30],
-        isNotEmail(value) {
-          if (Validator.isEmail(value)) {
-            throw new Error("Cannot be an email.");
-          }
-        }
-      }
-    },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-      validate: {
-        len: [3, 256],
-        isEmail: true
-      }
-    },
-    hashedPassword: {
-      type: DataTypes.STRING.BINARY,
-      allowNull: false,
-      validate: {
-        len: [60, 60]
-      }
-    },
+    username: DataTypes.STRING,
+    email: DataTypes.STRING,
+    hashedPassword: DataTypes.STRING,
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
     karma: {
@@ -71,11 +45,6 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'User',
-    defaultScope: {
-      attributes: {
-        exclude: ["hashedPassword", "email", "createdAt", "updatedAt"]
-      }
-    }
   });
   return User;
 };
