@@ -6,14 +6,17 @@ import SignupFormPage from "./components/SignupFormPage";
 import * as sessionActions from "./store/session";
 import Navigation from "./components/Navigation";
 import HomePage from "./components/HomePage";
-import * as postsActions from './store/posts'
+import * as postsActions from './store/posts';
+import * as communitiesActions from "./store/communities"
 
 function App() {
   const dispatch = useDispatch();
   const [isLoaded, setIsLoaded] = useState(false);
+
   useEffect(() => {
     dispatch(sessionActions.restoreUser()).then(() => setIsLoaded(true));
     dispatch(postsActions.thunkGetAllPosts())
+    dispatch(communitiesActions.thunkGetAllCommunities())
   }, [dispatch]);
 
   return (

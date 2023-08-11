@@ -4,9 +4,11 @@ import { useEffect } from 'react'
 
 
 function HomePage() {
-    const posts = useSelector((state) => state.posts)
+    const posts = useSelector((state) => state.posts);
+    const communities = useSelector((state) => state.communities);
 
     console.log(posts)
+    console.log(communities)
 
     return (<h1>Luvddit</h1>)
 }

@@ -19,7 +19,7 @@ router.get("/current", async (req, res) => {
        },
        include: [
         { model: Posts },
-     ]
+       ]
     });
 
     return res.json(posts)
