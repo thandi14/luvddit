@@ -1,0 +1,53 @@
+
+.create-post-page {
+    margin-left: 12%;
+    margin-right: 12%;
+    margin-top: 4.8%;
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+
+}
+
+/* .create-post-page > div {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: hidden;
+} */
+
+.create-post {
+    width: 70%;
+}
+
+.form {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.posting-on-l {
+    width: 30%;
+}
+
+#posting-on-l {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: hidden;
+
+}
+
+#cp-title {
+    display: flex;
+    justify-content: space-between;
+}
+
+#border2 {
+    height: 1px;
+    width: 100%;
+    background-color: white;
+    margin-bottom: 30px;
+
+}

@@ -50,6 +50,7 @@ body {
     display: flex;
     gap: 5px;
     align-items: center;
+    cursor: pointer;
 }
 
 .logo > div > h2 {

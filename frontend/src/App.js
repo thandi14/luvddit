@@ -8,6 +8,7 @@ import Navigation from "./components/Navigation";
 import HomePage from "./components/HomePage";
 import * as postsActions from './store/posts';
 import * as communitiesActions from "./store/communities"
+import CreatePost from "./components/CreatePostPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -32,6 +33,9 @@ function App() {
           </Route>
           <Route path="/signup">
             <SignupFormPage />
+          </Route>
+          <Route path="/posts/new">
+            <CreatePost />
           </Route>
         </Switch>
       )}

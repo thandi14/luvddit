@@ -1,15 +1,32 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ProfileButton from './ProfileButton';
 import './Navigation.css'
 import luvddit from './icons/communityIcon_g0t6k4umk1c91-modified.png'
-
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 function Navigation({ isLoaded }){
   const sessionUser = useSelector(state => state.session.user);
+  const currentURL = window.location.href;
+  const history = useHistory()
+  const [ homeButton, setHomeButton ] = useState("home")
+  const location = useLocation();
 
-  console.log(sessionUser)
+  useEffect(() => {
+    //console.log('Route has changed to:', location.pathname);
+    if (location.pathname.includes('new')) {
+      setHomeButton("create")
+    }
+    else {
+      setHomeButton("home")
+    }
+
+  }, [location]);
+
+ // console.log(code)
+
   let sessionLinks;
   if (sessionUser) {
     sessionLinks = (
@@ -40,18 +57,19 @@ function Navigation({ isLoaded }){
 
   return (
     <div className="navigation">
-      <div className="logo">
+      <div onClick={(() => history.push('/'))} className="logo">
         <img id="luvddit" src={luvddit} alt="logo"></img>
         <div>
         <h2>luvddit</h2>
         <i class="fa-solid fa-heart"></i>
         </div>
         </div>
-        {/* <div></div> */}
       <div id="homeButton">
         <div id="homeB1">
-        <i class="fi fi-sr-home-heart"></i>
-        <NavLink exact to="/">Home</NavLink>
+        {homeButton === "home" ? <i class="fi fi-sr-home-heart"></i> : null }
+        {homeButton === "home" ?  <NavLink exact to="/">Home</NavLink> : null }
+        {homeButton === "create" ?  <i class="fa-solid fa-plus"></i> : null}
+        {homeButton === "create" ?  <NavLink exact to="/">Create Post</NavLink> : null }
         </div>
         <div id="homeB2">
         <i class="fa-solid fa-chevron-down"></i>
@@ -74,7 +92,7 @@ function Navigation({ isLoaded }){
       <div id="img1">
       <i class="fi fi-rs-cowbell"></i>
       </div>
-      <div id="img1">
+      <div onClick={(() => history.push('/posts/new'))} id="img1">
       <i class="fi fi-rr-plus"></i>
       </div>
       <span id="advertise"><i class="fi fi-rr-bullhorn"></i>Advertise</span>

@@ -5,12 +5,14 @@ import * as communitiesActions from "../../store/communities"
 import './HomePage.css'
 import pfp from './IMG6.jpg'
 import avatar from  './imagedit2.png'
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 
 function HomePage() {
     const { posts } = useSelector((state) => state.posts);
     const { communities } = useSelector((state) => state.communities);
     const dispatch = useDispatch()
     const [isVisible, setIsVisible] = useState(false);
+    const history = useHistory()
 
     let top = isVisible ? "top" : "down"
 
@@ -96,7 +98,7 @@ function HomePage() {
             <div className="posts">
                 <div className="create">
                     <img src={pfp}></img>
-                    <input type="text" placeholder="Create Post"></input>
+                    <input onClick={(() => history.push('/posts/new'))} type="text" placeholder="Create Post"></input>
                     <i class="fi fi-rr-picture"></i>
                     <i class="fi fi-rr-link-alt"></i>
                 </div>
@@ -189,7 +191,7 @@ function HomePage() {
                 </div>
                 <p>Your personal Reddit frontpage. Come here to check in with your favorite communities.</p>
                 <div id="line"></div>
-                <button id="but1">Create Post</button>
+                <button onClick={(() => history.push('/posts/new'))} id="but1">Create Post</button>
                 <button id="but2">Create Community</button>
                 </div>
                 </div>
