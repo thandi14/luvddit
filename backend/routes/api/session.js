@@ -83,6 +83,7 @@ router.get(
           id: user.id,
           email: user.email,
           username: user.username,
+          karma: user.karma
         };
         return res.json({
           user: safeUser

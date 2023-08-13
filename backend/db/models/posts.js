@@ -26,7 +26,6 @@ module.exports = (sequelize, DataTypes) => {
         models.Communities,
           { foreignKey: 'communityId' }
       );
-
     }
   }
   Posts.init({
@@ -40,6 +39,11 @@ module.exports = (sequelize, DataTypes) => {
     tags: {
       type: DataTypes.STRING,
       defaultValue: null
+    },
+    votes: DataTypes.INTEGER,
+    downVotes: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
     }
   }, {
     sequelize,

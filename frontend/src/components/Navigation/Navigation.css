@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@200&display=swap');
 
 .hidden {
     display: none
@@ -8,18 +9,273 @@
     position: fixed;
     width: 100%;
     top: 0%;
-    height: 50px;
+    height: 48px;
     display: flex;
     align-items: center;
-    gap: 20px
+    gap: 8px;
+    justify-content: center;
+    border-bottom: 1px solid #EDEFF1;
 }
 
 body {
     background-color: #DAE0E6;
     margin: 0;
     padding: 0;
+    font-family: 'IBM Plex Sans', sans-serif;
 }
 
-.splashPage {
-    margin-left: 12%
+
+#popularI {
+    width: 34px;
+    height: 30px
+}
+
+#img1 > i {
+    font-size: 20px;
+    text-align: center;
+    font-weight: 100;
+}
+
+#img {
+    display: flex;
+    align-items: center;
+}
+
+#luvddit {
+    width: 32px;
+    height: 32px
+}
+
+.logo {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.logo > div > h2 {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.logo > div > i {
+    position: absolute;
+    color: hotpink;
+    font-size: 6px;
+    top: 30%;
+    margin-right: 0.46%
+}
+
+#pfpButton {
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    border: 2px solid #f6f7f8;
+}
+
+.logo > div {
+    justify-content: flex-end;
+    display: flex;
+    align-items: center;
+    /* height: 20px; */
+}
+
+#advertise {
+    display: flex;
+    gap: 5px;
+    background-color: #edeff1;
+    padding: 7.5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 18px;
+    margin-left: 5px;
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: bolder;
+    align-items: center;
+}
+
+#advertise > i {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+
+}
+
+#advertise:hover {
+    background-color: #e4e4e4;
+}
+
+#search {
+    display: flex;
+    width: 30%;
+    height: 40px;
+}
+
+#search > input {
+    width: 100%;
+    border-radius: 25px;
+    background-color: #F6F7F8;
+    border: 1px solid #EDEFF1;
+    padding: 15px;
+    padding-left: 10%;
+    font-size: 14px;
+    font-weight: 400;
+    font-family: inherit;
+}
+
+#search > i {
+    align-self: center;
+    position: absolute;
+    margin-left: 1%;
+    color: #acacac;
+    font-size: 22px;
+    margin-top: 0.2%;
+}
+
+#homeButton {
+    display: flex;
+    align-items: center;
+    width: 18%;
+    justify-content: space-between;
+    padding: 5px;
+    height: 26px;
+    border: 1px solid #ffffff;
+    margin-left: 18px;
+    margin-right: 8px;
+
+}
+
+#homeB1 > a {
+    text-decoration: none;
+    color: black;
+    font-size: 14px;
+    height: 16px;
+    font-weight: bolder
+}
+
+#homeB1 {
+    display: flex;
+    gap: 10px;
+    align-items: center
+}
+
+#homeB1 > i {
+    font-size: 19px;
+}
+
+#homeB2 > i {
+    font-size: 12px;
+}
+
+.profile {
+    width: 14%;
+    margin: 5px
+}
+
+#k {
+    font-size: 11.5px;
+    color: #878A8C;
+    line-height: 1px;
+}
+
+#star > i {
+    color: hotpink;
+    font-size: 11.5px;
+    display: flex;
+    align-items: center;
+    height: 5px;
+}
+
+#star {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+    height: 5px;
+}
+
+#user {
+    font-size: 12px;
+}
+
+#user, #k {
+    font-weight: bolder;
+}
+
+#username > div {
+    height: 48px;
+}
+
+#username {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+}
+
+#username > button {
+    height: 40px
+}
+
+#username > div > p {
+    /* font-size: 13px; */
+    line-height: 4px;
+}
+
+.profileButton {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 5px;
+    height: 30px;
+    border: 1px solid #ffffff;
+
+}
+
+#username2 > i {
+    font-size: 12px;
+}
+
+#username > button {
+    width: 30px;
+    height: 30px;
+}
+.navigation > img {
+    cursor: pointer;
+}
+
+#img1:hover {
+    background-color: #e4e4e4;
+    border-radius: 3px;
+    width: 10%;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    cursor: pointer;
+
+}
+
+#img1 {
+    width: 10%;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.profileButton:hover, #homeButton:hover {
+    border: 1px solid #EDEFF1;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+#allIcons {
+    height: 32px;
+    width: 22%;
+    display: flex;
+    margin-left: 5px;
+    align-items: center;
+    justify-content: space-evenly;
 }
