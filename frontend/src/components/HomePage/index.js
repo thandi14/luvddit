@@ -1,6 +1,6 @@
 import * as postsActions from '../../store/posts'
 import { useSelector, useDispatch } from 'react-redux'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import * as communitiesActions from "../../store/communities"
 import './HomePage.css'
 import pfp from './IMG6.jpg'
@@ -10,6 +10,30 @@ function HomePage() {
     const { posts } = useSelector((state) => state.posts);
     const { communities } = useSelector((state) => state.communities);
     const dispatch = useDispatch()
+    const [isVisible, setIsVisible] = useState(false);
+
+    let top = isVisible ? "top" : "down"
+
+    useEffect(() => {
+      const handleScroll = () => {
+        if (window.scrollY > 460) {
+          setIsVisible(true);
+
+        } else {
+            setIsVisible(false);
+        }
+      };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+
+
+    }, [])
+
+    //if (top === "down") setTimeout(((e) => top = "hidden", 2000))
 
     const ePost = Object.values(posts)
 
@@ -18,6 +42,8 @@ function HomePage() {
     let recent = Object.values(posts)
     recent = recent.reverse()
     recent = recent.slice(0, 5)
+
+
 
     const getTimeDifferenceString = (createdAt) => {
         const currentTime = new Date();
@@ -216,6 +242,7 @@ function HomePage() {
                     <div id="line"></div>
                     <p>Luvddit, Inc. © 2023. All rights reserved.</p>
                 </div>
+                <button className={top} onClick={((e) => window.scrollTo({ top: 0, left: 0, behavior: "smooth"}))}>Back to Top</button>
             </div>
         </div>
     )

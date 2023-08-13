@@ -50,7 +50,7 @@ function Navigation({ isLoaded }){
         {/* <div></div> */}
       <div id="homeButton">
         <div id="homeB1">
-        <i class="fa-solid fa-house"></i>
+        <i class="fi fi-sr-home-heart"></i>
         <NavLink exact to="/">Home</NavLink>
         </div>
         <div id="homeB2">
@@ -63,7 +63,7 @@ function Navigation({ isLoaded }){
       </div>
       <div id="allIcons">
       <div id="img1">
-      <i class="fi fi-rs-grin-hearts"></i>
+      <i class="fi fi-rr-grin-hearts"></i>
       </div>
       <div id="img1">
       <i class="fi fi-rs-shield"></i>

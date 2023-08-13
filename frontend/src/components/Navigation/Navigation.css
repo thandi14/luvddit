@@ -160,7 +160,10 @@ body {
 }
 
 #homeB1 > i {
-    font-size: 19px;
+    font-size: 21px;
+    display: flex;
+    align-items: center;
+
 }
 
 #homeB2 > i {
@@ -234,6 +237,7 @@ body {
 
 #username2 > i {
     font-size: 12px;
+    color: #878A8C;
 }
 
 #username > button {
@@ -278,4 +282,5 @@ body {
     margin-left: 5px;
     align-items: center;
     justify-content: space-evenly;
+    gap: 5px;
 }
