@@ -12,17 +12,25 @@ function HomePage() {
     const { communities } = useSelector((state) => state.communities);
     const dispatch = useDispatch()
     const [isVisible, setIsVisible] = useState(false);
+    const [isVisible2, setIsVisible2] = useState(false);
     const history = useHistory()
 
     let top = isVisible ? "top" : "down"
 
+
     useEffect(() => {
       const handleScroll = () => {
-        if (window.scrollY > 460) {
+        if (window.scrollY < 450) {
+            setIsVisible2(false)
+
+        }
+        else if (window.scrollY > 460) {
           setIsVisible(true);
+          setIsVisible2(true);
 
         } else {
-            setIsVisible(false);
+          setIsVisible(false);
+
         }
       };
 
@@ -35,8 +43,6 @@ function HomePage() {
 
     }, [])
 
-    //if (top === "down") setTimeout(((e) => top = "hidden", 2000))
-
     const ePost = Object.values(posts)
 
     if (!ePost.length) return <h1 className="data-not-here">Loading...</h1>
@@ -44,6 +50,8 @@ function HomePage() {
     let recent = Object.values(posts)
     recent = recent.reverse()
     recent = recent.slice(0, 5)
+
+    console.log(recent)
 
 
 
@@ -80,7 +88,7 @@ function HomePage() {
         const timeDifferenceInSeconds = Math.floor((currentTime - createdAtDate) / 1000);
 
         if (timeDifferenceInSeconds < 60) {
-          return timeDifferenceInSeconds === 1 ? `${timeDifferenceInSeconds} sec ago` : `${timeDifferenceInSeconds} secs ago`;
+          return timeDifferenceInSeconds === 1 ? `${timeDifferenceInSeconds} sec` : `${timeDifferenceInSeconds} secs`;
         } else if (timeDifferenceInSeconds < 3600) {
           const minutes = Math.floor(timeDifferenceInSeconds / 60);
           return `${minutes} mins`
@@ -200,7 +208,7 @@ function HomePage() {
                     {recent.map((r, i) =>
                     <>
                     <div>
-                    <i class="fi fi-rr-notebook"></i>
+                   {r.PostImages.length && r.PostImages[0].imgURL ? <img src={r.PostImages[0].imgURL}></img> : <i class="fi fi-rr-notebook"></i> }
                         <div>
                         <div>
                         <span>{r.title}</span>
@@ -213,9 +221,6 @@ function HomePage() {
                     )}
                     <span id="span2">Clear</span>
                 </div>
-                {/* <div id="ad">
-                    <img alt="ad"></img>
-                </div> */}
                 <div id="terms">
                     <div id="terms-1">
                     <div>
@@ -244,7 +249,7 @@ function HomePage() {
                     <div id="line"></div>
                     <p>Luvddit, Inc. © 2023. All rights reserved.</p>
                 </div>
-                <button className={top} onClick={((e) => window.scrollTo({ top: 0, left: 0, behavior: "smooth"}))}>Back to Top</button>
+                { isVisible2 ? <button className={top} onClick={((e) => window.scrollTo({ top: 0, left: 0, behavior: "smooth"}))}>Back to Top</button> : null}
             </div>
         </div>
     )

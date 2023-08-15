@@ -9,6 +9,7 @@ import HomePage from "./components/HomePage";
 import * as postsActions from './store/posts';
 import * as communitiesActions from "./store/communities"
 import CreatePost from "./components/CreatePostPage";
+import PostPage from "./components/PostPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -36,6 +37,9 @@ function App() {
           </Route>
           <Route path="/posts/new">
             <CreatePost />
+          </Route>
+          <Route exact path="/posts/:id">
+            <PostPage />
           </Route>
         </Switch>
       )}

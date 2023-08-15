@@ -11,15 +11,17 @@ const router = express.Router();
 
 router.post('/:id/posts', async (req, res) => {
     const communityId = req.params.id
-    const { description } = req.body
+    const { description, title, tags } = req.body
     const { user } = req
     const userId = user.dataValues.id
 
     let post = await Posts.create({
         communityId,
         userId,
+        title,
         description,
-        votes: 0
+        tags,
+        votes: 0,
     })
 
     return res.json(post)
@@ -29,11 +31,28 @@ router.get("/", async (req, res) => {
     let communities = await Communities.findAll({
         include: [
             { model: Posts },
-            { model: User }
+            { model: User },
          ]}
         );
 
-    return res.json(communities)
+
+
+        for (let i = 0; i < communities.length; i++) {
+            let members = await CommunityMembers.findAll({
+              where: {
+                communityId: communities[i].id
+              }
+            });
+
+            communities[i].dataValues.CommunityMembers = members.length
+
+        }
+
+
+
+
+
+    return  res.json(communities)
 })
 
 router.get("/current", async (req, res) => {
@@ -52,7 +71,6 @@ router.get("/current", async (req, res) => {
 
     return res.json(communities)
 })
-
 
 
 router.get("/:id", async (req, res) => {

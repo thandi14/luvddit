@@ -47,7 +47,7 @@ export const thunkGetDetailsById = (id) => async (dispatch) => {
     const response1 = await csrfFetch(`/api/posts/${id}`)
     const data1 = await response1.json();
     dispatch(getDetails(data1));
-    return response1;
+    return data1;
 }
 
 export const thunkGetUserPosts = () => async (dispatch) => {
@@ -62,18 +62,34 @@ export const thunkGetUserPosts = () => async (dispatch) => {
     return data;
   };
 
-export const thunkCreatePost = (data, id) => async (dispatch) => {
-    if (Object.values(data).length) {
-        const response = await csrfFetch(`/api/communities/:${id}/posts`, {
+export const thunkCreatePost = (data, id, img) => async (dispatch) => {
+  if (Object.values(data).length) {
+        const response = await csrfFetch(`/api/communities/${id}/posts`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
               },
             body: JSON.stringify(data)
         })
-        const data = await response.json()
-        dispatch(getDetails(data))
-        return response
+
+        const data1 = await response.json()
+        const postId = data1.id
+        console.log("store", response)
+
+        if (Object.values(img).length) {
+        const response2 = await csrfFetch(`/api/posts/${postId}/images`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+            },
+          body: JSON.stringify(img)
+        })
+        }
+
+        console.log(data1)
+        dispatch(getDetails(data1))
+        return data1
+
     }
 }
 

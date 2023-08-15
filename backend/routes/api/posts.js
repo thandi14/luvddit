@@ -34,7 +34,7 @@ router.get("/current", async (req, res) => {
        include: [
         { model: Comments },
         { model: Communities }
-     ]
+        ]
     });
 
     return res.json(posts)
@@ -56,7 +56,8 @@ router.get("/:id", async (req, res) => {
         include: [
             { model: Comments },
             { model: Communities },
-            { model: User }
+            { model: User },
+            { model: PostImages}
          ]
         });
 
@@ -116,6 +117,26 @@ router.delete("/:id", async (req, res) => {
     res.json({
         message: "Successfully deleted"
     })
+
+})
+
+router.post('/:id/images', async (req, res) => {
+    let postId = req.params.id;
+    let postExist = await Posts.findByPk(postId);
+    const { imgURL } = req.body
+
+    if (!postExist) {
+
+    res.status(404).json({"message": "Post couldn't be found"});
+
+    }
+
+    let image = await PostImages.create({
+        imgURL,
+        postId
+    })
+
+    return res.json(image)
 
 })
 

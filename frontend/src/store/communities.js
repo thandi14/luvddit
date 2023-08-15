@@ -47,7 +47,7 @@ export const thunkGetDetailsById = (id) => async (dispatch) => {
     const response1 = await csrfFetch(`/api/communities/${id}`)
     const data1 = await response1.json();
     dispatch(getDetails(data1));
-    return response1;
+    return data1;
 }
 
 export const thunkGetUserCommunities = () => async (dispatch) => {
