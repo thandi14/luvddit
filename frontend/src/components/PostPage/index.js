@@ -7,6 +7,8 @@ import * as postActions from '../../store/posts'
 import '../CreatePostPage/CreatePostPage.css'
 import CommunitiesProfile from '../CreatePostPage/communites2';
 import * as communityActions from '../../store/communities'
+import { useModal } from '../../context/Modal';
+import DeletePost from './delete';
 
 
 function PostPage() {
@@ -15,12 +17,33 @@ function PostPage() {
     const { id } = useParams();
     const dispatch = useDispatch()
     const [isVisible, setIsVisible] = useState(false);
+    const [ deleted, setDeleted ] = useState("")
     const targetRef = useRef(null);
+    const { setModalContent } = useModal()
+    const [isVisible2, setIsVisible2] = useState(false);
+    const [ description, setDescription ] = useState("");
+    const [ data1, setData1 ] = useState(null)
 
     const handleClick = () => {
         setIsVisible(!isVisible);
     };
 
+    const handleClick2 = () => {
+        setIsVisible2(!isVisible2);
+    };
+
+    const handleSave = () => {
+
+        setData1({
+            description
+        })
+        console.log({
+            description
+        })
+
+        setIsVisible2(false)
+
+    }
 
 
     useEffect(() => {
@@ -41,18 +64,42 @@ function PostPage() {
 
     }, [isVisible]);
 
-    useEffect( async () => {
-        let data
-        if (id) data = await dispatch(postActions.thunkGetDetailsById(id))
-        if (data) dispatch(communityActions.thunkGetDetailsById(data.communityId))
-        console.log(data)
-    }, [dispatch, id])
+    // useEffect( () => {
+
+    //     console.log(data1)
+    //     if (data1)  dispatch(postActions.thunkUpdatePosts(singlePost.id, data1))
+    //     let data
+    //     if (id) data = dispatch(postActions.thunkGetDetailsById(id))
+    //     setDeleted(data)
+    //     if (data)  dispatch(communityActions.thunkGetDetailsById(data.communityId))
+    //    // console.log(deleted)
+
+
+
+    // }, [dispatch, id, data1])
+
+    useEffect( () => {
+
+        async function fetchData() {
+            if (data1)  await dispatch(postActions.thunkUpdatePosts(singlePost?.id, data1))
+            let data
+            if (id) data =  await dispatch(postActions.thunkGetDetailsById(id))
+            setDeleted(data)
+            if (data)  await dispatch(communityActions.thunkGetDetailsById(data?.communityId))
+
+        }
+        fetchData()
+
+    }, [dispatch, data1, id])
 
     if (!Object.values(singlePost).length) return <h2>Loading...</h2>
 
     let editMenu = isVisible ? "edit-menu" : "hidden";
 
-    console.log(singleCommunity)
+    console.log(singlePost)
+
+
+
 
     return (
 
@@ -72,13 +119,36 @@ function PostPage() {
         <p>Posted by l/{singlePost?.User?.username} just now<i class="fi fi-rs-cowbell"></i></p>
         <h1>{singlePost?.title}</h1>
         <div id="post-info1">
-        {singlePost.description ? <p>{singlePost?.description}</p> : null}
-        {singlePost.PostImages.length ? <img id="post-image1" src={singlePost.PostImages[0].imgURL} alt="postimg"></img> : null}
+        { isVisible2 ? null : singlePost.description ? <p>{singlePost?.description}</p> : null}
+        { isVisible2 ? <div className="post-input7">
+                     <div id="add-to7">
+                    <i class="fi fi-rr-bold"></i>
+                    <i class="fa-solid fa-italic"></i>
+                    <i class="fi fi-rr-link-alt"></i>
+                    <i class="fi fi-rr-strikethrough"></i>
+                    <i class="fi fi-rr-code-simple"></i>
+                    <i class="fa-solid fa-superscript"></i>
+                    <i class="fi fi-rr-diamond-exclamation"></i>
+                    <div id="divider16"></div>
+                    <i class="fi fi-rr-heading"></i>
+                    <i class="fi fi-rr-rectangle-list"></i>
+                    <i class="fa-solid fa-list-ol"></i>
+                    <i class="fi fi-rr-square-quote"></i>
+                    <i class="fi fi-rr-square-code"></i>
+                    <div id="divider16"></div>
+                    <i class="fi fi-rr-grid-alt"></i>
+                    <i class="fi fi-rr-picture"></i>
+                    <i class="fa-brands fa-youtube"></i>
+                    </div>
+                   <textarea defaultValue={singlePost.description} onChange={((e) => setDescription(e.target.value) )} placeholder="Text(optional)"></textarea>
+        </div> : null}
+        {singlePost.PostImages?.length ? <div><img id="post-image1" src={singlePost.PostImages[0].imgURL} alt="postimg"></img></div> : null}
         </div>
+        { isVisible2 ? <div id="save"><button onClick={handleClick2} >Cancel</button> <button id={ !description ? "save-submit" : "save-submit2"} onClick={handleSave}>Save</button></div> : null}
         <div id="post-extras1">
             <div id="comment5">
             <i class="fa-regular fa-message"></i>
-            <p>{singlePost.Comments.length}</p>
+            <p>{singlePost.Comments?.length}</p>
             </div>
             <div id="comment4">
                 <i class="fi fi-rs-heart-arrow"></i>
@@ -105,10 +175,13 @@ function PostPage() {
             <i  onClick={handleClick} id="menu" class="fi fi-rr-menu-dots"></i>
             <div className="menu">
             <div ref={targetRef} id={editMenu}>
-                <p><i class="fi fi-rr-magic-wand"></i>Edit</p>
+                {!singlePost.PostImages.length ? <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p> : null}
                 <p><i class="fi fi-rr-bookmark"></i>Save</p>
                 <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
-                <p><i class="fi fi-rr-trash-xmark"></i>Delete</p>
+                <p onClick={(() => {
+                    setModalContent(<DeletePost id={id} deleted={deleted}/>)
+                    setIsVisible(false)
+                })}><i class="fi fi-rr-trash-xmark"></i>Delete</p>
                 <label>
                 <input type="checkbox" />
                 Mark as OC

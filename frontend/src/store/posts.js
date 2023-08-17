@@ -6,6 +6,7 @@ const GET_DETAILS = 'posts/getDetails';
 const GET_USER_POSTS = 'posts/getUserPosts';
 const REMOVE_POST = 'posts/removePosts'
 
+
 const getPosts = (posts) => {
     return {
         type: GET_POSTS,
@@ -74,7 +75,7 @@ export const thunkCreatePost = (data, id, img) => async (dispatch) => {
 
         const data1 = await response.json()
         const postId = data1.id
-        console.log("store", response)
+        console.log("thunk", response)
 
         if (Object.values(img).length) {
         const response2 = await csrfFetch(`/api/posts/${postId}/images`, {
@@ -94,6 +95,7 @@ export const thunkCreatePost = (data, id, img) => async (dispatch) => {
 }
 
 export const thunkUpdatePosts = (id, data) => async (dispatch) => {
+  console.log(data)
     if (Object.values(data).length) {
         const response = await csrfFetch(`/api/posts/${id}`, {
             method: 'PUT',
@@ -102,22 +104,22 @@ export const thunkUpdatePosts = (id, data) => async (dispatch) => {
               },
             body: JSON.stringify(data)
         })
-        const data = await response.json()
-        dispatch(getDetails(data))
+        const data1 = await response.json()
+        dispatch(getDetails(data1))
         return response
     }
 }
 
-export const deletePosts = (id) => async (dispatch) => {
+export const thunkDeletePosts = (id) => async (dispatch) => {
     const response = await csrfFetch(`/api/posts/${id}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
           },
     })
-    // let data = await response.json()
+    let data = await response.json()
     dispatch(removePost(id))
-    return response
+    return data
 }
 
 // export const addPostImages = (id, data) => async (dispatch) => {
@@ -136,7 +138,7 @@ let initialState = {
     posts: {},
     userPosts: {},
     singlePost: {},
-    search: {},
+    removedPost: {},
 };
 
 

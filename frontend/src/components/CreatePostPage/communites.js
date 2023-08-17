@@ -5,7 +5,7 @@ import * as communityActions from "../../store/communities"
 
 
 function CommunitiesMenu({ value }) {
-    const { communities, singleCommunity } = useSelector((state) => state.communities)
+    const { communities, singleCommunity, userCommunities } = useSelector((state) => state.communities)
     const { user } = useSelector((state) => state.session)
     const [ id, setId ] = useState(null)
     const dispatch = useDispatch()
@@ -15,25 +15,34 @@ function CommunitiesMenu({ value }) {
 
     }, [dispatch, id])
 
-    let userCommunity = Object.values(communities)
+    let community = Object.values(communities)
 
-    userCommunity = userCommunity.filter((c) => c.userId === user.id)
+    community = community.filter((c) => c.userId === user.id)
 
-    console.log(userCommunity[0])
-
+    let users = Object.values(userCommunities)
+    users = users.slice(1, users.length)
     return (
         <>
         <div id="your-comms">
             <p>Your Profile</p>
-            <div onClick={((e) => setId(userCommunity[0].id))} id="user-community">
+            <div onClick={((e) => setId(community[0].id))} id="user-community">
             <div id='uc-img'>
             <img src={avatar}></img>
             </div>
             <div id="uc-name">
-            <p>l/{userCommunity[0]?.name}</p>
+            <p>l/{community[0]?.name}</p>
             </div>
             </div>
             <div id="div2"></div>
+            <div id="your-comms5">
+                <p>Your communities<span>Create New</span></p>
+                {users.map((u) =>
+                     <div onClick={((e) => setId(u.id))} id="all-user-comms">
+                        <div id="all-comms-pfp">l/</div>
+                        <p>u/{u?.name}</p>
+                    </div>
+                )}
+            </div>
         </div>
         <div id="border5">
 

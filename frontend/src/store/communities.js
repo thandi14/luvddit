@@ -5,6 +5,8 @@ const GET_COMMUNITIES = 'communities/getCommunities';
 const GET_DETAILS = 'communities/getDetails';
 const GET_USER_COMMUNITIES = 'communities/getUserCommunities';
 const REMOVE_COMMUNITIES = 'communities/removeCommunities'
+const GET_COMMUNITY_MEMBERSHIPS = 'communities/getCommunityMemberships';
+
 
 const getCommunities = (communities) => {
     return {
@@ -27,10 +29,21 @@ const removeCommunities = (id) => {
     }
 }
 
-const getUserCommunities = (communities) => ({
-    type: GET_USER_COMMUNITIES,
-    communities,
-});
+const getUserCommunities = (communities) => {
+    return {
+        type: GET_USER_COMMUNITIES,
+        communities,
+
+    }
+};
+
+const getCommunityMemberships = (memberships) => {
+    return {
+        type: GET_COMMUNITY_MEMBERSHIPS,
+        memberships,
+    }
+};
+
 
 
 
@@ -59,6 +72,18 @@ export const thunkGetUserCommunities = () => async (dispatch) => {
 
     const data = await response.json();
     dispatch(getUserCommunities(data));
+    return data;
+};
+
+export const thunkGetCommunityMemberships = () => async (dispatch) => {
+    let response = await fetch(`/api/communities/memberships`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+    dispatch(getCommunityMemberships(data));
     return data;
 };
 
@@ -120,7 +145,7 @@ let initialState = {
     communities: {},
     userCommunities: {},
     singleCommunity: {},
-    search: {},
+    communityMemberships: {},
 };
 
 
@@ -129,7 +154,6 @@ const communitiesReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_COMMUNITIES:
         newState = { ...state };
-        console.log(action.communities)
         action.communities.forEach(
           (community) => (newState.communities[community.id] = community)
         );
@@ -154,6 +178,14 @@ const communitiesReducer = (state = initialState, action) => {
         newState.userCommunities = {};
         action.communities.forEach(
           (community) => (newState.userCommunities[community.id] = community)
+        );
+        return newState;
+    }
+    case GET_COMMUNITY_MEMBERSHIPS: {
+        newState = { ...state };
+        newState.communityMemberships = {};
+        action.memberships.forEach(
+          (community) => (newState.communityMemberships[community.communityId] = community)
         );
         return newState;
     }

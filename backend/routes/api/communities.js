@@ -2,7 +2,7 @@ const express = require('express')
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Communities, Posts, User, CommunityMembers } = require('../../db/models');
+const { Communities, Posts, User, CommunityMembers, Comments, PostImages } = require('../../db/models');
 
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -72,6 +72,28 @@ router.get("/current", async (req, res) => {
     return res.json(communities)
 })
 
+router.get('/memberships', async (req, res) => {
+    const { user } = req
+    const userId = user.dataValues.id
+
+    let communitiesExist = await CommunityMembers.findAll({
+        where: {
+            userId
+        },
+        include: Communities
+    });
+
+    if (!communitiesExist.length) {
+
+        res.status(404).json({"message": "Memberships couldn't be found"});
+
+    }
+
+    res.json(communitiesExist)
+
+})
+
+
 
 router.get("/:id", async (req, res) => {
     let communityId = req.params.id;
@@ -83,10 +105,29 @@ router.get("/:id", async (req, res) => {
 
     let community = await Communities.findByPk(communityId, {
         include: [
-            { model: Posts },
+            {
+                model: Posts,
+                include: [
+                    { model: Comments},
+                    { model: Communities},
+                    { model: User},
+                    { model: PostImages}
+                 ]
+            },
             { model: User }
          ]
         });
+
+            let members = await CommunityMembers.findAll({
+              where: {
+                communityId: community.id
+              }
+            });
+
+            community.dataValues.CommunityMembers = members.length
+
+
+
 
     return res.json(community)
 })
@@ -160,5 +201,6 @@ router.get('/:id/members', async (req, res) => {
     res.json(members)
 
 })
+
 
 module.exports = router;

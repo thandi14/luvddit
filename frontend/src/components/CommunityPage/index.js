@@ -1,15 +1,18 @@
-import * as postsActions from '../../store/posts'
-import { useSelector, useDispatch } from 'react-redux'
-import { useEffect, useState } from 'react'
-import * as communitiesActions from "../../store/communities"
-import './HomePage.css'
-import pfp from './IMG6.jpg'
-import avatar from  './imagedit2.png'
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
+import { useSelector, useDispatch } from "react-redux"
+import { useParams, useHistory } from "react-router-dom/cjs/react-router-dom.min"
+import * as communityActions from "../../store/communities"
+import { useEffect, useState } from "react";
+import './CommunityPage.css'
+import avatar from "./imagedit2.png"
+import pfp from "./IMG6.jpg"
+import YourCommunitesProfile from "./communites3";
 
-function HomePage() {
+function CommunityPage() {
+    const { id } = useParams();
+    const { communities, singleCommunity } = useSelector((state) => state.communities);
     const { posts } = useSelector((state) => state.posts);
-    const { communities } = useSelector((state) => state.communities);
+    const { user } = useSelector((state) => state.session);
+
     const dispatch = useDispatch()
     const [isVisible, setIsVisible] = useState(false);
     const [isVisible2, setIsVisible2] = useState(false);
@@ -43,17 +46,13 @@ function HomePage() {
 
     }, [])
 
-    const ePost = Object.values(posts)
+    useEffect(() => {
+        dispatch(communityActions.thunkGetDetailsById(id))
+    }, [])
 
-    if (!ePost.length) return <h1 className="data-not-here">Loading...</h1>
+    const ePost = singleCommunity.Posts
 
-    let recent = Object.values(posts)
-    recent = recent.reverse()
-    recent = recent.slice(0, 5)
-
-    console.log(recent)
-
-
+    if (!ePost?.length) return <h1 className="data-not-here">Loading...</h1>
 
     const getTimeDifferenceString = (createdAt) => {
         const currentTime = new Date();
@@ -101,8 +100,31 @@ function HomePage() {
         }
       };
 
+    console.log(user)
+
+    const randomNum = Math.floor(Math.random() * 101)
+
+
+
     return (
-        <div className="splashPage">
+        <>
+        <div className="community-page-header">
+        <div id="community-page-header"></div>
+        <div id="community-page-title">
+            <div id="community-title-head">
+            <div id="comm-pfp">l/</div>
+            <div id="communityName">
+                {singleCommunity.name}
+                <span>l/{singleCommunity.name}</span>
+            </div>
+            <button>Joined</button>
+            </div>
+        </div>
+        </div>
+        <div className="community-page-content">
+
+        </div>
+        <div className="community-page-content">
             <div className="posts">
                 <div className="create">
                     <img src={pfp}></img>
@@ -112,10 +134,6 @@ function HomePage() {
                 </div>
                 <div className="filter">
                 <div id="filter-side1">
-                <div id="best">
-                <i class="fi fi-sr-bow-arrow"></i>
-                <p>Best</p>
-                </div>
                 <div id="best">
                 <i class="fi fi-rs-flame"></i>
                 <p>Hot</p>
@@ -137,7 +155,7 @@ function HomePage() {
                 </div>
                 </div>
                 {ePost?.map((post) =>
-                    <div id={`${post.id}`} onClick={(() => history.push(`/posts-modal/${post.id}`))} className="post-content">
+                    <div id={`${post.id}`} className="post-content">
                     <div id="pc-side1">
                     <i class="fi fi-rs-heart"></i>
                      <span>{post.votes + post.downVotes}</span>
@@ -146,32 +164,37 @@ function HomePage() {
                     <div id="pc-side2">
                     <div id="nameOf">
                     <img src={pfp}></img>
-                    <span id="community">l/{post.Community.name}</span>
-                    <p>·</p>
-                    <p>Posted by u/{post.User.username} {getTimeDifferenceString(post.createdAt)}</p>
+                    <p>l/{post.Community?.name} Posted by u/{post.User?.username} {getTimeDifferenceString(post.createdAt)}</p>
                     </div>
-                    <h3 id="title">{post.title}</h3>
+                    <h3 id="title6">{post.title}</h3>
                     <div id="content">
                     <div id="img">
-                    {post.PostImages.length ? <img src={post.PostImages[0]?.imgURL} alt="meaningful-text"></img> : null}
+                    {post.PostImages?.length ? <img src={post.PostImages[0]?.imgURL} alt="meaningful-text"></img> : null}
                     </div>
                     </div>
                     <div id="post-extras">
                     <div id="comment">
                     <i class="fa-regular fa-message"></i>
-                    <p>{post.Comments.length} Comments</p>
-                    </div>
-                    <div id="comment">
-                    <i class="fi fi-rr-box-heart"></i>
-                    <p>Awards</p>
+                    <p>{post.Comments.length}</p>
                     </div>
                     <div id="comment">
                     <i class="fi fi-rs-heart-arrow"></i>
                     <p>Share</p>
                     </div>
                     <div id="comment">
-                    <i class="fi fi-rr-bookmark"></i>
-                    <p>Save</p>
+                    <i class="fi fi-rs-check-circle"></i>
+                    <p>Approved</p>
+                    </div>
+                    <div id="comment">
+                    <i class="fi fi-rs-circle-cross"></i>
+                    <p>Removed</p>
+                    </div>
+                    <div id="comment">
+                    <i class="fi fi-rr-box"></i>
+                    <p>Spam</p>
+                    </div>
+                    <div id="comment">
+                    <i class="fi fi-rs-shield"></i>
                     </div>
                     <i class="fi fi-rr-menu-dots"></i>
                     </div>
@@ -180,79 +203,28 @@ function HomePage() {
                 )}
             </div>
             <div className="sidebar">
-                <div className="premium">
-                    <div id="premium">
-                    <i class="fa-solid fa-shield-halved"></i>
-                    <div>
-                    <h3> Luvddit premium</h3>
-                    <p>The best luvddit experience</p>
-                    </div>
-                    </div>
-                    <button>Try Now</button>
-                </div>
+                <YourCommunitesProfile />
                 <div className="home-section">
-                <div id="hs-background"></div>
+                <div id="cs-background">
+                    <p>Moderators</p>
+                </div>
                 <div id="home-section">
-                <div id="hs-side1">
-                <img id="avatar" src={avatar} alt="avatar"></img>
-                <h3>Home</h3>
-                </div>
-                <p>Your personal Reddit frontpage. Come here to check in with your favorite communities.</p>
-                <div id="line"></div>
-                <button onClick={(() => history.push('/posts/new'))} id="but1">Create Post</button>
-                <button id="but2">Create Community</button>
+                <button onClick={(() => history.push('/posts/new'))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>
+                <div id="cs-side6">
+                    <span>{user.username}</span>
+                    <span>VIEW ALL MODERATORS</span>
                 </div>
                 </div>
-                <div className='recent-posts'>
-                    <span>RECENT POSTS</span>
-                    {recent.map((r, i) =>
-                    <>
-                    <div onClick={(() => history.push(`/posts-modal/${r.id}`))}>
-                   {r.PostImages.length && r.PostImages[0].imgURL ? <img src={r.PostImages[0].imgURL}></img> : <i class="fi fi-rr-notebook"></i> }
-                        <div>
-                        <div>
-                        <span>{r.title}</span>
-                        </div>
-                        <span>{r.User.karma} points · {r.Comments.length} Comments · {getTimeDifferenceString2(r.createdAt)}</span>
-                        </div>
-                    </div>
-                        { i !== 4 ? <div id="line"></div> : null}
-                    </>
-                    )}
-                    <span id="span2">Clear</span>
+
                 </div>
-                <div id="terms">
-                    <div id="terms-1">
-                    <div>
-                    <p>User Agreement</p>
-                    <p>Privacy Policy</p>
-                    </div>
-                    <div>
-                    <p>Content Policy</p>
-                    <p>Moderator Code Of <br></br>
-                        Conduct</p>
-                    </div>
-                    </div>
-                    <div id="line"></div>
-                    <div id="terms-2">
-                    <div>
-                    <p>English</p>
-                    <p>Francias</p>
-                    <p>Italiano</p>
-                    </div>
-                    <div>
-                    <p>Deutsch</p>
-                    <p>Espanol</p>
-                    <p>Portuguse</p>
-                    </div>
-                    </div>
-                    <div id="line"></div>
-                    <p>Luvddit, Inc. © 2023. All rights reserved.</p>
-                </div>
+
                 { isVisible2 ? <button className={top} onClick={((e) => window.scrollTo({ top: 0, left: 0, behavior: "smooth"}))}>Back to Top</button> : null}
             </div>
         </div>
+
+        </>
     )
 }
 
-export default HomePage
+
+export default CommunityPage
