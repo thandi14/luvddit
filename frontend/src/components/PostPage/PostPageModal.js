@@ -7,9 +7,12 @@ import "./PostPage.css"
 import * as postActions from '../../store/posts';
 import * as communityActions from '../../store/communities';
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import pfp from "./IMG6.jpg"
+import pfp from "./IMG6.jpg";
+import DeletePost from "./delete";
+import { useModal2 } from "../../context/Modal2";
+import CommunitiesProfile from "../CreatePostPage/communites2";
 
-function PostPageModal() {
+function PostPageModal({ postId }) {
     const { singlePost } = useSelector((state) => state.posts)
     const { singleCommunity } = useSelector((state) => state.communities)
     const { user } = useSelector((state) => state.session)
@@ -18,13 +21,19 @@ function PostPageModal() {
     const [isVisible, setIsVisible] = useState(false);
     const [ deleted, setDeleted ] = useState("")
     const targetRef = useRef(null);
-    const { setModalContent } = useModal()
+    const  { setModalContent2, modalRef2 } = useModal2()
     const [isVisible2, setIsVisible2] = useState(false);
     const [ description, setDescription ] = useState("");
     const [ data1, setData1 ] = useState(null)
     const history = useHistory()
+    const { closeModal } = useModal();
+    const targetRef2 = useRef(null);
+    const targetRef3 = useRef(null)
 
-    console.log(singleCommunity)
+
+    console.log(singlePost)
+
+
 
     const handleClick = () => {
         setIsVisible(!isVisible);
@@ -42,19 +51,28 @@ function PostPageModal() {
         setIsVisible2(false)
     }
 
+    const scrollToTop = () => {
+        const container = document.querySelector('.post-modal'); // Adjust the selector as needed
+        if (container) {
+            container.scrollTo({ top: 0, behavior: 'smooth' });
+            // container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        }
+    };
+
     useEffect( () => {
 
         async function fetchData() {
             if (data1)  await dispatch(postActions.thunkUpdatePosts(singlePost?.id, data1))
             let data
-            if (id) data =  await dispatch(postActions.thunkGetDetailsById(id))
+            if (postId) data =  await dispatch(postActions.thunkGetDetailsById(postId))
             console.log(data)
             if (data)  await dispatch(communityActions.thunkGetDetailsById(data?.communityId))
 
         }
         fetchData()
 
-    }, [dispatch, data1, id])
+    }, [dispatch, data1, postId])
 
     let editMenu = isVisible ? "edit-menu" : "hidden";
 
@@ -102,25 +120,43 @@ function PostPageModal() {
       };
 
 
+    useEffect(() => {
+
+        const handleDocumentClick = (event) => {
+            console.log(modalRef2, modalRef2.current.contains(event.target) )
+            if ((modalRef2.current && !modalRef2.current.contains(event.target)) && (targetRef2.current && !targetRef2.current.contains(event.target)) && (targetRef3.current && !targetRef3.current.contains(event.target))) {
+                closeModal();
+
+            }
+
+        };
+
+      document.addEventListener('click', handleDocumentClick);
+      return () => {
+          document.removeEventListener('click', handleDocumentClick);
+        };
+
+    }, []);
+
+
+
 
 
     return (
         <div className="post-modal">
-            <div id="height-idk">
-                <div id="post-details-head">
+                <div ref={targetRef3} id="post-details-head">
                 <div>
-                    <div id="line5"></div>
+                <div id="line5"></div>
                 <i id="heart25" class="fi fi-rs-heart"></i>
                 <span>{singlePost.votes + singlePost.downVotes}</span>
                 <i id="heart25" class="fi fi-rs-heart-crack"></i>
                 <div id="line5"></div>
-
                 <i class="fi fi-rr-picture"></i>
                 <span id="t-head">{singlePost.title}</span>
                 </div>
-                <span id="close-head"><i class="fi fi-rr-cross-small"></i>Close</span>
+                <span onClick={(() => closeModal())} id="close-head"><i class="fi fi-rr-cross-small"></i>Close</span>
                 </div>
-        <div className="whole-post-page2">
+        <div ref={targetRef2} className="whole-post-page2">
             <div className="post-page">
             <div id="vote-side">
                 <i class="fi fi-rs-heart"></i>
@@ -162,7 +198,27 @@ function PostPageModal() {
             {singlePost.PostImages?.length ? <div><img id="post-image1" src={singlePost.PostImages[0].imgURL} alt="postimg"></img></div> : null}
             </div>
             { isVisible2 ? <div id="save"><button onClick={handleClick2} >Cancel</button> <button id={ !description ? "save-submit" : "save-submit2"} onClick={handleSave}>Save</button></div> : null}
-            <div id="post-extras1">
+            {singleCommunity.userId !== user.id ?<div id="post-extras3">
+                    <div id="comment">
+                    <i class="fa-regular fa-message"></i>
+                    <p>{singlePost.Comments?.length} Comments</p>
+                    </div>
+                    <div id="comment">
+                    <i class="fi fi-rr-box-heart"></i>
+                    <p>Awards</p>
+                    </div>
+                    <div id="comment">
+                    <i class="fi fi-rs-heart-arrow"></i>
+                    <p>Share</p>
+                    </div>
+                    <div id="comment">
+                    <i class="fi fi-rr-bookmark"></i>
+                    <p>Save</p>
+                    </div>
+                    <i class="fi fi-rr-menu-dots"></i>
+            </div>
+             :
+             <div id="post-extras1">
                 <div id="comment5">
                 <i class="fa-regular fa-message"></i>
                 <p>{singlePost.Comments?.length}</p>
@@ -191,12 +247,12 @@ function PostPageModal() {
                 </div>
                 <i  onClick={handleClick} id="menu" class="fi fi-rr-menu-dots"></i>
                 <div className="menu">
-                <div ref={targetRef} id={editMenu}>
+                <div id={editMenu}>
                     <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p>
                     <p><i class="fi fi-rr-bookmark"></i>Save</p>
                     <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
                     <p onClick={(() => {
-                        // setModalContent(<DeletePost id={id} deleted={deleted}/>)
+                        setModalContent2(<div> <DeletePost id={singlePost.id} /></div>)
                         setIsVisible(false)
                     })}><i class="fi fi-rr-trash-xmark"></i>Delete</p>
                     <label>
@@ -217,7 +273,7 @@ function PostPageModal() {
                     </label>
                 </div>
                 </div>
-            </div>
+            </div> }
             <div id="insights">
                 <p>Post Insights</p>
                 <p>Check back later to see views, shares, and more. <span>Share your post</span> to spread the word!</p>
@@ -272,7 +328,12 @@ function PostPageModal() {
             </div>
             </div>
             <div className="side-community2">
-                <div id="your-community-profile">
+                { singleCommunity.id !== 1 ? <CommunitiesProfile /> :
+                 <div onClick={(() => {
+                    history.push(`/communities/${singleCommunity.id}`)
+                    closeModal()
+                })
+                    } id="your-community-profile">
                     <div id="header-profile-comm4">
                     </div>
                     <div id="profile-content">
@@ -291,10 +352,8 @@ function PostPageModal() {
                         <span>COMMUNITY OPTIONS</span>
                         <i class="fa-solid fa-chevron-down"></i>
                 </div>
-
-                    </div>
-
                 </div>
+                </div> }
                 <div id="side-bar7">
                 <div id="cs-background7">
                 <p>Moderators</p>
@@ -306,11 +365,9 @@ function PostPageModal() {
                     <span>VIEW ALL MODERATORS</span>
                 </div>
                 </div>
-                   </div>
-            {/* <CommunitiesProfile page={"/postId"}/> */}
-            <button className="top2" onClick={((e) => window.scrollTo({ top: 0, left: 0, behavior: "smooth"}))}>Back to Top</button>
+                </div>
+            <button className="top2" onClick={scrollToTop}>Back to Top</button>
             </div>
-        </div>
         </div>
         </div>
     )

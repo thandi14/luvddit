@@ -87,35 +87,35 @@ export const thunkGetCommunityMemberships = () => async (dispatch) => {
     return data;
 };
 
-// export const thunkCreatePost = (data, id) => async (dispatch) => {
-//     if (Object.values(data).length) {
-//         const response = await csrfFetch(`/api/communities/:${id}/posts`, {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//               },
-//             body: JSON.stringify(data)
-//         })
-//         const data = await response.json()
-//         dispatch(getDetails(data))
-//         return response
-//     }
-// }
+export const thunkCreateCommunity = (data) => async (dispatch) => {
+    if (Object.values(data).length) {
+        const response = await csrfFetch(`/api/communities`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+              },
+            body: JSON.stringify(data)
+        })
+        const data1 = await response.json()
+        dispatch(getDetails(data1))
+        return data1
+    }
+}
 
-// export const thunkUpdatePosts = (id, data) => async (dispatch) => {
-//     if (Object.values(data).length) {
-//         const response = await csrfFetch(`/api/posts/${id}`, {
-//             method: 'PUT',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//               },
-//             body: JSON.stringify(data)
-//         })
-//         const data = await response.json()
-//         dispatch(getDetails(data))
-//         return response
-//     }
-// }
+export const thunkUpdateCommunities = (id, data) => async (dispatch) => {
+    if (Object.values(data).length) {
+        const response = await csrfFetch(`/api/communities/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+              },
+            body: JSON.stringify(data)
+        })
+        const data1 = await response.json()
+        dispatch(getDetails(data1))
+        return data1
+    }
+}
 
 // export const deletePosts = (id) => async (dispatch) => {
 //     const response = await csrfFetch(`/api/posts/${id}`, {

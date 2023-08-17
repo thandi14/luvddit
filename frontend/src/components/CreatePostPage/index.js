@@ -85,7 +85,7 @@ function CreatePost() {
                 <PostForm />
             </div>
             <div className="posting-on-l">
-                { community.length ? <CommunitiesProfile /> : null }
+                { community.length ? <CommunitiesProfile page={'create'}/> : null }
                 <div id="posting-on-l">
                     <div id="pols">
                     <img src={avatar2}></img>

@@ -6,13 +6,15 @@ import './CommunityPage.css'
 import avatar from "./imagedit2.png"
 import pfp from "./IMG6.jpg"
 import YourCommunitesProfile from "./communites3";
+import { useModal } from "../../context/Modal";
+import PostPageModal from "../PostPage/PostPageModal";
 
 function CommunityPage() {
     const { id } = useParams();
-    const { communities, singleCommunity } = useSelector((state) => state.communities);
+    const { communities, singleCommunity, communityMemberships } = useSelector((state) => state.communities);
     const { posts } = useSelector((state) => state.posts);
     const { user } = useSelector((state) => state.session);
-
+    const { setModalContent } = useModal()
     const dispatch = useDispatch()
     const [isVisible, setIsVisible] = useState(false);
     const [isVisible2, setIsVisible2] = useState(false);
@@ -20,6 +22,11 @@ function CommunityPage() {
 
     let top = isVisible ? "top" : "down"
 
+    const memberships = Object.values(communityMemberships)
+
+    const member = memberships.filter((m) => m.communityId === singleCommunity.id)
+
+    console.log(member)
 
     useEffect(() => {
       const handleScroll = () => {
@@ -52,7 +59,7 @@ function CommunityPage() {
 
     const ePost = singleCommunity.Posts
 
-    if (!ePost?.length) return <h1 className="data-not-here">Loading...</h1>
+    if (!Object.values(singleCommunity).length) return <h1 className="data-not-here">Loading...</h1>
 
     const getTimeDifferenceString = (createdAt) => {
         const currentTime = new Date();
@@ -117,7 +124,7 @@ function CommunityPage() {
                 {singleCommunity.name}
                 <span>l/{singleCommunity.name}</span>
             </div>
-            <button>Joined</button>
+            {member.length ? <button id="joined">Joined</button> : <button id="join">Join</button> }
             </div>
         </div>
         </div>
@@ -155,7 +162,7 @@ function CommunityPage() {
                 </div>
                 </div>
                 {ePost?.map((post) =>
-                    <div id={`${post.id}`} className="post-content">
+                    <div onClick={(() => setModalContent(<PostPageModal />))} id={`${post.id}`} className="post-content">
                     <div id="pc-side1">
                     <i class="fi fi-rs-heart"></i>
                      <span>{post.votes + post.downVotes}</span>

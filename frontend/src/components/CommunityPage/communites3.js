@@ -1,13 +1,50 @@
+import { useState, useEffect } from 'react';
 import './CommunityPage.css'
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import * as communityActions from '../../store/communities'
+
 
 
 function YourCommunitesProfile() {
-    const { communities, singleCommunity } = useSelector((state) => state.communities);
+    const { communities, singleCommunity, communityMemberships } = useSelector((state) => state.communities);
     const { posts } = useSelector((state) => state.posts);
     const { user } = useSelector((state) => state.session);
     const history = useHistory()
+    const [isVisible, setIsVisible] = useState(false)
+    const [ about, setAbout ] = useState("");
+    const [ data1, setData1 ] = useState("");
+    const dispatch = useDispatch()
+
+    const handleSubmit = async () => {
+
+        if (about) {
+            setData1({
+                about,
+             })
+
+        }
+
+
+    }
+
+    console.log(singleCommunity)
+
+    useEffect( () => {
+
+        async function fetchData() {
+            const response = await dispatch(communityActions.thunkUpdateCommunities(singleCommunity.id, data1))
+            if (response) {
+                history.push(`/communities/${response.id}`)
+                setIsVisible(!isVisible)
+                // window.location.reload();
+            }
+
+        }
+        fetchData()
+
+    }, [dispatch, data1])
+
 
     const randomNum = Math.floor(Math.random() * 101)
 
@@ -31,7 +68,12 @@ function YourCommunitesProfile() {
                 </div>
                 <div id="home-section">
                 <div id="cs-side1">
-                    <span>{singleCommunity.about}</span>
+                    {!singleCommunity.about && !isVisible ? <button onClick={(() => setIsVisible(!isVisible))} id="add-about">Add description</button> : null}
+                    {isVisible ? <div className="about-edit">
+                    <input defaultValue={singleCommunity?.about} onChange={((e) => setAbout(e.target.value))} placeholder="Tell us about your community" id="input-about" type="text"></input>
+                    <div id="edit-about"><span>Characters remaining</span><div><span onClick={(() => setIsVisible(!isVisible))}>Cancel</span><span onClick={handleSubmit}>Save</span></div></div>
+                    </div> : null}
+                    {singleCommunity.about && !isVisible ? <span id={user.id === singleCommunity.userId ? "can-you-edit" : ""} onClick={(() => setIsVisible(!isVisible))}>{singleCommunity.about}{user.id === singleCommunity.userId ? <i id="edit-icon4" class="fi fi-rr-magic-wand"></i> : null} </span> : null}
                     <span><i class="fi fi-rr-cake-birthday"></i>{formattedDate}</span>
                 </div>
                 <div id="line"></div>

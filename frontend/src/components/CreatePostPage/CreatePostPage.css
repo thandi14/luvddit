@@ -41,6 +41,7 @@
 #your-comms {
     width: 96%;
     font-size: 10px;
+    overflow-y: scroll;
 
 }
 
@@ -354,10 +355,13 @@
     /* border: 1px solid #ccc; */
     border-radius: 4px;
     overflow: hidden;
-    padding-left: 15px;
-    padding-right: 15px;
     padding-bottom: 10px;
 
+}
+
+#posting-on-l > div:first-child, #posting-on-l > p {
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 .posting-on-l > h4 > span {

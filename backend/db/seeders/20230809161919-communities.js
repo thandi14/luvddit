@@ -13,6 +13,18 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     await Communities.bulkCreate([
       {
+        userId: 1,
+        name: "Demo-lition"
+      },
+      {
+        userId: 2,
+        name: "FakeUser1"
+      },
+      {
+        userId: 3,
+        name: "FakeUser2"
+      },
+      {
        userId: 2,
        name: "Foodie",
        about: "Share your mouthwatering meals, tempting treats, and impressive plating skills. Don't forget to include recipes, cooking tips, and tricks to inspire others."

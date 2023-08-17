@@ -1,0 +1,260 @@
+
+
+.community-post {
+    background-color: white;
+    padding-top: 3%;
+    border-radius: 4px;
+    border: 0.8px solid #ccc;
+    overflow: hidden;
+    width: 520px;
+}
+
+.community-post > span:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 3%;
+    font-size: 16px;
+    font-weight: 900;
+
+}
+
+.community-post > span:first-child > i {
+    font-size: 26px;
+    color: #7c7c7c;
+    height: 26px;
+    cursor: pointer;
+
+}
+
+.community-post > div:not(#cc-submit), .community-post > span:first-child {
+    padding-left: 3.5%;
+    padding-right: 3.5%;
+}
+
+#cc-type {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 35px;
+}
+
+#cc-type > span:not(:first-child) {
+    display: flex;
+    font-size: 12px;
+    color: #7c7c7c;
+}
+
+
+
+#div10 {
+    width: 86%;
+    background-color: #EDEFF1;
+    height: 1px;
+    margin-left: 3.5%;
+    margin-right: 3.5%;
+}
+
+#cc-submit {
+    background-color: #EDEFF1;
+    padding-bottom: 4.5%;
+    padding-top: 4.5%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-left: 3.5%;
+    padding-right: 3.5%;
+    gap: 3px;
+
+}
+
+#cc-content > div, #cc-content > div > span {
+    display: flex;
+}
+
+#cc-name {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px
+}
+
+#cc-name > span:first-child, #cc-type > span:first-child, #cc-content > span:first-child {
+    font-size: 16px;
+    font-weight: 900;
+    display: flex;
+    height: 30px;
+}
+
+#cc-name > span:not(:first-child) {
+    font-size: 12px;
+    font-weight: 400;
+    color: #7c7c7c;
+    margin-bottom: 15px;
+    height: auto;
+}
+
+#cc-type > span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    height: 30px;
+    width: 100%;
+}
+
+#cc-content {
+    margin-bottom: 25px;
+}
+
+#cc-type > span > i {
+    font-size: 15px;
+    height: 15px;
+    margin-right: 5px;
+    cursor: not-allowed;
+
+}
+
+#cc-type > span > div > i {
+    font-size: 18px;
+    height: 18px;
+    margin-right: 5px;
+    color: #7c7c7c;
+}
+
+#cc-type > span > div  {
+    font-size: 14px;
+    color: black;
+    font-weight: 900;
+
+}
+
+
+
+#cc-type > span > div {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+#cc-content > div {
+    align-items: center;
+}
+
+#cc-content > div > label > input[type="checkbox"] {
+    padding: 0px;
+    margin: 0px;
+    margin-right: 8px;
+    display: flex;
+    align-items: center;
+    height: 20px;
+    width: 20px;
+    border: 3px solid #7c7c7c;
+    cursor: pointer;
+
+}
+
+#cc-content > div > span > div {
+    background-color: rgb(207, 131, 169);
+    color: white;
+    font-size: 12px;
+    padding-left: 4px;
+    padding-right: 4px;
+    height: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 8px;
+    border-radius: 2px;
+}
+
+#cc-content > div > span  {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#cc-name > div > input {
+    width: 99%;
+    height: 28px;
+    border: 1px solid #EDEFF1;
+    padding-left: 5.4%;
+
+}
+
+input[type="text"]:focus {
+    outline: none;
+}
+
+#cc-name > div > span {
+    position: absolute;
+    margin-left: 3%;
+    color: #7c7c7c;
+}
+
+#cc-name > div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1%;
+
+}
+
+#cc-submit :nth-child(2) {
+    width: 30%;
+    display: flex;
+    margin-left: 1%;
+    align-items: center;
+    height: 32px;
+    border-radius: 20px;
+    color: white;
+    font-weight: 700;
+    border: 0px;
+    justify-content: center;
+    cursor: pointer;
+    background-color: #0079D3;
+}
+
+#cc-submit > :first-child {
+    width: 16%;
+    display: flex;
+    margin-left: 1%;
+    align-items: center;
+    height: 32px;
+    border-radius: 20px;
+    color: #0079D3;
+    font-weight: 700;
+    border: 0px;
+    border: 1px solid #0079D3;
+    justify-content: center;
+    cursor: pointer;
+}
+
+#add-about {
+    width: 91%;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    height: 34px;
+    font-size: 12px;
+    background-color: #F6F7F8;
+    color: #0079D3;
+    border: 1px solid #DAE0E6;
+    border-radius: 4px;
+    font-weight: 900;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+#add-about:hover {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 92%;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    height: 34px;
+    font-weight: 900;
+    font-size: 12px;
+    background-color: #F6F7F8;
+    border-radius: 4px;
+    color: #0079D3;
+    border: 1px solid #0079D3;
+    cursor: pointer;
+}

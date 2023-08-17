@@ -19,8 +19,10 @@ function CommunitiesMenu({ value }) {
 
     community = community.filter((c) => c.userId === user.id)
 
-    let users = Object.values(userCommunities)
+    let users = Object.values(userCommunities);
+    
     users = users.slice(1, users.length)
+
     return (
         <>
         <div id="your-comms">

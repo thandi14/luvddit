@@ -10,6 +10,7 @@ import configureStore from './store';
 
 import { restoreCSRF, csrfFetch } from './store/csrf';
 import { ModalProvider, Modal } from './context/Modal';
+import { ModalProvider2, Modal2 } from './context/Modal2';
 
 
 const store = configureStore();
@@ -27,14 +28,17 @@ if (process.env.NODE_ENV !== 'production') {
 
 function Root() {
   return (
+    <ModalProvider2>
     <ModalProvider>
     <Provider store={store}>
       <BrowserRouter>
         <App />
         <Modal />
+        <Modal2 />
       </BrowserRouter>
     </Provider>
     </ModalProvider>
+    </ModalProvider2>
   );
 }
 

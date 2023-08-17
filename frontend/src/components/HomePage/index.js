@@ -6,6 +6,9 @@ import './HomePage.css'
 import pfp from './IMG6.jpg'
 import avatar from  './imagedit2.png'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
+import PostPageModal from '../PostPage/PostPageModal'
+import { useModal } from '../../context/Modal'
+import CreateCommunity from '../CreateCommunityModel'
 
 function HomePage() {
     const { posts } = useSelector((state) => state.posts);
@@ -14,6 +17,8 @@ function HomePage() {
     const [isVisible, setIsVisible] = useState(false);
     const [isVisible2, setIsVisible2] = useState(false);
     const history = useHistory()
+    const { setModalContent } = useModal()
+
 
     let top = isVisible ? "top" : "down"
 
@@ -137,7 +142,8 @@ function HomePage() {
                 </div>
                 </div>
                 {ePost?.map((post) =>
-                    <div id={`${post.id}`} onClick={(() => history.push(`/posts-modal/${post.id}`))} className="post-content">
+                    <div id={`${post.id}`} onClick={(() => setModalContent(<PostPageModal postId={post.id} />))} className="post-content">
+                    {/* <div id={`${post.id}`} onClick={(() => history.push(`/posts-modal/${post.id}`))} className="post-content"> */}
                     <div id="pc-side1">
                     <i class="fi fi-rs-heart"></i>
                      <span>{post.votes + post.downVotes}</span>
@@ -200,14 +206,14 @@ function HomePage() {
                 <p>Your personal Reddit frontpage. Come here to check in with your favorite communities.</p>
                 <div id="line"></div>
                 <button onClick={(() => history.push('/posts/new'))} id="but1">Create Post</button>
-                <button id="but2">Create Community</button>
+                <button onClick={(() => setModalContent(<CreateCommunity />))} id="but2">Create Community</button>
                 </div>
                 </div>
                 <div className='recent-posts'>
                     <span>RECENT POSTS</span>
                     {recent.map((r, i) =>
                     <>
-                    <div onClick={(() => history.push(`/posts-modal/${r.id}`))}>
+                    <div onClick={(() => setModalContent(<PostPageModal postId={r.id} />))}>
                    {r.PostImages.length && r.PostImages[0].imgURL ? <img src={r.PostImages[0].imgURL}></img> : <i class="fi fi-rr-notebook"></i> }
                         <div>
                         <div>

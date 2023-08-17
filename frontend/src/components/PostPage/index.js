@@ -7,9 +7,9 @@ import * as postActions from '../../store/posts'
 import '../CreatePostPage/CreatePostPage.css'
 import CommunitiesProfile from '../CreatePostPage/communites2';
 import * as communityActions from '../../store/communities'
-import { useModal } from '../../context/Modal';
 import DeletePost from './delete';
-
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { useModal2 } from '../../context/Modal2';
 
 function PostPage() {
     const { singlePost } = useSelector((state) => state.posts)
@@ -19,10 +19,11 @@ function PostPage() {
     const [isVisible, setIsVisible] = useState(false);
     const [ deleted, setDeleted ] = useState("")
     const targetRef = useRef(null);
-    const { setModalContent } = useModal()
+    const { setModalContent2 } = useModal2()
     const [isVisible2, setIsVisible2] = useState(false);
     const [ description, setDescription ] = useState("");
-    const [ data1, setData1 ] = useState(null)
+    const [ data1, setData1 ] = useState(null);
+    const history = useHistory()
 
     const handleClick = () => {
         setIsVisible(!isVisible);
@@ -96,7 +97,7 @@ function PostPage() {
 
     let editMenu = isVisible ? "edit-menu" : "hidden";
 
-    console.log(singlePost)
+    console.log(singleCommunity)
 
 
 
@@ -175,11 +176,11 @@ function PostPage() {
             <i  onClick={handleClick} id="menu" class="fi fi-rr-menu-dots"></i>
             <div className="menu">
             <div ref={targetRef} id={editMenu}>
-                {!singlePost.PostImages.length ? <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p> : null}
+                {!singlePost.PostImages?.length ? <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p> : null}
                 <p><i class="fi fi-rr-bookmark"></i>Save</p>
                 <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
                 <p onClick={(() => {
-                    setModalContent(<DeletePost id={id} deleted={deleted}/>)
+                    setModalContent2(<DeletePost id={id} deleted={deleted}/>)
                     setIsVisible(false)
                 })}><i class="fi fi-rr-trash-xmark"></i>Delete</p>
                 <label>

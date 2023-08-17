@@ -62,12 +62,29 @@
 }
 
 
-#community-title-head > button {
+#joined {
     width: 8%;
     background-color: white;
     border-radius: 20px;
     height: 32px;
     color: #0079D3;
+    border: 1px solid #0079D3;
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 12px;
+    margin-top: 2%;
+    font-weight: 700;
+    font-family: 'Noto Sans', sans-serif;
+
+}
+
+#join {
+
+    width: 8%;
+    background-color: #0079D3;
+    border-radius: 20px;
+    height: 32px;
+    color: white;
     border: 1px solid #0079D3;
     font-size: 14px;
     cursor: pointer;
@@ -264,6 +281,7 @@
 #cs-side1 > span > i {
     margin-right: 5px;
     font-size: 18px;
+    height: 21px;
 }
 
 #cs-side1 > span {
@@ -377,8 +395,8 @@
 }
 
 #cs-side2 > span, #cs-side3 > span, #cs-side5 > span {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 4px;
+    padding-right: 4px;
 }
 
 #cs-side2 {
@@ -402,8 +420,37 @@
     display: flex;
     flex-direction: column;
     height: auto;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+#edit-about {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+#edit-about > div {
+    display: flex;
+    gap: 5px;
+    font-weight: 900;
+    align-items: center;
+}
+
+#edit-about > span {
+    color: #787878;
+}
+
+#edit-about > div :first-child {
+   color: red;
+   cursor: pointer;
+}
+
+#edit-about > div:nth-child(2) {
+    color: #0079D3;
+    cursor: pointer;
 }
 
 .home-section {
@@ -411,14 +458,58 @@
     border-radius: 4px;
 }
 
+.about-edit {
+    width: 88%;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #0079D3;
+    border: 1px solid #0079D3;
+    background-color: #f6f7f8;
+    border-radius: 4px;
+    justify-content: center;
+    padding-bottom: 1%;
+    height: 52px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+#input-about {
+    background: transparent;
+    border: 0px;
+    font-size: 14px;
+    margin-top: 2%;
+}
+
 #cs-side1 > span {
     font-size: 14px;
-    width: 95%;
+    display: flex;
+    width: 94%;
+    align-items: flex-end;
+}
+
+#edit-icon4 {
+    color: #0079D3;
+    height: 19px;
 }
 
 #cs-side1 > span:first-child {
-    padding-top: 10px;
-    padding-bottom: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#cs-side1 > span:first-child {
+    gap: 3%;
+}
+
+#can-you-edit:hover {
+    border: 1px solid #0079D3;
+    padding: 2%;
+    border-radius: 4px;
+    width: 87%;
+    cursor: pointer;
 }
 
 #cs-side1 > span:nth-child(2) {
