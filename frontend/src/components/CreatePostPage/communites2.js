@@ -21,10 +21,7 @@ function CommunitiesProfile({ page, community }) {
 
     }
 
-    console.log(community)
-
-
-
+    if (!community) return <h1>Loading</h1>
     let userCommunity = Object.values(community)
     console.log(userCommunity)
 

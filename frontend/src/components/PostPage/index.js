@@ -256,7 +256,7 @@ function PostPage() {
         </div>
         </div>
         <div className="side-community">
-        <CommunitiesProfile page={"/postId"}/>
+        <CommunitiesProfile community={singlePost.Community} page={"/postId"}/>
         <button className="top2" onClick={((e) => window.scrollTo({ top: 0, left: 0, behavior: "smooth"}))}>Back to Top</button>
         </div>
     </div>
