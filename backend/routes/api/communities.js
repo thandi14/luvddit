@@ -143,6 +143,11 @@ router.post('/', async (req, res) => {
         about
     })
 
+    let member = await CommunityMembers.create({
+        userId,
+        communityId: community.dataValues.id
+    })
+
     return res.json(community)
 })
 
@@ -201,6 +206,8 @@ router.get('/:id/members', async (req, res) => {
     res.json(members)
 
 })
+
+
 
 
 module.exports = router;
