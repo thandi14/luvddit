@@ -17,16 +17,13 @@ function CreatePost() {
   const targetRef = useRef(null);
   const [ comms, setComms ] = useState("")
   const dispatch = useDispatch()
-  const [initialLoad, setInitialLoad] = useState(true);
+  const [initial, setInitial] = useState(singleCommunity.name);
 
 
-    // useEffect(() => {
-    // // Reload the page only on the initial load
-    // if (initialLoad) {
-    //   setInitialLoad(false); // Mark initial load as done
-    //   window.location.reload();
-    // }
-    // }, [initialLoad]);
+    useEffect(() => {
+    setInitial(singleCommunity.name)
+
+    }, [singleCommunity]);
 
     const handleClick = () => {
       setIsVisible(!isVisible);
@@ -88,7 +85,7 @@ function CreatePost() {
                 :
                 <div id={idName2}>
                 <i class="fi fi-rs-search-heart"></i>
-                <input id="input-button" onChange={((e) => setComms(e.target.value))} text="type" defaultValue={community.length ? `l/${community[2]}` : null} placeholder="Search communities"></input>
+                <input id="input-button" onChange={((e) => setComms(e.target.value))} text="type" defaultValue={initial ? `l/${initial}` : ""} placeholder="Search communities"></input>
                 <i  onClick={handleClick2} class="fa-solid fa-chevron-down"></i>
                 </div>}
                 <div id={idName}>

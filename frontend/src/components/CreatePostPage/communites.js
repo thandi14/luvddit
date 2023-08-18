@@ -5,7 +5,7 @@ import * as communityActions from "../../store/communities"
 
 
 function CommunitiesMenu({ value }) {
-    const { communities, singleCommunity, userCommunities } = useSelector((state) => state.communities)
+    const { communities, singleCommunity, userCommunities, communityMemberships } = useSelector((state) => state.communities)
     const { user } = useSelector((state) => state.session)
     const [ id, setId ] = useState(null)
     const dispatch = useDispatch()
@@ -15,13 +15,23 @@ function CommunitiesMenu({ value }) {
 
     }, [dispatch, id])
 
-    let community = Object.values(communities)
+    let community = Object.values(userCommunities)
+    let community2 = Object.values(communityMemberships)
 
     community = community.filter((c) => c.userId === user.id)
+    //community2 = community2.filter((c) => c.communityId !== community[0].id)
+
+    // let community3 = []
+    // // for (let i = 0; i < community2.length; i++) {
+    // //     let each = community2[i]
+    // //     community3.push(each[0])
+    // // }
+
+    console.log(community2)
 
     let users = Object.values(userCommunities);
-    
-    users = users.slice(1, users.length)
+
+    users = community.slice(1, users.length)
 
     return (
         <>

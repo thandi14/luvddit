@@ -51,6 +51,29 @@ function PostPageModal({ postId }) {
         setIsVisible2(false)
     }
 
+    const [scrollPosition, setScrollPosition] = useState(0);
+    const [scrollDirection, setScrollDirection] = useState("down");
+
+    useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > scrollPosition) {
+        setScrollDirection("down");
+      } else {
+        setScrollDirection("up");
+      }
+
+      setScrollPosition(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+    }, [scrollPosition]);
+
     const scrollToTop = () => {
         const container = document.querySelector('.post-modal'); // Adjust the selector as needed
         if (container) {
@@ -77,7 +100,18 @@ function PostPageModal({ postId }) {
     let editMenu = isVisible ? "edit-menu" : "hidden";
 
 
-    const randomNum = Math.floor(Math.random() * 101)
+    const [randomNum, setRandomNum] = useState(Math.floor(Math.random() * 10));
+
+    useEffect(() => {
+      const timeoutId = setTimeout(() => {
+        const newRandomNum = Math.floor(Math.random() * 101);
+        setRandomNum(newRandomNum);
+      }, 10000);
+
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    }, []);
 
     let createdAt
     if (Object.values(singleCommunity).length) createdAt = new Date(singleCommunity.createdAt)
@@ -145,7 +179,7 @@ function PostPageModal({ postId }) {
     return (
         <div className="post-modal">
             <div id="one">
-                <div ref={targetRef3} id="post-details-head">
+                <div ref={targetRef3} className={scrollDirection === "up" ? "sticky" : ""} id="post-details-head">
                 <div>
                 <div id="line5"></div>
                 <i id="heart25" class="fi fi-rs-heart"></i>
@@ -157,6 +191,7 @@ function PostPageModal({ postId }) {
                 </div>
                 <span onClick={(() => closeModal())} id="close-head"><i class="fi fi-rr-cross-small"></i>Close</span>
                 </div>
+                <div id="2">
         <div ref={targetRef2} className="whole-post-page2">
             <div className="post-page">
             <div id="vote-side">
@@ -369,7 +404,8 @@ function PostPageModal({ postId }) {
                 </div>
             <button className="top2" onClick={scrollToTop}>Back to Top</button>
             </div>
-        </div>
+                </div>
+                </div>
         </div>
         </div>
     )

@@ -87,9 +87,13 @@
 #cc-name > span:not(:first-child) {
     font-size: 12px;
     font-weight: 400;
-    color: #7c7c7c;
     margin-bottom: 15px;
     height: auto;
+}
+
+#grey {
+    color: #7c7c7c;
+
 }
 
 #cc-type > span {
@@ -225,6 +229,11 @@ input[type="text"]:focus {
     justify-content: center;
     cursor: pointer;
 }
+
+#red {
+    color: red;
+}
+
 
 #add-about {
     width: 91%;

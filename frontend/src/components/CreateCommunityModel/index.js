@@ -51,7 +51,7 @@ function CreateCommunity() {
             <span>l/</span>
             <input maxLength={21} onChange={((e) => setName(e.target.value))} type="text"></input>
             </div>
-            <span>Characters remaining</span>
+            <span id={name.length === 21 ? "red" : "grey"}> { 21 - name.length} Characters remaining</span>
             </div>
             <div id="cc-type">
                 <span>Community type</span>

@@ -28,6 +28,19 @@ function YourCommunitesProfile() {
 
     }
 
+    const [randomNum, setRandomNum] = useState(Math.floor(Math.random() * 101));
+
+    useEffect(() => {
+      const timeoutId = setTimeout(() => {
+        const newRandomNum = Math.floor(Math.random() * 101);
+        setRandomNum(newRandomNum);
+      }, 10000);
+
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    }, []);
+
     console.log(singleCommunity)
 
     useEffect( () => {
@@ -45,8 +58,12 @@ function YourCommunitesProfile() {
 
     }, [dispatch, data1])
 
+    // let randomNum = 0
 
-    const randomNum = Math.floor(Math.random() * 101)
+    // setTimeout(() => {
+    //     randomNum = Math.floor(Math.random() * 101)
+
+    // }, 10000)
 
     let createdAt
     if (Object.values(singleCommunity).length) createdAt = new Date(singleCommunity.createdAt)
@@ -60,6 +77,8 @@ function YourCommunitesProfile() {
 
     const formattedDate = `${months[dateObject.getMonth()]}, ${dateObject.getDate()}, ${dateObject.getFullYear()}`;
 
+
+
     return (
             <div className="home-section">
                 <div id="cs-background">
@@ -70,8 +89,8 @@ function YourCommunitesProfile() {
                 <div id="cs-side1">
                     {!singleCommunity.about && !isVisible ? <button onClick={(() => setIsVisible(!isVisible))} id="add-about">Add description</button> : null}
                     {isVisible ? <div className="about-edit">
-                    <input defaultValue={singleCommunity?.about} onChange={((e) => setAbout(e.target.value))} placeholder="Tell us about your community" id="input-about" type="text"></input>
-                    <div id="edit-about"><span>Characters remaining</span><div><span onClick={(() => setIsVisible(!isVisible))}>Cancel</span><span onClick={handleSubmit}>Save</span></div></div>
+                    <input maxLength={500} defaultValue={singleCommunity?.about} onChange={((e) => setAbout(e.target.value))} placeholder="Tell us about your community" id="input-about" type="text"></input>
+                    <div id="edit-about"><span>{500 - about.length} Characters remaining</span><div><span onClick={(() => setIsVisible(!isVisible))}>Cancel</span><span onClick={handleSubmit}>Save</span></div></div>
                     </div> : null}
                     {singleCommunity.about && !isVisible ? <span id={user.id === singleCommunity.userId ? "can-you-edit" : ""} onClick={(() => setIsVisible(!isVisible))}>{singleCommunity.about}{user.id === singleCommunity.userId ? <i id="edit-icon4" class="fi fi-rr-magic-wand"></i> : null} </span> : null}
                     <span><i class="fi fi-rr-cake-birthday"></i>{formattedDate}</span>
