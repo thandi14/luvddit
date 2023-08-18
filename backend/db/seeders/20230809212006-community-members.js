@@ -14,18 +14,6 @@ module.exports = {
       await CommunityMembers.bulkCreate([
         {
           userId: 1,
-          communityId: 1
-        },
-        {
-          userId: 1,
-          communityId: 2
-        },
-        {
-          userId: 1,
-          communityId: 3
-        },
-        {
-          userId: 1,
           communityId: 4
         },
         {
@@ -33,16 +21,16 @@ module.exports = {
           communityId: 5
         },
         {
-          userId: 2,
-          communityId: 1
+          userId: 1,
+          communityId: 6
         },
         {
-          userId: 2,
-          communityId: 2
+          userId: 1,
+          communityId: 7
         },
         {
-          userId: 2,
-          communityId: 3
+          userId: 1,
+          communityId: 8
         },
         {
           userId: 2,
@@ -53,16 +41,16 @@ module.exports = {
           communityId: 5
         },
         {
-          userId: 3,
-          communityId: 1
+          userId: 2,
+          communityId: 6
         },
         {
-          userId: 3,
-          communityId: 2
+          userId: 2,
+          communityId: 7
         },
         {
-          userId: 3,
-          communityId: 3
+          userId: 2,
+          communityId: 8
         },
         {
           userId: 3,
@@ -71,6 +59,18 @@ module.exports = {
         {
           userId: 3,
           communityId: 5
+        },
+        {
+          userId: 3,
+          communityId: 6
+        },
+        {
+          userId: 3,
+          communityId: 7
+        },
+        {
+          userId: 3,
+          communityId: 8
         }
       ], {})
 
