@@ -57,7 +57,9 @@ function CommunityPage() {
         dispatch(communityActions.thunkGetDetailsById(id))
     }, [])
 
-    const ePost = singleCommunity.Posts
+    // let ePost = singleCommunity.Posts.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+
+
 
     if (!Object.values(singleCommunity).length) return <h1 className="data-not-here">Loading...</h1>
 
@@ -109,8 +111,9 @@ function CommunityPage() {
 
     console.log(user)
 
-    const randomNum = Math.floor(Math.random() * 101)
+    let ePost = singleCommunity.Posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
+      console.log(ePost)
 
 
     return (

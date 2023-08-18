@@ -11,12 +11,22 @@ import * as communityActions from "../../store/communities"
 
 
 function CreatePost() {
-  const { communities, singleCommunity, userCommunities } = useSelector((state) => state.communities)
+  const { communities, singleCommunity, userCommunities, communityMemberships } = useSelector((state) => state.communities)
   const [isVisible, setIsVisible] = useState(false);
   const [isVisible2, setIsVisible2] = useState(false);
   const targetRef = useRef(null);
   const [ comms, setComms ] = useState("")
   const dispatch = useDispatch()
+  const [initialLoad, setInitialLoad] = useState(true);
+
+
+    // useEffect(() => {
+    // // Reload the page only on the initial load
+    // if (initialLoad) {
+    //   setInitialLoad(false); // Mark initial load as done
+    //   window.location.reload();
+    // }
+    // }, [initialLoad]);
 
     const handleClick = () => {
       setIsVisible(!isVisible);
@@ -40,19 +50,22 @@ function CreatePost() {
         }
     };
 
-  useEffect(() => {
-      document.addEventListener('click', handleDocumentClick);
-      return () => {
-          document.removeEventListener('click', handleDocumentClick);
-        };
-    }, []);
+    // useEffect(() => {
+
+    //     // Reload the page when it is loaded
+
+
+    // }, []);
 
     let idName = isVisible ? "search2" : "hidden";
     let idName2 = !isVisible ? "choose-comms3" : "choose-comms1";
 
     let community = Object.values(singleCommunity)
+    let memberships = Object.values(communityMemberships)
+    if (memberships.filter((m) => m.communityId == singleCommunity.id).length) community = Object.values(singleCommunity)
 
-    console.log(community)
+
+    console.log(memberships.filter((m) => m.communityId == singleCommunity.id))
 
     return (
         <div className="create-post-page">
