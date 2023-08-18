@@ -8,6 +8,7 @@ import avatar2 from './Unknown2.jpg'
 import CommunitiesProfile from "./communites2";
 import { useDispatch } from "react-redux";
 import * as communityActions from "../../store/communities"
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 
 function CreatePost() {
@@ -18,6 +19,7 @@ function CreatePost() {
   const [ comms, setComms ] = useState("")
   const dispatch = useDispatch()
   const [initial, setInitial] = useState(singleCommunity.name);
+  const history = useHistory()
 
 
     useEffect(() => {
@@ -47,12 +49,12 @@ function CreatePost() {
         }
     };
 
-    // useEffect(() => {
-
-    //     // Reload the page when it is loaded
-
-
-    // }, []);
+    useEffect(() => {
+        if (window.performance && performance.navigation.type !== 1) {
+          // Page is visited for the first time, reload it
+          history.go(0);
+        }
+    }, [history]);
 
     let idName = isVisible ? "search2" : "hidden";
     let idName2 = !isVisible ? "choose-comms3" : "choose-comms1";
@@ -95,7 +97,7 @@ function CreatePost() {
                 <PostForm />
             </div>
             <div className="posting-on-l">
-                { community.length ? <CommunitiesProfile page={'create'}/> : null }
+                { community.length ? <CommunitiesProfile community={singleCommunity} page={'create'}/> : null }
                 <div id="posting-on-l">
                     <div id="pols">
                     <img src={avatar2}></img>

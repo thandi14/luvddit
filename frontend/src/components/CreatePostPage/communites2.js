@@ -6,8 +6,8 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min"
 import { useModal } from "../../context/Modal"
 
 
-function CommunitiesProfile({ page }) {
-    const { communities, singleCommunity, userCommunities } = useSelector((state) => state.communities)
+function CommunitiesProfile({ page, community }) {
+    const { communities, userCommunities } = useSelector((state) => state.communities)
     const { user } = useSelector((state) => state.session)
     const [ id, setId ] = useState(null)
     const dispatch = useDispatch()
@@ -17,16 +17,20 @@ function CommunitiesProfile({ page }) {
     const handleClick = () => {
         if (page === "create") return
         closeModal()
-        history.push(`/communities/${singleCommunity.id}`)
+        history.push(`/communities/${community.id}`)
+
     }
 
+    console.log(community)
 
 
-    let userCommunity = Object.values(singleCommunity)
+
+    let userCommunity = Object.values(community)
+    console.log(userCommunity)
 
 
     let createdAt
-    if (userCommunity.length) createdAt = new Date(singleCommunity.createdAt)
+    if (Object.values(community).length) createdAt = new Date(community.createdAt)
 
     const dateObject = new Date(createdAt);
 
@@ -37,7 +41,7 @@ function CommunitiesProfile({ page }) {
 
     const randomNum = Math.floor(Math.random() * 101)
 
-    const profile = singleCommunity.id
+    const profile = community.id
 
     let myCommunities = Object.values(userCommunities)
 
@@ -80,12 +84,12 @@ function CommunitiesProfile({ page }) {
                     <div id="header-profile-comm4">
                     </div>
                     <div id="profile-content">
-                        <span id="profile-comm-title7"><div>l/</div>{singleCommunity?.name}</span>
-                        <span id="profile-about7">{singleCommunity?.about}</span>
+                        <span id="profile-comm-title7"><div>l/</div>{community?.name}</span>
+                        <span id="profile-about7">{community?.about}</span>
                         <span id="when-created"><i class="fi fi-rr-cake-birthday"></i>Created {formattedDate}</span>
                         <div id="line"></div>
                         <div id="cs-side9">
-                        <span><div>{singleCommunity.CommunityMembers}</div>Members</span>
+                        <span><div>{community?.CommunityMembers}</div>Members</span>
                          <span><div id="online"><i class="fi fi-ss-bullet"></i>{randomNum}</div>Online</span>
                         </div>
                         <div id="line"></div>

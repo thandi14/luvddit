@@ -14,7 +14,6 @@ import CommunitiesProfile from "../CreatePostPage/communites2";
 
 function PostPageModal({ postId }) {
     const { singlePost } = useSelector((state) => state.posts)
-    const { singleCommunity } = useSelector((state) => state.communities)
     const { user } = useSelector((state) => state.session)
     const { id } = useParams();
     const dispatch = useDispatch()
@@ -29,10 +28,10 @@ function PostPageModal({ postId }) {
     const { closeModal } = useModal();
     const targetRef2 = useRef(null);
     const targetRef3 = useRef(null)
+    const [scrollPosition, setScrollPosition] = useState(0);
+    const [scrollDirection, setScrollDirection] = useState("down");
 
-
-    console.log(singlePost)
-
+    // if (!Object.values(singlePost).length) return <h1>loading</h1>
 
 
     const handleClick = () => {
@@ -51,8 +50,6 @@ function PostPageModal({ postId }) {
         setIsVisible2(false)
     }
 
-    const [scrollPosition, setScrollPosition] = useState(0);
-    const [scrollDirection, setScrollDirection] = useState("down");
 
     useEffect(() => {
     const handleScroll = () => {
@@ -90,7 +87,6 @@ function PostPageModal({ postId }) {
             let data
             if (postId) data =  await dispatch(postActions.thunkGetDetailsById(postId))
             console.log(data)
-            if (data)  await dispatch(communityActions.thunkGetDetailsById(data?.communityId))
 
         }
         fetchData()
@@ -113,19 +109,7 @@ function PostPageModal({ postId }) {
       };
     }, []);
 
-    let createdAt
-    if (Object.values(singleCommunity).length) createdAt = new Date(singleCommunity.createdAt)
 
-    const dateObject = new Date(createdAt);
-
-    const months = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ];
-
-    const formattedDate = `${months[dateObject.getMonth()]}, ${dateObject.getDate()}, ${dateObject.getFullYear()}`;
-
-    console.log(singleCommunity)
 
     const getTimeDifferenceString = (createdAt) => {
         const currentTime = new Date();
@@ -134,47 +118,59 @@ function PostPageModal({ postId }) {
         const timeDifferenceInSeconds = Math.floor((currentTime - createdAtDate) / 1000);
 
         if (timeDifferenceInSeconds < 60) {
-          return timeDifferenceInSeconds === 1 ? `${timeDifferenceInSeconds} sec ago` : `${timeDifferenceInSeconds} secs ago`;
+            return timeDifferenceInSeconds === 1 ? `${timeDifferenceInSeconds} sec ago` : `${timeDifferenceInSeconds} secs ago`;
         } else if (timeDifferenceInSeconds < 3600) {
-          const minutes = Math.floor(timeDifferenceInSeconds / 60);
-          return minutes === 1 ? `${minutes} minute ago` : `${minutes} minutes ago`;
+            const minutes = Math.floor(timeDifferenceInSeconds / 60);
+            return minutes === 1 ? `${minutes} minute ago` : `${minutes} minutes ago`;
         } else if (timeDifferenceInSeconds < 86400) {
-          const hours = Math.floor(timeDifferenceInSeconds / 3600);
-          return hours === 1 ? `${hours} hour ago` : `${hours} hours ago`;
+            const hours = Math.floor(timeDifferenceInSeconds / 3600);
+            return hours === 1 ? `${hours} hour ago` : `${hours} hours ago`;
         } else if (timeDifferenceInSeconds < 2592000) {
-          const days = Math.floor(timeDifferenceInSeconds / 86400);
-          return days === 1 ? `${days} day ago` : `${days} days ago`;
+            const days = Math.floor(timeDifferenceInSeconds / 86400);
+            return days === 1 ? `${days} day ago` : `${days} days ago`;
         } else if (timeDifferenceInSeconds < 31536000) {
-          const months = Math.floor(timeDifferenceInSeconds / 2592000);
-          return months === 1 ? `${months} month ago` : `${months} months ago`;
+            const months = Math.floor(timeDifferenceInSeconds / 2592000);
+            return months === 1 ? `${months} month ago` : `${months} months ago`;
         } else {
-          const years = Math.floor(timeDifferenceInSeconds / 31536000);
-          return years === 1 ? `${years} year ago` : `${years} years ago`;
+            const years = Math.floor(timeDifferenceInSeconds / 31536000);
+            return years === 1 ? `${years} year ago` : `${years} years ago`;
         }
       };
 
 
-    useEffect(() => {
+      useEffect(() => {
 
-        const handleDocumentClick = (event) => {
-            console.log(modalRef2, modalRef2.current.contains(event.target) )
-            if ((modalRef2.current && !modalRef2.current.contains(event.target)) && (targetRef2.current && !targetRef2.current.contains(event.target)) && (targetRef3.current && !targetRef3.current.contains(event.target))) {
-                closeModal();
+          const handleDocumentClick = (event) => {
+              console.log(modalRef2, modalRef2.current.contains(event.target) )
+              if ((modalRef2.current && !modalRef2.current.contains(event.target)) && (targetRef2.current && !targetRef2.current.contains(event.target)) && (targetRef3.current && !targetRef3.current.contains(event.target))) {
+                  closeModal();
 
-            }
+                }
 
-        };
+            };
 
-      document.addEventListener('click', handleDocumentClick);
-      return () => {
-          document.removeEventListener('click', handleDocumentClick);
-        };
+            document.addEventListener('click', handleDocumentClick);
+            return () => {
+                document.removeEventListener('click', handleDocumentClick);
+            };
 
-    }, []);
-
-
+        }, []);
 
 
+
+        if (!Object.values(singlePost).length) return <h1>loading</h1>
+
+        let createdAt
+        if (Object.values(singlePost?.Community)?.length) createdAt = new Date(singlePost?.Community.createdAt)
+
+        const dateObject = new Date(createdAt);
+
+        const months = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        const formattedDate = `${months[dateObject.getMonth()]}, ${dateObject.getDate()}, ${dateObject.getFullYear()}`;
 
     return (
         <div className="post-modal">
@@ -202,7 +198,7 @@ function PostPageModal({ postId }) {
             <div id="details-side">
             <div id="nameOf3">
                     <img src={pfp}></img>
-                    <span id="community">l/{singleCommunity.name}</span>
+                    <span id="community">l/{singlePost.Community.name}</span>
                     <p>·</p>
                     <p>Posted by u/{user.username} {getTimeDifferenceString(singlePost.createdAt)}</p>
                     </div>
@@ -234,7 +230,7 @@ function PostPageModal({ postId }) {
             {singlePost.PostImages?.length ? <div><img id="post-image1" src={singlePost.PostImages[0].imgURL} alt="postimg"></img></div> : null}
             </div>
             { isVisible2 ? <div id="save"><button onClick={handleClick2} >Cancel</button> <button id={ !description ? "save-submit" : "save-submit2"} onClick={handleSave}>Save</button></div> : null}
-            {singleCommunity.userId !== user.id ?<div id="post-extras3">
+            {singlePost.Community.userId !== user.id ?<div id="post-extras3">
                     <div id="comment">
                     <i class="fa-regular fa-message"></i>
                     <p>{singlePost.Comments?.length} Comments</p>
@@ -364,21 +360,21 @@ function PostPageModal({ postId }) {
             </div>
             </div>
             <div className="side-community2">
-                { singleCommunity.id !== 1 ? <CommunitiesProfile /> :
+                { singlePost.Community.id !== 1 ? <CommunitiesProfile community={singlePost.Community} /> :
                  <div onClick={(() => {
-                    history.push(`/communities/${singleCommunity.id}`)
+                    history.push(`/communities/${singlePost.Community.id}`)
                     closeModal()
                 })
                     } id="your-community-profile">
                     <div id="header-profile-comm4">
                     </div>
                     <div id="profile-content">
-                        <span id="profile-comm-title7"><div>l/</div>{singleCommunity?.name}</span>
-                        <span id="profile-about7">{singleCommunity?.about}</span>
+                        <span id="profile-comm-title7"><div>l/</div>{singlePost.Community?.name}</span>
+                        <span id="profile-about7">{singlePost.Community?.about}</span>
                         <span id="when-created"><i class="fi fi-rr-cake-birthday"></i>Created {formattedDate}</span>
                         <div id="line"></div>
                         <div id="cs-side9">
-                        <span><div>{singleCommunity.CommunityMembers}</div>Members</span>
+                        <span><div>{singlePost.Community?.CommunityMembers}</div>Members</span>
                          <span><div id="online"><i class="fi fi-ss-bullet"></i>{randomNum}</div>Online</span>
                         </div>
                         <div id="line"></div>

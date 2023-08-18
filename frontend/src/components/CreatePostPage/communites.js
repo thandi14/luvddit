@@ -2,6 +2,8 @@ import { useSelector, useDispatch } from "react-redux"
 import avatar from './IMG6.jpg'
 import { useState, useEffect } from "react"
 import * as communityActions from "../../store/communities"
+import CreateCommunity from "../CreateCommunityModel"
+import { useModal } from "../../context/Modal"
 
 
 function CommunitiesMenu({ value }) {
@@ -9,17 +11,19 @@ function CommunitiesMenu({ value }) {
     const { user } = useSelector((state) => state.session)
     const [ id, setId ] = useState(null)
     const dispatch = useDispatch()
+    const { setModalContent } = useModal()
 
     useEffect(() => {
         if (id) dispatch(communityActions.thunkGetDetailsById(id))
 
     }, [dispatch, id])
 
-    let community = Object.values(userCommunities)
+    let community = Object.values(communities)
     let community2 = Object.values(communityMemberships)
+    let community3 = Object.values(userCommunities)
 
-    community = community.filter((c) => c.userId === user.id)
-    //community2 = community2.filter((c) => c.communityId !== community[0].id)
+    //community = community.filter((c) => c.userId === user.id)
+    community2 = community2.map((c) => c.Community)
 
     // let community3 = []
     // // for (let i = 0; i < community2.length; i++) {
@@ -29,15 +33,11 @@ function CommunitiesMenu({ value }) {
 
     console.log(community2)
 
-    let users = Object.values(userCommunities);
-
-    users = community.slice(1, users.length)
-
     return (
         <>
         <div id="your-comms">
             <p>Your Profile</p>
-            <div onClick={((e) => setId(community[0].id))} id="user-community">
+            <div onClick={((e) => setId(community3[0].id))} id="user-community">
             <div id='uc-img'>
             <img src={avatar}></img>
             </div>
@@ -47,8 +47,8 @@ function CommunitiesMenu({ value }) {
             </div>
             <div id="div2"></div>
             <div id="your-comms5">
-                <p>Your communities<span>Create New</span></p>
-                {users.map((u) =>
+                <p>Your communities<span onClick={(() => setModalContent(<CreateCommunity />))}>Create New</span></p>
+                {community2.map((u) =>
                      <div onClick={((e) => setId(u.id))} id="all-user-comms">
                         <div id="all-comms-pfp">l/</div>
                         <p>u/{u?.name}</p>

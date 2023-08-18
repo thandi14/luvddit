@@ -2,7 +2,7 @@ const express = require('express')
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Posts, Comments, Communities, User, PostImages } = require('../../db/models');
+const { Posts, Comments, Communities, User, PostImages, CommunityMembers } = require('../../db/models');
 
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -60,6 +60,16 @@ router.get("/:id", async (req, res) => {
             { model: PostImages}
          ]
         });
+
+        let members = await CommunityMembers.findAll({
+            where: {
+              communityId: post.dataValues.Community.dataValues.id
+            }
+          });
+
+          console.log(members)
+
+          post.dataValues.Community.dataValues.CommunityMembers = members.length
 
     return res.json(post)
 })

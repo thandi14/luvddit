@@ -10,6 +10,8 @@ import LoginFormModal from '../LoginFormModal';
 import SignupFormModal from '../SignupFormPage';
 import OpenModalButton from '../OpenModalButton';
 import avatar from "./icons/IMG6.jpg"
+import CreateCommunity from '../CreateCommunityModel';
+import { useModal } from '../../context/Modal';
 
 function Navigation({ isLoaded }){
   const sessionUser = useSelector(state => state.session.user);
@@ -18,6 +20,7 @@ function Navigation({ isLoaded }){
   const [ homeButton, setHomeButton ] = useState("home")
   const location = useLocation();
   const [ isVisible, setIsVisible ] = useState(false)
+  const { setModalContent } = useModal()
 
   useEffect(() => {
     if (location.pathname.includes('new')) {
@@ -117,7 +120,7 @@ function Navigation({ isLoaded }){
             </div>
             <div id="yourC-ms">
             <span><div></div>Your communities</span>
-            <span><div></div><i class="fi fi-rr-plus"></i>Create Community</span>
+            <span onClick={(() => setModalContent(<CreateCommunity />))} ><div></div><i class="fi fi-rr-plus"></i>Create Community</span>
             {memberships.map((c) =>
             <span onClick={(() => history.push(`/communities/${c.Community?.id}`))}><div></div><span id="no-pfp">l/</span>l/{c.Community?.name}</span>
             )}
@@ -132,7 +135,7 @@ function Navigation({ isLoaded }){
             <span><div></div>Other</span>
             <span><div></div><img id="pfp-ms" src={avatar}></img>User Settings</span>
             <span><div></div><img id="pfp-ms" src={avatar}></img>Messages</span>
-            <span><div></div><i class="fi fi-rr-plus"></i>Create Post</span>
+            <span onClick={(() => history.push('/posts/new'))} ><div></div><i class="fi fi-rr-plus"></i>Create Post</span>
             <span><div></div><i class="fi fi-rs-cowbell"></i>Notifications</span>
             <span><div></div><i class="fa-solid fa-shield-halved"></i>Premium</span>
             <span><div></div><i class="fi fi-rr-vest"></i>Avatar</span>
