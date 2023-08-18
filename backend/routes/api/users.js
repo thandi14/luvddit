@@ -3,7 +3,7 @@ const express = require('express')
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { User } = require('../../db/models');
+const { User, Communities } = require('../../db/models');
 
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -46,7 +46,12 @@ router.post(
         username: user.username,
       };
 
-      await setTokenCookie(res, safeUser);
+        await setTokenCookie(res, safeUser);
+
+      let community = await Communities.create({
+            userId: user.id,
+            name: username
+       })
 
       return res.json({
         user: safeUser

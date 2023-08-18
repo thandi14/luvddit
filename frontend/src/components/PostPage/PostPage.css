@@ -784,6 +784,7 @@
     position: fixed;
     width: 75.1%;
     font-size: 12px;
+    overflow: hidden;
 }
 
 #post-details-head > div {
