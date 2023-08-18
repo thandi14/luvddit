@@ -1,8 +1,8 @@
 
 .whole-post-page {
     display: flex;
-    margin-left: 9%;
-    margin-right: 9%;
+    /* margin-left: 9%;
+    margin-right: 9%; */
     margin-top: 1.5%;
     display: flex;
     gap: 24px;
@@ -686,8 +686,6 @@
 
 .whole-post-page2 {
     display: flex;
-    margin-left: 5.5%;
-    margin-right: 5.5%;
     background-color: #DAE0E6;
     padding-left: 7%;
     padding-right: 7%;
@@ -775,8 +773,8 @@
     display: flex;
     justify-content: space-between;
     margin-top: 3.4%;
-    margin-left: 5.5%;
-    margin-right: 5.5%;
+    /* margin-left: 5.5%;
+    margin-right: 5.5%; */
     align-items: center;
     background-color: #1c1c1c;
     padding-left: 7%;
@@ -968,6 +966,12 @@
 
 #height-idk {
     height: 100%
+}
+
+#one {
+    margin-left: 5.5%;
+    margin-right: 5.5%;
+    overflow: hidden;
 }
 
 #post-extras3 {

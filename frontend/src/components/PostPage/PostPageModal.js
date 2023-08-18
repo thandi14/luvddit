@@ -144,6 +144,7 @@ function PostPageModal({ postId }) {
 
     return (
         <div className="post-modal">
+            <div id="one">
                 <div ref={targetRef3} id="post-details-head">
                 <div>
                 <div id="line5"></div>
@@ -368,6 +369,7 @@ function PostPageModal({ postId }) {
                 </div>
             <button className="top2" onClick={scrollToTop}>Back to Top</button>
             </div>
+        </div>
         </div>
         </div>
     )
