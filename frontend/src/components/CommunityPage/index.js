@@ -162,7 +162,7 @@ function CommunityPage() {
                 </div>
                 </div>
                 {ePost?.map((post) =>
-                    <div onClick={(() => setModalContent(<PostPageModal />))} id={`${post.id}`} className="post-content">
+                    <div onClick={(() => setModalContent(<PostPageModal postId={post.id} />))} id={`${post.id}`} className="post-content">
                     <div id="pc-side1">
                     <i class="fi fi-rs-heart"></i>
                      <span>{post.votes + post.downVotes}</span>
