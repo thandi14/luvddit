@@ -111,9 +111,10 @@ function CommunityPage() {
 
     console.log(user)
 
-    let ePost = singleCommunity.Posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    let ePost = singleCommunity.Posts?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
       console.log(ePost)
+    
 
 
     return (
