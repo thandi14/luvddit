@@ -207,6 +207,34 @@ router.get('/:id/members', async (req, res) => {
 
 })
 
+router.post('/:id/memberships', async (req, res) => {
+    const { id } = req.params.id
+    const { user } = req
+    const userId = user.dataValues.id
+
+    let member = await CommunityMembers.create({
+        userId,
+        communityId: id
+    })
+
+    return res.json(member)
+})
+
+router.delete('/:id/memberships', async (req, res) => {
+    const { id } = req.params.id
+    const { user } = req
+    const userId = user.dataValues.id
+
+    let member = await CommunityMembers.findOne({
+        userId,
+        communityId: id
+    })
+
+    console.log(member)
+
+    return res.json({"message": "succesfully deleted"})
+})
+
 
 
 

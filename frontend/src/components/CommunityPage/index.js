@@ -8,6 +8,8 @@ import pfp from "./IMG6.jpg"
 import YourCommunitesProfile from "./communites3";
 import { useModal } from "../../context/Modal";
 import PostPageModal from "../PostPage/PostPageModal";
+import * as postsActions from '../../store/posts'
+import PostLikes from "../HomePage/likes";
 
 function CommunityPage() {
     const { id } = useParams();
@@ -19,6 +21,9 @@ function CommunityPage() {
     const [isVisible, setIsVisible] = useState(false);
     const [isVisible2, setIsVisible2] = useState(false);
     const history = useHistory()
+    const [ isLiked, setIsLiked ] = useState([]);
+    const [ isMember, setIsMember ] = useState(false)
+
 
     let top = isVisible ? "top" : "down"
 
@@ -26,7 +31,29 @@ function CommunityPage() {
 
     const member = memberships.filter((m) => m.communityId === singleCommunity.id)
 
-    console.log(member)
+    useEffect(() => {
+
+      async function fetchData() {
+        let data = await dispatch(postsActions.thunkGetUserVotes())
+        setIsLiked(data)
+        }
+        fetchData()
+
+    }, [dispatch, posts])
+
+    const handleJoinClick = async () => {
+        let response
+        await dispatch(communityActions.thunkJoinCommunities(singleCommunity.id))
+    }
+
+    const handleUnjoinClick = async () => {
+      let response
+      response = await dispatch(communityActions.thunkUnjoinCommunities(singleCommunity.id))
+      console.log(response)
+    }
+
+
+
 
     useEffect(() => {
       const handleScroll = () => {
@@ -56,9 +83,6 @@ function CommunityPage() {
     useEffect(() => {
         dispatch(communityActions.thunkGetDetailsById(id))
     }, [])
-
-    // let ePost = singleCommunity.Posts.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-
 
 
     if (!Object.values(singleCommunity).length) return <h1 className="data-not-here">Loading...</h1>
@@ -109,12 +133,10 @@ function CommunityPage() {
         }
       };
 
-    console.log(user)
 
     let ePost = singleCommunity.Posts?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-      console.log(ePost)
-    
+
 
 
     return (
@@ -128,7 +150,7 @@ function CommunityPage() {
                 {singleCommunity.name}
                 <span>l/{singleCommunity.name}</span>
             </div>
-            {member.length ? <button id="joined">Joined</button> : <button id="join">Join</button> }
+            {member.length ? <button onClick={handleUnjoinClick} id="joined">Joined</button> : <button onClick={handleJoinClick} id="join">Join</button> }
             </div>
         </div>
         </div>
@@ -140,8 +162,8 @@ function CommunityPage() {
                 <div className="create">
                     <img src={pfp}></img>
                     <input onClick={(() => history.push('/posts/new'))} type="text" placeholder="Create Post"></input>
-                    <i class="fi fi-rr-picture"></i>
-                    <i class="fi fi-rr-link-alt"></i>
+                    <div><i onClick={(() => history.push('/posts/new/image'))} class="fi fi-rr-picture"></i></div>
+                    <div><i onClick={(() => history.push('/posts/new/link'))} class="fi fi-rr-link-alt"></i></div>
                 </div>
                 <div className="filter">
                 <div id="filter-side1">
@@ -168,14 +190,14 @@ function CommunityPage() {
                 {ePost?.map((post) =>
                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} />))} id={`${post.id}`} className="post-content">
                     <div id="pc-side1">
-                    <i class="fi fi-rs-heart"></i>
-                     <span>{post.votes + post.downVotes}</span>
-                     <i class="fi fi-rs-heart-crack"></i>
+                    <PostLikes post={post}
+                    vote={isLiked.length && isLiked.some((l) => l.postId === post.id && l.upVote === 1)}
+                    downVote={isLiked.length && isLiked.some((l) => l.postId === post.id && l.downVote === 1)}/>
                     </div>
                     <div id="pc-side2">
                     <div id="nameOf">
-                    <img src={pfp}></img>
-                    <p>l/{post.Community?.name} Posted by u/{post.User?.username} {getTimeDifferenceString(post.createdAt)}</p>
+                    {/* <img src={pfp}></img> */}
+                    <p>Posted by <span className="userName">u/{post.User?.username}</span> {getTimeDifferenceString(post.createdAt)}</p>
                     </div>
                     <h3 id="title6">{post.title}</h3>
                     <div id="content">
@@ -183,7 +205,7 @@ function CommunityPage() {
                     {post.PostImages?.length ? <img src={post.PostImages[0]?.imgURL} alt="meaningful-text"></img> : null}
                     </div>
                     </div>
-                    <div id="post-extras">
+                    <div onClick={((e) => e.stopPropagation())} id="post-extras">
                     <div id="comment">
                     <i class="fa-regular fa-message"></i>
                     <p>{post.Comments.length}</p>

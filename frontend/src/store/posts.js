@@ -37,11 +37,16 @@ const getUserPosts = (posts) => ({
 
 export const thunkGetAllPosts = () => async (dispatch) => {
     const response1 = await csrfFetch('/api/posts')
-    const data1 = await response1.json();
+    let data1 = await response1.json();
     dispatch(getPosts(data1));
     return response1;
 }
 
+export const thunkGetUserVotes = () => async (dispatch) => {
+  const response1 = await csrfFetch(`/api/posts/votes/current`)
+  const data1 = await response1.json();
+  return data1;
+}
 
 
 export const thunkGetDetailsById = (id) => async (dispatch) => {
@@ -121,6 +126,29 @@ export const thunkDeletePosts = (id) => async (dispatch) => {
     dispatch(removePost(id))
     return data
 }
+
+export const thunkDeleteVote = (id) => async (dispatch) => {
+  const response = await csrfFetch(`/api/posts/votes/${id}`, {
+      method: 'DELETE',
+      headers: {
+          'Content-Type': 'application/json'
+        },
+  })
+  let data = await response.json()
+  return data
+}
+
+export const thunkCreateVote = (id, boolean) => async (dispatch) => {
+  const response = await csrfFetch(`/api/posts/${id}/votes?boolean=${boolean}`, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+        },
+  })
+  let data = await response.json()
+  return data
+}
+
 
 // export const addPostImages = (id, data) => async (dispatch) => {
 //     const response = await csrfFetch(`/api/posts/${id}/images`, {

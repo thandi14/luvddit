@@ -33,7 +33,10 @@ function App() {
           <Route exact path="/">
             <HomePage />
           </Route>
-          <Route path="/posts/new">
+          <Route exact path="/posts/new/">
+            <CreatePost />
+          </Route>
+          <Route exact path="/posts/new/:button">
             <CreatePost />
           </Route>
           <Route exact path="/posts/:id">

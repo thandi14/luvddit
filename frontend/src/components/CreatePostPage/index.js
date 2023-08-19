@@ -21,9 +21,9 @@ function CreatePost() {
   const [initial, setInitial] = useState(singleCommunity.name);
   const history = useHistory()
 
-
     useEffect(() => {
-    setInitial(singleCommunity.name)
+      console.log("!!SINGLE COMMUNITY!!", singleCommunity)
+      setInitial(singleCommunity.name)
 
     }, [singleCommunity]);
 

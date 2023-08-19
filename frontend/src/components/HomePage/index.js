@@ -9,18 +9,36 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
 import PostPageModal from '../PostPage/PostPageModal'
 import { useModal } from '../../context/Modal'
 import CreateCommunity from '../CreateCommunityModel'
+import PostLikes from './likes'
 
 function HomePage() {
     const { posts } = useSelector((state) => state.posts);
-    const { communities } = useSelector((state) => state.communities);
+    const { user } = useSelector((state) => state.session);
     const dispatch = useDispatch()
     const [isVisible, setIsVisible] = useState(false);
     const [isVisible2, setIsVisible2] = useState(false);
+    const [isVisible3, setIsVisible3] = useState(true);
+    const [ votePost, setVotePost ] = useState(null);
+    const [ isLiked, setIsLiked ] = useState([]);
     const history = useHistory()
     const { setModalContent } = useModal()
 
-
     let top = isVisible ? "top" : "down"
+
+  useEffect(() => {
+
+    async function fetchData() {
+      let data = await dispatch(postsActions.thunkGetUserVotes())
+      setIsLiked(data)
+      }
+      fetchData()
+
+  }, [dispatch, posts])
+
+
+    console.log(isLiked)
+
+
 
 
     useEffect(() => {
@@ -50,14 +68,12 @@ function HomePage() {
 
     const ePost = Object.values(posts)
 
+
     if (!ePost.length) return <h1 className="data-not-here">Loading...</h1>
 
     let recent = Object.values(posts)
     recent = recent.reverse()
     recent = recent.slice(0, 5)
-
-    console.log(recent)
-
 
 
     const getTimeDifferenceString = (createdAt) => {
@@ -112,8 +128,8 @@ function HomePage() {
                 <div className="create">
                     <img src={pfp}></img>
                     <input onClick={(() => history.push('/posts/new'))} type="text" placeholder="Create Post"></input>
-                    <i class="fi fi-rr-picture"></i>
-                    <i class="fi fi-rr-link-alt"></i>
+                    <div><i onClick={(() => history.push('/posts/new/image'))} class="fi fi-rr-picture"></i></div>
+                    <div><i onClick={(() => history.push('/posts/new/link'))} class="fi fi-rr-link-alt"></i></div>
                 </div>
                 <div className="filter">
                 <div id="filter-side1">
@@ -141,20 +157,20 @@ function HomePage() {
                 <i class="fa-solid fa-chevron-down"></i>
                 </div>
                 </div>
-                {ePost?.map((post) =>
+                {ePost?.map((post, i) =>
                     <div id={`${post.id}`} onClick={(() => setModalContent(<PostPageModal postId={post.id} />))} className="post-content">
                     {/* <div id={`${post.id}`} onClick={(() => history.push(`/posts-modal/${post.id}`))} className="post-content"> */}
-                    <div id="pc-side1">
-                    <i class="fi fi-rs-heart"></i>
-                     <span>{post.votes + post.downVotes}</span>
-                     <i class="fi fi-rs-heart-crack"></i>
+                    <div  id="pc-side1">
+                    <PostLikes post={post}
+                    vote={isLiked.length && isLiked.some((l) => l.postId === post.id && l.upVote === 1)}
+                    downVote={isLiked.length && isLiked.some((l) => l.postId === post.id && l.downVote === 1)}/>
                     </div>
                     <div id="pc-side2">
                     <div id="nameOf">
                     <img src={pfp}></img>
-                    <span id="community">l/{post.Community.name}</span>
+                    <span className="userName" id="community">l/{post.Community.name}</span>
                     <p>·</p>
-                    <p>Posted by u/{post.User.username} {getTimeDifferenceString(post.createdAt)}</p>
+                    <p>Posted by <span className="userName">u/{post.User.username}</span> {getTimeDifferenceString(post.createdAt)}</p>
                     </div>
                     <h3 id="title">{post.title}</h3>
                     <div id="content">
@@ -162,7 +178,7 @@ function HomePage() {
                     {post.PostImages.length ? <img src={post.PostImages[0]?.imgURL} alt="meaningful-text"></img> : null}
                     </div>
                     </div>
-                    <div id="post-extras">
+                    <div onClick={((e) => e.stopPropagation())} id="post-extras">
                     <div id="comment">
                     <i class="fa-regular fa-message"></i>
                     <p>{post.Comments.length} Comments</p>
@@ -194,7 +210,7 @@ function HomePage() {
                     <p>The best luvddit experience</p>
                     </div>
                     </div>
-                    <button>Try Now</button>
+                    <button onClick={(() => window.alert("Feature not available "))}>Try Now</button>
                 </div>
                 <div className="home-section">
                 <div id="hs-background"></div>

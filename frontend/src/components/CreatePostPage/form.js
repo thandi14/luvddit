@@ -2,7 +2,7 @@ import "./CreatePostPage.css"
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import * as postActions from "../../store/posts"
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 function PostForm() {
     const { communities, singleCommunity } = useSelector((state) => state.communities)
@@ -21,6 +21,24 @@ function PostForm() {
     const [ post, setPost ] = useState(true)
     const [ image, setImage ] = useState(false)
     const [ link, setLink ] = useState(false)
+    const { button } = useParams()
+
+    console.log(button)
+
+    useEffect(() => {
+        if (button === "image") {
+            setImage(true)
+            setPost(false)
+            setLink(false)
+        }
+        if (button === "link") {
+            setLink(true)
+            setImage(false)
+            setPost(false)
+        }
+
+    }, [])
+
 
     const handlePost = () => {
         setPost(true)

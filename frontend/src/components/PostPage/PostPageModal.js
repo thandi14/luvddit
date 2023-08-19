@@ -11,6 +11,7 @@ import pfp from "./IMG6.jpg";
 import DeletePost from "./delete";
 import { useModal2 } from "../../context/Modal2";
 import CommunitiesProfile from "../CreatePostPage/communites2";
+import PostLikes from "../HomePage/likes";
 
 function PostPageModal({ postId }) {
     const { singlePost } = useSelector((state) => state.posts)
@@ -30,6 +31,7 @@ function PostPageModal({ postId }) {
     const targetRef3 = useRef(null)
     const [scrollPosition, setScrollPosition] = useState(0);
     const [scrollDirection, setScrollDirection] = useState("down");
+    const [ isLiked, setIsLiked ] = useState([]);
 
     // if (!Object.values(singlePost).length) return <h1>loading</h1>
 
@@ -49,6 +51,16 @@ function PostPageModal({ postId }) {
         })
         setIsVisible2(false)
     }
+
+    useEffect(() => {
+
+        async function fetchData() {
+          let data = await dispatch(postActions.thunkGetUserVotes())
+          setIsLiked(data)
+          }
+          fetchData()
+
+      }, [dispatch, singlePost])
 
 
     useEffect(() => {
@@ -178,9 +190,10 @@ function PostPageModal({ postId }) {
                 <div ref={targetRef3} className={scrollDirection === "up" ? "sticky" : ""} id="post-details-head">
                 <div>
                 <div id="line5"></div>
-                <i id="heart25" class="fi fi-rs-heart"></i>
-                <span>{singlePost.votes + singlePost.downVotes}</span>
-                <i id="heart25" class="fi fi-rs-heart-crack"></i>
+                <PostLikes post={singlePost}
+                vote={isLiked.length && isLiked.some((l) => l.postId === singlePost.id && l.upVote === 1)}
+                downVote={isLiked.length && isLiked.some((l) => l.postId === singlePost.id && l.downVote === 1)}
+                />
                 <div id="line5"></div>
                 <i class="fi fi-rr-picture"></i>
                 <span id="t-head">{singlePost.title}</span>
@@ -191,16 +204,17 @@ function PostPageModal({ postId }) {
         <div ref={targetRef2} className="whole-post-page2">
             <div className="post-page">
             <div id="vote-side">
-                <i class="fi fi-rs-heart"></i>
-                <span>{singlePost.votes + singlePost.downVotes}</span>
-                <i class="fi fi-rs-heart-crack"></i>
+                <PostLikes post={singlePost}
+                vote={isLiked.length && isLiked.some((l) => l.postId === singlePost.id && l.upVote === 1)}
+                downVote={isLiked.length && isLiked.some((l) => l.postId === singlePost.id && l.downVote === 1)}
+                />
             </div>
             <div id="details-side">
             <div id="nameOf3">
                     <img src={pfp}></img>
                     <span id="community">l/{singlePost.Community.name}</span>
                     <p>·</p>
-                    <p>Posted by u/{user.username} {getTimeDifferenceString(singlePost.createdAt)}</p>
+                    <p>Posted by u/{singlePost.User.username} {getTimeDifferenceString(singlePost.createdAt)}</p>
                     </div>
             <h1>{singlePost?.title}</h1>
             <div id="post-info1">
@@ -230,7 +244,7 @@ function PostPageModal({ postId }) {
             {singlePost.PostImages?.length ? <div><img id="post-image1" src={singlePost.PostImages[0].imgURL} alt="postimg"></img></div> : null}
             </div>
             { isVisible2 ? <div id="save"><button onClick={handleClick2} >Cancel</button> <button id={ !description ? "save-submit" : "save-submit2"} onClick={handleSave}>Save</button></div> : null}
-            {singlePost.Community.userId !== user.id ?<div id="post-extras3">
+            {singlePost.User.id !== user.id ?<div id="post-extras3">
                     <div id="comment">
                     <i class="fa-regular fa-message"></i>
                     <p>{singlePost.Comments?.length} Comments</p>

@@ -117,7 +117,7 @@
     align-items: center;
     margin-left: 10px;
     color: #878A8C;
-    height: 42px;
+    height: 30px;
     cursor: pointer;
     margin-top: 0.5%;
     font-weight: bolder;
@@ -424,6 +424,30 @@
 
 }
 
+.create > div {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    width: 40px;
+    cursor: pointer;
+    color: #878A8C;
+}
+
+.create > div > i {
+    font-size: 18px;
+}
+
+.create > div:hover {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    width: 40px;
+    background: #e4e4e4;
+}
 
 #home-section > #but1:hover {
     width: 92%;
@@ -581,17 +605,15 @@
     display: flex;
     align-items: center;
     padding-top: 12px;
-    gap: 4px;
+    gap: 2px;
+}
+
+.userName:hover {
+    text-decoration: underline;
 }
 
 #pc-side1 > span{
     font-size: 14px;
-}
-
-#pc-side1 > i {
-    font-size: 16px;
-    cursor: pointer;
-    color: #878A8C;
 }
 
 #filter-side1, #filter-side2 {
@@ -698,4 +720,59 @@
     height: 76px;
     line-height: 13px;
 
+}
+
+#pc-side1 > div:hover {
+    background: #e4e4e4;
+    /* width: 22px;
+    height: 22px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    border-radius: 4px; */
+}
+
+#pc-side1 > div {
+    width: 28px;
+    height: 28px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    border-radius: 4px;
+}
+
+#pc-side1 > div > i {
+    font-size: 19px;
+    cursor: pointer;
+    height: 18px;
+}
+
+#upvote, #downvote {
+    color: #878A8C;
+    display: flex;
+    align-items: center;
+    /* height: 20px; */
+}
+
+#upvote > i:hover {
+    color: hotpink;
+    cursor: pointer;
+}
+
+
+#downvote > i:hover {
+    color: #0079D3;
+    cursor: pointer;
+}
+
+#upvoted {
+    color: hotpink;
+    display: flex;
+    align-items: center;
+}
+
+#downvoted {
+    color: #0079D3;
+    display: flex;
+    align-items: center;
 }

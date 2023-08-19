@@ -29,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
             otherKey: 'communityId'
           }
       );
+      User.hasMany(
+        models.Votes,
+          { foreignKey: 'userId', onDelete: 'CASCADE',  hooks: true }
+      );
 
     }
   }

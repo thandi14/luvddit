@@ -184,7 +184,46 @@
 #comment {
     display: flex;
     gap: 5px;
+    padding-right: 1%;
+    padding-left: 1%;
+    height: 20px;
     align-items: center;
+}
+
+#comment:hover {
+    background-color: #e4e4e4;
+    border-radius: 3px;
+    width: auto;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+#post-extras > i:hover {
+    background-color: #e4e4e4;
+    border-radius: 3px;
+    width: auto;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding-left: 1%;
+    padding-right: 1%;
+}
+
+
+#post-extras > i {
+    width: auto;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding-left: 1%;
+    padding-right: 1%;
 }
 
 #comment > p {
@@ -200,16 +239,19 @@
 
 #post-extras {
     display: flex;
-    gap: 15px;
+    gap: 12px;
     align-items: center;
-    margin-left: 10px;
+    margin-left: 6px;
     color: #878A8C;
-    height: 42px;
+    height: 30px;
+    padding-top: 2%;
+    padding-bottom: 2%;
     cursor: pointer;
     margin-top: 0.5%;
     font-weight: bolder;
     font-family: 'Noto Sans', sans-serif;
 }
+
 
 .create > img {
     width: 36px;
@@ -234,10 +276,48 @@
 }
 
 #best {
+    border-radius: 20px;
+    padding-left: 4%;
+    padding-right: 4%;
     display: flex;
     align-items: center;
-    gap: 10px;
+    height: 30px;
+    cursor: pointer;
 
+}
+
+#best:hover {
+    background-color: #e4e4e4;
+}
+
+#filter-side1 > i {
+    border-radius: 20px;
+    padding-left: 2%;
+    padding-right: 2%;
+    display: flex;
+    align-items: center;
+    height: 32px;
+    cursor: pointer;
+
+}
+
+#filter-side1 > i:hover {
+    background-color: #EDEFF1;
+}
+
+#filter-side2 {
+    border-radius: 20px;
+    padding-left: 2%;
+    padding-right: 2%;
+    display: flex;
+    align-items: center;
+    height: 32px;
+    cursor: pointer;
+
+}
+
+#filter-side2:hover {
+    background-color: #EDEFF1;
 }
 
 .create {
@@ -345,6 +425,10 @@
     font-weight: 600;
     cursor: pointer;
     font-family: 'Noto Sans', sans-serif;
+}
+
+.top:hover {
+    background-color: #0181e2;
 }
 
 .top {
@@ -748,7 +832,7 @@
     display: flex;
     align-items: center;
     padding-top: 12px;
-    gap: 4px;
+    gap: 1px;
 }
 
 #pc-side1 > span{
@@ -781,12 +865,14 @@
 }
 
 #filter-side1 > div {
-    height: 40px
+    height: 30px;
+    display: flex;
+    align-items: center;
 }
 
 
 #filter-side1 {
-    gap: 25px
+    gap: 8px
 
 }
 

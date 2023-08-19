@@ -138,6 +138,32 @@ body {
     font-family: inherit;
 }
 
+#search > input:focus {
+    background-color: white;
+    border: 1px solid #0079D3;
+}
+
+#mod-ms > span > i {
+    font-size: 18px;
+}
+
+
+#feeds-ms > span > i {
+    font-size: 18px;
+}
+
+#other-ms > span > i {
+    font-size: 18px;
+}
+
+
+
+#search > input:hover {
+    border: 1px solid #0079D3;
+    background-color: white;
+}
+
+
 #search > i {
     align-self: center;
     position: absolute;
@@ -187,7 +213,10 @@ body {
 
 .profile {
     width: 14%;
-    margin: 5px
+    margin: 5px;
+    justify-content: flex-end;
+    display: flex;
+    position: relative;
 }
 
 #k {
@@ -227,16 +256,65 @@ body {
     display: flex;
     align-items: center;
     gap: 5px;
-    width: 100%;
+    /* width: 100%; */
 }
 
 #username > button {
     height: 40px
 }
 
-#username > div > p {
-    /* font-size: 13px; */
+#five > div > p {
     line-height: 4px;
+    margin: 0px;
+}
+
+#username {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+}
+
+.profile-dropdown {
+    position: fixed;
+    border: 1px solid #EDEFF1;
+    border-radius: 3px;
+    width: 16.5%;
+    height: 400px;
+    overflow-y: scroll;
+    background: white;
+    margin-top: 3.4%;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.profile-dropdown > div {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid #EDEFF1;
+    padding: 5%;
+}
+
+.profile-dropdown > div > span{
+    height: 40px;
+    font-size: 16px;
+}
+
+.profile-dropdown > button {
+    margin: 5%;
+}
+
+#nameofuser {
+    display: flex;
+    flex-direction: column;
+    margin-left: 4px;
+    gap: 12px;
+    justify-content: center;
+}
+
+#five {
+    display: flex;
 }
 
 .profileButton {
@@ -248,6 +326,18 @@ body {
     height: 30px;
     border: 1px solid #ffffff;
 
+}
+
+.profileButton2 {
+    border: 1px solid #EDEFF1;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 5px;
+    height: 30px;
+    cursor: pointer;
 }
 
 #username2 > i {
@@ -290,6 +380,7 @@ body {
     cursor: pointer;
 }
 
+
 #allIcons {
     height: 32px;
     width: 22%;
@@ -317,7 +408,7 @@ body {
 #home-menu {
     background-color: white;
     z-index: 4;
-    height: 400px;
+    height: 500px;
     display: flex;
     position: absolute;
     flex-direction: column;
@@ -332,7 +423,24 @@ body {
 }
 
 #home-menu > input {
-    height: 10px;
+    font-size: 16px;
+    height: 100%;
+    margin: 6%;
+    background-color: #F6F7F9;
+    border: 1px solid #DAE0E6;
+    padding: 4px;
+    margin-bottom: 0%;
+}
+
+#home-menu > input:hover {
+    background-color: white;
+    border: 1px solid #0079D3;
+}
+
+#home-menu > input:focus {
+    background-color: white;
+    border: 1px solid #0079D3;
+    border-radius: 0px;
 }
 
 #homeButton2 {
