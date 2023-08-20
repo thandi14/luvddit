@@ -50,7 +50,7 @@ module.exports = {
     }, options);
   },
   async down(queryInterface, Sequelize) {
-    options.tableName = "PostImages";
+    options.tableName = "Votes";
 
     await queryInterface.dropTable(options);
   }

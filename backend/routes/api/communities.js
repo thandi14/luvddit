@@ -230,7 +230,14 @@ router.delete('/:id/memberships', async (req, res) => {
         communityId: id
     })
 
-    console.log(member)
+    if (!member) {
+
+        res.status(404).json({"message": "Member couldn't be found"});
+
+    }
+
+
+    await member.destroy()
 
     return res.json({"message": "succesfully deleted"})
 })
