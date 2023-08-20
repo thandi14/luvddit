@@ -217,6 +217,8 @@ router.post('/:id/memberships', async (req, res) => {
         communityId: id
     })
 
+    console.log(member)
+
     return res.json(member)
 })
 

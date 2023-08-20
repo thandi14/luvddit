@@ -44,7 +44,8 @@ function CommunityPage() {
     const handleJoinClick = async () => {
         let response
         await dispatch(communityActions.thunkJoinCommunities(singleCommunity.id))
-    }
+        console.log("COMPONENT:", response)
+      }
 
     const handleUnjoinClick = async () => {
       let response

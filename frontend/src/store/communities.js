@@ -118,13 +118,14 @@ export const thunkUpdateCommunities = (id, data) => async (dispatch) => {
 }
 
 export const thunkJoinCommunities = (id) => async (dispatch) => {
-        const response = await csrfFetch(`/api/communities/${id}/memberships`, {
+            console.log("REDUCER:", id)
+    const response = await csrfFetch(`/api/communities/${id}/memberships`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
-              },
+            },
         })
-        const data1 = await response.json()
+        const data1 = await response.json(response)
         return data1
 }
 
