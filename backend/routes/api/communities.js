@@ -208,36 +208,38 @@ router.get('/:id/members', async (req, res) => {
 })
 
 router.post('/:id/memberships', async (req, res) => {
-    const { id } = req.params.id
+    const id = req.params.id
     const { user } = req
     const userId = user.dataValues.id
+
+    console.log(id)
 
     let member = await CommunityMembers.create({
         userId,
         communityId: id
     })
 
-    console.log(member)
-
     return res.json(member)
 })
 
 router.delete('/:id/memberships', async (req, res) => {
-    const { id } = req.params.id
+    const id = req.params.id
     const { user } = req
     const userId = user.dataValues.id
 
+
     let member = await CommunityMembers.findOne({
-        userId,
-        communityId: id
-    })
+        where: {
+            communityId: id,
+            userId: userId
+        }
+    });
 
     if (!member) {
 
         res.status(404).json({"message": "Member couldn't be found"});
 
     }
-
 
     await member.destroy()
 

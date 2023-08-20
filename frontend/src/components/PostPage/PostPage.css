@@ -754,6 +754,44 @@
     cursor: pointer;
     font-weight: 700;
     font-family: 'Noto Sans', sans-serif;
+    transition: color 0.1s, background-color 0.1s;
+    position: relative;
+}
+
+#join-now2::after {
+    content: "Leave";
+    opacity: 0;
+    transition: opacity 0.1;
+    position: absolute;
+    transform: translate(-100%, 0%); /* Adjust for vertical and horizontal centering */
+}
+
+#join-now2:hover {
+    color: transparent;
+    background-color: #f4fafe;
+}
+
+#join-now2:hover::after {
+    opacity: 1;
+    color: #0079D3;
+}
+
+#join-now:hover {
+    background-color: #0181e2;
+}
+
+#join-now2 {
+    width: 92%;
+    color: #0079D3;
+    border-radius: 20px;
+    height: 32px;
+    background-color: white;
+    margin-bottom: 5px;
+    border: 1px solid #0079D3;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 700;
+    font-family: 'Noto Sans', sans-serif;
 }
 
 .whole-post-page2 > .post-page {

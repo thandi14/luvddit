@@ -25,6 +25,8 @@ function App() {
     dispatch(communitiesActions.thunkGetUserCommunities())
   }, [dispatch]);
 
+
+
   return (
     <>
       <Navigation isLoaded={isLoaded} />

@@ -83,7 +83,7 @@ function YourCommunitesProfile() {
             <div className="home-section">
                 <div id="cs-background">
                     <p>About Community</p>
-                    <p><i class="fi fi-rs-shield"></i>MOD TOOLS<i class="fi fi-rr-menu-dots"></i></p>
+                    {singleCommunity.userId === user.id ? <p id="seven"><span id="tools"><i class="fi fi-rs-shield"></i>MOD TOOLS</span><i class="fi fi-rr-menu-dots"></i></p> : <i id="comm-sets" class="fi fi-rr-menu-dots"></i>}
                 </div>
                 <div id="home-section">
                 <div id="cs-side1">
@@ -97,7 +97,7 @@ function YourCommunitesProfile() {
                 </div>
                 <div id="line"></div>
                 <div id="cs-side2">
-                    <span><div>{singleCommunity.CommunityMembers}</div>Members</span>
+                    <span><div id="online">{singleCommunity.CommunityMembers}</div>Members</span>
                     <span><div id="online"><i class="fi fi-ss-bullet"></i>{randomNum}</div>Online</span>
                 </div>
                 <div id="line"></div>

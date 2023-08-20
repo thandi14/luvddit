@@ -7,12 +7,60 @@ import { useModal } from "../../context/Modal"
 
 
 function CommunitiesProfile({ page, community }) {
-    const { communities, userCommunities } = useSelector((state) => state.communities)
+    const { communities, userCommunities, singleCommunity, communityMemberships } = useSelector((state) => state.communities)
     const { user } = useSelector((state) => state.session)
     const [ id, setId ] = useState(null)
     const dispatch = useDispatch()
     const history = useHistory()
     const { closeModal } = useModal()
+
+    const [ joined, setJoined ] = useState(null)
+    const memberships = Object.values(communityMemberships)
+    const member = memberships.filter((m) => m.communityId === singleCommunity.id)
+
+        useEffect(() => {
+
+            async function fetchData() {
+                await dispatch(communityActions.thunkGetDetailsById(community.id))
+                await dispatch(communityActions.thunkGetCommunityMemberships())
+
+            }
+
+            fetchData()
+
+            const member = memberships.filter((m) => m.communityId === singleCommunity.id)
+            if (member) setJoined(true)
+            if (!member) setJoined(false)
+
+
+        }, [dispatch])
+
+        const [randomNum, setRandomNum] = useState(Math.floor(Math.random() * 101));
+
+        useEffect(() => {
+            const timeoutId = setTimeout(() => {
+              const newRandomNum = Math.floor(Math.random() * 101);
+              setRandomNum(newRandomNum);
+            }, 10000);
+
+            return () => {
+              clearTimeout(timeoutId);
+            };
+          }, []);
+
+        const handleJoinClick = async (e) => {
+            e.stopPropagation()
+            let response
+            setJoined(true)
+            await dispatch(communityActions.thunkJoinCommunities(singleCommunity.id))
+        }
+
+        const handleUnjoinClick = async (e) => {
+          e.stopPropagation()
+          let response
+          setJoined(false)
+          response = await dispatch(communityActions.thunkUnjoinCommunities(community.id))
+        }
 
     const handleClick = () => {
         if (page === "create") return
@@ -23,8 +71,6 @@ function CommunitiesProfile({ page, community }) {
 
     if (!community) return <h1>Loading</h1>
     let userCommunity = Object.values(community)
-    console.log(userCommunity)
-
 
     let createdAt
     if (Object.values(community).length) createdAt = new Date(community.createdAt)
@@ -36,7 +82,7 @@ function CommunitiesProfile({ page, community }) {
     "July", "August", "September", "October", "November", "December"
     ];
 
-    const randomNum = Math.floor(Math.random() * 101)
+
 
     const profile = community.id
 
@@ -45,8 +91,8 @@ function CommunitiesProfile({ page, community }) {
     const firstCommunity = myCommunities[0].id
 
     const formattedDate = `${months[dateObject.getMonth()]}, ${dateObject.getDate()}, ${dateObject.getFullYear()}`;
-    console.log(profile, firstCommunity)
-    console.log(userCommunities)
+
+
     return (
         <>
         {profile === firstCommunity ? <div className="your-community">
@@ -90,7 +136,7 @@ function CommunitiesProfile({ page, community }) {
                          <span><div id="online"><i class="fi fi-ss-bullet"></i>{randomNum}</div>Online</span>
                         </div>
                         <div id="line"></div>
-                        <button id="join-now">Join</button>
+                        {member.length && joined ? <button onClick={handleUnjoinClick} id="join-now2">Joined</button> : <button onClick={handleJoinClick} id="join-now">Join</button> }
                         <div id="line"></div>
                         <div id="cs-side5">
                         <span>COMMUNITY OPTIONS</span>

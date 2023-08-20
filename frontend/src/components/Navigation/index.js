@@ -46,7 +46,6 @@ function Navigation({ isLoaded }){
   }, [location]);
 
   let memberships = Object.values(communityMemberships)
-  memberships = memberships.slice(1, memberships.length)
   let myCommunities = Object.values(userCommunities)
   myCommunities = myCommunities.slice(1, myCommunities.length)
 

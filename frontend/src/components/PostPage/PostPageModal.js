@@ -14,6 +14,7 @@ import CommunitiesProfile from "../CreatePostPage/communites2";
 import PostLikes from "../HomePage/likes";
 
 function PostPageModal({ postId }) {
+    const { communities, singleCommunity, communityMemberships } = useSelector((state) => state.communities);
     const { singlePost } = useSelector((state) => state.posts)
     const { user } = useSelector((state) => state.session)
     const { id } = useParams();
@@ -33,7 +34,7 @@ function PostPageModal({ postId }) {
     const [scrollDirection, setScrollDirection] = useState("down");
     const [ isLiked, setIsLiked ] = useState([]);
 
-    // if (!Object.values(singlePost).length) return <h1>loading</h1>
+    const memberships = Object.values(communityMemberships)
 
 
     const handleClick = () => {
@@ -120,7 +121,6 @@ function PostPageModal({ postId }) {
         clearTimeout(timeoutId);
       };
     }, []);
-
 
 
     const getTimeDifferenceString = (createdAt) => {
@@ -392,7 +392,7 @@ function PostPageModal({ postId }) {
                          <span><div id="online"><i class="fi fi-ss-bullet"></i>{randomNum}</div>Online</span>
                         </div>
                         <div id="line"></div>
-                        <button id="join-now">Join</button>
+                            <button id="join-now2">Join</button>
                         <div id="line"></div>
                         <div id="cs-side5">
                         <span>COMMUNITY OPTIONS</span>

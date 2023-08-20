@@ -118,7 +118,6 @@ export const thunkUpdateCommunities = (id, data) => async (dispatch) => {
 }
 
 export const thunkJoinCommunities = (id) => async (dispatch) => {
-            console.log("REDUCER:", id)
     const response = await csrfFetch(`/api/communities/${id}/memberships`, {
             method: 'POST',
             headers: {
@@ -142,17 +141,9 @@ export const thunkUnjoinCommunities = (id) => async (dispatch) => {
 
 
 
-// export const deletePosts = (id) => async (dispatch) => {
-//     const response = await csrfFetch(`/api/posts/${id}`, {
-//         method: 'DELETE',
-//         headers: {
-//             'Content-Type': 'application/json'
-//           },
-//     })
-//     // let data = await response.json()
-//     dispatch(removePost(id))
-//     return response
-// }
+export const thunResetCommunity = () => async (dispatch) => {
+    dispatch(getDetails({}))
+}
 
 // export const addPostImages = (id, data) => async (dispatch) => {
 //     const response = await csrfFetch(`/api/posts/${id}/images`, {

@@ -22,14 +22,33 @@ function CommunityPage() {
     const [isVisible2, setIsVisible2] = useState(false);
     const history = useHistory()
     const [ isLiked, setIsLiked ] = useState([]);
-    const [ isMember, setIsMember ] = useState(false)
+    const [ joined, setJoined ] = useState(null)
+
+    useEffect(() => {
+
+      async function fetchData() {
+          await dispatch(communityActions.thunkGetDetailsById(id))
+          await dispatch(communityActions.thunkGetCommunityMemberships())
+
+      }
+
+      fetchData()
+
+      const member = memberships.filter((m) => m.communityId === singleCommunity.id)
+      if (member) setJoined(true)
+      if (!member) setJoined(false)
+
+
+    }, [dispatch, communityMemberships])
 
 
     let top = isVisible ? "top" : "down"
 
     const memberships = Object.values(communityMemberships)
-
     const member = memberships.filter((m) => m.communityId === singleCommunity.id)
+
+
+
 
     useEffect(() => {
 
@@ -41,16 +60,17 @@ function CommunityPage() {
 
     }, [dispatch, posts])
 
+
     const handleJoinClick = async () => {
         let response
+        setJoined(true)
         await dispatch(communityActions.thunkJoinCommunities(singleCommunity.id))
-        console.log("COMPONENT:", response)
       }
 
     const handleUnjoinClick = async () => {
       let response
+      setJoined(false)
       response = await dispatch(communityActions.thunkUnjoinCommunities(singleCommunity.id))
-      console.log(response)
     }
 
 
@@ -80,11 +100,6 @@ function CommunityPage() {
 
 
     }, [])
-
-    useEffect(() => {
-        dispatch(communityActions.thunkGetDetailsById(id))
-    }, [])
-
 
     if (!Object.values(singleCommunity).length) return <h1 className="data-not-here">Loading...</h1>
 
@@ -151,7 +166,7 @@ function CommunityPage() {
                 {singleCommunity.name}
                 <span>l/{singleCommunity.name}</span>
             </div>
-            {member.length ? <button onClick={handleUnjoinClick} id="joined">Joined</button> : <button onClick={handleJoinClick} id="join">Join</button> }
+            {member.length && joined ? <button onClick={handleUnjoinClick} id="joined">Joined</button> : <button onClick={handleJoinClick} id="join">Join</button> }
             </div>
         </div>
         </div>
@@ -206,6 +221,25 @@ function CommunityPage() {
                     {post.PostImages?.length ? <img src={post.PostImages[0]?.imgURL} alt="meaningful-text"></img> : null}
                     </div>
                     </div>
+                    {post.User.id !== user.id ?<div id="post-extras3">
+                    <div id="comment">
+                    <i class="fa-regular fa-message"></i>
+                    <p>{post.Comments?.length} Comments</p>
+                    </div>
+                    <div id="comment">
+                    <i class="fi fi-rr-box-heart"></i>
+                    <p>Awards</p>
+                    </div>
+                    <div id="comment">
+                    <i class="fi fi-rs-heart-arrow"></i>
+                    <p>Share</p>
+                    </div>
+                    <div id="comment">
+                    <i class="fi fi-rr-bookmark"></i>
+                    <p>Save</p>
+                    </div>
+                    <i class="fi fi-rr-menu-dots"></i>
+            </div> :
                     <div onClick={((e) => e.stopPropagation())} id="post-extras">
                     <div id="comment">
                     <i class="fa-regular fa-message"></i>
@@ -231,7 +265,7 @@ function CommunityPage() {
                     <i class="fi fi-rs-shield"></i>
                     </div>
                     <i class="fi fi-rr-menu-dots"></i>
-                    </div>
+                    </div>}
                     </div>
                     </div>
                 )}
