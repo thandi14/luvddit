@@ -25,5 +25,19 @@ router.get("/current", async (req, res) => {
     return res.json(posts)
 })
 
+router.delete("/:id", async (req, res) => {
+    const { user } = req
+    const userId = user.dataValues.id
+    const commentId = req.body.id
+
+    let comment = await Comments.findByPk(commentId);
+
+    await comment.destroy()
+    return res.json({
+        message: "Successfully deleted"
+    })
+})
+
+
 
 module.exports = router;

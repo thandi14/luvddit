@@ -11,10 +11,13 @@ import PostPage from "./components/PostPage";
 import DeletedPost from "./components/PostPage/index2";
 import CommunityPage from "./components/CommunityPage";
 import PostPageModal from "./components/PostPage/PostPageModal";
+import CommunityPageEdit from "./components/CommunityPage/index2";
+import { useLocation } from "react-router-dom/cjs/react-router-dom";
 
 function App() {
   const dispatch = useDispatch();
   const [isLoaded, setIsLoaded] = useState(false);
+  const location = useLocation();
 
 
   useEffect(() => {
@@ -25,11 +28,12 @@ function App() {
     dispatch(communitiesActions.thunkGetUserCommunities())
   }, [dispatch]);
 
+  console.log(location.pathname)
 
 
   return (
     <>
-      <Navigation isLoaded={isLoaded} />
+      {!location.pathname.includes("/communities2/") ? <Navigation isLoaded={isLoaded} /> : null}
       {isLoaded && (
         <Switch>
           <Route exact path="/">
@@ -49,6 +53,9 @@ function App() {
           </Route>
           <Route exact path="/communities/:id">
             <CommunityPage />
+          </Route>
+          <Route exact path="/communities2/:id">
+            <CommunityPageEdit />
           </Route>
           <Route exact path="/posts-modal/:id">
             <PostPageModal />

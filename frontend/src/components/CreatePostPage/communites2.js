@@ -18,49 +18,50 @@ function CommunitiesProfile({ page, community }) {
     const memberships = Object.values(communityMemberships)
     const member = memberships.filter((m) => m.communityId === singleCommunity.id)
 
-        useEffect(() => {
+    useEffect(() => {
 
-            async function fetchData() {
-                await dispatch(communityActions.thunkGetDetailsById(community.id))
-                await dispatch(communityActions.thunkGetCommunityMemberships())
+        async function fetchData() {
+            await dispatch(communityActions.thunkGetDetailsById(community.id))
+            await dispatch(communityActions.thunkGetCommunityMemberships())
 
-            }
-
-            fetchData()
-
-            const member = memberships.filter((m) => m.communityId === singleCommunity.id)
-            if (member) setJoined(true)
-            if (!member) setJoined(false)
-
-
-        }, [dispatch])
-
-        const [randomNum, setRandomNum] = useState(Math.floor(Math.random() * 101));
-
-        useEffect(() => {
-            const timeoutId = setTimeout(() => {
-              const newRandomNum = Math.floor(Math.random() * 101);
-              setRandomNum(newRandomNum);
-            }, 10000);
-
-            return () => {
-              clearTimeout(timeoutId);
-            };
-          }, []);
-
-        const handleJoinClick = async (e) => {
-            e.stopPropagation()
-            let response
-            setJoined(true)
-            await dispatch(communityActions.thunkJoinCommunities(singleCommunity.id))
         }
 
-        const handleUnjoinClick = async (e) => {
-          e.stopPropagation()
-          let response
-          setJoined(false)
-          response = await dispatch(communityActions.thunkUnjoinCommunities(community.id))
-        }
+        fetchData()
+
+        const member = memberships.filter((m) => m.communityId === singleCommunity.id)
+        if (member) setJoined(true)
+        if (!member) setJoined(false)
+
+
+    }, [dispatch])
+
+    const [randomNum, setRandomNum] = useState(Math.floor(Math.random() * 101));
+
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            const newRandomNum = Math.floor(Math.random() * 101);
+            setRandomNum(newRandomNum);
+        }, 10000);
+
+        return () => {
+            clearTimeout(timeoutId);
+        };
+
+    }, []);
+
+    const handleJoinClick = async (e) => {
+        e.stopPropagation()
+        let response
+        setJoined(true)
+        await dispatch(communityActions.thunkJoinCommunities(singleCommunity.id))
+    }
+
+    const handleUnjoinClick = async (e) => {
+        e.stopPropagation()
+        let response
+        setJoined(false)
+        response = await dispatch(communityActions.thunkUnjoinCommunities(community.id))
+    }
 
     const handleClick = () => {
         if (page === "create") return

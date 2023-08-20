@@ -23,7 +23,6 @@ function PostForm() {
     const [ link, setLink ] = useState(false)
     const { button } = useParams()
 
-    console.log(button)
 
     useEffect(() => {
         if (button === "image") {

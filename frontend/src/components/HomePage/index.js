@@ -1,6 +1,6 @@
 import * as postsActions from '../../store/posts'
 import { useSelector, useDispatch } from 'react-redux'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import * as communitiesActions from "../../store/communities"
 import './HomePage.css'
 import pfp from './IMG6.jpg'
@@ -10,6 +10,7 @@ import PostPageModal from '../PostPage/PostPageModal'
 import { useModal } from '../../context/Modal'
 import CreateCommunity from '../CreateCommunityModel'
 import PostLikes from './likes'
+
 
 function HomePage() {
     const { posts } = useSelector((state) => state.posts);
@@ -22,6 +23,8 @@ function HomePage() {
     const [ isLiked, setIsLiked ] = useState([]);
     const history = useHistory()
     const { setModalContent } = useModal()
+    const [ scrolling, setScrolling ] = useState(null)
+    const targetRef = useRef()
 
     let top = isVisible ? "top" : "down"
 
@@ -37,9 +40,6 @@ function HomePage() {
 
 
     console.log(isLiked)
-
-
-
 
     useEffect(() => {
       const handleScroll = () => {
@@ -74,6 +74,7 @@ function HomePage() {
     let recent = Object.values(posts)
     recent = recent.reverse()
     recent = recent.slice(0, 5)
+
 
 
     const getTimeDifferenceString = (createdAt) => {
@@ -122,6 +123,9 @@ function HomePage() {
         }
       };
 
+
+      console.log(scrolling)
+
     return (
         <div className="splashPage">
             <div className="posts">
@@ -158,30 +162,30 @@ function HomePage() {
                 </div>
                 </div>
                 {ePost?.map((post, i) =>
-                    <div id={`${post.id}`} onClick={(() => setModalContent(<PostPageModal postId={post.id} />))} className="post-content">
-                    {/* <div id={`${post.id}`} onClick={(() => history.push(`/posts-modal/${post.id}`))} className="post-content"> */}
-                    <div  id="pc-side1">
+                    // <div id={`${post.id}`} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={scrolling} />))} className="post-content">
+                    <div id={`${post.id}`} className="post-content">
+                    <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side1">
                     <PostLikes post={post}
                     vote={isLiked.length && isLiked.some((l) => l.postId === post.id && l.upVote === 1)}
                     downVote={isLiked.length && isLiked.some((l) => l.postId === post.id && l.downVote === 1)}/>
                     </div>
                     <div id="pc-side2">
-                    <div id="nameOf">
-                    <img src={pfp}></img>
+                    <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="nameOf">
+                    <img onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} src={pfp}></img>
                     <span className="userName" id="community">l/{post.Community.name}</span>
                     <p>·</p>
                     <p>Posted by <span className="userName">u/{post.User.username}</span> {getTimeDifferenceString(post.createdAt)}</p>
                     </div>
-                    <h3 id="title">{post.title}</h3>
-                    <div id="content">
+                    <h3 onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title">{post.title}</h3>
+                    <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="content">
                     <div id="img">
                     {post.PostImages.length ? <img src={post.PostImages[0]?.imgURL} alt="meaningful-text"></img> : null}
                     </div>
                     </div>
-                    <div onClick={((e) => e.stopPropagation())} id="post-extras">
-                    <div id="comment">
+                    <div id="post-extras">
+                    <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="comment">
                     <i class="fa-regular fa-message"></i>
-                    <p>{post.Comments.length} Comments</p>
+                    <p id={`${post.id}`} >{post.Comments.length} Comments</p>
                     </div>
                     <div id="comment">
                     <i class="fi fi-rr-box-heart"></i>

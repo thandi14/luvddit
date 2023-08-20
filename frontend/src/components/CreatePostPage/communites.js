@@ -22,16 +22,7 @@ function CommunitiesMenu({ value }) {
     let community2 = Object.values(communityMemberships)
     let community3 = Object.values(userCommunities)
 
-    //community = community.filter((c) => c.userId === user.id)
     community2 = community2.map((c) => c.Community)
-
-    // let community3 = []
-    // // for (let i = 0; i < community2.length; i++) {
-    // //     let each = community2[i]
-    // //     community3.push(each[0])
-    // // }
-
-    console.log(community2)
 
     return (
         <>

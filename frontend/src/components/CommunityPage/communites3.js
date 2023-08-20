@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import './CommunityPage.css'
 import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { useHistory, useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import * as communityActions from '../../store/communities'
 
 
 
 function YourCommunitesProfile() {
     const { communities, singleCommunity, communityMemberships } = useSelector((state) => state.communities);
+    const { id } = useParams()
     const { posts } = useSelector((state) => state.posts);
     const { user } = useSelector((state) => state.session);
     const history = useHistory()
@@ -15,6 +16,21 @@ function YourCommunitesProfile() {
     const [ about, setAbout ] = useState("");
     const [ data1, setData1 ] = useState("");
     const dispatch = useDispatch()
+
+
+    useEffect( () => {
+
+        async function fetchData() {
+            const response = await dispatch(communityActions.thunkUpdateCommunities(singleCommunity.id, data1))
+            if (response) {
+                history.push(`/communities/${response.id}`)
+                setIsVisible(!isVisible)
+            }
+
+        }
+        fetchData()
+
+    }, [dispatch, data1])
 
     const handleSubmit = async () => {
 
@@ -41,29 +57,6 @@ function YourCommunitesProfile() {
       };
     }, []);
 
-    console.log(singleCommunity)
-
-    useEffect( () => {
-
-        async function fetchData() {
-            const response = await dispatch(communityActions.thunkUpdateCommunities(singleCommunity.id, data1))
-            if (response) {
-                history.push(`/communities/${response.id}`)
-                setIsVisible(!isVisible)
-                // window.location.reload();
-            }
-
-        }
-        fetchData()
-
-    }, [dispatch, data1])
-
-    // let randomNum = 0
-
-    // setTimeout(() => {
-    //     randomNum = Math.floor(Math.random() * 101)
-
-    // }, 10000)
 
     let createdAt
     if (Object.values(singleCommunity).length) createdAt = new Date(singleCommunity.createdAt)
@@ -83,7 +76,7 @@ function YourCommunitesProfile() {
             <div className="home-section">
                 <div id="cs-background">
                     <p>About Community</p>
-                    {singleCommunity.userId === user.id ? <p id="seven"><span id="tools"><i class="fi fi-rs-shield"></i>MOD TOOLS</span><i class="fi fi-rr-menu-dots"></i></p> : <i id="comm-sets" class="fi fi-rr-menu-dots"></i>}
+                    {singleCommunity.userId === user.id ? <p onClick={((e) => history.push(`/communities2/${id}`))} id="seven"><span id="tools"><i class="fi fi-rs-shield"></i>MOD TOOLS</span><i class="fi fi-rr-menu-dots"></i></p> : <i id="comm-sets" class="fi fi-rr-menu-dots"></i>}
                 </div>
                 <div id="home-section">
                 <div id="cs-side1">

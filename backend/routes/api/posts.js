@@ -127,7 +127,10 @@ router.get("/:id/comments", async (req, res) => {
     let comments = await Comments.findAll({
         where: {
             postId,
-        }
+        },
+        include: [
+            { model: User}
+        ]
     })
 
     return res.json(comments)
@@ -291,6 +294,23 @@ router.delete('/votes/:id', async (req, res) => {
     })
 
 })
+
+router.post("/:id/comment", async (req, res) => {
+    const { comment } = req.body
+    const postId = req.params.id
+    const { user } = req
+    const userId = user.dataValues.id
+
+    let c = await Comments.create({
+        userId,
+        comment,
+        postId
+
+    });
+
+    return res.json(c)
+})
+
 
 
 module.exports = router;

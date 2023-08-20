@@ -2,7 +2,7 @@
 .create-post-page {
     margin-left: 12%;
     margin-right: 12%;
-    margin-top: 4.8%;
+    margin-top: 2%;
     display: flex;
     gap: 24px;
     justify-content: center;
@@ -36,6 +36,11 @@
     background-color: #EDEFF1;
     height: 1px;
     margin-top: 10px;
+}
+
+#submit-c {
+    margin-left: 10%;
+    cursor: pointer;
 }
 
 #your-comms {

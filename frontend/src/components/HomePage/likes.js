@@ -22,7 +22,6 @@ function PostLikes({ post, vote, downVote }) {
 
         async function fetchData() {
           let data = await dispatch(postsActions.thunkGetUserVotes())
-            console.log(data)
           setUserVotes(data)
 
         }
@@ -64,7 +63,6 @@ function PostLikes({ post, vote, downVote }) {
                     setBoolean(true)
                 }
                 else {
-                    console.log("else")
                     if (voted || !voted.length) {
                         setAdd(1)
                         setBoolean(true)
@@ -94,7 +92,6 @@ function PostLikes({ post, vote, downVote }) {
                 setData({})
                 if (voted[0]) response = await dispatch(postsActions.thunkDeleteVote(voted[0].id))
                 setVoted([])
-                console.log(response)
                 let data2 = await dispatch(postsActions.thunkCreateVote(post.id, 0))
                 setData1(data2)
                 setBoolean2(true)

@@ -4,11 +4,13 @@ import thunk from 'redux-thunk';
 import sessionReducer from "./session";
 import postsReducer from './posts';
 import communitiesReducer from './communities';
+import commentsReducer from './comments'
 
 const rootReducer = combineReducers({
   session: sessionReducer,
   posts: postsReducer,
-  communities: communitiesReducer
+  communities: communitiesReducer,
+  comments: commentsReducer
 });
 
 let enhancer;

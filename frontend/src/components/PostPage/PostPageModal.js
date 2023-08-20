@@ -12,10 +12,12 @@ import DeletePost from "./delete";
 import { useModal2 } from "../../context/Modal2";
 import CommunitiesProfile from "../CreatePostPage/communites2";
 import PostLikes from "../HomePage/likes";
+import * as commentActions from '../../store/comments'
 
-function PostPageModal({ postId }) {
+function PostPageModal({ postId, scroll }) {
     const { communities, singleCommunity, communityMemberships } = useSelector((state) => state.communities);
     const { singlePost } = useSelector((state) => state.posts)
+    const { postComments } = useSelector((state) => state.comments)
     const { user } = useSelector((state) => state.session)
     const { id } = useParams();
     const dispatch = useDispatch()
@@ -25,7 +27,8 @@ function PostPageModal({ postId }) {
     const  { setModalContent2, modalRef2 } = useModal2()
     const [isVisible2, setIsVisible2] = useState(false);
     const [ description, setDescription ] = useState("");
-    const [ data1, setData1 ] = useState(null)
+    const [ data1, setData1 ] = useState({})
+    const [ data2, setData2 ] = useState({})
     const history = useHistory()
     const { closeModal } = useModal();
     const targetRef2 = useRef(null);
@@ -33,6 +36,8 @@ function PostPageModal({ postId }) {
     const [scrollPosition, setScrollPosition] = useState(0);
     const [scrollDirection, setScrollDirection] = useState("down");
     const [ isLiked, setIsLiked ] = useState([]);
+    const [ comment, setComment ] = useState("")
+    const [ scrolling, setScrolling ] = useState(scroll)
 
     const memberships = Object.values(communityMemberships)
 
@@ -53,15 +58,40 @@ function PostPageModal({ postId }) {
         setIsVisible2(false)
     }
 
+    const handleComment = () => {
+
+        console.log(comment)
+
+        setData2({
+            comment
+        })
+
+        setComment("")
+
+    }
+
+    useEffect( () => {
+
+        async function fetchData() {
+            const response = await dispatch(commentActions.thunkCreateComment(data2, singlePost.id))
+            console.log(response)
+        }
+        fetchData()
+
+    }, [dispatch, data2])
+
+
+
     useEffect(() => {
 
         async function fetchData() {
+          if (singlePost && singlePost.id) await dispatch(commentActions.thunkGetPostComments(singlePost.id))
           let data = await dispatch(postActions.thunkGetUserVotes())
           setIsLiked(data)
           }
           fetchData()
 
-      }, [dispatch, singlePost])
+    }, [dispatch, singlePost.id])
 
 
     useEffect(() => {
@@ -92,6 +122,9 @@ function PostPageModal({ postId }) {
 
         }
     };
+
+    let comments = Object.values(postComments)
+    console.log(comments)
 
     useEffect( () => {
 
@@ -147,8 +180,20 @@ function PostPageModal({ postId }) {
             const years = Math.floor(timeDifferenceInSeconds / 31536000);
             return years === 1 ? `${years} year ago` : `${years} years ago`;
         }
-      };
+    };
 
+    useEffect(() => {
+        if (scrolling) {
+          // Replace "targetElementId" with the actual ID of the target element
+          const targetElement = document.getElementById("go-to-c");
+
+          if (targetElement) {
+            targetElement.scrollIntoView({ behavior: "smooth" });
+          }
+
+          // Reset the flag after scrolling
+        }
+    }, [scrolling]);
 
       useEffect(() => {
 
@@ -183,6 +228,10 @@ function PostPageModal({ postId }) {
         ];
 
         const formattedDate = `${months[dateObject.getMonth()]}, ${dateObject.getDate()}, ${dateObject.getFullYear()}`;
+
+        console.log(scroll)
+
+
 
     return (
         <div className="post-modal">
@@ -325,8 +374,8 @@ function PostPageModal({ postId }) {
                 <p>Check back later to see views, shares, and more. <span>Share your post</span> to spread the word!</p>
             </div>
             <div className="comment-input">
-                <p>Comment as <span>{singlePost?.User?.username}</span></p>
-                <textarea onChange={((e) => "hello")} placeholder="What are your thoughts?"></textarea>
+                <p>Comment as <span>{user.username}</span></p>
+                <textarea value={comment} onChange={((e) => setComment(e.target.value))} placeholder="What are your thoughts?"></textarea>
             <div id="my-comments">
                 <i class="fi fi-rr-bold"></i>
                 <i class="fa-solid fa-italic"></i>
@@ -345,6 +394,7 @@ function PostPageModal({ postId }) {
                 <i class="fi fi-rr-grid-alt"></i>
                 <i class="fi fi-rr-picture"></i>
                 <i class="fa-brands fa-youtube"></i>
+                <button id="submit-c" onClick={handleComment}>Comment</button>
             </div>
             </div>
             <div className="comments-for-post">
@@ -365,11 +415,42 @@ function PostPageModal({ postId }) {
                     <input type="text" placeholder='Search comments'></input>
                     </div>
                 </div>
-                <div id="any-comments">
+                    <div id="go-to-c"></div>
+                { !comments.length ? <div id="any-comments">
                     <i class="fi fi-rr-comment-heart"></i>
                     <p>No Comments Yet</p>
                     <span>Be the first to share what you think</span>
-                </div>
+                </div> :
+                <div id="if-comments">
+                    {comments.map((c) =>
+                        <div className="a-comment">
+                            <div id="left-csec">
+                            <img id="avatar6" src={pfp}></img>
+                            <div id="c-line"></div>
+                            </div>
+                            <div id="right-csec">
+                                <span>{c.User.username} · <div id="time-comm">{getTimeDifferenceString(c.createdAt)}</div></span>
+                                <p>{c.comment}</p>
+                                <div id="comment-extras">
+                                    <div>
+                                        <i  class="fi fi-rs-heart"></i>
+                                        <p>Votes</p>
+                                        <i  class="fi fi-rs-heart-crack"></i>
+                                    </div>
+                                    <div>
+                                        <i class="fa-regular fa-message"></i>
+                                        <p>Reply</p>
+                                    </div>
+                                    <div >
+                                        <i class="fi fi-rs-heart-arrow"></i>
+                                        <p>Share</p>
+                                    </div>
+                                    <i class="fi fi-rr-menu-dots"></i>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>}
             </div>
             </div>
             </div>
@@ -405,7 +486,7 @@ function PostPageModal({ postId }) {
                 <p>Moderators</p>
                 </div>
                 <div id="home-section7">
-                <button onClick={(() => history.push('/posts/new'))} id="but4">Message the mods</button>
+                <button id="but4"><i class="fi fi-rr-envelope"></i>Message the mods</button>
                 <div id="cs-side7">
                     <span>{user.username}</span>
                     <span>VIEW ALL MODERATORS</span>

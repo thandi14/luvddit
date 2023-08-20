@@ -10,8 +10,9 @@ import { useModal } from "../../context/Modal";
 import PostPageModal from "../PostPage/PostPageModal";
 import * as postsActions from '../../store/posts'
 import PostLikes from "../HomePage/likes";
+import Navigation from "../Navigation";
 
-function CommunityPage() {
+function CommunityPageEdit() {
   const { id } = useParams();
   const { communities, singleCommunity, communityMemberships } = useSelector((state) => state.communities);
   const { posts } = useSelector((state) => state.posts);
@@ -24,8 +25,34 @@ function CommunityPage() {
   const [ isLiked, setIsLiked ] = useState([]);
   const [ joined, setJoined ] = useState(null)
   const [ scrolling, setScrolling ] = useState(false)
+  const [ icon, setIcon ] = useState(false)
+  const [ banner, setBanner ] = useState(false)
+  const [ body, setBody ] = useState(false)
 
 
+  const handleIcon = () => {
+    setIcon(true)
+    setBanner(false)
+    setBody(false)
+  }
+
+  const handleBanner = () => {
+    setIcon(false)
+    setBanner(true)
+    setBody(false)
+  }
+
+  const handleBody = () => {
+    setIcon(false)
+    setBanner(false)
+    setBody(true)
+  }
+
+  const handleAll = () => {
+    setIcon(false)
+    setBanner(false)
+    setBody(false)
+  }
 
   useEffect(() => {
     window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
@@ -44,7 +71,7 @@ function CommunityPage() {
     if (member) setJoined(true)
     if (!member) setJoined(false)
 
-  }, [dispatch, id])
+  }, [dispatch])
 
   useEffect(() => {
 
@@ -57,7 +84,7 @@ function CommunityPage() {
 
 
 
-  }, [dispatch, id])
+  }, [dispatch])
 
   useEffect(() => {
 
@@ -68,7 +95,7 @@ function CommunityPage() {
 
     fetchData()
 
-  }, [dispatch, id])
+  }, [dispatch])
 
   let top = isVisible ? "top" : "down"
 
@@ -172,8 +199,48 @@ function CommunityPage() {
 
 
     return (
-        <>
-        <div className="community-page-header">
+        <div id="fifty">
+        <div id="edit-page-menu">
+            <div id="twenty">
+            <span id="a"><i onClick={handleAll} class="fi fi-br-angle-left"></i><span id="d">Back to mod tools</span><i onClick={(() => history.push(`/communities/${id}`))} class="fi fi-rr-cross-small"></i></span>
+           {icon ?
+           <>
+           <span id="b">Name & icon</span>
+            <div>
+                <span id="e">Community Icon <input></input></span>
+            </div>
+           </>
+            : null}
+            {banner ?
+            <>
+            <span id="b">Banner</span>
+            <div>
+                <span id="e">Background<input></input></span>
+            </div>
+            </> : null}
+            {body ?
+            <>
+            <span id="b">Color theme</span>
+            <div>
+                <span id="e">Body Background<input></input></span>
+            </div>
+            </> : null}
+            { !icon && !banner && !body ?
+            <>
+                <span id="b">Apperance</span>
+            <div>
+                <span onClick={handleBody}>Color theme<i class="fi fi-br-angle-right"></i></span>
+                <span onClick={handleIcon}>Name & Icon<i class="fi fi-br-angle-right"></i></span>
+                <span onClick={handleBanner}>Banner<i class="fi fi-br-angle-right"></i></span>
+            </div>
+            <span id="c">RESET TO DEFAULTS</span>
+            </>
+            : null}
+            </div>
+        </div>
+        <div id="edit page">
+            <Navigation />
+        <div className="community-page-header2">
         <div id="community-page-header"></div>
         <div id="community-page-title">
             <div id="community-title-head">
@@ -189,7 +256,7 @@ function CommunityPage() {
         <div className="community-page-content">
 
         </div>
-        <div className="community-page-content">
+        <div className="community-page-content2">
             <div className="posts">
                 <div className="create">
                     <img src={pfp}></img>
@@ -308,9 +375,10 @@ function CommunityPage() {
             </div>
         </div>
 
-        </>
+        </div>
+        </div>
     )
 }
 
 
-export default CommunityPage
+export default CommunityPageEdit
