@@ -31,8 +31,7 @@ function CommunitiesMenu({ value }) {
             <p>Your Profile</p>
             <div onClick={((e) => setId(community3[0].id))} id="user-community">
             <div id='uc-img'>
-            { !style ? <img src={avatar}></img> :
-            <img src={style.profile}></img> }
+            <img src={avatar}></img> 
             </div>
             <div id="uc-name">
             <p>l/{community[0]?.name}</p>
