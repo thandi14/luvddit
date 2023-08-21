@@ -41,19 +41,19 @@ function ProfileButton({ user, menu }) {
       {/* <img id="pfpButton" src={pfp} alt="pfp" onClick={openMenu}> */}
       {/* </img> */}
       <div className={ulClassName} ref={ulRef}>
-        <div>
+        <div onClick={(() => window.alert("Feature not avilable"))}>
         <span id="nine"><i class="fi fi-rr-user"></i>My stuff</span>
         <span>Online status</span>
         <span>Profile</span>
         <span>Create Avatar</span>
         <span>User settings</span>
         </div>
-        <div>
+        <div onClick={(() => window.alert("Feature not avilable"))}>
           <span id="nine"><i class="fi fi-rr-eye"></i>View Options</span>
           <span>Mod Mode</span>
           <span>Dark Mode</span>
         </div>
-        <div>
+        <div onClick={(() => window.alert("Feature not avilable"))}>
           <span>Create a community</span>
           <span><i class="fi fi-rr-bullhorn"></i>Advertise on luddit</span>
           <span><i class="fi fi-rr-coins"></i>Coins</span>

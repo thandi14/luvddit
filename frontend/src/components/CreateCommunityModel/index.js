@@ -70,7 +70,7 @@ function CreateCommunity() {
             </div>
             <div id="cc-submit">
                 <button onClick={(() => closeModal())}>Cancel</button>
-                <button onClick={handleSubmit}>Create Community</button>
+                <button id={name ? "eleven" : "eleven2"} onClick={handleSubmit}>Create Community</button>
             </div>
         </div>
     )

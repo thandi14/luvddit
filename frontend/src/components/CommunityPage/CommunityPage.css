@@ -443,7 +443,10 @@
 
 #fifty {
     display: flex;
+    width: 100%;
 }
+
+
 
 #e {
     display: flex;
@@ -492,6 +495,7 @@
 #edit-page-menu {
     background-color: white;
     width: 45%;
+    position: relative;
     border-right: 1px solid #EDEFF1;
 }
 
@@ -548,6 +552,9 @@
     height: 22px;
     color: #7c7c7c;
     margin-left: 6%;
+    right: 4%;
+    /* margin-right: 5px; */
+    position: absolute;
 }
 
 #c {

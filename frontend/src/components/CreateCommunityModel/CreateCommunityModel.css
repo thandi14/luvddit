@@ -200,7 +200,7 @@ input[type="text"]:focus {
 
 }
 
-#cc-submit :nth-child(2) {
+#eleven {
     width: 30%;
     display: flex;
     margin-left: 1%;
@@ -214,6 +214,24 @@ input[type="text"]:focus {
     cursor: pointer;
     background-color: #0079D3;
 }
+
+#eleven2 {
+    width: 30%;
+    display: flex;
+    margin-left: 1%;
+    align-items: center;
+    height: 32px;
+    border-radius: 20px;
+    color: #ccc;
+    font-weight: 700;
+    border: 0px;
+    justify-content: center;
+    cursor: pointer;
+    background-color: #7C7C7C;
+}
+
+
+
 
 #cc-submit > :first-child {
     width: 16%;
