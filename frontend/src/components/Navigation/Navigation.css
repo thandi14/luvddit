@@ -269,6 +269,16 @@ body {
     align-items: center;
     height: 5px;
 }
+.profile-dropdown {
+    display: flex;
+    justify-content: flex-start;
+}
+.profile-dropdown > button {
+    font-size: 16px;
+    border: none;
+    background: white;
+    width: 100%;
+}
 
 #user {
     font-size: 12px;
@@ -325,9 +335,28 @@ body {
     border-bottom: 1px solid #EDEFF1;
     padding: 5%;
 }
+.profile-dropdown :nth-child(4) {
+    display: flex;
+    flex-direction: row;
+    gap: 8px
+}
+
+.profile-dropdown > span > i {
+    font-size: 20px;
+}
+
+#nine {
+    color:#878A8C
+}
+
+.profile-dropdown {
+    padding-left: 2%;
+}
 
 .profile-dropdown > div > span{
     height: 40px;
+    display: flex;
+    gap: 8px;
     font-size: 16px;
 }
 

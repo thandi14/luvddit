@@ -42,26 +42,26 @@ function ProfileButton({ user, menu }) {
       {/* </img> */}
       <div className={ulClassName} ref={ulRef}>
         <div>
-        <span>My stuff</span>
+        <span id="nine"><i class="fi fi-rr-user"></i>My stuff</span>
         <span>Online status</span>
         <span>Profile</span>
         <span>Create Avatar</span>
         <span>User settings</span>
         </div>
         <div>
-          <span>View Options</span>
+          <span id="nine"><i class="fi fi-rr-eye"></i>View Options</span>
           <span>Mod Mode</span>
           <span>Dark Mode</span>
         </div>
         <div>
           <span>Create a community</span>
-          <span>Advertise on reddit</span>
-          <span>Coins</span>
-          <span>Premium</span>
-          <span>Explore</span>
-          <span>Help Center</span>
-          <span>More</span>
-          <span>Terms and Policies</span>
+          <span><i class="fi fi-rr-bullhorn"></i>Advertise on luddit</span>
+          <span><i class="fi fi-rr-coins"></i>Coins</span>
+          <span><i class="fa-solid fa-shield-halved"></i>Premium</span>
+          <span><i class="fi fi-rr-telescope"></i>Explore</span>
+          <span><i class="fi fi-rr-interrogation"></i>Help Center</span>
+          <span><i class="fi fi-rr-circle-i"></i>More</span>
+          <span><i class="fa-solid fa-scroll"></i>Terms and Policies</span>
           <span>User Agreement</span>
           <span>Privacy Policy</span>
           <span>Content Policy</span>
@@ -70,7 +70,7 @@ function ProfileButton({ user, menu }) {
         {/* <span>{user.username}</span>
         <span>{user.firstName} {user.lastName}</span>
         <span>{user.email}</span> */}
-        <button onClick={logout}>Log Out</button>
+        <div onClick={logout}><i class="fi fi-rr-door-closed"></i>Log Out</div>
       </div>
     </>
   );

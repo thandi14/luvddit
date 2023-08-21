@@ -207,7 +207,7 @@ function CommunityPageEdit() {
            <>
            <span id="b">Name & icon</span>
             <div>
-                <span id="e">Community Icon <input></input></span>
+                <span id="e">Community Icon <input placholder="Feature not availble"></input></span>
             </div>
            </>
             : null}
@@ -215,14 +215,14 @@ function CommunityPageEdit() {
             <>
             <span id="b">Banner</span>
             <div>
-                <span id="e">Background<input></input></span>
+                <span id="e">Background<input placholder="Feature not availble"></input></span>
             </div>
             </> : null}
             {body ?
             <>
             <span id="b">Color theme</span>
             <div>
-                <span id="e">Body Background<input></input></span>
+                <span id="e">Body Background<input placholder="Feature not availble"></input></span>
             </div>
             </> : null}
             { !icon && !banner && !body ?
