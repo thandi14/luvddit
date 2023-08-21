@@ -215,7 +215,7 @@ function PostPageModal({ postId, scroll }) {
 
 
 
-        if (!Object.values(singlePost).length) return <h1>loading</h1>
+        if (!Object.values(singlePost).length) return <h1></h1>
 
         let createdAt
         if (Object.values(singlePost?.Community)?.length) createdAt = new Date(singlePost?.Community.createdAt)

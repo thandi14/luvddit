@@ -70,7 +70,7 @@ function CommunitiesProfile({ page, community }) {
 
     }
 
-    if (!community) return <h1>Loading</h1>
+    if (!community) return <h1></h1>
     let userCommunity = Object.values(community)
 
     let createdAt

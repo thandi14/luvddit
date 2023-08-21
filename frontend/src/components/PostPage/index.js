@@ -154,7 +154,7 @@ function PostPage() {
 
     }, [dispatch, data1, id])
 
-    if (!Object.values(singlePost).length) return <h2>Loading...</h2>
+    if (!Object.values(singlePost).length) return <h2></h2>
 
     let editMenu = isVisible ? "edit-menu" : "hidden";
 

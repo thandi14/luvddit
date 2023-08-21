@@ -69,7 +69,7 @@ function HomePage() {
     const ePost = Object.values(posts)
 
 
-    if (!ePost.length) return <h1 className="data-not-here">Loading...</h1>
+    if (!ePost.length) return <h1 className="data-not-here"></h1>
 
     let recent = Object.values(posts)
     recent = recent.reverse()

@@ -117,7 +117,7 @@ function CommunityPage() {
 
   }, [])
 
-  if (!Object.values(singleCommunity).length) return <h1 className="data-not-here">Loading...</h1>
+  if (!Object.values(singleCommunity).length) return <h1 className="data-not-here"></h1>
 
   const getTimeDifferenceString = (createdAt) => {
     const currentTime = new Date();
