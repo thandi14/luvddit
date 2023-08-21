@@ -355,8 +355,9 @@
 }
 
 .menu {
-    width: 26%;
+    width: 11%;
     display: flex;
+    position: relative;
     justify-content: flex-end;
 }
 
