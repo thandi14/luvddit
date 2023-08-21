@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
           { foreignKey: 'userId' }
       );
       Communities.hasMany(
+        models.communityStyles,
+          { foreignKey: 'communityId', onDelete: 'CASCADE',  hooks: true }
+      );
+      Communities.hasMany(
         models.Posts,
           { foreignKey: 'communityId', onDelete: 'CASCADE',  hooks: true }
       );// additional attributes for the join table can be included in the options
