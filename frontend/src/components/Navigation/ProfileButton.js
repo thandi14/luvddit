@@ -71,6 +71,7 @@ function ProfileButton({ user, menu }) {
         <span>{user.firstName} {user.lastName}</span>
         <span>{user.email}</span> */}
         <div onClick={logout}><i class="fi fi-rr-door-closed"></i>Log Out</div>
+        <span id="inc">Luddit, Inc. © 2023. All rights reserved.</span>
       </div>
     </>
   );

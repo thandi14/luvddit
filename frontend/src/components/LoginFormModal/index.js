@@ -25,6 +25,11 @@ function LoginFormModal() {
       });
   };
 
+  const handleDemo = () => {
+    setCredential("Demo-lition")
+    setPassword("password")
+  }
+
   console.log(errors)
 
   return (
@@ -57,6 +62,8 @@ function LoginFormModal() {
         <button type="submit">Log In</button>
       </form>
       <p id="sign-up2">New to Luvddit? <span onClick={(() => setModalContent(<SignupFormModal />))} id="yes">Sign Up</span></p>
+      <p id="sign-up2">Sign In as <span onClick={handleDemo} id="yes">Demo-lition</span></p>
+
     </div>
   );
 }

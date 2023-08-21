@@ -93,8 +93,11 @@
 
 #title {
     font-size: 18px;
+    display: flex;
     margin-top: 5px;
     margin-left: 10px;
+    gap: 5px;
+    align-items: center;
     margin-right: 10px;
     height: auto;
     margin-bottom: 1.5%;

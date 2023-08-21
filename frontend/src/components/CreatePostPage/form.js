@@ -88,18 +88,20 @@ function PostForm() {
 
 
     const handleSubmit = async () => {
-        let type = ""
+        let tags = ""
 
-        if (oc) type += ",oc"
-        if (spoiler) type += ",spoiler"
-        if (nsfw) type += ",type"
+        if (oc) tags += ",oc"
+        if (spoiler) tags += ",spoiler"
+        if (nsfw) tags += ",nsfw"
 
-        if (type) {
-            type = type.slice(1, type.length)
+        console.log("!!!!!!!!", tags)
+
+        if (tags) {
+            tags = tags.slice(1, tags.length)
             setData1({
                 title,
                 description,
-                type,
+                tags,
              })
 
         }
@@ -111,7 +113,7 @@ function PostForm() {
                 imgURL: imageDescription
             })
         }
-        else {
+        else if (!tags) {
             setData1({
                 title,
                 description
@@ -122,6 +124,8 @@ function PostForm() {
 
 
     }
+
+    console.log(data1)
 
 
     return (

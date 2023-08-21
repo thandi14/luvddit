@@ -124,17 +124,23 @@ function HomePage() {
       };
 
 
-      console.log(scrolling)
+
 
     return (
         <div className="splashPage">
             <div className="posts">
-                <div className="create">
+                { user ? <div className="create">
                     <img src={pfp}></img>
                     <input onClick={(() => history.push('/posts/new'))} type="text" placeholder="Create Post"></input>
                     <div><i onClick={(() => history.push('/posts/new/image'))} class="fi fi-rr-picture"></i></div>
                     <div><i onClick={(() => history.push('/posts/new/link'))} class="fi fi-rr-link-alt"></i></div>
-                </div>
+                </div> :
+                <div className="create">
+                    <img src={pfp}></img>
+                    <input onClick={(() => window.alert('Please login'))} type="text" placeholder="Create Post"></input>
+                    <div><i onClick={(() => window.alert('Please login'))} class="fi fi-rr-picture"></i></div>
+                    <div><i onClick={(() => window.alert('Please login'))} class="fi fi-rr-link-alt"></i></div>
+                </div> }
                 <div className="filter">
                 <div id="filter-side1">
                 <div onClick={(() => window.alert("Feature not avaliable"))} id="best">
@@ -176,7 +182,7 @@ function HomePage() {
                     <p>·</p>
                     <p >Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User.username}</span> {getTimeDifferenceString(post.createdAt)}</p>
                     </div>
-                    <h3 onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title">{post.title}</h3>
+                    <h3  id="p-tit" onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title">{ post.tags && post.tags.includes("oc") ? <div id="oc5">OC</div> : null} {post.tags && post.tags.includes("spoiler") ? <div id="spoiler5">Spoiler</div> : null } { post.tags && post.tags.includes("nsfw") ? <div id="nsfw5">NSFW</div> : null}{post.title}</h3>
                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="content">
                     <div id="img">
                     {post.PostImages.length ? <img src={post.PostImages[0]?.imgURL} alt="meaningful-text"></img> : null}
@@ -190,19 +196,19 @@ function HomePage() {
                     <i class="fa-regular fa-message"></i>
                     <p id={`${post.id}`} >{post.Comments.length} Comments</p>
                     </div>
-                    <div id="comment">
+                    <div onClick={(() => window.alert('Feature coming soon'))} id="comment">
                     <i class="fi fi-rr-box-heart"></i>
                     <p>Awards</p>
                     </div>
-                    <div id="comment">
+                    <div onClick={(() => window.alert('Feature coming soon'))} id="comment">
                     <i class="fi fi-rs-heart-arrow"></i>
                     <p>Share</p>
                     </div>
-                    <div id="comment">
+                    <div onClick={(() => window.alert('Feature coming soon'))} id="comment">
                     <i class="fi fi-rr-bookmark"></i>
                     <p>Save</p>
                     </div>
-                    <i class="fi fi-rr-menu-dots"></i>
+                    <i onClick={(() => window.alert('Feature coming soon'))} class="fi fi-rr-menu-dots"></i>
                     </div>
                     </div>
                     </div>

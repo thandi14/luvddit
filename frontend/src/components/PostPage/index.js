@@ -158,10 +158,11 @@ function PostPage() {
 
     let editMenu = isVisible ? "edit-menu" : "hidden";
 
-    console.log(singleCommunity)
 
+    let tags
+    if (singlePost.tags) tags = singlePost.tags.split(',')
 
-
+    console.log(tags)
 
     return (
 
@@ -184,6 +185,7 @@ function PostPage() {
         <div id="details-side">
         <p>Posted by l/{singlePost?.User?.username} just now<i class="fi fi-rs-cowbell"></i></p>
         <h1>{singlePost?.title}</h1>
+        <span id="tags">{ tags && tags.includes("oc") ? <div id="oc5">OC</div> : null} {tags && tags.includes("spoiler") ? <div id="spoiler5">Spoiler</div> : null } { tags && tags.includes("nsfw") ? <div id="nsfw5">NSFW</div> : null}</span>
         <div id="post-info1">
         { isVisible2 ? null : singlePost.description ? <p>{singlePost?.description}</p> : null}
         { isVisible2 ? <div className="post-input7">

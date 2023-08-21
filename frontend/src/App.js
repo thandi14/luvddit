@@ -26,7 +26,7 @@ function App() {
     dispatch(communitiesActions.thunkGetAllCommunities())
    if (user) dispatch(communitiesActions.thunkGetCommunityMemberships())
    if (user) dispatch(communitiesActions.thunkGetUserCommunities())
-  }, [dispatch]);
+  }, [dispatch, isLoaded]);
 
   console.log(location.pathname)
 

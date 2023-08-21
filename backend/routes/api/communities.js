@@ -15,6 +15,8 @@ router.post('/:id/posts', async (req, res) => {
     const { user } = req
     const userId = user.dataValues.id
 
+    console.log("tags")
+
     let post = await Posts.create({
         communityId,
         userId,

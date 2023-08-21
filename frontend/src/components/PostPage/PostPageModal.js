@@ -229,7 +229,8 @@ function PostPageModal({ postId, scroll }) {
 
         const formattedDate = `${months[dateObject.getMonth()]}, ${dateObject.getDate()}, ${dateObject.getFullYear()}`;
 
-
+        let tags
+        if (singlePost.tags) tags = singlePost.tags.split(',')
 
     return (
         <div className="post-modal">
@@ -264,6 +265,7 @@ function PostPageModal({ postId, scroll }) {
                     <p>Posted by u/{singlePost.User.username} {getTimeDifferenceString(singlePost.createdAt)}</p>
                     </div>
             <h1>{singlePost?.title}</h1>
+            <span id="tags">{ tags && tags.includes("oc") ? <div id="oc5">OC</div> : null} {tags && tags.includes("spoiler") ? <div id="spoiler5">Spoiler</div> : null } { tags && tags.includes("nsfw") ? <div id="nsfw5">NSFW</div> : null}</span>
             <div id="post-info1">
             { isVisible2 ? null : singlePost.description ? <p>{singlePost?.description}</p> : null}
             { isVisible2 ? <div className="post-input7">
