@@ -21,7 +21,7 @@ function CommunitiesProfile({ page, community }) {
     useEffect(() => {
 
         async function fetchData() {
-            await dispatch(communityActions.thunkGetDetailsById(community.id))
+           if (community.id) await dispatch(communityActions.thunkGetDetailsById(community.id))
             await dispatch(communityActions.thunkGetCommunityMemberships())
 
         }
@@ -87,9 +87,11 @@ function CommunitiesProfile({ page, community }) {
 
     const profile = community.id
 
-    let myCommunities = Object.values(userCommunities)
+    let myCommunities
+    if (Object.values(userCommunities).length) myCommunities = Object.values(userCommunities)
 
-    const firstCommunity = myCommunities[0].id
+    let firstCommunity
+    if (myCommunities) firstCommunity = myCommunities[0].id
 
     const formattedDate = `${months[dateObject.getMonth()]}, ${dateObject.getDate()}, ${dateObject.getFullYear()}`;
 
@@ -140,7 +142,7 @@ function CommunitiesProfile({ page, community }) {
                         {member.length && joined ? <button onClick={handleUnjoinClick} id="join-now2">Joined</button> : <button onClick={handleJoinClick} id="join-now">Join</button> }
                         <div id="line"></div>
                         <div id="cs-side5">
-                        <span>COMMUNITY OPTIONS</span>
+                        <span onClick={(() => window.alert("Feature coming soon"))}>COMMUNITY OPTIONS</span>
                         <i class="fa-solid fa-chevron-down"></i>
                 </div>
 

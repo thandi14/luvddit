@@ -192,6 +192,7 @@
     margin-right: 6px;
     margin-top: 60px;
     border-bottom: 1px solid #EDEFF1;
+    cursor: pointer;
 }
 
 #sort-comments > div > p > i {
@@ -416,6 +417,7 @@
     border-bottom-right-radius: 4px;
     align-items: center;
     gap: 14px;
+    cursor: not-allowed;
 }
 
 #my-comments i:first-child {
@@ -491,6 +493,87 @@
     font-size: 14px;
     color: #7c7c7c;
 }
+
+#submit-c {
+    border: 0px;
+    background-color: #878A8C;
+    width: 80px;
+    height: 20px;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 20px;
+    color: #ccc;
+    cursor: pointer;
+}
+
+#post-input {
+    cursor: not-allowed;
+}
+
+#comment-extras {
+    cursor: not-allowed;
+}
+
+#submit-c2 {
+    border: 0px;
+    background-color: #0079D3;
+    width: 80px;
+    height: 20px;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 20px;
+    color: white;
+    cursor: pointer;
+    margin-left: 10%;
+}
+
+#comm-head10 {
+    width: 100%;
+    margin-top: -15px;
+    padding-left: 8%;
+    height: 25px;
+    font-size: 14px;
+    font-weight: 900;
+    z-index: 2;
+    /* display: flex; */
+    background-color: rgba(219, 240, 255);
+}
+
+#comm-head10 > p {
+    padding: 0px;
+    color: #0079D3;
+    height: 100%;
+    width: 2.5%;
+    border-bottom: 1px solid #0079D3;
+}
+
+#submit-c3 {
+    border: 0px;
+    background-color: #878A8C;
+    width: 80px;
+    height: 20px;
+    margin-left: 25%;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 20px;
+    color: #ccc;
+    cursor: pointer;
+}
+
+#submit-c4 {
+    border: 0px;
+    background-color: #0079D3;
+    width: 80px;
+    height: 20px;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 20px;
+    color: white;
+    cursor: pointer;
+    margin-left: 25%;
+}
+
+
 
 #comm-head {
     padding-left: 8%;

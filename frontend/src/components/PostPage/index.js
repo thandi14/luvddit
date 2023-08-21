@@ -10,10 +10,13 @@ import * as communityActions from '../../store/communities'
 import DeletePost from './delete';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { useModal2 } from '../../context/Modal2';
+import pfp from "./IMG6.jpg";
+import * as commentActions from '../../store/comments'
+import PostLikes from '../HomePage/likes';
 
 function PostPage() {
     const { singlePost } = useSelector((state) => state.posts)
-    const { singleCommunity } = useSelector((state) => state.communities)
+    const { singleCommunity, userCommunities } = useSelector((state) => state.communities)
     const { id } = useParams();
     const dispatch = useDispatch()
     const [isVisible, setIsVisible] = useState(false);
@@ -24,6 +27,36 @@ function PostPage() {
     const [ description, setDescription ] = useState("");
     const [ data1, setData1 ] = useState(null);
     const history = useHistory()
+    const [ comment, setComment ] = useState("")
+    const { postComments } = useSelector((state) => state.comments)
+    const [ data2, setData2 ] = useState({})
+    const [ isLiked, setIsLiked ] = useState([]);
+
+    const myCommunity = Object.values(userCommunities)
+
+    useEffect( () => {
+
+        async function fetchData() {
+            const response = await dispatch(commentActions.thunkCreateComment(data2, singlePost.id))
+            console.log(response)
+        }
+        fetchData()
+
+    }, [dispatch, data2])
+
+
+    useEffect(() => {
+
+        async function fetchData() {
+          if (singlePost && singlePost.id) await dispatch(commentActions.thunkGetPostComments(singlePost.id))
+          let data = await dispatch(postActions.thunkGetUserVotes())
+          setIsLiked(data)
+          }
+          fetchData()
+
+    }, [dispatch, singlePost.id])
+
+
 
     const handleClick = () => {
         setIsVisible(!isVisible);
@@ -46,6 +79,21 @@ function PostPage() {
 
     }
 
+    const handleComment = () => {
+
+        console.log(comment)
+
+        setData2({
+            comment
+        })
+
+        setComment("")
+
+    }
+
+    let comments = Object.values(postComments)
+
+
 
     useEffect(() => {
 
@@ -65,19 +113,32 @@ function PostPage() {
 
     }, [isVisible]);
 
-    // useEffect( () => {
+    const getTimeDifferenceString = (createdAt) => {
+        const currentTime = new Date();
+        const createdAtDate = new Date(createdAt);
 
-    //     console.log(data1)
-    //     if (data1)  dispatch(postActions.thunkUpdatePosts(singlePost.id, data1))
-    //     let data
-    //     if (id) data = dispatch(postActions.thunkGetDetailsById(id))
-    //     setDeleted(data)
-    //     if (data)  dispatch(communityActions.thunkGetDetailsById(data.communityId))
-    //    // console.log(deleted)
+        const timeDifferenceInSeconds = Math.floor((currentTime - createdAtDate) / 1000);
 
+        if (timeDifferenceInSeconds < 60) {
+            return timeDifferenceInSeconds === 1 ? `${timeDifferenceInSeconds} sec ago` : `${timeDifferenceInSeconds} secs ago`;
+        } else if (timeDifferenceInSeconds < 3600) {
+            const minutes = Math.floor(timeDifferenceInSeconds / 60);
+            return minutes === 1 ? `${minutes} minute ago` : `${minutes} minutes ago`;
+        } else if (timeDifferenceInSeconds < 86400) {
+            const hours = Math.floor(timeDifferenceInSeconds / 3600);
+            return hours === 1 ? `${hours} hour ago` : `${hours} hours ago`;
+        } else if (timeDifferenceInSeconds < 2592000) {
+            const days = Math.floor(timeDifferenceInSeconds / 86400);
+            return days === 1 ? `${days} day ago` : `${days} days ago`;
+        } else if (timeDifferenceInSeconds < 31536000) {
+            const months = Math.floor(timeDifferenceInSeconds / 2592000);
+            return months === 1 ? `${months} month ago` : `${months} months ago`;
+        } else {
+            const years = Math.floor(timeDifferenceInSeconds / 31536000);
+            return years === 1 ? `${years} year ago` : `${years} years ago`;
+        }
+    };
 
-
-    // }, [dispatch, id, data1])
 
     useEffect( () => {
 
@@ -109,12 +170,16 @@ function PostPage() {
         <img src="https://external-preview.redd.it/2ha9O240cGSUZZ0mCk6FYku61NmKUDgoOAJHMCpMjOM.png?auto=webp&s=3decd6c3ec58dc0a850933af089fb3ad12d3a505"></img>
         <h1>l/{singleCommunity.name}</h1>
     </div>
+    { myCommunity.length && myCommunity[0].id !== singlePost.communityId ? <div id="comm-head10">
+        <p>Posts</p>
+    </div> : null}
     <div className="whole-post-page">
         <div className="post-page">
         <div id="vote-side">
-            <i class="fi fi-rs-heart"></i>
-            <span>{singlePost.votes + singlePost.downVotes}</span>
-            <i class="fi fi-rs-heart-crack"></i>
+        <PostLikes post={singlePost}
+        vote={isLiked.length && isLiked.some((l) => l.postId === singlePost.id && l.upVote === 1)}
+        downVote={isLiked.length && isLiked.some((l) => l.postId === singlePost.id && l.downVote === 1)}
+        />
         </div>
         <div id="details-side">
         <p>Posted by l/{singlePost?.User?.username} just now<i class="fi fi-rs-cowbell"></i></p>
@@ -151,23 +216,23 @@ function PostPage() {
             <i class="fa-regular fa-message"></i>
             <p>{singlePost.Comments?.length}</p>
             </div>
-            <div id="comment4">
+            <div onClick={(() => window.alert("Feature not avaliable"))} id="comment4">
                 <i class="fi fi-rs-heart-arrow"></i>
                 <p>Share</p>
             </div>
-            <div id="comment4">
+            <div onClick={(() => window.alert("Feature not avaliable"))} id="comment4">
                 <i class="fi fi-rs-check-circle"></i>
                 <p>Approved</p>
             </div>
-            <div id="comment4">
+            <div onClick={(() => window.alert("Feature not avaliable"))} id="comment4">
                 <i class="fi fi-rs-circle-cross"></i>
                 <p>Removed</p>
             </div>
-            <div id="comment4">
+            <div onClick={(() => window.alert("Feature not avaliable"))} id="comment4">
                 <i class="fi fi-rr-box"></i>
                 <p>Spam</p>
             </div>
-            <div id="comment4">
+            <div onClick={(() => window.alert("Feature not avaliable"))} id="comment4">
                 <i class="fi fi-rs-shield"></i>
             </div>
             <div id="comment4">
@@ -208,7 +273,7 @@ function PostPage() {
         </div>
         <div className="comment-input">
             <p>Comment as <span>{singlePost?.User?.username}</span></p>
-            <textarea onChange={((e) => "hello")} placeholder="What are your thoughts?"></textarea>
+            <textarea value={comment} onChange={((e) => setComment(e.target.value))} placeholder="What are your thoughts?"></textarea>
         <div id="my-comments">
             <i class="fi fi-rr-bold"></i>
             <i class="fa-solid fa-italic"></i>
@@ -227,10 +292,12 @@ function PostPage() {
             <i class="fi fi-rr-grid-alt"></i>
             <i class="fi fi-rr-picture"></i>
             <i class="fa-brands fa-youtube"></i>
+            <button id={!comment ? "submit-c3" : "submit-c4"} onClick={handleComment}>Comment</button>
+
         </div>
         </div>
         <div className="comments-for-post">
-            <div id="sort-comments">
+            <div onClick={(() => window.alert("Feature not avaliable"))} id="sort-comments">
                 <div>
                 <p>Sort By: Q&A (Suggested)<i class="fi fi-rr-caret-down"></i></p>
                 </div>
@@ -247,11 +314,41 @@ function PostPage() {
                 <input type="text" placeholder='Search comments'></input>
                 </div>
             </div>
-            <div id="any-comments">
-                <i class="fi fi-rr-comment-heart"></i>
-                <p>No Comments Yet</p>
-                <span>Be the first to share what you think</span>
-            </div>
+            { !comments.length ? <div id="any-comments">
+                    <i class="fi fi-rr-comment-heart"></i>
+                    <p>No Comments Yet</p>
+                    <span>Be the first to share what you think</span>
+                </div> :
+                <div id="if-comments">
+                    {comments.map((c) =>
+                        <div className="a-comment">
+                            <div id="left-csec">
+                            <img id="avatar6" src={pfp}></img>
+                            <div id="c-line"></div>
+                            </div>
+                            <div id="right-csec">
+                                <span>{c.User.username} · <div id="time-comm">{getTimeDifferenceString(c.createdAt)}</div></span>
+                                <p>{c.comment}</p>
+                                <div id="comment-extras">
+                                    <div>
+                                        <i  class="fi fi-rs-heart"></i>
+                                        <p>Votes</p>
+                                        <i  class="fi fi-rs-heart-crack"></i>
+                                    </div>
+                                    <div>
+                                        <i class="fa-regular fa-message"></i>
+                                        <p>Reply</p>
+                                    </div>
+                                    <div >
+                                        <i class="fi fi-rs-heart-arrow"></i>
+                                        <p>Share</p>
+                                    </div>
+                                    <i class="fi fi-rr-menu-dots"></i>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>}
         </div>
         </div>
         </div>

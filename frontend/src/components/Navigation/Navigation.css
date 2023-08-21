@@ -23,6 +23,34 @@ textarea:focus {
     /* transition: border-color 0.3s ease; */
 
 }
+
+#button-formss  > button {
+    border: 0px;
+    background-color: hotpink;
+    border-radius: 20px;
+    padding: 10px;
+    color: white;
+    cursor: pointer;
+
+}
+
+#button-formss  > button:hover {
+    border: 0px;
+    background-color: rgb(184, 75, 129);
+    border-radius: 20px;
+    padding: 10px;
+    color: white;
+    cursor: pointer;
+
+}
+
+
+#button-formss {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+}
+
 /*
 textarea:focus {
     border-left: 5px solid black;
@@ -30,6 +58,8 @@ textarea:focus {
     border-bottom: 5px solid black;
     border-top: none;
 } */
+
+
 
 body {
     background-color: #DAE0E6;

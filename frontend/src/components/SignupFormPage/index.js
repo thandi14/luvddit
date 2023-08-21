@@ -3,6 +3,8 @@ import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import * as sessionActions from "../../store/session";
 import "./SignupForm.css";
+import LoginFormModal from "../LoginFormModal";
+
 
 function SignupFormModal() {
   const dispatch = useDispatch();
@@ -13,7 +15,7 @@ function SignupFormModal() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
-  const { closeModal } = useModal();
+  const { closeModal, setModalContent } = useModal();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -44,71 +46,54 @@ function SignupFormModal() {
   return (
     <div id="signup-form">
       <h1>Sign Up</h1>
-      <form onSubmit={handleSubmit}>
+      <p>By continuing, you are setting up a Luddit account and agree to our <span>User Agreement</span> and <span>Privacy Policy</span>.</p>
+      <form id="form-sign" onSubmit={handleSubmit}>
         <label>
-          Email
-          <input
+          <input id={Object.values(errors).length ? "input-err2" : "input-err"}
             type="text"
+            placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
         </label>
-        {errors.email && <p>{errors.email}</p>}
+        {errors.email && <p id="error">{errors.email}</p>}
         <label>
-          Username
-          <input
+          <input id={Object.values(errors).length ? "input-err2" : "input-err"}
             type="text"
+            placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
         </label>
-        {errors.username && <p>{errors.username}</p>}
+        {errors.username && <p id="error">{errors.username}</p>}
         <label>
-          First Name
-          <input
-            type="text"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            required
-          />
-        </label>
-        {errors.firstName && <p>{errors.firstName}</p>}
-        <label>
-          Last Name
-          <input
-            type="text"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            required
-          />
-        </label>
-        {errors.lastName && <p>{errors.lastName}</p>}
-        <label>
-          Password
-          <input
+          <input id={Object.values(errors).length ? "input-err2" : "input-err"}
             type="password"
+            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
         </label>
-        {errors.password && <p>{errors.password}</p>}
+        {errors.password && <p id="error">{errors.password}</p>}
         <label>
-          Confirm Password
-          <input
+          <input id={Object.values(errors).length ? "input-err2" : "input-err"}
             type="password"
+            placeholder="Confirm Password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
         </label>
         {errors.confirmPassword && (
-          <p>{errors.confirmPassword}</p>
+          <p id="error">{errors.confirmPassword}</p>
         )}
         <button type="submit">Sign Up</button>
       </form>
+      <p id="sign-up2">Already a Luddit? <span onClick={(() => setModalContent(<LoginFormModal />))}>Login in</span></p>
+
     </div>
   );
 }

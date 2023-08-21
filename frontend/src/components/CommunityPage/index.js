@@ -62,7 +62,7 @@ function CommunityPage() {
   useEffect(() => {
 
     async function fetchData() {
-      let data = await dispatch(postsActions.thunkGetUserVotes())
+    let data = await dispatch(postsActions.thunkGetUserVotes())
       setIsLiked(data)
     }
 
@@ -182,23 +182,32 @@ function CommunityPage() {
                 {singleCommunity.name}
                 <span>l/{singleCommunity.name}</span>
             </div>
-            {member.length && joined ? <button onClick={handleUnjoinClick} id="joined">Joined</button> : <button onClick={handleJoinClick} id="join">Join</button> }
+            {user && member.length && joined ? <button onClick={handleUnjoinClick} id="joined">Joined</button> : <button onClick={handleJoinClick} id="join">Join</button> }
             </div>
         </div>
+        {user && singleCommunity.userId !== user.id ? <div id="comm-head11">
+        <p>Posts</p>
+        </div> : null}
         </div>
         <div className="community-page-content">
 
         </div>
         <div className="community-page-content">
             <div className="posts">
-                <div className="create">
+                {user ? <div className="create">
                     <img src={pfp}></img>
                     <input onClick={(() => history.push('/posts/new'))} type="text" placeholder="Create Post"></input>
                     <div><i onClick={(() => history.push('/posts/new/image'))} class="fi fi-rr-picture"></i></div>
                     <div><i onClick={(() => history.push('/posts/new/link'))} class="fi fi-rr-link-alt"></i></div>
-                </div>
+                </div> :
+                <div onClick={(() => window.alert("Please login"))} className="create">
+                    <img src={pfp}></img>
+                    <input type="text" placeholder="Create Post"></input>
+                    <div><i class="fi fi-rr-picture"></i></div>
+                    <div><i class="fi fi-rr-link-alt"></i></div>
+                </div> }
                 <div className="filter">
-                <div id="filter-side1">
+                <div onClick={(() => window.alert("Feature coming soon"))} id="filter-side1">
                 <div id="best">
                 <i class="fi fi-rs-flame"></i>
                 <p>Hot</p>
@@ -236,51 +245,54 @@ function CommunityPage() {
                     <div id="img">
                     {post.PostImages?.length ? <img src={post.PostImages[0]?.imgURL} alt="meaningful-text"></img> : null}
                     </div>
+                    <div id="finishing">
+                      {post.description}
+                      </div>
                     </div>
-                    {post.User.id !== user.id ?<div id="post-extras3">
+                    {user && post.User.id !== user.id ?<div id="post-extras3">
                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="comment">
                     <i class="fa-regular fa-message"></i>
                     <p >{post.Comments?.length} Comments</p>
                     </div>
-                    <div id="comment">
+                    <div onClick={(() => window.alert('Feature not available'))}id="comment">
                     <i class="fi fi-rr-box-heart"></i>
                     <p>Awards</p>
                     </div>
-                    <div id="comment">
+                    <div onClick={(() => window.alert('Feature not available'))}id="comment">
                     <i class="fi fi-rs-heart-arrow"></i>
                     <p>Share</p>
                     </div>
-                    <div id="comment">
-                    <i class="fi fi-rr-bookmark"></i>
+                    <div onClick={(() => window.alert('Feature not available'))}id="comment">
+                    <i onClick={(() => window.alert('Feature not available'))}class="fi fi-rr-bookmark"></i>
                     <p>Save</p>
                     </div>
-                    <i class="fi fi-rr-menu-dots"></i>
+                    <i onClick={(() => window.alert('Feature not available'))}class="fi fi-rr-menu-dots"></i>
             </div> :
                     <div id="post-extras">
                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="comment">
                     <i class="fa-regular fa-message"></i>
                     <p>{post.Comments.length}</p>
                     </div>
-                    <div id="comment">
+                    <div onClick={(() => window.alert('Feature not available'))}id="comment">
                     <i class="fi fi-rs-heart-arrow"></i>
                     <p>Share</p>
                     </div>
-                    <div id="comment">
+                    <div onClick={(() => window.alert('Feature not available'))}id="comment">
                     <i class="fi fi-rs-check-circle"></i>
                     <p>Approved</p>
                     </div>
-                    <div id="comment">
+                    <div onClick={(() => window.alert('Feature not available'))}id="comment">
                     <i class="fi fi-rs-circle-cross"></i>
                     <p>Removed</p>
                     </div>
-                    <div id="comment">
+                    <div onClick={(() => window.alert('Feature not available'))}id="comment">
                     <i class="fi fi-rr-box"></i>
                     <p>Spam</p>
                     </div>
-                    <div id="comment">
+                    <div onClick={(() => window.alert('Feature not available'))} id="comment">
                     <i class="fi fi-rs-shield"></i>
                     </div>
-                    <i class="fi fi-rr-menu-dots"></i>
+                    <i onClick={(() => window.alert('Feature not available'))} class="fi fi-rr-menu-dots"></i>
                     </div>}
                     </div>
                     </div>
@@ -295,9 +307,9 @@ function CommunityPage() {
                     <p>Moderators</p>
                 </div>
                 <div id="home-section">
-                <button onClick={(() => history.push('/posts/new'))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>
-                <div id="cs-side6">
-                    <span>{user.username}</span>
+                <button onClick={(() => window.alert("Feature not available"))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>
+                <div onClick={(() => window.alert('Feature not available'))} id="cs-side6">
+                    {user ? <span>{user.username}</span> : "" }
                     <span>VIEW ALL MODERATORS</span>
                 </div>
                 </div>

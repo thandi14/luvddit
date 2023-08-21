@@ -18,6 +18,7 @@ import pfp from "./icons/IMG6.jpg"
 
 function Navigation({ isLoaded }){
   const sessionUser = useSelector(state => state.session.user);
+  const { user } = useSelector(state => state.session);
   const { communityMemberships, userCommunities, singleCommunity } = useSelector(state => state.communities);
   const history = useHistory()
   const [ homeButton, setHomeButton ] = useState("home")
@@ -79,7 +80,7 @@ function Navigation({ isLoaded }){
     );
   } else {
     sessionLinks = (
-      <div>
+      <div id="button-formss">
           <OpenModalButton
           buttonText="Log In"
           modalComponent={<LoginFormModal />}
@@ -117,10 +118,10 @@ function Navigation({ isLoaded }){
           {homeButton === "communities" || (Object.values(singleCommunity).length && homeButton) === "create" ?  <div>l/{singleCommunity.name}</div> : null }
           </div>
           <div id="homeB2">
-          <i class="fa-solid fa-chevron-down"></i>
+         {user ? <i class="fa-solid fa-chevron-down"></i> : null}
           </div>
           </div>
-          <div id={homeMenu}>
+         {user ? <div id={homeMenu}>
             <input placeHolder="Filter"></input>
             <div id="mod-ms">
             <span><div></div>Moderating</span>
@@ -155,11 +156,11 @@ function Navigation({ isLoaded }){
             <span onClick={(() => window.alert("Feature not available"))}><div></div><i class="fa-solid fa-shield-halved"></i>Premium</span>
             <span onClick={(() => window.alert("Feature not available"))}><div></div><i class="fi fi-rr-vest"></i>Avatar</span>
             </div>
-          </div>
+          </div> : null}
       </div>
       <div id="search">
       <i class="fi fi-rs-search-heart"></i>
-      <input text="type" placeholder='Search Luvddit'></input>
+      <input onClick={(() => window.alert('Feature not available'))} text="type" placeholder='Search Luvddit'></input>
       </div>
       <div id="allIcons">
       <div id="img1">

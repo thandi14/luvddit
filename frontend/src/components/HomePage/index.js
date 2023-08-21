@@ -137,25 +137,25 @@ function HomePage() {
                 </div>
                 <div className="filter">
                 <div id="filter-side1">
-                <div id="best">
+                <div onClick={(() => window.alert("Feature not avaliable"))} id="best">
                 <i class="fi fi-sr-bow-arrow"></i>
                 <p>Best</p>
                 </div>
-                <div id="best">
+                <div onClick={(() => window.alert("Feature not avaliable"))}id="best">
                 <i class="fi fi-rs-flame"></i>
                 <p>Hot</p>
                 </div>
-                <div id="best">
+                <div onClick={(() => window.alert("Feature not avaliable"))} id="best">
                 <i class="fi fi-rr-bahai"></i>
                 <p>New</p>
                 </div>
-                <div id="best">
+                <div onClick={(() => window.alert("Feature not avaliable"))} id="best">
                 <i class="fi fi-rs-signal-bars-good"></i>
                 <p>Top</p>
                 </div>
-                <i class="fi fi-rr-menu-dots"></i>
+                <i onClick={(() => window.alert("Feature not avaliable"))} class="fi fi-rr-menu-dots"></i>
                 </div>
-                <div id="filter-side2">
+                <div onClick={(() => window.alert("Feature not avaliable"))} id="filter-side2">
                 <i class="fi fi-rr-horizontal-rule"></i>
                 <i class="fa-regular fa-square"></i>
                 <i class="fa-solid fa-chevron-down"></i>
@@ -170,17 +170,20 @@ function HomePage() {
                     downVote={isLiked.length && isLiked.some((l) => l.postId === post.id && l.downVote === 1)}/>
                     </div>
                     <div id="pc-side2">
-                    <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="nameOf">
+                    <div id="nameOf">
                     <img onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} src={pfp}></img>
-                    <span className="userName" id="community">l/{post.Community.name}</span>
+                    <span onClick={(() => history.push(`/communities/${post.communityId}`))} className="userName" id="community">l/{post.Community.name}</span>
                     <p>·</p>
-                    <p>Posted by <span className="userName">u/{post.User.username}</span> {getTimeDifferenceString(post.createdAt)}</p>
+                    <p >Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User.username}</span> {getTimeDifferenceString(post.createdAt)}</p>
                     </div>
                     <h3 onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title">{post.title}</h3>
                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="content">
                     <div id="img">
                     {post.PostImages.length ? <img src={post.PostImages[0]?.imgURL} alt="meaningful-text"></img> : null}
                     </div>
+                    <div id="finishing2">
+                      {post.description}
+                      </div>
                     </div>
                     <div id="post-extras">
                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="comment">
@@ -225,8 +228,16 @@ function HomePage() {
                 </div>
                 <p>Your personal Reddit frontpage. Come here to check in with your favorite communities.</p>
                 <div id="line"></div>
+                { user ?
+                <>
                 <button onClick={(() => history.push('/posts/new'))} id="but1">Create Post</button>
                 <button onClick={(() => setModalContent(<CreateCommunity />))} id="but2">Create Community</button>
+                </>
+                :
+                <>
+                <button onClick={(() => window.alert('Please login'))} id="but1">Create Post</button>
+                <button onClick={(() => window.alert("Please login"))} id="but2">Create Community</button>
+                </> }
                 </div>
                 </div>
                 <div className='recent-posts'>

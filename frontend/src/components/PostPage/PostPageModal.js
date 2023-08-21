@@ -229,8 +229,6 @@ function PostPageModal({ postId, scroll }) {
 
         const formattedDate = `${months[dateObject.getMonth()]}, ${dateObject.getDate()}, ${dateObject.getFullYear()}`;
 
-        console.log(scroll)
-
 
 
     return (
@@ -293,7 +291,7 @@ function PostPageModal({ postId, scroll }) {
             {singlePost.PostImages?.length ? <div><img id="post-image1" src={singlePost.PostImages[0].imgURL} alt="postimg"></img></div> : null}
             </div>
             { isVisible2 ? <div id="save"><button onClick={handleClick2} >Cancel</button> <button id={ !description ? "save-submit" : "save-submit2"} onClick={handleSave}>Save</button></div> : null}
-            {singlePost.User.id !== user.id ?<div id="post-extras3">
+            {user && singlePost.User.id !== user.id ?<div id="post-extras3">
                     <div id="comment">
                     <i class="fa-regular fa-message"></i>
                     <p>{singlePost.Comments?.length} Comments</p>
@@ -343,7 +341,7 @@ function PostPageModal({ postId, scroll }) {
                 <i  onClick={handleClick} id="menu" class="fi fi-rr-menu-dots"></i>
                 <div className="menu">
                 <div id={editMenu}>
-                    <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p>
+                   {singlePost.PostImages.length && singlePost.PostImages[0].imgURL ? null : <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
                     <p><i class="fi fi-rr-bookmark"></i>Save</p>
                     <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
                     <p onClick={(() => {
@@ -374,7 +372,7 @@ function PostPageModal({ postId, scroll }) {
                 <p>Check back later to see views, shares, and more. <span>Share your post</span> to spread the word!</p>
             </div>
             <div className="comment-input">
-                <p>Comment as <span>{user.username}</span></p>
+               {user ? <p>Comment as <span>{user.username}</span></p> : "Please login"}
                 <textarea value={comment} onChange={((e) => setComment(e.target.value))} placeholder="What are your thoughts?"></textarea>
             <div id="my-comments">
                 <i class="fi fi-rr-bold"></i>
@@ -394,7 +392,7 @@ function PostPageModal({ postId, scroll }) {
                 <i class="fi fi-rr-grid-alt"></i>
                 <i class="fi fi-rr-picture"></i>
                 <i class="fa-brands fa-youtube"></i>
-                <button id="submit-c" onClick={handleComment}>Comment</button>
+                <button id={!comment ? "submit-c" : "submit-c2"} onClick={handleComment}>Comment</button>
             </div>
             </div>
             <div className="comments-for-post">
@@ -486,9 +484,9 @@ function PostPageModal({ postId, scroll }) {
                 <p>Moderators</p>
                 </div>
                 <div id="home-section7">
-                <button id="but4"><i class="fi fi-rr-envelope"></i>Message the mods</button>
+                <button onClick={(() => window.alert("Feature not available"))} id="but4"><i class="fi fi-rr-envelope"></i>Message the mods</button>
                 <div id="cs-side7">
-                    <span>{user.username}</span>
+                    {user ? <span>{user.username}</span> : "" }
                     <span>VIEW ALL MODERATORS</span>
                 </div>
                 </div>

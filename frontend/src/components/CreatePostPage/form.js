@@ -119,14 +119,10 @@ function PostForm() {
 
         }
 
-        // const response = await dispatch(postActions.thunkCreatePost(data1, singleCommunity.id, dataImg))
-        // console.log("frontend", response)
-
 
 
     }
 
-    console.log(dataImg)
 
     return (
             <div className="form">
@@ -177,7 +173,7 @@ function PostForm() {
                             { !nsfw ? <i class="fi fi-rr-plus"></i> : <i class="fi fi-rr-check"></i> }
                             NSFW
                         </button>
-                        <button id="flair">
+                        <button onClick={(() => window.alert("Feature not avaliable"))} id="flair">
                             <i class="fi fi-rr-bookmark"></i>
                             Flair
                             <i class="fa-solid fa-chevron-down"></i>
@@ -185,7 +181,7 @@ function PostForm() {
                     </div>
                     <div id="border3"></div>
                     <div id="submit-buttons">
-                        <button id="draft">Save Draft</button>
+                        <button onClick={(() => window.alert("Feature not avaliable"))} id="draft">Save Draft</button>
                         <button disabled={isDisabled} id={isDisabled ? "post" : "post2"} onClick={handleSubmit}>Post</button>
                     </div>
                     </div>
@@ -194,7 +190,7 @@ function PostForm() {
                     <input type="checkbox" />
                     Send me post reply notifications
                     </label>
-                    <p>Connect accounts to share your post<i class="fi fi-rr-info"></i></p>
+                    <p onClick={(() => window.alert("Feature not avaliable"))} >Connect accounts to share your post<i class="fi fi-rr-info"></i></p>
                     </div>
                 </div>
     )

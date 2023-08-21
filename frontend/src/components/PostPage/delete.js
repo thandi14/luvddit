@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import * as postsActions from '../../store/posts';
 import { useParams } from "react-router-dom";
-import DeletedPost from "./index2";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { useModal } from "../../context/Modal";
 
@@ -22,7 +21,7 @@ function DeletePost({ id, deleted }){
     const handleClick = () => {
         dispatch(postsActions.thunkDeletePosts(id, deleted))
         if (singlePost?.communityId !== communities[0].id) history.push(`/communities/${singlePost.communityId}`)
-        if (singlePost?.communityId === communities[0].id) history.push(`/deleted/:${deleted.title}`)
+        if (singlePost?.communityId === communities[0].id) history.push(`/`)
         closeModal2()
     }
 

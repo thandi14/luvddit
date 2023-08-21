@@ -451,6 +451,26 @@
     padding-bottom: 20%;
 }
 
+#comm-head11 > p {
+    padding: 0px;
+    color: black;
+    height: 100%;
+    width: 2.5%;
+
+}
+
+#comm-head11 {
+    width: 100%;
+    margin-top: -15px;
+    padding-left: 16%;
+    height: 25px;
+    font-size: 14px;
+    font-weight: 900;
+    z-index: 2;
+    background-color: white;
+}
+
+
 #e > input {
     margin-top: 1%;
     background-color: #f6f7f8;
@@ -511,6 +531,12 @@
     align-items: center;
 }
 
+#finishing {
+ margin-top: 5px;
+ margin-left: 10px;
+ color: #878A85;
+}
+
 #a > i {
     font-size: 16px;
     height: 16px;
@@ -521,6 +547,7 @@
     font-size: 22px;
     height: 22px;
     color: #7c7c7c;
+    margin-left: 6%;
 }
 
 #c {

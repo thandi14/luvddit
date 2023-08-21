@@ -71,12 +71,13 @@ function YourCommunitesProfile() {
     const formattedDate = `${months[dateObject.getMonth()]}, ${dateObject.getDate()}, ${dateObject.getFullYear()}`;
 
 
+    console.log(singleCommunity)
 
     return (
             <div className="home-section">
                 <div id="cs-background">
                     <p>About Community</p>
-                    {singleCommunity.userId === user.id ? <p onClick={((e) => history.push(`/communities2/${id}`))} id="seven"><span id="tools"><i class="fi fi-rs-shield"></i>MOD TOOLS</span><i class="fi fi-rr-menu-dots"></i></p> : <i id="comm-sets" class="fi fi-rr-menu-dots"></i>}
+                    { user && singleCommunity.userId === user.id ? <p onClick={((e) => history.push(`/communities2/${id}`))} id="seven"><span id="tools"><i class="fi fi-rs-shield"></i>MOD TOOLS</span><i class="fi fi-rr-menu-dots"></i></p> : <i onClick={(() => window.alert("Feature not available"))} id="comm-sets" class="fi fi-rr-menu-dots"></i>}
                 </div>
                 <div id="home-section">
                 <div id="cs-side1">
@@ -85,7 +86,8 @@ function YourCommunitesProfile() {
                     <input maxLength={500} defaultValue={singleCommunity?.about} onChange={((e) => setAbout(e.target.value))} placeholder="Tell us about your community" id="input-about" type="text"></input>
                     <div id="edit-about"><span>{500 - about.length} Characters remaining</span><div><span onClick={(() => setIsVisible(!isVisible))}>Cancel</span><span onClick={handleSubmit}>Save</span></div></div>
                     </div> : null}
-                    {singleCommunity.about && !isVisible ? <span id={user.id === singleCommunity.userId ? "can-you-edit" : ""} onClick={(() => setIsVisible(!isVisible))}>{singleCommunity.about}{user.id === singleCommunity.userId ? <i id="edit-icon4" class="fi fi-rr-magic-wand"></i> : null} </span> : null}
+                    { user && singleCommunity.about && !isVisible ? <span id={user.id === singleCommunity.userId ? "can-you-edit" : ""} onClick={(() => setIsVisible(!isVisible))}>{singleCommunity.about}{user.id === singleCommunity.userId ? <i id="edit-icon4" class="fi fi-rr-magic-wand"></i> : null} </span> : null}
+                    { !user && singleCommunity.about ?  <span>{singleCommunity.about}</span> : null}
                     <span><i class="fi fi-rr-cake-birthday"></i>{formattedDate}</span>
                 </div>
                 <div id="line"></div>
@@ -94,15 +96,15 @@ function YourCommunitesProfile() {
                     <span><div id="online"><i class="fi fi-ss-bullet"></i>{randomNum}</div>Online</span>
                 </div>
                 <div id="line"></div>
-                <div id="cs-side3">
+                <div onClick={(() => window.alert("Feature not available"))} id="cs-side3">
                     <span><div>NEW</div>Community topics<i class="fi fi-rr-circle-i"></i></span>
                     <span>Add a Primary Topic<i class="fa-solid fa-chevron-down"></i></span>
                 </div>
                 <div id="line"></div>
-                <button onClick={(() => history.push('/posts/new'))} id="but3">Create Post</button>
+                { user ? <button onClick={(() => history.push('/posts/new'))} id="but3">Create Post</button> : <button onClick={(() => window.alert('Feature coming soon'))} id="but3">Create Post</button>}
                 <div id="line"></div>
                 <div id="cs-side5">
-                    <span>COMMUNITY OPTIONS</span>
+                    <span onClick={(() => window.alert("Feature not available"))}>COMMUNITY OPTIONS</span>
                     <i class="fa-solid fa-chevron-down"></i>
                 </div>
                 </div>
