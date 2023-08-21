@@ -15,6 +15,14 @@
     margin-right: 32%;
 }
 
+#img-pfp {
+    width: 62px;
+    height: 62px;
+    border-radius: 100%;
+    border: 5px solid white;
+
+}
+
 
 
 #comm-pfp {

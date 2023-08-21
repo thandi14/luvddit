@@ -232,6 +232,9 @@ function PostPageModal({ postId, scroll }) {
         let tags
         if (singlePost.tags) tags = singlePost.tags.split(',')
 
+        let style
+    if (singleCommunity.communityStyles?.length) style = singleCommunity.communityStyles[0]
+        console.log(style)
     return (
         <div className="post-modal">
             <div id="one">
@@ -464,7 +467,7 @@ function PostPageModal({ postId, scroll }) {
                     <div id="header-profile-comm4">
                     </div>
                     <div id="profile-content">
-                        <span id="profile-comm-title7"><div>l/</div>{singlePost.Community?.name}</span>
+                        <span id="profile-comm-title7">{style ? <img id="pfp10" src={style.profile}></img> : <div>l/</div> }{singlePost.Community?.name}</span>
                         <span id="profile-about7">{singlePost.Community?.about}</span>
                         <span id="when-created"><i class="fi fi-rr-cake-birthday"></i>Created {formattedDate}</span>
                         <div id="line"></div>

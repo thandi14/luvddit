@@ -23,14 +23,16 @@ function CommunitiesMenu({ value }) {
     let community3 = Object.values(userCommunities)
 
     community2 = community2.map((c) => c.Community)
-
+    let style
+    if (singleCommunity.communityStyles?.length) style = singleCommunity.communityStyles[0]
     return (
         <>
         <div id="your-comms">
             <p>Your Profile</p>
             <div onClick={((e) => setId(community3[0].id))} id="user-community">
             <div id='uc-img'>
-            <img src={avatar}></img>
+            { !style ? <img src={avatar}></img> :
+            <img src={style.profile}></img> }
             </div>
             <div id="uc-name">
             <p>l/{community[0]?.name}</p>

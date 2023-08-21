@@ -168,16 +168,23 @@ function CommunityPage() {
 
   let ePost = singleCommunity.Posts?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-
-
+    let style
+    if (singleCommunity.communityStyles.length) style = singleCommunity.communityStyles[0]
 
     return (
         <>
         <div className="community-page-header">
-        <div id="community-page-header"></div>
+       { style ? <div style={{
+        width: '100%',
+        height: '200px',
+        backgroundImage: `url(${style.header})`, // Replace with the actual path to your image
+        backgroundSize: 'contain',
+        backgroundPosition: 'center',
+        }}></div> :
+        <div id="community-page-header"></div> }
         <div id="community-page-title">
             <div id="community-title-head">
-            <div id="comm-pfp">l/</div>
+            { style ? <img id="img-pfp"src={style.profile}></img> : <div id="comm-pfp">l/</div> }
             <div id="communityName">
                 {singleCommunity.name}
                 <span>l/{singleCommunity.name}</span>

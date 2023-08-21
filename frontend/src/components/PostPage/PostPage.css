@@ -570,6 +570,12 @@
     margin-top: 1%;
 }
 
+#pfp10 {
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+}
+
 #nsfw5 {
     font-size: 10px;
     color: black;

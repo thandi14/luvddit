@@ -2,7 +2,7 @@ const express = require('express')
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Communities, Posts, User, CommunityMembers, Comments, PostImages } = require('../../db/models');
+const { Communities, Posts, User, CommunityMembers, Comments, PostImages, communityStyles } = require('../../db/models');
 
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -34,6 +34,7 @@ router.get("/", async (req, res) => {
         include: [
             { model: Posts },
             { model: User },
+            { model: communityStyles}
          ]}
         );
 
@@ -113,10 +114,11 @@ router.get("/:id", async (req, res) => {
                     { model: Comments},
                     { model: Communities},
                     { model: User},
-                    { model: PostImages}
+                    { model: PostImages},
                  ]
             },
-            { model: User }
+            { model: User },
+            { model: communityStyles }
          ]
         });
 
