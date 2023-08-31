@@ -3,9 +3,11 @@ import { csrfFetch } from "./csrf";
 
 const GET_POSTS = 'posts/getPosts';
 const GET_DETAILS = 'posts/getDetails';
+const GET_COMMENT_DETAILS = 'posts/getCommentDetails';
+
 const GET_USER_POSTS = 'posts/getUserPosts';
 const REMOVE_POST = 'posts/removePosts'
-
+const REMOVE_COMMENT = 'posts/removeComment'
 
 const getPosts = (posts) => {
     return {
@@ -21,6 +23,13 @@ const getDetails = (details) => {
     }
 }
 
+const getCommentDetails = (details) => {
+  return {
+      type: GET_COMMENT_DETAILS,
+      details
+  }
+}
+
 const removePost = (id) => {
     return {
         type: REMOVE_POST,
@@ -28,10 +37,18 @@ const removePost = (id) => {
     }
 }
 
+const removeComment = (commentId) => {
+  return {
+      type: REMOVE_COMMENT,
+      commentId
+  }
+}
+
+
 const getUserPosts = (posts) => ({
     type: GET_USER_POSTS,
     posts,
-  });
+});
 
 
 
@@ -80,7 +97,6 @@ export const thunkCreatePost = (data, id, img) => async (dispatch) => {
 
         const data1 = await response.json()
         const postId = data1.id
-        console.log("thunk", response)
 
         if (Object.values(img).length) {
         const response2 = await csrfFetch(`/api/posts/${postId}/images`, {
@@ -92,7 +108,6 @@ export const thunkCreatePost = (data, id, img) => async (dispatch) => {
         })
         }
 
-        console.log(data1)
         dispatch(getDetails(data1))
         return data1
 
@@ -100,7 +115,6 @@ export const thunkCreatePost = (data, id, img) => async (dispatch) => {
 }
 
 export const thunkUpdatePosts = (id, data) => async (dispatch) => {
-  console.log(data)
     if (Object.values(data).length) {
         const response = await csrfFetch(`/api/posts/${id}`, {
             method: 'PUT',
@@ -149,6 +163,37 @@ export const thunkCreateVote = (id, boolean) => async (dispatch) => {
   return data
 }
 
+export const thunkCreateComment = (data, id) => async (dispatch) => {
+  if (Object.values(data).length) {
+      const response = await csrfFetch(`/api/posts/${id}/comment`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+            },
+          body: JSON.stringify(data)
+      })
+
+      const data1 = await response.json()
+      dispatch(getCommentDetails(data1))
+      return data1
+
+  }
+}
+
+export const thunkDeleteComment = (id) => async (dispatch) => {
+  const response = await csrfFetch(`/api/comments/${id}`, {
+      method: 'DELETE',
+      headers: {
+          'Content-Type': 'application/json'
+        },
+  })
+  let data = await response.json()
+  dispatch(removeComment(id))
+  return data
+}
+
+
+
 
 // export const addPostImages = (id, data) => async (dispatch) => {
 //     const response = await csrfFetch(`/api/posts/${id}/images`, {
@@ -175,7 +220,6 @@ const postsReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_POSTS:
         newState = { ...state };
-        console.log(action.posts)
         action.posts.forEach(
           (post) => (newState.posts[post.id] = post)
         );
@@ -186,6 +230,13 @@ const postsReducer = (state = initialState, action) => {
         newState.singlePost = { ...post };
         return newState;
     }
+    case GET_COMMENT_DETAILS:
+      newState = { ...state };
+      let comment = action.details;
+      newState.singlePost.Comments[comment.id] = comment
+      let post = newState.posts[comment.postId]
+      post.Comments[comment.id] = comment
+      return newState
     case REMOVE_POST: {
         newState = { ...state };
         newState.posts = { ...newState.posts };
@@ -194,6 +245,13 @@ const postsReducer = (state = initialState, action) => {
         delete newState.posts[action.id];
         delete newState.userPosts[action.id];
         return newState;
+    }
+    case REMOVE_COMMENT: {
+      newState = { ...state };
+      newState.singlePost.Comments = newState.singlePost.Comments.filter((c) => c.id !== action.commentId);
+      let post = newState.posts[newState.singlePost.id]
+      post.Comments = post.Comments.filter((c) => c.id !== action.commentId)
+      return newState;
     }
     case GET_USER_POSTS: {
         newState = { ...state };

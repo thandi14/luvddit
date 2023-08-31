@@ -177,7 +177,6 @@ const communitiesReducer = (state = initialState, action) => {
     case GET_DETAILS: {
         newState = { ...state };
         const community = action.details;
-        console.log("REDUCER:", community)
         newState.singleCommunity = { ...community };
         return newState;
     }

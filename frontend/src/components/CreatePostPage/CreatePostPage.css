@@ -189,6 +189,8 @@
     flex-direction: column;
     gap: 10px;
     margin-top: 40px;
+    margin-bottom: 40px;
+
 }
 
 #user-community2 > span {
@@ -517,6 +519,18 @@
     gap: 14px;
     cursor: not-allowed;
 
+}
+
+#PFP34 {
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+}
+
+#PFP36 {
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
 }
 
 #divider16 {

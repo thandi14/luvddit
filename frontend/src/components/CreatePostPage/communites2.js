@@ -21,7 +21,7 @@ function CommunitiesProfile({ page, community }) {
     useEffect(() => {
 
         async function fetchData() {
-           if (community.id) await dispatch(communityActions.thunkGetDetailsById(community.id))
+           if (community && community.id) await dispatch(communityActions.thunkGetDetailsById(community.id))
             await dispatch(communityActions.thunkGetCommunityMemberships())
 
         }
@@ -95,7 +95,7 @@ function CommunitiesProfile({ page, community }) {
 
     const formattedDate = `${months[dateObject.getMonth()]}, ${dateObject.getDate()}, ${dateObject.getFullYear()}`;
 
-
+    console.log(singleCommunity)
     return (
         <>
         {profile === firstCommunity ? <div className="your-community">
@@ -130,7 +130,7 @@ function CommunitiesProfile({ page, community }) {
                     <div id="header-profile-comm4">
                     </div>
                     <div id="profile-content">
-                        <span id="profile-comm-title7"><div>l/</div>{community?.name}</span>
+                        <span id="profile-comm-title7">{ singleCommunity.communityStyles && singleCommunity.communityStyles.length ? <img id="PFP36" src={singleCommunity.communityStyles[0].profile}></img> : <div>l/</div>}{community?.name}</span>
                         <span id="profile-about7">{community?.about}</span>
                         <span id="when-created"><i class="fi fi-rr-cake-birthday"></i>Created {formattedDate}</span>
                         <div id="line"></div>

@@ -57,7 +57,7 @@
 }
 
 #details-side {
-    width: 100%;
+    width: 90%;
 }
 
 #post-extras1 {
@@ -96,7 +96,12 @@
     padding-top: 12px;
     flex-direction: column;
     gap: 4px;
-    width: 40px
+    width: 44px
+}
+
+#OP {
+    color: #0079D3;
+    font-weight: 900;
 }
 
 #vote-side > span{
@@ -212,7 +217,7 @@
     display: flex;
     width: 100%;
     gap: 10px;
-    margin-bottom: 5%;
+    margin-bottom: 4%;
 }
 
 #any-comments {
@@ -230,7 +235,7 @@
 
 #comment-extras {
     display: flex;
-    gap: 14px;
+    gap: 10px;
     align-items: center;
 }
 
@@ -261,14 +266,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-end;
-    gap: 5px
+    gap: 5px;
+    justify-content: flex-start;
 }
 
 #c-line {
     background-color: #EDEFF1;
     width: 8%;
-    height: 65%;
+    height: 100%;
     border-radius: 4px;
 }
 
@@ -278,6 +283,7 @@
     flex-direction: column;
     margin-top: 5%;
     margin-bottom: 25%;
+    margin-left: -30px;
 }
 
 #time-comm {
@@ -285,8 +291,8 @@
 }
 
 #avatar6 {
-    width: 26px;
-    height: 26px;
+    width: 27px;
+    height: 27px;
     border-radius: 100%;
     margin-bottom: 1%;
 }
@@ -295,12 +301,15 @@
     font-size: 12px;
     display: flex;
     gap: 3px;
+    margin-top: 5px;
+    padding-bottom: 10px;
+
 }
 
 #right-csec > p {
     font-size: 14px;
     margin: 0px;
-    margin-top: 2%;
+    margin-bottom: 2%;
 
 }
 
@@ -335,7 +344,7 @@
 
 #comment4:hover, #menu:hover {
     background-color: #e4e4e4;
-    border-radius: 3px;
+    border-radius: 4px;
     height: 22px;
     align-items: center;
     cursor: pointer;
@@ -384,6 +393,60 @@
     border-top: 1px solid #EDEFF1;
     cursor: pointer;
 
+}
+
+#comment-extras > div:not(:first-child):hover {
+    background-color: #e4e4e4;
+    padding: 0px 5px;
+    border-radius: 4px;
+}
+
+#comment-extras > div {
+    padding: 0px 5px;
+    border-radius: 4px;
+    height: 30px;
+}
+
+
+#menu {
+    position: relative;
+    padding: 0px 5px;
+
+}
+
+/* #menu:hover {
+    background-color: #e4e4e4;
+    padding: 0px 5px;
+    border-radius: 4px;
+} */
+
+#comment-extras > i:hover {
+    background-color: #e4e4e4;
+    padding: 0px 5px;
+    border-radius: 4px;
+}
+
+#comment-extras > i {
+    padding: 0px 5px;
+    border-radius: 4px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+#post-menu25 {
+    position: absolute;
+    left: 670%;
+}
+
+
+#comm-sec25 {
+    position: absolute;
+    margin-top: 5px;
+    margin-right: 18px;
 }
 
 #edit-menu > p:hover, #edit-menu > label:hover {
@@ -514,7 +577,7 @@
 }
 
 #comment-extras {
-    cursor: not-allowed;
+    cursor: pointer;
 }
 
 #submit-c2 {
@@ -596,7 +659,6 @@
 }
 
 #comm-head10 {
-    width: 100%;
     margin-top: -15px;
     padding-left: 8%;
     height: 25px;

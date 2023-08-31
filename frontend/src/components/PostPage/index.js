@@ -13,9 +13,11 @@ import { useModal2 } from '../../context/Modal2';
 import pfp from "./IMG6.jpg";
 import * as commentActions from '../../store/comments'
 import PostLikes from '../HomePage/likes';
+import DeleteComment from "./deleteC";
 
 function PostPage() {
     const { singlePost } = useSelector((state) => state.posts)
+    const { user } = useSelector((state) => state.session)
     const { singleCommunity, userCommunities } = useSelector((state) => state.communities)
     const { id } = useParams();
     const dispatch = useDispatch()
@@ -31,24 +33,25 @@ function PostPage() {
     const { postComments } = useSelector((state) => state.comments)
     const [ data2, setData2 ] = useState({})
     const [ isLiked, setIsLiked ] = useState([]);
+    const [isVisible3, setIsVisible3] = useState(false);
+    const [ commentId, setCommentId ] = useState(null)
 
     const myCommunity = Object.values(userCommunities)
+
 
     useEffect( () => {
 
         async function fetchData() {
-            const response = await dispatch(commentActions.thunkCreateComment(data2, singlePost.id))
-            console.log(response)
+            const response = await dispatch(postActions.thunkCreateComment(data2, singlePost.id))
         }
         fetchData()
 
-    }, [dispatch, data2])
+    }, [dispatch, data2, singlePost.id])
 
 
     useEffect(() => {
 
         async function fetchData() {
-          if (singlePost && singlePost.id) await dispatch(commentActions.thunkGetPostComments(singlePost.id))
           let data = await dispatch(postActions.thunkGetUserVotes())
           setIsLiked(data)
           }
@@ -66,12 +69,9 @@ function PostPage() {
         setIsVisible2(!isVisible2);
     };
 
-    const handleSave = () => {
+    const handleSave = (e) => {
 
         setData1({
-            description
-        })
-        console.log({
             description
         })
 
@@ -79,9 +79,9 @@ function PostPage() {
 
     }
 
-    const handleComment = () => {
+    const handleComment = (e) => {
+        e.preventDefault()
 
-        console.log(comment)
 
         setData2({
             comment
@@ -91,14 +91,15 @@ function PostPage() {
 
     }
 
-    let comments = Object.values(postComments)
+    let comments
+
+    if (singlePost.Comments && singlePost.Comments.length) comments = Object.values(singlePost.Comments).reverse()
 
 
 
     useEffect(() => {
 
         const handleDocumentClick = (event) => {
-            console.log(isVisible)
             if (isVisible && targetRef.current && !targetRef.current.contains(event.target)) {
                 setIsVisible(false);
 
@@ -162,13 +163,14 @@ function PostPage() {
     let tags
     if (singlePost.tags) tags = singlePost.tags.split(',')
 
-    console.log(tags)
+    let editMenu2 = isVisible3 ? "edit-menu" : "hidden";
+
 
     return (
 
     <>
     <div id="comm-head">
-        <img src="https://external-preview.redd.it/2ha9O240cGSUZZ0mCk6FYku61NmKUDgoOAJHMCpMjOM.png?auto=webp&s=3decd6c3ec58dc0a850933af089fb3ad12d3a505"></img>
+        <img src={ singlePost.Community && singlePost.Community.communityStyles && singlePost.Community.communityStyles.length ? singlePost.Community.communityStyles[0].profile : "https://external-preview.redd.it/2ha9O240cGSUZZ0mCk6FYku61NmKUDgoOAJHMCpMjOM.png?auto=webp&s=3decd6c3ec58dc0a850933af089fb3ad12d3a505"}></img>
         <h1>l/{singleCommunity.name}</h1>
     </div>
     { myCommunity.length && myCommunity[0].id !== singlePost.communityId ? <div id="comm-head10">
@@ -216,7 +218,7 @@ function PostPage() {
         <div id="post-extras1">
             <div id="comment5">
             <i class="fa-regular fa-message"></i>
-            <p>{singlePost.Comments?.length}</p>
+            <p>{comments && comments.length}</p>
             </div>
             <div onClick={(() => window.alert("Feature not avaliable"))} id="comment4">
                 <i class="fi fi-rs-heart-arrow"></i>
@@ -316,20 +318,20 @@ function PostPage() {
                 <input type="text" placeholder='Search comments'></input>
                 </div>
             </div>
-            { !comments.length ? <div id="any-comments">
+            { !comments || !comments.length ? <div id="any-comments">
                     <i class="fi fi-rr-comment-heart"></i>
                     <p>No Comments Yet</p>
                     <span>Be the first to share what you think</span>
                 </div> :
                 <div id="if-comments">
-                    {comments.map((c) =>
+                    {comments.map((c, i) =>
                         <div className="a-comment">
                             <div id="left-csec">
                             <img id="avatar6" src={pfp}></img>
                             <div id="c-line"></div>
                             </div>
                             <div id="right-csec">
-                                <span>{c.User.username} · <div id="time-comm">{getTimeDifferenceString(c.createdAt)}</div></span>
+                                <span>{user.username} · <div id="time-comm">{getTimeDifferenceString(c.createdAt)}</div></span>
                                 <p>{c.comment}</p>
                                 <div id="comment-extras">
                                     <div>
@@ -345,7 +347,31 @@ function PostPage() {
                                         <i class="fi fi-rs-heart-arrow"></i>
                                         <p>Share</p>
                                     </div>
-                                    <i class="fi fi-rr-menu-dots"></i>
+                                    <i onClick={(() => {
+                                        setIsVisible3(true)
+                                        setCommentId(i)
+                                       if (commentId === i) setIsVisible3(!isVisible3)
+                                    })} class="fi fi-rr-menu-dots">
+                                    { commentId === i ? <div className="menu">
+                                    <div id="comm-sec25">
+                                    <div onClick={((e) => e.stopPropagation())} id={editMenu2}>
+                                    {singlePost.PostImages.length && singlePost.PostImages[0].imgURL ? null : <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
+                                     <p><i class="fi fi-rr-bookmark"></i>Save</p>
+                                     <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
+                                     <p onClick={(() => {
+                                     setModalContent2(<div> <DeleteComment id={c.id} /></div>)
+                                     setIsVisible(false)
+                                     setIsVisible3(false)
+                                     })}><i class="fi fi-rr-trash-xmark"></i>Delete</p>
+                                     <label>
+                                     <input type="checkbox" />
+                                     Send me reply notifications
+                                     </label>
+                                     </div>
+                                     </div>
+                                    </div>
+                                     : null }
+                                    </i>
                                 </div>
                             </div>
                         </div>

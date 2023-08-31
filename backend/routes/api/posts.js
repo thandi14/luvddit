@@ -2,7 +2,7 @@ const express = require('express')
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Posts, Comments, Communities, User, PostImages, CommunityMembers, Votes } = require('../../db/models');
+const { Posts, Comments, Communities, User, PostImages, CommunityMembers, Votes, communityStyles } = require('../../db/models');
 
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -14,7 +14,12 @@ router.get("/", async (req, res) => {
     let posts = await Posts.findAll({
         include: [
             { model: Comments},
-            { model: Communities},
+            {
+                model: Communities,
+                include: [
+                    { model: communityStyles }
+                ]
+            },
             { model: User},
             { model: PostImages},
             { model: Votes}
@@ -57,8 +62,10 @@ router.get("/current", async (req, res) => {
 
 router.get("/votes/current", async (req, res) => {
     const { user } = req
-    const userId = user.dataValues.id
 
+    if (!user) return res.status(404).json({"message": "User couldnt be found"})
+
+    const userId = user.dataValues.id
 
     let vote = await Votes.findAll({
         where: {
@@ -94,7 +101,12 @@ router.get("/:id", async (req, res) => {
     let post = await Posts.findByPk(postId, {
         include: [
             { model: Comments },
-            { model: Communities },
+            {
+                model: Communities,
+                include: [
+                    { model: communityStyles }
+                ]
+            },
             { model: User },
             { model: PostImages},
             { model: Votes}
@@ -120,7 +132,7 @@ router.get("/:id/comments", async (req, res) => {
 
     if (!postExist) {
 
-    res.status(404).json({"message": "Post couldn't be found"});
+    return res.status(404).json({"message": "Post couldn't be found"});
 
     }
 
@@ -132,6 +144,8 @@ router.get("/:id/comments", async (req, res) => {
             { model: User}
         ]
     })
+
+    console.log(comments)
 
     return res.json(comments)
 })

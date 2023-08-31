@@ -1,11 +1,12 @@
 import * as postsActions from '../../store/posts'
 const { useState, useEffect } = require("react")
-const { useDispatch } = require("react-redux")
+const { useDispatch, useSelector } = require("react-redux")
 
 
 
 
 function PostLikes({ post, vote, downVote }) {
+    const { user } = useSelector((state) => state.session)
     const [ userVotes, setUserVotes ] = useState([])
     const [ boolean, setBoolean ] = useState(vote)
     const [ boolean2, setBoolean2 ] = useState(downVote)
@@ -21,7 +22,8 @@ function PostLikes({ post, vote, downVote }) {
     useEffect(() => {
 
         async function fetchData() {
-          let data = await dispatch(postsActions.thunkGetUserVotes())
+          let data
+          if (user) data = await dispatch(postsActions.thunkGetUserVotes())
           setUserVotes(data)
 
         }
@@ -32,8 +34,8 @@ function PostLikes({ post, vote, downVote }) {
         }, [dispatch, post])
 
         useEffect(() => {
-            setVoted(userVotes.filter((l) => l.postId === post.id && l.upVote === 1))
-            setVoted1(userVotes.filter((l) => l.postId === post.id && l.downVote === 1))
+            if (userVotes && userVotes.length) setVoted(userVotes.filter((l) => l.postId === post.id && l.upVote === 1))
+            if (userVotes && userVotes.length) setVoted1(userVotes.filter((l) => l.postId === post.id && l.downVote === 1))
         }, [userVotes, vote, downVote, post])
 
 

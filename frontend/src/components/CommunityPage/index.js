@@ -178,7 +178,7 @@ function CommunityPage() {
         width: '100%',
         height: '200px',
         backgroundImage: `url(${style.header})`, // Replace with the actual path to your image
-        backgroundSize: 'contain',
+        backgroundSize: '100% 100%',
         backgroundPosition: 'center',
         }}></div> :
         <div id="community-page-header"></div> }

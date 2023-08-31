@@ -68,7 +68,8 @@ router.get("/current", async (req, res) => {
        },
        include: [
         { model: Posts },
-        { model: User }
+        { model: User },
+        { model: communityStyles }
      ]
     });
 
@@ -83,7 +84,16 @@ router.get('/memberships', async (req, res) => {
         where: {
             userId
         },
-        include: Communities
+        include: [
+            {
+                model: Communities,
+                include: [
+                    { model: communityStyles }
+                ]
+
+            },
+
+        ]
     });
 
     if (!communitiesExist.length) {

@@ -2,7 +2,7 @@ import { csrfFetch } from "./csrf";
 
 
 const GET_POST_COMMENTS = 'posts/getPostComments';
-// const GET_DETAILS = 'posts/getDetails';
+const GET_DETAILS = 'posts/getDetails';
 const GET_USER_COMMENTS = 'posts/getUserComments';
 const REMOVE_COMMENT = 'posts/removeComment'
 
@@ -14,12 +14,12 @@ const getPostComments = (comments) => {
     }
 }
 
-// const getDetails = (details) => {
-//     return {
-//         type: GET_DETAILS,
-//         details
-//     }
-// }
+const getDetails = (details) => {
+    return {
+        type: GET_DETAILS,
+        details
+    }
+}
 
 const removeComment = (id) => {
     return {
@@ -31,9 +31,7 @@ const removeComment = (id) => {
 const getUserComments = (comments) => ({
     type: GET_USER_COMMENTS,
     comments,
-  });
-
-
+});
 
 export const thunkGetPostComments = (id) => async (dispatch) => {
     const response1 = await csrfFetch(`/api/posts/${id}/comments`)
@@ -69,7 +67,7 @@ export const thunkCreateComment = (data, id) => async (dispatch) => {
         })
 
         const data1 = await response.json()
-        // dispatch(getDetails(data1))
+        dispatch(getDetails(data1))
         return data1
 
     }
@@ -92,17 +90,19 @@ export const thunkUpdateComment = (data, id) => async (dispatch) => {
       }
   }
 
-export const thunkDeleteComment = (id) => async (dispatch) => {
-    const response = await csrfFetch(`/api/comments/${id}`, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json'
-          },
-    })
-    let data = await response.json()
-    dispatch(removeComment(id))
-    return data
-}
+// export const thunkDeleteComment = (id) => async (dispatch) => {
+//     console.log("THUNK:", id)
+//     const response = await csrfFetch(`/api/comments/${id}`, {
+//         method: 'DELETE',
+//         headers: {
+//             'Content-Type': 'application/json'
+//           },
+//     })
+//     let data = await response.json()
+//     console.log("THUNK:", data)
+//     dispatch(removeComment(id))
+//     return data
+// }
 
 let initialState = {
     postComments: {},
@@ -115,12 +115,20 @@ let initialState = {
 const commentsReducer = (state = initialState, action) => {
   let newState;
   switch (action.type) {
-    case GET_POST_COMMENTS:{
+    case GET_POST_COMMENTS:
         newState = { ...state };
-        const comments = action.comments;
-        newState.postComments = { ...comments };
-        return newState;
-    }
+        newState.postComments = {}
+        console.log(action)
+        action.comments.forEach(
+          (comment) => (newState.postComments[comment.id] = comment)
+        );
+      return newState;
+    case GET_DETAILS:
+        newState = { ...state };
+        let comment = action.details;
+        newState.postComments[comment.id] = comment
+        newState.userComments[comment.id] = comment
+        return newState
     case REMOVE_COMMENT: {
         newState = { ...state };
         newState.postComments = { ...newState.postComments };

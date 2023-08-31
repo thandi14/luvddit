@@ -18,13 +18,12 @@ function CreatePost() {
   const targetRef = useRef(null);
   const [ comms, setComms ] = useState("")
   const dispatch = useDispatch()
-  const [initial, setInitial] = useState(singleCommunity.name);
   const history = useHistory()
 
     useEffect(() => {
-      setInitial(singleCommunity.name)
+     window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
+    }, []);
 
-    }, [singleCommunity]);
 
     const handleClick = () => {
       setIsVisible(!isVisible);
@@ -41,12 +40,24 @@ function CreatePost() {
         dispatch(communityActions.thunkGetUserCommunities())
     }, [])
 
-    const handleDocumentClick = (event) => {
-        if (targetRef.current && !targetRef.current.contains(event.target)) {
-            setIsVisible(false);
-            setIsVisible2(false)
-        }
-    };
+    useEffect(() => {
+
+        const handleDocumentClick = (event) => {
+            console.log(targetRef)
+            if (targetRef.current && !targetRef.current.contains(event.target)) {
+                setIsVisible(false);
+                setIsVisible2(false)
+            }
+        };
+
+
+          document.addEventListener('click', handleDocumentClick);
+          return () => {
+              document.removeEventListener('click', handleDocumentClick);
+          };
+
+      }, []);
+
 
     useEffect(() => {
         if (window.performance && performance.navigation.type !== 1) {
@@ -63,8 +74,7 @@ function CreatePost() {
     if (memberships.filter((m) => m.communityId == singleCommunity.id).length) community = Object.values(singleCommunity)
 
 
-    console.log(memberships.filter((m) => m.communityId == singleCommunity.id))
-
+    console.log(singleCommunity)
     return (
         <div className="create-post-page">
             <div className="create-post">
@@ -79,14 +89,14 @@ function CreatePost() {
                 <div ref={targetRef} className="search-comms">
                 {!isVisible && !isVisible2 ?
                  <div onClick={handleClick} id="choose-comms">
-                 {community.length ? <img src={avatar}></img> : <i class="fi fi-rr-circle-dashed"></i>}
-                 <input onChange={((e) => setComms(e.target.value))} defaultValue={community.length ? `l/${community[2]}` : null} placeholder="Choose your community"></input>
+                 {community.length ? community[9] ? <img id="pfp30" src={community[9][0].profile}></img> : <img src={avatar}></img> : <i class="fi fi-rr-circle-dashed"></i>}
+                 <input onChange={((e) => setComms(e.target.value))} defaultValue={community.length ? `l/${singleCommunity.name}` : null} placeholder="Choose your community"></input>
                  <i onClick={handleClick} class="fa-solid fa-chevron-down"></i>
                  </div>
                 :
                 <div id={idName2}>
                 <i class="fi fi-rs-search-heart"></i>
-                <input id="input-button" onChange={((e) => setComms(e.target.value))} text="type" defaultValue={initial ? `l/${initial}` : ""} placeholder="Search communities"></input>
+                <input id="input-button" onChange={((e) => setComms(e.target.value))} text="type" defaultValue={singleCommunity ? `l/${singleCommunity.name}` : ""} placeholder="Search communities"></input>
                 <i  onClick={handleClick2} class="fa-solid fa-chevron-down"></i>
                 </div>}
                 <div id={idName}>

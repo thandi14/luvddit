@@ -25,13 +25,16 @@ function CommunitiesMenu({ value }) {
     community2 = community2.map((c) => c.Community)
     let style
     if (singleCommunity.communityStyles?.length) style = singleCommunity.communityStyles[0]
+
+    console.log("COMPONENT", community2)
+
     return (
         <>
         <div id="your-comms">
             <p>Your Profile</p>
             <div onClick={((e) => setId(community3[0].id))} id="user-community">
             <div id='uc-img'>
-            <img src={avatar}></img> 
+            <img src={avatar}></img>
             </div>
             <div id="uc-name">
             <p>l/{community[0]?.name}</p>
@@ -42,7 +45,7 @@ function CommunitiesMenu({ value }) {
                 <p>Your communities<span onClick={(() => setModalContent(<CreateCommunity />))}>Create New</span></p>
                 {community2.map((u) =>
                      <div onClick={((e) => setId(u.id))} id="all-user-comms">
-                        <div id="all-comms-pfp">l/</div>
+                        {u.communityStyles && u.communityStyles.length ? <img id="PFP34" src={u.communityStyles[0].profile}></img> : <div id="all-comms-pfp">l/</div>}
                         <p>u/{u?.name}</p>
                     </div>
                 )}

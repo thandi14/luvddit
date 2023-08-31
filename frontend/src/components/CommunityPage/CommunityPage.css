@@ -663,7 +663,7 @@
     background-color: #0181e2;
 }
 
-.top {
+ .top {
     animation: moveUp 0.1s ease-out forwards;
   }
 
@@ -691,7 +691,7 @@
     font-family: 'Noto Sans', sans-serif;
 }
 
-.down {
+ .down {
     animation: moveDown 0.1s ease-out forwards;
   }
 
@@ -703,8 +703,6 @@
       transform: translateY(50px); /* Adjust the value as needed */
     }
   }
-
-
 
 .hidden {
     display: none;

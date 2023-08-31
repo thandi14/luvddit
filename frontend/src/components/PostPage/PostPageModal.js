@@ -13,6 +13,7 @@ import { useModal2 } from "../../context/Modal2";
 import CommunitiesProfile from "../CreatePostPage/communites2";
 import PostLikes from "../HomePage/likes";
 import * as commentActions from '../../store/comments'
+import DeleteComment from "./deleteC";
 
 function PostPageModal({ postId, scroll }) {
     const { communities, singleCommunity, communityMemberships } = useSelector((state) => state.communities);
@@ -33,14 +34,14 @@ function PostPageModal({ postId, scroll }) {
     const { closeModal } = useModal();
     const targetRef2 = useRef(null);
     const targetRef3 = useRef(null)
-    const [scrollPosition, setScrollPosition] = useState(0);
-    const [scrollDirection, setScrollDirection] = useState("down");
     const [ isLiked, setIsLiked ] = useState([]);
     const [ comment, setComment ] = useState("")
     const [ scrolling, setScrolling ] = useState(scroll)
+    const [isVisible3, setIsVisible3] = useState(false);
+    const [ commentId, setCommentId ] = useState(null)
+
 
     const memberships = Object.values(communityMemberships)
-
 
     const handleClick = () => {
         setIsVisible(!isVisible);
@@ -60,8 +61,6 @@ function PostPageModal({ postId, scroll }) {
 
     const handleComment = () => {
 
-        console.log(comment)
-
         setData2({
             comment
         })
@@ -70,49 +69,30 @@ function PostPageModal({ postId, scroll }) {
 
     }
 
+    let comments
+    if (singlePost.Comments && singlePost.Comments.length) comments = Object.values(singlePost.Comments).reverse()
+
     useEffect( () => {
 
         async function fetchData() {
-            const response = await dispatch(commentActions.thunkCreateComment(data2, singlePost.id))
-            console.log(response)
+            const response = await dispatch(postActions.thunkCreateComment(data2, singlePost.id))
         }
         fetchData()
 
-    }, [dispatch, data2])
+    }, [dispatch, data2, singlePost.id])
 
 
 
     useEffect(() => {
 
         async function fetchData() {
-          if (singlePost && singlePost.id) await dispatch(commentActions.thunkGetPostComments(singlePost.id))
           let data = await dispatch(postActions.thunkGetUserVotes())
           setIsLiked(data)
-          }
-          fetchData()
+        }
+        fetchData()
 
     }, [dispatch, singlePost.id])
 
-
-    useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-
-      if (currentScrollY > scrollPosition) {
-        setScrollDirection("down");
-      } else {
-        setScrollDirection("up");
-      }
-
-      setScrollPosition(currentScrollY);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-    }, [scrollPosition]);
 
     const scrollToTop = () => {
         const container = document.querySelector('.post-modal'); // Adjust the selector as needed
@@ -123,23 +103,21 @@ function PostPageModal({ postId, scroll }) {
         }
     };
 
-    let comments = Object.values(postComments)
-    console.log(comments)
-
     useEffect( () => {
 
         async function fetchData() {
             if (data1)  await dispatch(postActions.thunkUpdatePosts(singlePost?.id, data1))
             let data
             if (postId) data =  await dispatch(postActions.thunkGetDetailsById(postId))
-            console.log(data)
 
         }
         fetchData()
 
     }, [dispatch, data1, postId])
 
+
     let editMenu = isVisible ? "edit-menu" : "hidden";
+    let editMenu2 = isVisible3 ? "edit-menu" : "hidden";
 
 
     const [randomNum, setRandomNum] = useState(Math.floor(Math.random() * 10));
@@ -198,7 +176,6 @@ function PostPageModal({ postId, scroll }) {
       useEffect(() => {
 
           const handleDocumentClick = (event) => {
-              console.log(modalRef2, modalRef2.current.contains(event.target) )
               if ((modalRef2.current && !modalRef2.current.contains(event.target)) && (targetRef2.current && !targetRef2.current.contains(event.target)) && (targetRef3.current && !targetRef3.current.contains(event.target))) {
                   closeModal();
 
@@ -218,7 +195,7 @@ function PostPageModal({ postId, scroll }) {
         if (!Object.values(singlePost).length) return <h1></h1>
 
         let createdAt
-        if (Object.values(singlePost?.Community)?.length) createdAt = new Date(singlePost?.Community.createdAt)
+        if (singlePost.Community && Object.values(singlePost?.Community)?.length) createdAt = new Date(singlePost?.Community.createdAt)
 
         const dateObject = new Date(createdAt);
 
@@ -233,12 +210,13 @@ function PostPageModal({ postId, scroll }) {
         if (singlePost.tags) tags = singlePost.tags.split(',')
 
         let style
-    if (singleCommunity.communityStyles?.length) style = singleCommunity.communityStyles[0]
-        console.log(style)
+         if (singleCommunity.communityStyles?.length) style = singleCommunity.communityStyles[0]
+
+
     return (
         <div className="post-modal">
             <div id="one">
-                <div ref={targetRef3} className={scrollDirection === "up" ? "sticky" : ""} id="post-details-head">
+                <div ref={targetRef3} id="post-details-head">
                 <div>
                 <div id="line5"></div>
                 <PostLikes post={singlePost}
@@ -262,10 +240,10 @@ function PostPageModal({ postId, scroll }) {
             </div>
             <div id="details-side">
             <div id="nameOf3">
-                    <img src={pfp}></img>
-                    <span id="community">l/{singlePost.Community.name}</span>
+                    <img src={ singlePost.Community.communityStyles && singlePost.Community.communityStyles.length ? singlePost.Community.communityStyles[0].profile : pfp}></img>
+                    <span id="community">l/{singlePost.Community?.name}</span>
                     <p>·</p>
-                    <p>Posted by u/{singlePost.User.username} {getTimeDifferenceString(singlePost.createdAt)}</p>
+                    <p>Posted by u/{singlePost.User?.username} {getTimeDifferenceString(singlePost.createdAt)}</p>
                     </div>
             <h1>{singlePost?.title}</h1>
             <span id="tags">{ tags && tags.includes("oc") ? <div id="oc5">OC</div> : null} {tags && tags.includes("spoiler") ? <div id="spoiler5">Spoiler</div> : null } { tags && tags.includes("nsfw") ? <div id="nsfw5">NSFW</div> : null}</span>
@@ -296,10 +274,10 @@ function PostPageModal({ postId, scroll }) {
             {singlePost.PostImages?.length ? <div><img id="post-image1" src={singlePost.PostImages[0].imgURL} alt="postimg"></img></div> : null}
             </div>
             { isVisible2 ? <div id="save"><button onClick={handleClick2} >Cancel</button> <button id={ !description ? "save-submit" : "save-submit2"} onClick={handleSave}>Save</button></div> : null}
-            {user && singlePost.User.id !== user.id ?<div id="post-extras3">
+            {user && singlePost.User?.id !== user.id ?<div id="post-extras3">
                     <div id="comment">
                     <i class="fa-regular fa-message"></i>
-                    <p>{singlePost.Comments?.length} Comments</p>
+                    <p>{comments && comments.length} Comments</p>
                     </div>
                     <div id="comment">
                     <i class="fi fi-rr-box-heart"></i>
@@ -319,7 +297,7 @@ function PostPageModal({ postId, scroll }) {
              <div id="post-extras1">
                 <div id="comment5">
                 <i class="fa-regular fa-message"></i>
-                <p>{singlePost.Comments?.length}</p>
+                <p>{comments && comments.length}</p>
                 </div>
                 <div id="comment4">
                     <i class="fi fi-rs-heart-arrow"></i>
@@ -343,7 +321,8 @@ function PostPageModal({ postId, scroll }) {
                 <div id="comment4">
                     <i class="fa-brands fa-reddit-alien"></i>
                 </div>
-                <i  onClick={handleClick} id="menu" class="fi fi-rr-menu-dots"></i>
+                <i  onClick={handleClick} id="menu" class="fi fi-rr-menu-dots">
+                <div id="post-menu25">
                 <div className="menu">
                 <div id={editMenu}>
                    {singlePost.PostImages.length && singlePost.PostImages[0].imgURL ? null : <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
@@ -371,6 +350,8 @@ function PostPageModal({ postId, scroll }) {
                     </label>
                 </div>
                 </div>
+                </div>
+                </i>
             </div> }
             <div id="insights">
                 <p>Post Insights</p>
@@ -419,20 +400,20 @@ function PostPageModal({ postId, scroll }) {
                     </div>
                 </div>
                     <div id="go-to-c"></div>
-                { !comments.length ? <div id="any-comments">
+                { !comments || !comments.length ? <div id="any-comments">
                     <i class="fi fi-rr-comment-heart"></i>
                     <p>No Comments Yet</p>
                     <span>Be the first to share what you think</span>
                 </div> :
                 <div id="if-comments">
-                    {comments.map((c) =>
+                    {comments.map((c, i) =>
                         <div className="a-comment">
                             <div id="left-csec">
                             <img id="avatar6" src={pfp}></img>
                             <div id="c-line"></div>
                             </div>
                             <div id="right-csec">
-                                <span>{c.User.username} · <div id="time-comm">{getTimeDifferenceString(c.createdAt)}</div></span>
+                                <span>{user.username} { user.id === singlePost.userId ? <div id="OP">OP</div> : null}· <div id="time-comm">{getTimeDifferenceString(c.createdAt)}</div></span>
                                 <p>{c.comment}</p>
                                 <div id="comment-extras">
                                     <div>
@@ -448,7 +429,32 @@ function PostPageModal({ postId, scroll }) {
                                         <i class="fi fi-rs-heart-arrow"></i>
                                         <p>Share</p>
                                     </div>
-                                    <i class="fi fi-rr-menu-dots"></i>
+                                    <i onClick={(() => {
+                                        setIsVisible3(true)
+                                        setCommentId(i)
+                                       if (commentId === i) setIsVisible3(!isVisible3)
+                                    })} class="fi fi-rr-menu-dots">
+                                    { commentId === i ? <div className="menu">
+                                    <div id="comm-sec25">
+                                    <div onClick={((e) => e.stopPropagation())} id={editMenu2}>
+                                    {singlePost.PostImages.length && singlePost.PostImages[0].imgURL ? null : <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
+                                     <p><i class="fi fi-rr-bookmark"></i>Save</p>
+                                     <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
+                                     <p onClick={(() => {
+                                     setModalContent2(<div> <DeleteComment id={c.id} /></div>)
+                                     setIsVisible(false)
+                                     setIsVisible3(false)
+                                     })}><i class="fi fi-rr-trash-xmark"></i>Delete</p>
+                                     <label>
+                                     <input type="checkbox" />
+                                     Send me reply notifications
+                                     </label>
+                                     </div>
+                                     </div>
+                                    </div>
+                                     : null }
+                                    </i>
+
                                 </div>
                             </div>
                         </div>
@@ -458,16 +464,15 @@ function PostPageModal({ postId, scroll }) {
             </div>
             </div>
             <div className="side-community2">
-                { singlePost.Community.id !== 1 ? <CommunitiesProfile community={singlePost.Community} /> :
+                { singlePost.Community?.id === 1 ? <CommunitiesProfile community={singlePost.Community} /> :
                  <div onClick={(() => {
                     history.push(`/communities/${singlePost.Community.id}`)
                     closeModal()
-                })
-                    } id="your-community-profile">
+                     })} id="your-community-profile">
                     <div id="header-profile-comm4">
                     </div>
                     <div id="profile-content">
-                        <span id="profile-comm-title7">{style ? <img id="pfp10" src={style.profile}></img> : <div>l/</div> }{singlePost.Community?.name}</span>
+                        <span id="profile-comm-title7"> { singlePost.Community?.communityStyles.length ? <img id="pfp10" src={singlePost.Community.communityStyles[0].profile}></img> : <div>l/</div>} {singlePost.Community?.name}</span>
                         <span id="profile-about7">{singlePost.Community?.about}</span>
                         <span id="when-created"><i class="fi fi-rr-cake-birthday"></i>Created {formattedDate}</span>
                         <div id="line"></div>

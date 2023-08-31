@@ -27,10 +27,16 @@ router.get("/current", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
     const { user } = req
-    const userId = user.dataValues.id
-    const commentId = req.body.id
+   // const userId = user.dataValues.id
+    const commentId = req.params.id
 
     let comment = await Comments.findByPk(commentId);
+
+    console.log(commentId)
+
+    if (!comment) return res.status(404).json({
+        "message": "Comment not found"
+    })
 
     await comment.destroy()
     return res.json({

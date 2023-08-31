@@ -535,7 +535,7 @@ body {
 
 }
 
-#home-menu > div > span {
+#home-menu > div > span:not(:first-child) {
     padding-left: 8%;
     padding-right: 8%;
     height: 36px;
@@ -543,7 +543,8 @@ body {
     font-size: 14px;
     align-items: center;
     cursor: pointer;
-    gap: 5px
+    gap: 5px;
+    width: 80%
 }
 
 #no-pfp {
@@ -560,6 +561,12 @@ body {
     font-weight: 900;
 }
 
+#pfp30 {
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+}
+
 #pfp-ms {
     width: 18px;
     height: 18px;
@@ -571,9 +578,16 @@ body {
     background-color: #EDEFF1;
 }
 
-#home-menu > div :first-child {
+#menu-tit {
     color: #878A8C;
     font-size: 10px;
+    padding-left: 8%;
+    padding-right: 8%;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    gap: 5px
 }
 
 #nav-comms {

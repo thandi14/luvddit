@@ -180,7 +180,6 @@ module.exports = {
         votes: 0,
         downVotes: 0,
         title: "Playtime with my energetic pup, Charlie. His boundless enthusiasm and wagging tail are my daily dose of joy. #DoggoPlaytime #HappyPup",
-        description: "Engaging in playtime with my exuberant pup, Charlie, brings forth boundless enthusiasm and wagging tails that serve as my delightful daily dose of joy. #HappyPup"
       },
       { communityId: 7, userId: 2, votes: 0, downVotes: 0, title: "Cozy movie night with 'Amélie.' A whimsical tale of Parisian charm and the magic of small gestures. #FrenchCinema #WhimsicalJourney", tags: "oc" },
       { communityId: 4, userId: 1, votes: 0, downVotes: 0, title: "Exploring culinary fusion with a spicy ramen burger. A flavor explosion that bridges cultures on a single bun. #FoodFusion #RamenBurger" },

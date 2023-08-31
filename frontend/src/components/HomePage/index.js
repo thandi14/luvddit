@@ -13,7 +13,7 @@ import PostLikes from './likes'
 
 
 function HomePage() {
-    const { posts } = useSelector((state) => state.posts);
+    const { posts, singlePost } = useSelector((state) => state.posts);
     const { user } = useSelector((state) => state.session);
     const dispatch = useDispatch()
     const [isVisible, setIsVisible] = useState(false);
@@ -37,6 +37,13 @@ function HomePage() {
       fetchData()
 
   }, [dispatch, posts])
+
+  useEffect(() => {
+    async function fetchData() {
+      let data = await dispatch(postsActions.thunkGetAllPosts())
+      }
+      fetchData()
+  }, [singlePost.Comments])
 
 
     console.log(isLiked)
@@ -125,7 +132,7 @@ function HomePage() {
 
 
 
-
+      console.log(ePost)
     return (
         <div className="splashPage">
             <div className="posts">
@@ -177,7 +184,7 @@ function HomePage() {
                     </div>
                     <div id="pc-side2">
                     <div id="nameOf">
-                    <img onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} src={pfp}></img>
+                    {post.Community.communityStyles && post.Community.communityStyles.length ? <img onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} src={post.Community.communityStyles[0].profile}></img> : <img onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} src={pfp}></img>}
                     <span onClick={(() => history.push(`/communities/${post.communityId}`))} className="userName" id="community">l/{post.Community.name}</span>
                     <p>·</p>
                     <p >Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User.username}</span> {getTimeDifferenceString(post.createdAt)}</p>
@@ -194,7 +201,7 @@ function HomePage() {
                     <div id="post-extras">
                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="comment">
                     <i class="fa-regular fa-message"></i>
-                    <p id={`${post.id}`} >{post.Comments.length} Comments</p>
+                    <p id={`${post.id}`} >{Object.values(post.Comments).length} Comments</p>
                     </div>
                     <div onClick={(() => window.alert('Feature coming soon'))} id="comment">
                     <i class="fi fi-rr-box-heart"></i>
