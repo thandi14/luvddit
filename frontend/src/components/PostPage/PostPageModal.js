@@ -71,6 +71,8 @@ function PostPageModal({ postId, scroll }) {
 
     const handleComment = () => {
 
+        if (!user) return window.alert("Please login")
+
         setData2({
             comment
         })
@@ -427,7 +429,7 @@ function PostPageModal({ postId, scroll }) {
                             <div id="c-line"></div>
                             </div>
                             <div id="right-csec">
-                                <span><span id="username45">{c.User?.username}</span> { c.User && c.User.id === singlePost.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.createdAt)}</div></span>
+                                <span><span id="username45">{c.User?.username || user.username}</span> { c.User && c.User.id === singlePost.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.createdAt)}</div></span>
                                 <p>{c.comment}</p>
                                 <div id="comment-extras">
                                     <div id="comm-likes9">
