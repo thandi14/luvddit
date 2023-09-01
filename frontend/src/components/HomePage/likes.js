@@ -41,7 +41,7 @@ function PostLikes({ post, vote, downVote, p, h }) {
 
 
         const handleFavoriteClick = async () => {
-                if (!user) return window.alert('Feature not avaliable')
+                if (!user) return window.alert('Please login')
 
                 if ((vote && voted.length) || boolean && !downVote) {
                     setBoolean(false)
@@ -77,7 +77,7 @@ function PostLikes({ post, vote, downVote, p, h }) {
         };
 
         const handleFavoriteClick2 = async () => {
-            if (!user) return window.alert('Feature not avaliable')
+            if (!user) return window.alert('Please login')
 
             if ((downVote && voted1.length) || boolean2 && !vote) {
                 setBoolean2(false)

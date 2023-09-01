@@ -444,7 +444,7 @@ function YourProfilePage() {
                 <div>
                {c.communityStyles && c.communityStyles.length ? <img id="tpfp" src={c.communityStyles[0].profile}></img> : <div id="nopfp">l/</div> }
                <div id="modss20">
-                <span>l/{c.name}</span>
+                <span id="justbold">l/{c.name}</span>
                 <span>{c.CommunityMembers} members</span>
                </div>
                </div>
