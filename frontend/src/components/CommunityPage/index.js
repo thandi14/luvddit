@@ -169,7 +169,7 @@ function CommunityPage() {
   let ePost = singleCommunity.Posts?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     let style
-    if (singleCommunity.communityStyles.length) style = singleCommunity.communityStyles[0]
+    if (singleCommunity.communityStyles && singleCommunity.communityStyles.length) style = singleCommunity.communityStyles[0]
 
     return (
         <>

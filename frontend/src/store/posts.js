@@ -237,7 +237,7 @@ const postsReducer = (state = initialState, action) => {
       let comment = action.details;
       newState.singlePost.Comments[comment.id] = comment
       let post = newState.posts[comment.postId]
-      post.Comments[comment.id] = comment
+      if (post.Comments) post.Comments[comment.id] = comment
       return newState
     case REMOVE_POST: {
         newState = { ...state };
