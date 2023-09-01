@@ -8,11 +8,12 @@ import avatar2 from './Unknown2.jpg'
 import CommunitiesProfile from "./communites2";
 import { useDispatch } from "react-redux";
 import * as communityActions from "../../store/communities"
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { useHistory, useParams } from "react-router-dom/cjs/react-router-dom.min";
 
 
 function CreatePost() {
   const { communities, singleCommunity, userCommunities, communityMemberships } = useSelector((state) => state.communities)
+  const { user } = useSelector((state) => state.session)
   const [isVisible, setIsVisible] = useState(false);
   const [isVisible2, setIsVisible2] = useState(false);
   const targetRef = useRef(null);
@@ -20,9 +21,11 @@ function CreatePost() {
   const dispatch = useDispatch()
   const history = useHistory()
 
+
     useEffect(() => {
      window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
     }, []);
+
 
 
     const handleClick = () => {
@@ -73,23 +76,29 @@ function CreatePost() {
     let memberships = Object.values(communityMemberships)
     if (memberships.filter((m) => m.communityId == singleCommunity.id).length) community = Object.values(singleCommunity)
 
-
+    console.log(singleCommunity)
     return (
         <div className="create-post-page">
             <div className="create-post">
                 <div id="cp-title">
                 <h3>Create a post</h3>
                 <div>
+                {singleCommunity.name && singleCommunity.name !== user.username ? <div>
+                <span>COLLECETIONS</span>
+                <p>0</p>
+                </div> : null}
+                <div>
                 <span>DRAFTS</span>
                 <p>0</p>
+                </div>
                 </div>
                 </div>
                 <div id='border2'></div>
                 <div ref={targetRef} className="search-comms">
                 {!isVisible && !isVisible2 ?
                  <div onClick={handleClick} id="choose-comms">
-                 {community && community.length ? community[9] ? <img id="pfp30" src={community[9][0]?.profile}></img> : <img src={avatar}></img> : <i class="fi fi-rr-circle-dashed"></i>}
-                 <input onChange={((e) => setComms(e.target.value))} defaultValue={community.length ? `l/${singleCommunity.name}` : null} placeholder="Choose your community"></input>
+                 {community && community.length ? community[9] && singleCommunity.name !== user.username ? <img id="pfp30" src={community[9][0]?.profile}></img> : <img src={avatar}></img> : <i class="fi fi-rr-circle-dashed"></i>}
+                 <input onChange={((e) => setComms(e.target.value))} defaultValue={singleCommunity.name ? `l/${singleCommunity.name}` : ""} placeholder="Choose your community"></input>
                  <i onClick={handleClick} class="fa-solid fa-chevron-down"></i>
                  </div>
                 :

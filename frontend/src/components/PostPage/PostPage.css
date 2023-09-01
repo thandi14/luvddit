@@ -388,7 +388,7 @@
     align-items: center;
 }
 
-#comment4:hover, #menu:hover {
+#comment4:hover, #menu:hover, #comment5:hover {
     background-color: #e4e4e4;
     border-radius: 4px;
     height: 22px;

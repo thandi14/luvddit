@@ -136,9 +136,10 @@
 
 #submit-buttons > button {
     border-radius: 18px;
-    padding: 5px;
-    padding-left: 17px;
-    padding-right: 17px;
+    /* padding: 5px; */
+    /* padding-left: 17px;
+    padding-right: 17px; */
+    width: 90px;
     height: 32px;
     font-size: 14px;
     font-weight: 600;
@@ -147,16 +148,50 @@
     justify-content: center;
     gap: 8px;
     cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.marg > i {
+    height: 100%;
+    position: absolute;
+    right: 1%;
+    background-color: #0079D3;
+    width: 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-left: 2px solid white;
+    color: white;
+    font-size: 16px;
+}
+
+#post2 > i {
+    height: 100%;
+    position: absolute;
+    right: 1%;
+    background-color: #0079D3;
+    width: 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-left: 2px solid white;
+    color: white;
+    font-size: 16px;
+}
+
+.marg {
+    padding-right: 35px;
 }
 
 #post {
-    border: 1px solid #7C7C7C;
+    border: 0px solid transparent;
     background-color: #7C7C7C;
     color: #ccc;
 }
 
 #post2 {
-    border: 1px solid #0079D3;
+    border: 0px solid #0079D3;
     background-color: #0079D3;
     color: white;
 
@@ -436,7 +471,7 @@
     line-height: 10px;
 }
 
-#cp-title > div {
+#cp-title > div > div {
     display: flex;
     gap: 5px;
     align-items: center;
@@ -444,14 +479,19 @@
     cursor: pointer;
 }
 
-#cp-title > div > span {
+#cp-title > div {
+    display: flex;
+    gap: 40px
+}
+
+#cp-title > div > div > span {
     font-size: 12px;
     color: #0079D3;
     font-weight: 700;
     font-family: inherit;
 }
 
-#cp-title > div > p {
+#cp-title > div > div > p {
     background-color: #878A8C;
     color: white;
     width: 15px;
@@ -473,12 +513,23 @@
     padding-left: 1%;
 }
 
+#submit-buttons > i {
+    font-size: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #7C7C7C;
+    margin-right: 5px;
+}
+
 #submit-buttons {
     width: 100%;
     display: flex;
     justify-content: flex-end;
     margin-bottom: 5px;
-    gap: 5px
+    gap: 5px;
+    align-items: center;
 }
 
 #type-of-post {

@@ -23,6 +23,15 @@
 
 }
 
+#filter-side1 > div:first-child > i, #filter-side1 > div:first-child > p{
+    color: #0079D3;
+}
+
+#filter-side1 > div:first-child {
+    background-color: #EDEFF1;
+
+}
+
 #almostd {
     line-height: 15px;
     color: #878A8C;

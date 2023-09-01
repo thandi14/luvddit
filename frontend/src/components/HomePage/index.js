@@ -28,6 +28,8 @@ function HomePage() {
 
     let top = isVisible ? "top" : "down"
 
+
+
   useEffect(() => {
 
     async function fetchData() {

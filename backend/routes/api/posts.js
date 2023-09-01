@@ -11,6 +11,9 @@ const router = express.Router();
 
 
 router.get("/", async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+    const pageSize = 10; // Number of posts per page
+
     let posts = await Posts.findAll({
         include: [
             { model: Comments},
@@ -23,7 +26,9 @@ router.get("/", async (req, res) => {
             { model: User},
             { model: PostImages},
             { model: Votes}
-         ]
+         ],
+        //  limit: pageSize, // Limit the number of results per page
+        //  offset: (page - 1) * pageSize
     });
 
     // console.log(posts[0])
@@ -103,7 +108,12 @@ router.get("/:id", async (req, res) => {
 
     let post = await Posts.findByPk(postId, {
         include: [
-            { model: Comments },
+            {
+                model: Comments,
+                include: [
+                    { model: User }
+                ]
+            },
             {
                 model: Communities,
                 include: [

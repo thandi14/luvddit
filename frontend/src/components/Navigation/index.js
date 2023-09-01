@@ -13,6 +13,7 @@ import avatar from "./icons/IMG6.jpg"
 import CreateCommunity from '../CreateCommunityModel';
 import { useModal } from '../../context/Modal';
 import pfp from "./icons/IMG6.jpg"
+import { useRef } from 'react';
 
 
 
@@ -24,14 +25,33 @@ function Navigation({ isLoaded }){
   const [ homeButton, setHomeButton ] = useState("home")
   const location = useLocation();
   const [ isVisible, setIsVisible ] = useState(false)
-  const { setModalContent } = useModal()
+  const { setModalContent, closeModal } = useModal()
   const [show, setShow] = useState(false);
+  const targetRef = useRef()
+  const ulRef = useRef();
 
   const openMenu = () => {
-    console.log("hello")
     if (show) setShow(false);
     setShow(true);
   };
+
+  useEffect(() => {
+
+    const handleDocumentClick = (event) => {
+        if ((targetRef.current && !targetRef.current.contains(event.target))) {
+            setIsVisible(false);
+
+          }
+
+      };
+
+      document.addEventListener('click', handleDocumentClick);
+      return () => {
+          document.removeEventListener('click', handleDocumentClick);
+      };
+
+  }, []);
+
 
   useEffect(() => {
     if (location.pathname.includes('new')) {
@@ -49,8 +69,6 @@ function Navigation({ isLoaded }){
   let memberships = Object.values(communityMemberships)
   let myCommunities = Object.values(userCommunities)
   myCommunities = myCommunities.slice(1, myCommunities.length)
-
-  console.log(location.pathname.includes('communities'))
 
 
   let sessionLinks;
@@ -75,7 +93,7 @@ function Navigation({ isLoaded }){
         <i class="fa-solid fa-chevron-down"></i>
         </div>
       </div>
-        <ProfileButton user={sessionUser} menu={show} />
+        <ProfileButton user={sessionUser} menu={show} r={ulRef} />
       </>
     );
   } else {
@@ -96,8 +114,6 @@ function Navigation({ isLoaded }){
   const homeButtonMenu = isVisible ? "homeButton2" : "homeButton";
   const homeMenu = isVisible ? "home-menu" : "hidden";
 
-  console.log(memberships)
-
   return (
     <div className="navigation">
       <div onClick={(() => history.push('/'))} className="logo">
@@ -107,7 +123,7 @@ function Navigation({ isLoaded }){
         <i class="fa-solid fa-heart"></i>
         </div>
         </div>
-      <div className="homeButton">
+      <div ref={targetRef} className="homeButton">
           <div onClick={(() => setIsVisible(!isVisible))} id={homeButtonMenu}>
           <div id="homeB1">
           {homeButton === "home" ? <i class="fi fi-sr-home-heart"></i> : null }
@@ -127,10 +143,13 @@ function Navigation({ isLoaded }){
             <span id="menu-tit"><div></div>Moderating</span>
             <span onClick={(() => window.alert("Feature not available"))}><div></div><i class="fi fi-rr-envelopes"></i>Mod Queue</span>
             <span onClick={(() => window.alert("Feature not available"))}><div></div><i class="fi fi-rr-envelope"></i>Modmail</span>
-            <span><div></div><i class="fi fi-rr-envelopes"></i>l/Mod</span>
+            <span onClick={(() => window.alert("Feature not available"))}><div></div><i class="fi fi-rr-envelopes"></i>l/Mod</span>
             {myCommunities.map((c) =>
             <>
-            <span onClick={(() => history.push(`/communities/${c.id}`))}><div></div>{ c.communityStyles && c.communityStyles.length ? <img id="pfp30" src={c.communityStyles[0].profile}></img> : <span id="no-pfp">l/</span>}l/{c.name}</span>
+            <span onClick={(() => {
+              history.push(`/communities/${c.id}`)
+              setIsVisible(false)
+              })}><div></div>{ c.communityStyles && c.communityStyles.length ? <img id="pfp30" src={c.communityStyles[0].profile}></img> : <span id="no-pfp">l/</span>}l/{c.name}</span>
             </>
             )}
             </div>
@@ -138,14 +157,21 @@ function Navigation({ isLoaded }){
             <span id="menu-tit"><div></div>Your communities</span>
             <span onClick={(() => setModalContent(<CreateCommunity />))} ><div></div><i class="fi fi-rr-plus"></i>Create Community</span>
             {memberships.map((c) =>
-            <span onClick={(() => history.push(`/communities/${c.Community?.id}`))}><div></div>{ c.Community.communityStyles && c.Community.communityStyles.length ? <img id="pfp30" src={c.Community.communityStyles[0].profile}></img> : <span id="no-pfp">l/</span>}l/{c.Community?.name}</span>
+            <span onClick={(() => {
+              history.push(`/communities/${c.Community?.id}`)
+              setIsVisible(false)
+            })}><div></div>{ c.Community.communityStyles && c.Community.communityStyles.length ? <img id="pfp30" src={c.Community.communityStyles[0].profile}></img> : <span id="no-pfp">l/</span>}l/{c.Community?.name}</span>
             )}
             </div>
             <div id="feeds-ms">
             <span id="menu-tit"><div></div>Feeds</span>
-            <span onClick={(() => history.push('/'))}><div></div><i class="fi fi-sr-home-heart"></i>Home</span>
-            <span><div></div><i class="fi fi-rr-grin-hearts"></i>Popular</span>
-            <span><div></div><i class="fi fi-rr-circle-heart"></i>All</span>
+            <span onClick={(() => {
+              history.push('/')
+              setIsVisible(false)
+            })
+            }><div></div><i class="fi fi-sr-home-heart"></i>Home</span>
+            <span onClick={(() => window.alert("Feature not available"))}><div></div><i class="fi fi-rr-grin-hearts"></i>Popular</span>
+            <span onClick={(() => window.alert("Feature not available"))}><div></div><i class="fi fi-rr-circle-heart"></i>All</span>
             </div>
             <div id="other-ms">
             <span id="menu-tit"><div></div>Other</span>
@@ -180,7 +206,7 @@ function Navigation({ isLoaded }){
       </div>
       <span onClick={(() => window.alert("Feature not available"))} id="advertise"><i class="fi fi-rr-bullhorn"></i>Advertise</span>
       </div>
-      <div className='profile'>
+      <div ref={ulRef} className='profile'>
       {isLoaded && sessionLinks}
       </div>
     </div>

@@ -362,7 +362,7 @@ function CommunityPageEdit() {
                     <p>Moderators</p>
                 </div>
                 <div id="home-section">
-                <button onClick={(() => history.push('/posts/new'))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>
+                <button onClick={(() => history.push(`/posts/new/${singleCommunity.id}`))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>
                 <div id="cs-side6">
                     <span>{user.username}</span>
                     <span>VIEW ALL MODERATORS</span>

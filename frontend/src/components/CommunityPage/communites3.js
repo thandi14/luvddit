@@ -101,7 +101,7 @@ function YourCommunitesProfile() {
                     <span>Add a Primary Topic<i class="fa-solid fa-chevron-down"></i></span>
                 </div>
                 <div id="line"></div>
-                { user ? <button onClick={(() => history.push('/posts/new'))} id="but3">Create Post</button> : <button onClick={(() => window.alert('Feature coming soon'))} id="but3">Create Post</button>}
+                { user ? <button onClick={(() => history.push(`/posts/new/${singleCommunity.id}`))} id="but3">Create Post</button> : <button onClick={(() => window.alert('Feature coming soon'))} id="but3">Create Post</button>}
                 <div id="line"></div>
                 <div id="cs-side5">
                     <span onClick={(() => window.alert("Feature not available"))}>COMMUNITY OPTIONS</span>

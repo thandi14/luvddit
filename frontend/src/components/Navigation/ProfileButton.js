@@ -4,11 +4,11 @@ import * as sessionActions from '../../store/session';
 import pfp from "./icons/IMG6.jpg"
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
-function ProfileButton({ user, menu }) {
+function ProfileButton({ user, menu, r }) {
   const dispatch = useDispatch();
   const [showMenu, setShowMenu] = useState(menu);
   const history = useHistory()
-  const ulRef = useRef();
+  //const ulRef = useRef();
 
   const openMenu = () => {
     if (showMenu) setShowMenu(false);
@@ -16,10 +16,15 @@ function ProfileButton({ user, menu }) {
   };
 
   useEffect(() => {
-    if (!showMenu) return;
+    if (menu) setShowMenu(true)
+    if (!menu) setShowMenu(false)
+  }, [menu])
+
+  useEffect(() => {
+   // if (!showMenu) return;
 
     const closeMenu = (e) => {
-      if (!ulRef.current.contains(e.target)) {
+      if (r && !r.current.contains(e.target)) {
         setShowMenu(false);
       }
     };
@@ -34,18 +39,20 @@ function ProfileButton({ user, menu }) {
     dispatch(sessionActions.logout());
   };
 
-  const ulClassName = menu ? "profile-dropdown" : " hidden";
+  console.log(showMenu, menu)
+
+  const ulClassName = showMenu ? "profile-dropdown" : " hidden";
 
   return (
     <>
       {/* <img id="pfpButton" src={pfp} alt="pfp" onClick={openMenu}> */}
       {/* </img> */}
-      <div className={ulClassName} ref={ulRef}>
+      <div className={ulClassName} >
         <div>
         <span id="nine"><i class="fi fi-rr-user"></i>My stuff</span>
         <span>Online status</span>
         <span onClick={(() => {
-          setShowMenu(!showMenu)
+          setShowMenu(false)
           history.push("/profile")
           })}>Profile</span>
         <span>Create Avatar</span>

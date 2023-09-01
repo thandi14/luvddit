@@ -34,10 +34,26 @@ function YourProfilePage() {
     const  { setModalContent2, modalRef2 } = useModal2()
     const [ postId, setPostId ] = useState(null)
     const [ commentId, setCommentId ] = useState(null)
+    const targetRef2 = useRef()
 
     useEffect(() => {
         window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
     }, []);
+
+    useEffect(() => {
+        // if (!showMenu) return;
+
+         const closeMenu = (e) => {
+           if (targetRef2 && !targetRef2.current.contains(e.target)) {
+             setIsVisible2(false);
+           }
+         };
+
+         document.addEventListener('click', closeMenu);
+
+         return () => document.removeEventListener("click", closeMenu);
+
+        }, []);
 
     let sortedPosts = Object.values(posts)
 
@@ -69,10 +85,12 @@ function YourProfilePage() {
                 return b.createdAt - a.createdAt
             })
 
-            p.createdAt = p.Comments[0].createdAt
+            if (p.createdAt < p.Comments[0].createdAt) {
+                p.createdAt = p.Comments[0].createdAt
+
+            }
+
         }
-
-
     })
 
     filterdPosts.sort((a, b) => {
@@ -211,15 +229,15 @@ function YourProfilePage() {
     <div id="aHeader">
         <div id="aH">
         <span id="aHl">OVERVIEW</span>
-        <span id="aH2">POSTS</span>
-        <span id="aH3">COMMENTS</span>
-        <span id="aH4">HISTORY</span>
-        <span id="aH5">SAVED</span>
-        <span id="aH6">HIDDEN</span>
-        <span id="aH7">UPVOTED</span>
-        <span id="aH8">DOWNVOTED</span>
-        <span id="aH9">AWARDS RECIEVED</span>
-        <span id="aH10">AWARDS GIVEN</span>
+        <span onClick={(() => window.alert("Feature not avaliable"))} id="aH2">POSTS</span>
+        <span onClick={(() => window.alert("Feature not avaliable"))}id="aH3">COMMENTS</span>
+        <span onClick={(() => window.alert("Feature not avaliable"))}id="aH4">HISTORY</span>
+        <span onClick={(() => window.alert("Feature not avaliable"))}id="aH5">SAVED</span>
+        <span onClick={(() => window.alert("Feature not avaliable"))}id="aH6">HIDDEN</span>
+        <span onClick={(() => window.alert("Feature not avaliable"))}id="aH7">UPVOTED</span>
+        <span onClick={(() => window.alert("Feature not avaliable"))}id="aH8">DOWNVOTED</span>
+        <span onClick={(() => window.alert("Feature not avaliable"))}id="aH9">AWARDS RECIEVED</span>
+        <span onClick={(() => window.alert("Feature not avaliable"))}id="aH10">AWARDS GIVEN</span>
         </div>
     </div>
     <div className="splashPage">
@@ -243,7 +261,7 @@ function YourProfilePage() {
         {filterdPosts?.map((post, i) =>
             // <div id={`${post.id}`} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={scrolling} />))} className="post-content">
             <div id="omg">
-            <div id={`${post.id}`} className="post-content2">
+            <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id={`${post.id}`} className="post-content2">
             {post.userId !== user.id ? <div id="pc-side104"><i id="posted-c" class="fa-regular fa-message"></i></div> : <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side8">
             <PostLikes post={post}
             vote={isLiked.length && isLiked.some((l) => l.postId === post.id && l.upVote === 1)}
@@ -251,13 +269,20 @@ function YourProfilePage() {
             </div> }
             <div id="pc-side2">
             { post.userId !== user.id ? <div id="nameOf2">
-            <p id="almostd">
-            <span className="userName2">{user.username} </span>
-             commented on {post.title} · <span>l/{post.Community.name}</span> · Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user.id ? null : getTimeDifferenceString(post.createdAt)}</p>
+            <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))}  id="almostd">
+            <span onClick={((e) => {
+                e.stopPropagation()
+                window.alert("Feature not avaliable")})}className="userName2">{user.username} </span>
+             commented on {post.title} · <span onClick={((e) => {
+                e.stopPropagation()
+                history.push(`/communities/${post.Community.id}`)})}>l/{post.Community.name}</span> · Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user.id ? null : getTimeDifferenceString(post.createdAt)}</p>
             {/* <p >Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user.id ? null : getTimeDifferenceString(post.createdAt)}</p> */}
             </div> : <div id="nameOf">
             {post.Community.communityStyles && post.Community.communityStyles.length ? <img onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} src={post.Community.communityStyles[0].profile}></img> : <img onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} src={pfp}></img>}
-            <span onClick={(() => history.push(`/communities/${post.communityId}`))} className="userName" id="community">l/{post.Community.name}</span>
+            <span onClick={((e) => {
+                e.stopPropagation()
+                history.push(`/communities/${post.communityId}`)
+                })} className="userName" id="community">l/{post.Community.name}</span>
             <p>·</p>
             <p >Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user.id ? null : getTimeDifferenceString(post.createdAt)}</p>
             </div> }
@@ -272,29 +297,45 @@ function YourProfilePage() {
             </div>
             {post.userId !== user.id ? null : <div id="post-extras2">
             <div id="comment5">
-                <i class="fa-regular fa-message"></i>
+                <i onClick={((e) => {
+                    e.stopPropagation()
+                    setModalContent(<PostPageModal postId={post.id} scroll={true} />)
+                    })} class="fa-regular fa-message"></i>
                 <p>{post.Comments && post.Comments.length}</p>
                 </div>
-                <div id="comment4">
+                <div onClick={((e) => {
+                    e.stopPropagation()
+                    window.alert("Feature not avaliable")
+                    })} id="comment4">
                     <i class="fi fi-rs-heart-arrow"></i>
                     <p>Share</p>
                 </div>
-                <div id="comment4">
+                <div onClick={((e) => {
+                    e.stopPropagation()
+                    window.alert("Feature not avaliable")
+                    })} id="comment4">
                     <i class="fi fi-rs-check-circle"></i>
                     <p>Approved</p>
                 </div>
-                <div id="comment4">
+                <div onClick={((e) => {
+                    e.stopPropagation()
+                    window.alert("Feature not avaliable")
+                    })} id="comment4">
                     <i class="fi fi-rs-circle-cross"></i>
                     <p>Removed</p>
                 </div>
-                <div id="comment4">
+                <div onClick={((e) => {
+                    e.stopPropagation()
+                    window.alert("Feature not avaliable")
+                    })} id="comment4">
                     <i class="fi fi-rr-box"></i>
                     <p>Spam</p>
                 </div>
                 <div id="comment4">
                     <i class="fi fi-rs-shield"></i>
                 </div>
-                <i  onClick={(() => {
+                <i  ref={targetRef2} onClick={((e) => {
+                    e.stopPropagation()
                     setIsVisible2(true)
                     setPostId(i)
                     if (postId === i) setIsVisible2(!isVisible2)
@@ -302,7 +343,7 @@ function YourProfilePage() {
                 { postId === i ? <div id="post-menu25">
                 <div className="menu">
                 <div id={editMenu}>
-                   {singlePost.PostImages && singlePost.PostImages.length && singlePost.PostImages[0].imgURL ? null : <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
+                   {singlePost.PostImages && singlePost.PostImages.length && singlePost.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
                     <p><i class="fi fi-rr-bookmark"></i>Save</p>
                     <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
                     <p onClick={(() => {
@@ -337,14 +378,17 @@ function YourProfilePage() {
                     {post.Comments.map((c, i) =>
                     <div id="comm-border9">
                         {post.Comments && post.Comments.length ? <div id="p-border"></div> : null }
-                        <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} className="a-comment2">
+                        <div onClick={((e) => {
+                            e.stopPropagation()
+                            setModalContent(<PostPageModal postId={post.id} scroll={true} />)
+                            })} className="a-comment2">
                             <div id="left-csec4">
                             <div id="c-line2"></div>
                             </div>
                             <div id="right-csec4">
                                 <span><span id="username45">{user.username}</span> { user.id === post.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.createdAt)}</div></span>
                                 <p>{c.comment}</p>
-                                <div id="comment-extras">
+                                <div id="comment-extras90">
                                     <div>
                                         <i class="fa-regular fa-message"></i>
                                         <p>Reply</p>
@@ -355,8 +399,8 @@ function YourProfilePage() {
                                     </div>
                                     <i onClick={(() => {
                                         setIsVisible4(true)
-                                        setCommentId(i)
-                                       if (commentId === i) setIsVisible4(!isVisible4)
+                                    //     setCommentId(i)
+                                    //    if (commentId === i) setIsVisible4(!isVisible4)
                                     })} class="fi fi-rr-menu-dots">
                                     { commentId === i ? <div className="menu">
                                     <div id="comm-sec25">
@@ -397,17 +441,23 @@ function YourProfilePage() {
                 communities</span>
             {moderating.map((c) =>
             <div id="modss">
+                <div>
                {c.communityStyles && c.communityStyles.length ? <img id="tpfp" src={c.communityStyles[0].profile}></img> : <div>l/</div> }
                <div id="modss20">
                 <span>l/{c.name}</span>
                 <span>{c.CommunityMembers} members</span>
                </div>
+               </div>
+               <button id="mod-butt">Joined</button>
             </div>
 
 
             )}
             </div>
-            <p>VIEW MORE</p>
+            <p onClick={((e) => {
+                    e.stopPropagation()
+                    window.alert("Feature not avaliable")
+                    })}>VIEW MORE</p>
         </div>
         { isVisible3 ? <button className={top} onClick={((e) => window.scrollTo({ top: 0, left: 0, behavior: "smooth"}))}>Back to Top</button> : null}
     </div>

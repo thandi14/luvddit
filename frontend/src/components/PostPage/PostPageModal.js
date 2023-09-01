@@ -40,10 +40,20 @@ function PostPageModal({ postId, scroll }) {
     const [isVisible3, setIsVisible3] = useState(false);
     const [ commentId, setCommentId ] = useState(null)
 
+    console.log(scroll)
+
+    useEffect(() => {
+
+        if (scroll) setScrolling(true)
+        if (!scroll) setScrolling(false)
+
+    }, [scroll])
+
 
     const memberships = Object.values(communityMemberships)
 
-    const handleClick = () => {
+    const handleClick = (e) => {
+        e.stopPropagation()
         setIsVisible(!isVisible);
     };
 
@@ -212,6 +222,7 @@ function PostPageModal({ postId, scroll }) {
         let style
          if (singleCommunity.communityStyles?.length) style = singleCommunity.communityStyles[0]
 
+         console.log(comments)
 
     return (
         <div className="post-modal">
@@ -273,7 +284,10 @@ function PostPageModal({ postId, scroll }) {
             </div> : null}
             {singlePost.PostImages?.length ? <div><img id="post-image1" src={singlePost.PostImages[0].imgURL} alt="postimg"></img></div> : null}
             </div>
-            { isVisible2 ? <div id="save"><button onClick={handleClick2} >Cancel</button> <button id={ !description ? "save-submit" : "save-submit2"} onClick={handleSave}>Save</button></div> : null}
+            { isVisible2 ? <div id="save"><button onClick={((e) => {
+                e.stopPropagation()
+                handleClick2()
+                })} >Cancel</button> <button id={ !description ? "save-submit" : "save-submit2"} onClick={handleSave}>Save</button></div> : null}
             {user && singlePost.User?.id !== user.id ?<div id="post-extras3">
                     <div id="comment">
                     <i class="fa-regular fa-message"></i>
@@ -413,7 +427,7 @@ function PostPageModal({ postId, scroll }) {
                             <div id="c-line"></div>
                             </div>
                             <div id="right-csec">
-                                <span><span id="username45">{user.username}</span> { user.id === singlePost.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.createdAt)}</div></span>
+                                <span><span id="username45">{c.User?.username}</span> { c.User && c.User.id === singlePost.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.createdAt)}</div></span>
                                 <p>{c.comment}</p>
                                 <div id="comment-extras">
                                     <div id="comm-likes9">

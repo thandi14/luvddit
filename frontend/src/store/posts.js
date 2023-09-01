@@ -59,6 +59,7 @@ export const thunkGetAllPosts = () => async (dispatch) => {
     return response1;
 }
 
+
 export const thunkGetUserVotes = () => async (dispatch) => {
   const response1 = await csrfFetch(`/api/posts/votes/current`)
   const data1 = await response1.json();

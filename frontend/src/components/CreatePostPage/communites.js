@@ -26,8 +26,6 @@ function CommunitiesMenu({ value }) {
     let style
     if (singleCommunity.communityStyles?.length) style = singleCommunity.communityStyles[0]
 
-    console.log("COMPONENT", community2)
-
     return (
         <>
         <div id="your-comms">

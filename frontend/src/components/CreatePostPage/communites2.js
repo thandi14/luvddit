@@ -98,8 +98,11 @@ function CommunitiesProfile({ page, community }) {
     console.log(singleCommunity)
     return (
         <>
-        {profile === firstCommunity ? <div className="your-community">
-        <div id="profile-header"></div>
+        {profile === firstCommunity ? <div onClick={((e) => {
+                    e.stopPropagation()
+                    window.alert("Feature not avaliable")
+                    })} className="your-community">
+        <div on id="profile-header"></div>
         <div id="your-community">
         <div id="yc-avatar">
         <img src={avatar}></img>

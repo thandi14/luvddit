@@ -6,7 +6,7 @@ import { useHistory, useParams } from "react-router-dom";
 
 function PostForm() {
     const { communities, singleCommunity } = useSelector((state) => state.communities)
-    const { singlePost } = useSelector((state) => state.posts)
+    const { user } = useSelector((state) => state.session)
     const history = useHistory()
     const [ title, setTitle ] = useState("");
     const [ description, setDescription ] = useState("");
@@ -125,7 +125,7 @@ function PostForm() {
 
     }
 
-    console.log(data1)
+    console.log(isDisabled)
 
 
     return (
@@ -185,8 +185,9 @@ function PostForm() {
                     </div>
                     <div id="border3"></div>
                     <div id="submit-buttons">
+                        {singleCommunity.name && singleCommunity.name !== user.username ? <i class="fi fi-rr-followcollection"></i> : null}
                         <button onClick={(() => window.alert("Feature not avaliable"))} id="draft">Save Draft</button>
-                        <button disabled={isDisabled} id={isDisabled ? "post" : "post2"} onClick={handleSubmit}>Post</button>
+                        <button className={singleCommunity.name && singleCommunity.name !== user.username ? "marg" : ""} disabled={isDisabled} id={isDisabled ? "post" : "post2"} onClick={handleSubmit}>Post{singleCommunity.name && singleCommunity.name !== user.username ? <i class="fi fi-sr-tool-box"></i> : null }</button>
                     </div>
                     </div>
                     <div id="notify-me">
