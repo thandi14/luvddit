@@ -442,7 +442,7 @@ function YourProfilePage() {
             {moderating.map((c) =>
             <div id="modss">
                 <div>
-               {c.communityStyles && c.communityStyles.length ? <img id="tpfp" src={c.communityStyles[0].profile}></img> : <div>l/</div> }
+               {c.communityStyles && c.communityStyles.length ? <img id="tpfp" src={c.communityStyles[0].profile}></img> : <div id="nopfp">l/</div> }
                <div id="modss20">
                 <span>l/{c.name}</span>
                 <span>{c.CommunityMembers} members</span>

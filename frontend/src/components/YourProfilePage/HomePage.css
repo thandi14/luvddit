@@ -253,6 +253,20 @@
     font-weight: 900;
 }
 
+#nopfp {
+    align-items: center;
+    background-color: #0079d3;
+    color: #fff;
+    display: flex;
+    font-size: 15px;
+    font-weight: 900;
+    justify-content: center;
+    overflow: hidden;
+    width: 35px;
+    height: 35px;
+    border-radius: 100%;
+}
+
 #aHeader {
     background-color: white;
     height: 40px;

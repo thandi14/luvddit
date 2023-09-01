@@ -244,7 +244,9 @@ const postsReducer = (state = initialState, action) => {
         newState.posts = { ...newState.posts };
         newState.userPosts = { ...newState.userPosts };
         newState.singlePost = {};
+        console.log("action.id", action.id)
         delete newState.posts[action.id];
+        delete newState.posts.post[action.id];
         delete newState.userPosts[action.id];
         return newState;
     }
