@@ -253,7 +253,7 @@ function PostPageModal({ postId, scroll }) {
             </div>
             <div id="details-side">
             <div id="nameOf3">
-                    <img src={ singlePost.Community.communityStyles && singlePost.Community.communityStyles.length ? singlePost.Community.communityStyles[0].profile : pfp}></img>
+                    <img src={singlePost.Community && singlePost.Community.communityStyles && singlePost.Community.communityStyles.length ? singlePost.Community.communityStyles[0].profile : pfp}></img>
                     <span id="community">l/{singlePost.Community?.name}</span>
                     <p>·</p>
                     <p>Posted by u/{singlePost.User?.username} {getTimeDifferenceString(singlePost.createdAt)}</p>
