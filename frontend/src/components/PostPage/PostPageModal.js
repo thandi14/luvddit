@@ -289,7 +289,10 @@ function PostPageModal({ postId, scroll }) {
             { isVisible2 ? <div id="save"><button onClick={((e) => {
                 e.stopPropagation()
                 handleClick2()
-                })} >Cancel</button> <button id={ !description ? "save-submit" : "save-submit2"} onClick={handleSave}>Save</button></div> : null}
+                })} >Cancel</button> <button id={ !description ? "save-submit" : "save-submit2"} onClick={((e) => {
+                    e.stopPropagation()
+                    handleClick2()
+                    })}>Save</button></div> : null}
             {user && singlePost.User?.id !== user.id ?<div id="post-extras3">
                     <div id="comment">
                     <i class="fa-regular fa-message"></i>
