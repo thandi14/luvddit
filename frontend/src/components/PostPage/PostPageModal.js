@@ -291,7 +291,7 @@ function PostPageModal({ postId, scroll }) {
                 handleClick2()
                 })} >Cancel</button> <button id={ !description ? "save-submit" : "save-submit2"} onClick={((e) => {
                     e.stopPropagation()
-                    handleClick2()
+                    handleSave()
                     })}>Save</button></div> : null}
             {user && singlePost.User?.id !== user.id ?<div id="post-extras3">
                     <div id="comment">
