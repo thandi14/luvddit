@@ -181,7 +181,6 @@
     display: flex;
     border: 1px solid #ccc;
     border-radius: 4px;
-    overflow: hidden;
 }
 
 .posts {
@@ -303,7 +302,7 @@
 
 #post-extras {
     display: flex;
-    gap: 12px;
+    /* gap: 12px; */
     align-items: center;
     margin-left: 6px;
     color: #878A8C;

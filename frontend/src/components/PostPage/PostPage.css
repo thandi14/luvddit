@@ -90,6 +90,52 @@
     height: 22px;
 }
 
+#username45:hover {
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: 800;
+}
+
+#c-line:hover {
+    background-color: #0079D3;
+    cursor: pointer;
+}
+
+#comm-likes9 > div {
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    font-size: 18px;
+    border-radius: 4px;
+}
+
+#comm-likes9 > div:hover {
+    background-color: #e4e4e4;
+
+}
+
+#comm-likes9 > div > i {
+    height: 18px;
+
+}
+
+#comm-likes9 > div > i {
+    height: 18px;
+
+}
+
+#heart95:hover {
+    color: hotpink;
+}
+
+#numofcl {
+    color: #030303;
+}
+
+#heartcrack95:hover {
+    color:#0079D3
+}
+
 #vote-side {
     display: flex;
     align-items: center;
@@ -377,7 +423,7 @@
     margin: 0px;
 }
 
-#edit-menu > p{
+#edit-menu > p {
     display: flex;
     align-items: center;
     line-height: 5px;
@@ -402,9 +448,14 @@
 }
 
 #comment-extras > div {
-    padding: 0px 5px;
+    /* padding: 0px 5px; */
     border-radius: 4px;
     height: 30px;
+}
+
+#comment-extras > div:not(:first-child) {
+    padding: 0px 5px;
+
 }
 
 
@@ -998,6 +1049,43 @@
 
 #t-head, #close-head {
     font-weight: 900;
+    font-size: 14px;
+}
+
+#upvote2, #downvote2 {
+    color: #878A8C;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#upvoted2 {
+    color: hotpink;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    cursor: pointer;
+
+}
+
+#downvoted2 {
+    color: #0079D3;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    cursor: pointer;
+
+
+}
+
+
+#upvote2:hover {
+    color: hotpink;
+}
+
+#downvote2:hover {
+    color: #0079D3;
 }
 
 .whole-post-page2 > .post-page {
@@ -1130,7 +1218,7 @@
     display: flex;
     gap: 10px;
     align-items: center;
-    padding-left: 8%;
+    padding-left: 7%;
 }
 
 
@@ -1348,8 +1436,9 @@
     gap: 15px;
     align-items: center;
     margin-left: 10px;
+    margin-bottom: 5px;
     color: #878A8C;
-    height: 42px;
+    height: 40px;
     cursor: pointer;
     margin-top: 0.5%;
     font-weight: bolder;

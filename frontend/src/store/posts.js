@@ -228,6 +228,7 @@ const postsReducer = (state = initialState, action) => {
         newState = { ...state };
         const post = action.details;
         newState.singlePost = { ...post };
+        newState.posts = { ...newState.posts, post }
         return newState;
     }
     case GET_COMMENT_DETAILS:

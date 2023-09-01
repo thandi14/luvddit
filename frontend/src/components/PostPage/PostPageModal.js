@@ -219,7 +219,7 @@ function PostPageModal({ postId, scroll }) {
                 <div ref={targetRef3} id="post-details-head">
                 <div>
                 <div id="line5"></div>
-                <PostLikes post={singlePost}
+                <PostLikes post={singlePost} p={"post"} h={true}
                 vote={isLiked.length && isLiked.some((l) => l.postId === singlePost.id && l.upVote === 1)}
                 downVote={isLiked.length && isLiked.some((l) => l.postId === singlePost.id && l.downVote === 1)}
                 />
@@ -233,7 +233,7 @@ function PostPageModal({ postId, scroll }) {
         <div ref={targetRef2} className="whole-post-page2">
             <div className="post-page">
             <div id="vote-side">
-                <PostLikes post={singlePost}
+                <PostLikes post={singlePost} p={"post"}
                 vote={isLiked.length && isLiked.some((l) => l.postId === singlePost.id && l.upVote === 1)}
                 downVote={isLiked.length && isLiked.some((l) => l.postId === singlePost.id && l.downVote === 1)}
                 />
@@ -413,13 +413,13 @@ function PostPageModal({ postId, scroll }) {
                             <div id="c-line"></div>
                             </div>
                             <div id="right-csec">
-                                <span>{user.username} { user.id === singlePost.userId ? <div id="OP">OP</div> : null}· <div id="time-comm">{getTimeDifferenceString(c.createdAt)}</div></span>
+                                <span><span id="username45">{user.username}</span> { user.id === singlePost.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.createdAt)}</div></span>
                                 <p>{c.comment}</p>
                                 <div id="comment-extras">
-                                    <div>
-                                        <i  class="fi fi-rs-heart"></i>
-                                        <p>Votes</p>
-                                        <i  class="fi fi-rs-heart-crack"></i>
+                                    <div id="comm-likes9">
+                                        <div><i  id="heart95" class="fi fi-rs-heart"></i></div>
+                                        <p id="numofcl">0</p>
+                                        <div><i id="heartcrack95" class="fi fi-rs-heart-crack"></i></div>
                                     </div>
                                     <div>
                                         <i class="fa-regular fa-message"></i>

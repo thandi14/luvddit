@@ -53,7 +53,10 @@ router.get("/current", async (req, res) => {
        },
        include: [
         { model: Comments },
-        { model: Communities }
+        { model: Communities },
+        { model: PostImages },
+        { model: User }
+
         ]
     });
 

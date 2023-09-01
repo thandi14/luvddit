@@ -5,7 +5,7 @@ const { useDispatch, useSelector } = require("react-redux")
 
 
 
-function PostLikes({ post, vote, downVote, p, h }) {
+function CommentLikes({ post, vote, downVote }) {
     const { user } = useSelector((state) => state.session)
     const [ userVotes, setUserVotes ] = useState([])
     const [ boolean, setBoolean ] = useState(vote)
@@ -140,4 +140,4 @@ function PostLikes({ post, vote, downVote, p, h }) {
     )
 }
 
-export default PostLikes
+export default CommentLikes

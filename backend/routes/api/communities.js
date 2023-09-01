@@ -69,9 +69,20 @@ router.get("/current", async (req, res) => {
        include: [
         { model: Posts },
         { model: User },
-        { model: communityStyles }
+        { model: communityStyles },
      ]
     });
+
+    for (let i = 0; i < communities.length; i++) {
+        let members = await CommunityMembers.findAll({
+          where: {
+            communityId: communities[i].id
+          }
+        });
+
+        communities[i].dataValues.CommunityMembers = members.length
+
+    }
 
     return res.json(communities)
 })

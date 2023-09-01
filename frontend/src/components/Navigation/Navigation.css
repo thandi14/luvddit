@@ -322,26 +322,34 @@ body {
     height: 400px;
     overflow-y: scroll;
     background: white;
-    margin-top: 3.4%;
-    padding: 5px;
     display: flex;
     flex-direction: column;
+    margin-top: 3.5%;
 }
 
+.profile-dropdown > div > span > i {
+    font-size: 16px;
+}
 
 .profile-dropdown > div {
     display: flex;
     flex-direction: column;
     border-bottom: 1px solid #EDEFF1;
-    padding: 5%;
     cursor: pointer;
+    margin-top: 5px;
+    padding-bottom: 5px;
 }
 
-.profile-dropdown :nth-child(4) {
+#door {
     display: flex;
     flex-direction: row;
     gap: 8px;
     border: 0px;
+    padding-left: 8%;
+    margin-top: 5%;
+    align-items: center;
+    padding-top: 3%;
+    padding-bottom: 3%;
 
 }
 
@@ -350,6 +358,7 @@ body {
     margin-top: 5px;
     color: #878A8C;
     margin-bottom: 20px;
+    padding-left: 8%;
 }
 
 .profile-dropdown > span > i {
@@ -360,16 +369,50 @@ body {
     color:#878A8C
 }
 
-.profile-dropdown {
-    padding-left: 2%;
+.profile-dropdown > div:not(#thirtythree) > span:not(#nine){
+    padding-left: 21%;
+}
+
+
+#menu33 {
+    padding-left: 22.5%;
+    padding-right: 10%;
+}
+
+#thirtythree {
+    padding-bottom: 8%;
+}
+
+#luvvI {
+    width: 15px;
+    height: 15px;
+    border-radius: 100%;
+    border: 1.5px solid black;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+#thirtythree > span:not(#menu33) {
+    padding-left: 8%;
 }
 
 .profile-dropdown > div > span{
-    height: 40px;
+    height: 45px;
     display: flex;
-    gap: 8px;
+    gap: 12px;
+    padding-left: 8%;
+    align-items: center;
+    /* background-color: gray; */
     font-size: 14px;
 }
+
+.profile-dropdown > div > span:not(#nine):hover, #door:hover {
+    background-color: #EDEFF1;
+}
+
 
 .profile-dropdown > button {
     margin: 5%;

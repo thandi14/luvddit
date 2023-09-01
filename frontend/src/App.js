@@ -12,6 +12,7 @@ import CommunityPage from "./components/CommunityPage";
 import PostPageModal from "./components/PostPage/PostPageModal";
 import CommunityPageEdit from "./components/CommunityPage/index2";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
+import YourProfilePage from "./components/YourProfilePage";
 
 function App() {
   const dispatch = useDispatch();
@@ -39,6 +40,9 @@ function App() {
           <Route exact path="/">
             <HomePage />
           </Route>
+          <Route exact path="/profile">
+          {user ? <YourProfilePage /> : <HomePage /> }
+          </Route>
           <Route exact path="/posts/new/">
            {user ? <CreatePost /> : <HomePage />}
           </Route>
@@ -48,9 +52,6 @@ function App() {
           <Route exact path="/posts/:id">
             <PostPage />
           </Route>
-          {/* <Route exact path="/deleted/:post">
-          {user ? <DeletedPost /> : <HomePage /> }
-          </Route> */}
           <Route exact path="/communities/:id">
             <CommunityPage />
           </Route>

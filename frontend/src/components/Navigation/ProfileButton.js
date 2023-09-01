@@ -2,13 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from 'react-redux';
 import * as sessionActions from '../../store/session';
 import pfp from "./icons/IMG6.jpg"
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 function ProfileButton({ user, menu }) {
   const dispatch = useDispatch();
   const [showMenu, setShowMenu] = useState(menu);
+  const history = useHistory()
   const ulRef = useRef();
-
-  console.log(menu)
 
   const openMenu = () => {
     if (showMenu) setShowMenu(false);
@@ -41,10 +41,13 @@ function ProfileButton({ user, menu }) {
       {/* <img id="pfpButton" src={pfp} alt="pfp" onClick={openMenu}> */}
       {/* </img> */}
       <div className={ulClassName} ref={ulRef}>
-        <div onClick={(() => window.alert("Feature not avilable"))}>
+        <div>
         <span id="nine"><i class="fi fi-rr-user"></i>My stuff</span>
         <span>Online status</span>
-        <span>Profile</span>
+        <span onClick={(() => {
+          setShowMenu(!showMenu)
+          history.push("/profile")
+          })}>Profile</span>
         <span>Create Avatar</span>
         <span>User settings</span>
         </div>
@@ -53,8 +56,8 @@ function ProfileButton({ user, menu }) {
           <span>Mod Mode</span>
           <span>Dark Mode</span>
         </div>
-        <div onClick={(() => window.alert("Feature not avilable"))}>
-          <span>Create a community</span>
+        <div id="thirtythree" onClick={(() => window.alert("Feature not avilable"))}>
+          <span><div id="luvvI">l/</div>Create a community</span>
           <span><i class="fi fi-rr-bullhorn"></i>Advertise on luddit</span>
           <span><i class="fi fi-rr-coins"></i>Coins</span>
           <span><i class="fa-solid fa-shield-halved"></i>Premium</span>
@@ -62,15 +65,15 @@ function ProfileButton({ user, menu }) {
           <span><i class="fi fi-rr-interrogation"></i>Help Center</span>
           <span><i class="fi fi-rr-circle-i"></i>More</span>
           <span><i class="fa-solid fa-scroll"></i>Terms and Policies</span>
-          <span>User Agreement</span>
-          <span>Privacy Policy</span>
-          <span>Content Policy</span>
-          <span>Moderator Code of Conduct</span>
+          <span id="menu33">User Agreement</span>
+          <span id="menu33">Privacy Policy</span>
+          <span id="menu33">Content Policy</span>
+          <span id="menu33">Moderator Code of Conduct</span>
         </div>
         {/* <span>{user.username}</span>
         <span>{user.firstName} {user.lastName}</span>
         <span>{user.email}</span> */}
-        <div onClick={logout}><i class="fi fi-rr-door-closed"></i>Log Out</div>
+        <div id="door" onClick={logout}><i class="fi fi-rr-door-closed"></i>Log Out</div>
         <span id="inc">Luddit, Inc. © 2023. All rights reserved.</span>
       </div>
     </>

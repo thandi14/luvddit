@@ -19,11 +19,16 @@ module.exports = (sequelize, DataTypes) => {
         models.User,
           { foreignKey: 'userId' }
       );
+      Votes.belongsTo(
+        models.Comments,
+          { foreignKey: 'commentId' }
+      );
     }
   }
   Votes.init({
     postId: DataTypes.INTEGER,
     userId: DataTypes.INTEGER,
+    commentId: DataTypes.INTEGER,
     upVote: DataTypes.INTEGER,
     downVote: DataTypes.INTEGER
   }, {

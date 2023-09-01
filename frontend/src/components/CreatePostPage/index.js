@@ -74,7 +74,6 @@ function CreatePost() {
     if (memberships.filter((m) => m.communityId == singleCommunity.id).length) community = Object.values(singleCommunity)
 
 
-    console.log(singleCommunity)
     return (
         <div className="create-post-page">
             <div className="create-post">
@@ -89,7 +88,7 @@ function CreatePost() {
                 <div ref={targetRef} className="search-comms">
                 {!isVisible && !isVisible2 ?
                  <div onClick={handleClick} id="choose-comms">
-                 {community.length ? community[9] ? <img id="pfp30" src={community[9][0].profile}></img> : <img src={avatar}></img> : <i class="fi fi-rr-circle-dashed"></i>}
+                 {community && community.length ? community[9] ? <img id="pfp30" src={community[9][0]?.profile}></img> : <img src={avatar}></img> : <i class="fi fi-rr-circle-dashed"></i>}
                  <input onChange={((e) => setComms(e.target.value))} defaultValue={community.length ? `l/${singleCommunity.name}` : null} placeholder="Choose your community"></input>
                  <i onClick={handleClick} class="fa-solid fa-chevron-down"></i>
                  </div>

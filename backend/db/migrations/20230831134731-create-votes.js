@@ -6,6 +6,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -16,22 +17,26 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      postId:  {
+      postId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'Posts',
           key: 'id',
-      },
-      onDelete: 'cascade'
-
+      }
       },
       userId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'Users',
           key: 'id',
+        }
       },
-      onDelete: 'cascade'
+      commentId:  {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Comments',
+          key: 'id',
+        }
       },
       upVote: {
         type: Sequelize.INTEGER
@@ -51,7 +56,6 @@ module.exports = {
   },
   async down(queryInterface, Sequelize) {
     options.tableName = "Votes";
-
     await queryInterface.dropTable(options);
   }
 };
