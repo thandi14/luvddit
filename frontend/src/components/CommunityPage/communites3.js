@@ -3,11 +3,11 @@ import './CommunityPage.css'
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import * as communityActions from '../../store/communities'
-
+import * as postsActions from '../../store/posts'
 
 
 function YourCommunitesProfile() {
-    const { communities, singleCommunity, communityMemberships } = useSelector((state) => state.communities);
+    const { communities, communityMemberships, singleCommunity } = useSelector((state) => state.communities);
     const { id } = useParams()
     const { posts } = useSelector((state) => state.posts);
     const { user } = useSelector((state) => state.session);
@@ -16,12 +16,17 @@ function YourCommunitesProfile() {
     const [ about, setAbout ] = useState("");
     const [ data1, setData1 ] = useState("");
     const dispatch = useDispatch()
+    const [singleCommunityName, setSingleCommunityName] = useState(singleCommunity.name)
 
+    useEffect(() => {
+        setSingleCommunityName(singleCommunity.name)
+
+    }, [singleCommunity.name]);
 
     useEffect( () => {
 
         async function fetchData() {
-            const response = await dispatch(communityActions.thunkUpdateCommunities(singleCommunity.id, data1))
+            const response = await dispatch(postsActions.thunkUpdateCommunities(singleCommunity.id, data1))
             if (response) {
                 history.push(`/communities/${response.id}`)
                 setIsVisible(!isVisible)
@@ -32,10 +37,13 @@ function YourCommunitesProfile() {
 
     }, [dispatch, data1])
 
+    console.log(singleCommunityName)
+
     const handleSubmit = async () => {
 
         if (about) {
             setData1({
+                name: singleCommunityName,
                 about,
              })
 

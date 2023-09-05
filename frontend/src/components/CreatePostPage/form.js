@@ -6,6 +6,7 @@ import { useHistory, useParams } from "react-router-dom";
 
 function PostForm() {
     const { communities, singleCommunity } = useSelector((state) => state.communities)
+    //const { singleCommunity2 } = useSelector((state) => state.posts)
     const { user } = useSelector((state) => state.session)
     const history = useHistory()
     const [ title, setTitle ] = useState("");
@@ -77,7 +78,6 @@ function PostForm() {
 
         async function fetchData() {
             const response = await dispatch(postActions.thunkCreatePost(data1, singleCommunity.id, dataImg))
-            console.log(response)
             if (response) history.push(`/posts/${response.id}`)
 
         }
@@ -93,8 +93,6 @@ function PostForm() {
         if (oc) tags += ",oc"
         if (spoiler) tags += ",spoiler"
         if (nsfw) tags += ",nsfw"
-
-        console.log("!!!!!!!!", tags)
 
         if (tags) {
             tags = tags.slice(1, tags.length)
@@ -124,8 +122,6 @@ function PostForm() {
 
 
     }
-
-    console.log(isDisabled)
 
 
     return (

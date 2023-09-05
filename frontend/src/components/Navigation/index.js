@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ProfileButton from './ProfileButton';
 import './Navigation.css'
 import luvddit from './icons/communityIcon_g0t6k4umk1c91-modified.png'
@@ -14,13 +14,14 @@ import CreateCommunity from '../CreateCommunityModel';
 import { useModal } from '../../context/Modal';
 import pfp from "./icons/IMG6.jpg"
 import { useRef } from 'react';
-
+import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
+import * as communityActions from '../../store/communities'
 
 
 function Navigation({ isLoaded }){
   const sessionUser = useSelector(state => state.session.user);
   const { user } = useSelector(state => state.session);
-  const { communityMemberships, userCommunities, singleCommunity } = useSelector(state => state.communities);
+  let { communityMemberships, userCommunities, singleCommunity } = useSelector(state => state.communities);
   const history = useHistory()
   const [ homeButton, setHomeButton ] = useState("home")
   const location = useLocation();
@@ -29,11 +30,19 @@ function Navigation({ isLoaded }){
   const [show, setShow] = useState(false);
   const targetRef = useRef()
   const ulRef = useRef();
+  const { id } = useParams()
+  const dispatch = useDispatch()
+
 
   const openMenu = () => {
     if (show) setShow(false);
     setShow(true);
   };
+
+  useEffect(() => {
+    if (id) dispatch(communityActions.thunkGetDetailsById(id))
+  }, [id])
+
 
   useEffect(() => {
 

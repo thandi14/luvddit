@@ -3,8 +3,9 @@ import { csrfFetch } from "./csrf";
 
 const GET_POSTS = 'posts/getPosts';
 const GET_DETAILS = 'posts/getDetails';
+const GET_UPDATES = 'posts/getUpdates';
 const GET_COMMENT_DETAILS = 'posts/getCommentDetails';
-
+const GET_DETAILS2 = 'posts/getDetails2';
 const GET_USER_POSTS = 'posts/getUserPosts';
 const REMOVE_POST = 'posts/removePosts'
 const REMOVE_COMMENT = 'posts/removeComment'
@@ -22,6 +23,14 @@ const getDetails = (details) => {
         details
     }
 }
+
+const getUpdates = (updates) => {
+  return {
+      type: GET_UPDATES,
+      updates
+  }
+}
+
 
 const getCommentDetails = (details) => {
   return {
@@ -44,12 +53,41 @@ const removeComment = (commentId) => {
   }
 }
 
+const getDetails2 = (details) => {
+  return {
+      type: GET_DETAILS2,
+      details
+  }
+}
+
+
 
 const getUserPosts = (posts) => ({
     type: GET_USER_POSTS,
     posts,
 });
 
+export const thunkCommGetDetailsById = (id) => async (dispatch) => {
+  const response1 = await csrfFetch(`/api/communities/${id}`)
+  const data1 = await response1.json();
+  dispatch(getDetails2(data1));
+  return data1;
+}
+
+export const thunkUpdateCommunities = (id, data) => async (dispatch) => {
+  if (Object.values(data).length) {
+      const response = await csrfFetch(`/api/communities/${id}`, {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json'
+            },
+          body: JSON.stringify(data)
+      })
+      const data1 = await response.json()
+      dispatch(getDetails2(data1))
+      return data1
+  }
+}
 
 
 export const thunkGetAllPosts = () => async (dispatch) => {
@@ -125,7 +163,7 @@ export const thunkUpdatePosts = (id, data) => async (dispatch) => {
             body: JSON.stringify(data)
         })
         const data1 = await response.json()
-        dispatch(getDetails(data1))
+        dispatch(getUpdates(data1))
         return response
     }
 }
@@ -213,6 +251,8 @@ let initialState = {
     userPosts: {},
     singlePost: {},
     removedPost: {},
+    singleCommunity2: {},
+
 };
 
 
@@ -229,9 +269,17 @@ const postsReducer = (state = initialState, action) => {
         newState = { ...state };
         const post = action.details;
         newState.singlePost = { ...post };
-        newState.posts = { ...newState.posts, post }
+        newState.posts[post.id] = post
+        //newState.posts = { ...newState, post }
         return newState;
     }
+    case GET_UPDATES: {
+      newState = { ...state };
+      const post = action.updates;
+      newState.singlePost = { ...post };
+      newState.posts[post.id] = { ...post }
+      return newState;
+  }
     case GET_COMMENT_DETAILS:
       newState = { ...state };
       let comment = action.details;
@@ -243,11 +291,11 @@ const postsReducer = (state = initialState, action) => {
         newState = { ...state };
         newState.posts = { ...newState.posts };
         newState.userPosts = { ...newState.userPosts };
+        newState.communities = { ...newState.communities };
         newState.singlePost = {};
         console.log("action.id", action.id)
         delete newState.posts[action.id];
-        delete newState.posts.post[action.id];
-        delete newState.userPosts[action.id];
+        // delete newState.singleCommunity.Posts[action.id];
         return newState;
     }
     case REMOVE_COMMENT: {
@@ -264,6 +312,12 @@ const postsReducer = (state = initialState, action) => {
           (post) => (newState.userPosts[post.id] = post)
         );
         return newState;
+    }
+    case GET_DETAILS2: {
+      newState = { ...state };
+      const community = action.details;
+      newState.singleCommunity2 = { ...community };
+      return newState;
     }
     default:
       return state;

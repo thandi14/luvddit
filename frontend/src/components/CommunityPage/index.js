@@ -13,7 +13,7 @@ import PostLikes from "../HomePage/likes";
 
 function CommunityPage() {
   const { id } = useParams();
-  const { communities, singleCommunity, communityMemberships } = useSelector((state) => state.communities);
+  const { communities, communityMemberships, singleCommunity } = useSelector((state) => state.communities);
   const { posts } = useSelector((state) => state.posts);
   const { user } = useSelector((state) => state.session);
   const { setModalContent } = useModal()
@@ -24,12 +24,18 @@ function CommunityPage() {
   const [ isLiked, setIsLiked ] = useState([]);
   const [ joined, setJoined ] = useState(null)
   const [ scrolling, setScrolling ] = useState(false)
+  const [singleCommunityName, setSingleCommunityName] = useState(singleCommunity.name)
 
 
 
   useEffect(() => {
     window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
   }, []);
+
+  useEffect(() => {
+      setSingleCommunityName(singleCommunity.name)
+
+  }, [singleCommunity.name]);
 
   useEffect(() => {
 
@@ -46,6 +52,17 @@ function CommunityPage() {
 
   }, [dispatch, id])
 
+  let ePost
+
+  ePost = Object.values(posts)
+
+
+  ePost = ePost.filter((p) => p.communityId === singleCommunity.id)
+
+  console.log(ePost)
+
+  ePost = ePost.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
   useEffect(() => {
 
     async function fetchData() {
@@ -54,8 +71,6 @@ function CommunityPage() {
     }
 
     fetchData()
-
-
 
   }, [dispatch, id])
 
@@ -166,10 +181,11 @@ function CommunityPage() {
   };
 
 
-  let ePost = singleCommunity.Posts?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
     let style
     if (singleCommunity.communityStyles && singleCommunity.communityStyles.length) style = singleCommunity.communityStyles[0]
+
+    console.log(singleCommunity)
+
 
     return (
         <>
@@ -187,7 +203,7 @@ function CommunityPage() {
             { style ? <img id="img-pfp"src={style.profile}></img> : <div id="comm-pfp">l/</div> }
             <div id="communityName">
                 {singleCommunity.name}
-                <span>l/{singleCommunity.name}</span>
+                <span>l/{singleCommunityName}</span>
             </div>
             {user && member.length && joined ? <button onClick={handleUnjoinClick} id="joined">Joined</button> : <button onClick={handleJoinClick} id="join">Join</button> }
             </div>
@@ -256,7 +272,7 @@ function CommunityPage() {
                       {post.description}
                       </div>
                     </div>
-                    {user && post.User.id !== user.id ?<div id="post-extras3">
+                    {user && post.User?.id !== user.id ?<div id="post-extras3">
                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="comment">
                     <i class="fa-regular fa-message"></i>
                     <p >{post.Comments?.length} Comments</p>

@@ -46,7 +46,6 @@ function CreatePost() {
     useEffect(() => {
 
         const handleDocumentClick = (event) => {
-            console.log(targetRef)
             if (targetRef.current && !targetRef.current.contains(event.target)) {
                 setIsVisible(false);
                 setIsVisible2(false)
