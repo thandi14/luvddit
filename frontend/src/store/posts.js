@@ -5,10 +5,11 @@ const GET_POSTS = 'posts/getPosts';
 const GET_DETAILS = 'posts/getDetails';
 const GET_UPDATES = 'posts/getUpdates';
 const GET_COMMENT_DETAILS = 'posts/getCommentDetails';
-const GET_DETAILS2 = 'posts/getDetails2';
+const GET_VOTE_DETAILS = 'posts/getVoteDetails';
 const GET_USER_POSTS = 'posts/getUserPosts';
 const REMOVE_POST = 'posts/removePosts'
 const REMOVE_COMMENT = 'posts/removeComment'
+const REMOVE_VOTE = 'posts/removeVote'
 
 const getPosts = (posts) => {
     return {
@@ -39,6 +40,13 @@ const getCommentDetails = (details) => {
   }
 }
 
+const getVoteDetails = (details) => {
+  return {
+      type: GET_VOTE_DETAILS,
+      details
+  }
+}
+
 const removePost = (id) => {
     return {
         type: REMOVE_POST,
@@ -53,41 +61,19 @@ const removeComment = (commentId) => {
   }
 }
 
-const getDetails2 = (details) => {
+const removeVote = (voteId, postId) => {
   return {
-      type: GET_DETAILS2,
-      details
+      type: REMOVE_VOTE,
+      voteId,
+      postId
   }
 }
-
 
 
 const getUserPosts = (posts) => ({
     type: GET_USER_POSTS,
     posts,
 });
-
-export const thunkCommGetDetailsById = (id) => async (dispatch) => {
-  const response1 = await csrfFetch(`/api/communities/${id}`)
-  const data1 = await response1.json();
-  dispatch(getDetails2(data1));
-  return data1;
-}
-
-export const thunkUpdateCommunities = (id, data) => async (dispatch) => {
-  if (Object.values(data).length) {
-      const response = await csrfFetch(`/api/communities/${id}`, {
-          method: 'PUT',
-          headers: {
-              'Content-Type': 'application/json'
-            },
-          body: JSON.stringify(data)
-      })
-      const data1 = await response.json()
-      dispatch(getDetails2(data1))
-      return data1
-  }
-}
 
 
 export const thunkGetAllPosts = () => async (dispatch) => {
@@ -180,7 +166,7 @@ export const thunkDeletePosts = (id) => async (dispatch) => {
     return data
 }
 
-export const thunkDeleteVote = (id) => async (dispatch) => {
+export const thunkDeleteVote = (id, postId) => async (dispatch) => {
   const response = await csrfFetch(`/api/posts/votes/${id}`, {
       method: 'DELETE',
       headers: {
@@ -188,6 +174,7 @@ export const thunkDeleteVote = (id) => async (dispatch) => {
         },
   })
   let data = await response.json()
+  dispatch(removeVote(id, postId))
   return data
 }
 
@@ -199,6 +186,8 @@ export const thunkCreateVote = (id, boolean) => async (dispatch) => {
         },
   })
   let data = await response.json()
+  console.log("REDUCER", data)
+  dispatch(getVoteDetails(data))
   return data
 }
 
@@ -269,9 +258,25 @@ const postsReducer = (state = initialState, action) => {
         newState = { ...state };
         const post = action.details;
         newState.singlePost = { ...post };
-        newState.posts[post.id] = post
+        newState.posts[post.id] = { ...post }
         //newState.posts = { ...newState, post }
         return newState;
+    }
+    case GET_VOTE_DETAILS: {
+      newState = { ...state };
+      const vote = action.details;
+      if (Object.values(newState.singlePost).length) newState.singlePost.Votes[vote.id] = { ...vote };
+      newState.posts[vote.postId].Votes[vote.id] = { ...vote }
+      return newState;
+    }
+    case REMOVE_VOTE: {
+      newState = { ...state };
+      let votes = newState.singlePost.Votes
+      if (Object.values(newState.singlePost).length) newState.singlePost.Votes = votes.filter((v) => v.id !== action.voteId)
+      delete newState.posts[action.postId].Votes[action.voteId]
+      if (votes) newState.posts[action.postId].Votes = votes.filter((v) => v.id !== action.voteId)
+
+      return newState;
     }
     case GET_UPDATES: {
       newState = { ...state };
@@ -279,7 +284,7 @@ const postsReducer = (state = initialState, action) => {
       newState.singlePost = { ...post };
       newState.posts[post.id] = { ...post }
       return newState;
-  }
+    }
     case GET_COMMENT_DETAILS:
       newState = { ...state };
       let comment = action.details;
@@ -293,9 +298,7 @@ const postsReducer = (state = initialState, action) => {
         newState.userPosts = { ...newState.userPosts };
         newState.communities = { ...newState.communities };
         newState.singlePost = {};
-        console.log("action.id", action.id)
         delete newState.posts[action.id];
-        // delete newState.singleCommunity.Posts[action.id];
         return newState;
     }
     case REMOVE_COMMENT: {
@@ -312,12 +315,6 @@ const postsReducer = (state = initialState, action) => {
           (post) => (newState.userPosts[post.id] = post)
         );
         return newState;
-    }
-    case GET_DETAILS2: {
-      newState = { ...state };
-      const community = action.details;
-      newState.singleCommunity2 = { ...community };
-      return newState;
     }
     default:
       return state;

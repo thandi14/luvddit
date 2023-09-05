@@ -3,7 +3,6 @@ import './CommunityPage.css'
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import * as communityActions from '../../store/communities'
-import * as postsActions from '../../store/posts'
 
 
 function YourCommunitesProfile() {
@@ -26,7 +25,7 @@ function YourCommunitesProfile() {
     useEffect( () => {
 
         async function fetchData() {
-            const response = await dispatch(postsActions.thunkUpdateCommunities(singleCommunity.id, data1))
+            const response = await dispatch(communityActions.thunkUpdateCommunities(singleCommunity.id, data1))
             if (response) {
                 history.push(`/communities/${response.id}`)
                 setIsVisible(!isVisible)

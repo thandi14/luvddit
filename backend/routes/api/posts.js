@@ -225,7 +225,7 @@ router.post('/:id/votes', async (req, res) => {
     let postExist = await Posts.findByPk(postId);
     const boolean = req.query.boolean;
 
-    console.log(boolean)
+    // console.log(boolean)
     const { user } = req
     const userId = user.dataValues.id
 
