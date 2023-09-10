@@ -2,7 +2,7 @@ const express = require('express')
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Posts, Comments, Communities, User, PostImages, CommunityMembers, Votes, communityStyles } = require('../../db/models');
+const { Posts, Comments, Communities, User, PostImages, CommunityMembers, Votes, communityStyles, postsHistories } = require('../../db/models');
 
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -14,9 +14,11 @@ router.get("/", async (req, res) => {
     const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
     const pageSize = 10; // Number of posts per page
 
+    console.log(page)
+
     let posts = await Posts.findAll({
         include: [
-            { model: Comments},
+            { model: Comments },
             {
                 model: Communities,
                 include: [
@@ -27,8 +29,8 @@ router.get("/", async (req, res) => {
             { model: PostImages},
             { model: Votes}
          ],
-        //  limit: pageSize, // Limit the number of results per page
-        //  offset: (page - 1) * pageSize
+         limit: pageSize, // Limit the number of results per page
+         offset: (page - 1) * pageSize
     });
 
     // console.log(posts[0])
@@ -93,7 +95,38 @@ router.get("/votes/current", async (req, res) => {
 
 // })
 
+router.get('/history', async (req, res) => {
 
+    let history = await postsHistories.findAll({
+        include: [
+            {
+                model: Posts,
+                include: [
+                    {
+                        model: Comments,
+                        include: [
+                            { model: User },
+                            { model: Votes }
+                        ]
+                    },
+                    {
+                        model: Communities,
+                        include: [
+                            { model: communityStyles }
+                        ]
+                    },
+                    { model: User },
+                    { model: PostImages },
+                    { model: Votes },
+                    { model: postsHistories }
+                 ]
+            }
+        ]
+    })
+
+    return res.json(history)
+
+})
 
 
 router.get("/:id", async (req, res) => {
@@ -111,7 +144,8 @@ router.get("/:id", async (req, res) => {
             {
                 model: Comments,
                 include: [
-                    { model: User }
+                    { model: User },
+                    { model: Votes }
                 ]
             },
             {
@@ -121,8 +155,9 @@ router.get("/:id", async (req, res) => {
                 ]
             },
             { model: User },
-            { model: PostImages},
-            { model: Votes}
+            { model: PostImages },
+            { model: Votes },
+            { model: postsHistories }
          ]
         });
 
@@ -132,12 +167,56 @@ router.get("/:id", async (req, res) => {
             }
           });
 
-          console.log(members)
-
           post.dataValues.Community.dataValues.CommunityMembers = members.length
 
     return res.json(post)
 })
+
+router.get('/:id/history', async (req, res) => {
+    let postId = req.params.id;
+    let postExist = await Posts.findByPk(postId);
+
+    if (!postExist) {
+
+    res.status(404).json({"message": "Post couldn't be found"});
+
+    }
+
+
+    let history = await postsHistories.findAll({
+        where: {
+            postId
+        },
+        // include: [
+        //     {
+        //         model: Posts,
+        //         include: [
+        //             {
+        //                 model: Comments,
+        //                 include: [
+        //                     { model: User },
+        //                     { model: Votes }
+        //                 ]
+        //             },
+        //             {
+        //                 model: Communities,
+        //                 include: [
+        //                     { model: communityStyles }
+        //                 ]
+        //             },
+        //             { model: User },
+        //             { model: PostImages },
+        //             { model: Votes },
+        //             { model: postsHistories }
+        //          ]
+        //     }
+        // ]
+    })
+
+    return res.json(history)
+
+})
+
 
 router.get("/:id/comments", async (req, res) => {
     let postId = req.params.id;
@@ -163,10 +242,11 @@ router.get("/:id/comments", async (req, res) => {
     return res.json(comments)
 })
 
+
 router.put("/:id", async (req, res) => {
     let postId = req.params.id;
     let postExist = await Posts.findByPk(postId);
-    const { description } = req.body
+    const { description, tags } = req.body
 
     if (!postExist) {
 
@@ -175,11 +255,43 @@ router.put("/:id", async (req, res) => {
     }
 
     postExist.set({
-        description
+        description,
+        tags
     })
     await postExist.save()
 
-    return res.json(postExist)
+    let post = await Posts.findByPk(postId, {
+        include: [
+            {
+                model: Comments,
+                include: [
+                    { model: User },
+                    { model: Votes }
+                ]
+            },
+            {
+                model: Communities,
+                include: [
+                    { model: communityStyles }
+                ]
+            },
+            { model: User },
+            { model: PostImages },
+            { model: Votes },
+            { model: postsHistories }
+         ]
+        });
+
+        let members = await CommunityMembers.findAll({
+            where: {
+              communityId: post.dataValues.Community.dataValues.id
+            }
+        });
+
+        post.dataValues.Community.dataValues.CommunityMembers = members.length
+
+
+    return res.json(post)
 })
 
 router.delete("/:id", async (req, res) => {
@@ -188,13 +300,13 @@ router.delete("/:id", async (req, res) => {
 
     if (!postExist) {
 
-    res.status(404).json({"message": "Post couldn't be found"});
+    return res.status(404).json({"message": "Post couldn't be found"});
 
     }
 
     await postExist.destroy()
 
-    res.json({
+    return res.json({
         message: "Successfully deleted"
     })
 
@@ -219,6 +331,122 @@ router.post('/:id/images', async (req, res) => {
     return res.json(image)
 
 })
+
+router.post('/:id/history', async (req, res) => {
+    let postId = req.params.id;
+    let postExist = await Posts.findByPk(postId);
+
+    if (!postExist) {
+
+    res.status(404).json({"message": "Post couldn't be found"});
+
+    }
+
+    let history = await postsHistories.create({
+        postId
+    })
+
+    let history2 = await postsHistories.findByPk(history.dataValues.id, {
+        include: [
+            {
+                model: Posts,
+                include: [
+                    {
+                        model: Comments,
+                        include: [
+                            { model: User },
+                            { model: Votes }
+                        ]
+                    },
+                    {
+                        model: Communities,
+                        include: [
+                            { model: communityStyles }
+                        ]
+                    },
+                    { model: User },
+                    { model: PostImages },
+                    { model: Votes },
+                    { model: postsHistories }
+                 ]
+            }
+        ]
+    })
+
+    return res.json(
+        history2
+    )
+
+})
+
+router.put('/history/:id', async (req, res) => {
+    let historyId = req.params.id;
+    let historyExsist = await postsHistories.findByPk(historyId);
+
+    if (!historyExsist) {
+
+    return res.json({"message": "History couldn't be found"});
+
+    }
+
+    historyExsist.set({
+        createdAt: historyExsist.dataValues.createdAt
+    })
+
+    await historyExsist.save()
+
+    let history2 = await postsHistories.findByPk(historyId, {
+        include: [
+            {
+                model: Posts,
+                include: [
+                    {
+                        model: Comments,
+                        include: [
+                            { model: User },
+                            { model: Votes }
+                        ]
+                    },
+                    {
+                        model: Communities,
+                        include: [
+                            { model: communityStyles }
+                        ]
+                    },
+                    { model: User },
+                    { model: PostImages },
+                    { model: Votes },
+                    { model: postsHistories }
+                 ]
+            }
+        ]
+    })
+
+    return res.json(history2)
+
+})
+
+
+router.delete('/history/:id', async (req, res) => {
+    let historyId = req.params.id;
+    let historyExsist = await postsHistories.findByPk(historyId);
+
+    if (!historyExsist) {
+
+    return res.json({"message": "History couldn't be found"});
+
+    }
+
+    await historyExsist.destroy()
+
+    return res.json({
+        message: "Successfully deleted"
+    })
+
+
+})
+
+
 
 router.post('/:id/votes', async (req, res) => {
     let postId = req.params.id;
@@ -282,6 +510,108 @@ router.post('/:id/votes', async (req, res) => {
 
 })
 
+router.put('/:id/votes', async (req, res) => {
+    let voteId = req.params.id;
+    let voteExist = await Votes.findByPk(voteId);
+    const boolean = req.query.boolean;
+    let post = await Posts.findByPk(voteExist.dataValues.postId)
+
+    console.log(boolean)
+    const { user } = req
+    const userId = user.dataValues.id
+
+    if (!voteExist) {
+
+    res.status(404).json({"message": "Vote couldn't be found"});
+
+    }
+
+    let upVote
+    let downVote
+
+    if (boolean == 1) {
+        upVote = voteExist.set({
+                    upVote: 1,
+                    downVote: 0
+                })
+        await upVote.save()
+    }
+
+
+    if (upVote) {
+        post.set({
+            votes: post.votes + 1,
+            downVotes: post.downVotes - 1,
+        })
+        await post.save()
+
+    }
+
+
+    if (boolean == 0) {
+        downVote = voteExist.set({
+                downVote: 1,
+                upVote: 0
+        })
+
+        await downVote.save()
+
+    }
+
+    if (downVote) {
+        post.set({
+            downVotes: post.downVotes + 1,
+            votes: post.votes - 1
+        })
+        await post.save()
+
+    }
+
+
+    let vote = upVote ? upVote : downVote
+
+    return res.json(vote)
+
+})
+
+router.post('/comment/:id/votes', async (req, res) => {
+    let commentId = req.params.id;
+    let commentExist = await Comments.findByPk(commentId);
+    const boolean = req.query.boolean;
+
+    // console.log(boolean)
+    const { user } = req
+    const userId = user.dataValues.id
+
+    if (!commentExist) {
+
+    res.status(404).json({"message": "Comment couldn't be found"});
+
+    }
+
+    let upVote
+    let downVote
+
+    if (boolean == 1) upVote = await Votes.create({
+        commentId,
+        userId,
+        upVote: 1,
+        downVote: 0
+    })
+
+    if (boolean == 0) downVote = await Votes.create({
+        commentId,
+        userId,
+        downVote: 1,
+        upVote: 0
+    })
+
+    let vote = upVote ? upVote : downVote
+
+    return res.json(vote)
+
+})
+
 router.delete('/votes/:id', async (req, res) => {
     let voteId = req.params.id;
     let voteExist = await Votes.findByPk(voteId);
@@ -294,7 +624,7 @@ router.delete('/votes/:id', async (req, res) => {
 
     let post = await Posts.findByPk(voteExist.dataValues.postId)
 
-    if (voteExist.dataValues.upVote === 1) {
+    if (post && voteExist.dataValues.upVote === 1) {
         post.set({
             votes: post.dataValues.votes - 1
         })
@@ -302,7 +632,7 @@ router.delete('/votes/:id', async (req, res) => {
         await post.save()
     }
 
-    if (voteExist.dataValues.downVote === 1) {
+    if (post && voteExist.dataValues.downVote === 1) {
         post.set({
             downVotes: post.dataValues.downVotes - 1
         })
@@ -335,7 +665,15 @@ router.post("/:id/comment", async (req, res) => {
 
     });
 
-    return res.json(c)
+    let comment2 = await Comments.findByPk(c.dataValues.id, {
+        include: [
+            { model: User },
+            { model: Votes }
+        ]
+    })
+
+
+    return res.json(comment2)
 })
 
 

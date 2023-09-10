@@ -52,8 +52,7 @@
 #post-extras2 {
     display: flex;
     align-items: center;
-    padding-top: 2%;
-    padding-bottom: 2%;
+    padding-bottom: 1%;
     color: #878A8C;
     height: 30px;
     cursor: pointer;
@@ -64,9 +63,21 @@
 
 #finishing2 {
     margin-top: 5px;
+    margin-bottom: 16px;
     margin-left: 10px;
+    font-size: 14px;
 
 }
+
+#finishing60 {
+    margin-top: 5px;
+    margin-bottom: 16px;
+    margin-left: 10px;
+    font-size: 14px;
+    color: #878A8C;
+
+}
+
 
 
 .post-content:hover {
@@ -134,7 +145,7 @@
     font-size: 18px;
     display: flex;
     margin-top: 5px;
-    margin-left: 10px;
+    margin-left: 4px;
     gap: 5px;
     margin-right: 10px;
     height: auto;
@@ -823,4 +834,34 @@
     color: #0079D3;
     display: flex;
     align-items: center;
+}
+
+#upvote4, #downvote4, #upvoted4, #downvoted4 {
+    height: 22px;
+    width: 22px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+#title-content {
+    margin: 0px;
+    width: 100%;
+    font-size: 18px;
+    margin-left: 1%;
+}
+
+#upvote4:hover, #upvote:hover, #downvote:hover, #downvote4:hover {
+    background-color: #e4e4e4;
+    border-radius: 4px;
+}
+
+#upvote4:hover, #upvoted4 {
+    color: hotpink
+}
+
+#downvote4:hover, #downvoted4 {
+    color: #0079D3;
 }

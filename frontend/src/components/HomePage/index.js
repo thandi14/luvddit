@@ -33,12 +33,13 @@ function HomePage() {
   useEffect(() => {
 
     async function fetchData() {
-      let data = await dispatch(postsActions.thunkGetUserVotes())
+      let data
+      if (user) data = await dispatch(postsActions.thunkGetUserVotes())
       setIsLiked(data)
       }
       fetchData()
 
-  }, [dispatch, posts])
+  }, [dispatch, posts, user])
 
   useEffect(() => {
     async function fetchData() {
@@ -46,9 +47,6 @@ function HomePage() {
       }
       fetchData()
   }, [singlePost.Comments])
-
-
-    console.log(isLiked)
 
     useEffect(() => {
       const handleScroll = () => {
@@ -134,7 +132,6 @@ function HomePage() {
 
 
 
-      console.log(ePost)
     return (
         <div className="splashPage">
             <div className="posts">
@@ -181,8 +178,7 @@ function HomePage() {
                     <div id={`${post.id}`} className="post-content">
                     <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side1">
                     <PostLikes post={post}
-                    vote={isLiked.length && isLiked.some((l) => l.postId === post.id && l.upVote === 1)}
-                    downVote={isLiked.length && isLiked.some((l) => l.postId === post.id && l.downVote === 1)}/>
+                    />
                     </div>
                     <div id="pc-side2">
                     <div id="nameOf">
@@ -191,7 +187,7 @@ function HomePage() {
                     <p>·</p>
                     <p >Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User.username}</span> {getTimeDifferenceString(post.createdAt)}</p>
                     </div>
-                    <h3  id="p-tit" onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title">{ post.tags && post.tags.includes("oc") ? <div id="oc5">OC</div> : null} {post.tags && post.tags.includes("spoiler") ? <div id="spoiler5">Spoiler</div> : null } { post.tags && post.tags.includes("nsfw") ? <div id="nsfw5">NSFW</div> : null}{post.title}</h3>
+                    <h3  id="p-tit" onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title"><h3 id="title-content">{post.title}{ post.tags && post.tags.includes("oc") ? <div id="oc5">OC</div> : null} {post.tags && post.tags.includes("spoiler") ? <span id="spoiler5">Spoiler</span> : null } { post.tags && post.tags.includes("nsfw") ? <span id="nsfw5">NSFW</span> : null}</h3></h3>
                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="content">
                     <div id="img">
                     {post.PostImages.length ? <img src={post.PostImages[0]?.imgURL} alt="meaningful-text"></img> : null}
@@ -200,7 +196,7 @@ function HomePage() {
                       {post.description}
                       </div>
                     </div>
-                    <div id="post-extras">
+                    <div id="post-extras9">
                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="comment">
                     <i class="fa-regular fa-message"></i>
                     <p id={`${post.id}`} >{Object.values(post.Comments).length} Comments</p>

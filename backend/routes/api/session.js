@@ -8,7 +8,7 @@ const { handleValidationErrors } = require('../../utils/validation')
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, restoreUser } = require('../../utils/auth');
-const { User } = require('../../db/models');
+const { User, Communities, communityStyles } = require('../../db/models');
 const router = express.Router();
 
 
@@ -40,8 +40,6 @@ router.post(
           }
         }
       });
-
-      console.log(user)
 
       if (!user || !bcrypt.compareSync(password, user.hashedPassword.toString())) {
         const err = new Error('Login failed');
@@ -93,6 +91,57 @@ router.get(
       } else return res.json({ user: null });
     }
   );
+
+
+  router.get("/:id", async (req, res) => {
+   // const userId = user.dataValues.id
+    const userId = req.params.id
+
+    let user = await User.findByPk(userId, {
+        include: [
+          {
+            model: Communities,
+            where: {
+              userId,
+            },
+            include: [
+              { model: communityStyles }
+            ]
+          }
+        ]
+
+    });
+
+    let profile = await Communities.findOne({
+      where: {
+        userId,
+        type: "Profile"
+      }
+    })
+
+    // for (let i = 0; i < user.dataValues.Communities?.length; i++) {
+    //   let community = user.dataValues.Communities[i]
+    //   let members = await CommunityMembers.findAll({
+    //     where: {
+    //       communityId: community.dataValues.id
+    //     }
+    //   });
+
+    //   community.dataValues.members = members.length
+
+    // }
+
+    user.dataValues.profile = profile
+
+
+    if (!user) return res.status(404).json({
+        "message": "User not found"
+    })
+
+    return res.json({ user: user })
+
+})
+
 
 
 

@@ -167,12 +167,34 @@
     overflow: hidden;
 }
 
+#add-to2 {
+    width: 100%;
+    height: 40px;
+    margin-bottom: 0px;
+    background-color: #F6F7F8;
+    box-sizing: border-box;
+    z-index: 3;
+    display: flex;
+    position: absolute;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    align-items: center;
+    border: 1px solid black;
+    border-bottom: 0px;
+    gap: 14px;
+    cursor: not-allowed;
+}
+
+#description-posts:focus {
+    border: 1px solid black;
+}
+
 .marg > i {
     height: 100%;
     position: absolute;
     right: 1%;
     background-color: #0079D3;
-    width: 40%;
+    width: 35%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -181,12 +203,16 @@
     font-size: 16px;
 }
 
+.post-input2 > input:focus, .post-input > input:focus {
+    border: 1px solid black;
+}
+
 #post2 > i {
     height: 100%;
     position: absolute;
     right: 1%;
     background-color: #0079D3;
-    width: 40%;
+    width: 35%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -230,7 +256,8 @@
 
 #tags {
     display: flex;
-    gap: 4px
+    gap: 4px;
+    margin-bottom: 5px
 }
 
 .posting-on-l {
@@ -268,6 +295,22 @@
     width: 100%;
     height: 94px;
     background-color: rgb(51, 168, 255);
+}
+
+#Unapproved {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #0079D3;
+    border-radius: 4px;
+    padding: 1% 2%;
+    border-left: 10px solid #0079D3;
+}
+
+#header-profile-comm10 {
+    height: 100%;
+    width: 100%;
 }
 
 #your-community {
@@ -471,8 +514,9 @@
 }
 
 .post-input > textarea {
-    width: 98.5%;
-    height: 138px;
+    width: 100%;
+    box-sizing: border-box;
+    height: 182px;
     border: 1px solid #EDEFF1;
     border-radius: 4px;
     padding-left: 1%;
@@ -558,7 +602,7 @@
 
 #type-of-post > p > i {
     font-size: 20px;
-    height: 45px;
+    height: 20px;
 }
 
 #padding3 {
@@ -577,11 +621,15 @@
     margin-bottom: -0px;
     background-color: #F6F7F8;
     z-index: 3;
+    border: 1px solid transparent;
     display: flex;
+    box-sizing: border-box;
     position: absolute;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
     align-items: center;
+    border: 1px solid transparent;
+    border-bottom: 0px;
     gap: 14px;
     cursor: not-allowed;
 
@@ -620,6 +668,22 @@
     font-size: 18px;
 }
 
+#add-to2 i:first-child {
+    margin-left: 14px;
+
+
+}
+
+#add-to2 > i:not(#divider16) {
+    color: #7C7C7C;
+    height: 18px;
+}
+
+#add-to2 > i:not(:first-child) {
+    font-size: 18px;
+}
+
+
 .post-input {
     position: relative;
 }
@@ -627,7 +691,7 @@
 
 #p {
     width: 25%;
-    line-height: 51px;
+    height: 51px;
     align-items: center;
     border-bottom: 1px solid #EDEFF1;
     padding: 0px;
@@ -641,9 +705,14 @@
     cursor: pointer;
 }
 
+.header-postC {
+    height: 38px;
+    width: 100%
+}
+
 #p2 {
     width: 25%;
-    line-height: 53px;
+    height: 53px;
     align-items: center;
     border-bottom: 2px solid #0079D3;
     padding: 0px;
@@ -664,7 +733,7 @@
 #i, #l {
     border-left: 1px solid #EDEFF1;
     width: 25%;
-    line-height: 51px;
+    height: 51px;
     align-items: center;
     border-bottom: 1px solid #EDEFF1;
     padding: 0px;
@@ -682,7 +751,7 @@
     color: rgba(135,138,140,0.5);
     border-left: 1px solid #EDEFF1;
     width: 25%;
-    line-height: 51px;
+    height: 51px;
     align-items: center;
     border-bottom: 1px solid #EDEFF1;
     padding: 0px;
@@ -695,11 +764,28 @@
     cursor: not-allowed;
 }
 
-#i2, #l2 {
+#i2 {
     border-left: 1px solid #EDEFF1;
     width: 25%;
-    line-height: 53px;
+    height: 53px;
     align-items: center;
+    border-bottom: 2px solid #0079D3;
+    padding: 0px;
+    margin: 0px;
+    font-size: 14px;
+    color: #0079D3;
+    font-weight: 700;
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    cursor: pointer;
+}
+
+#l2 {
+    border-left: 1px solid #EDEFF1;
+    width: 25%;
+    align-items: center;
+    height: 53px;
     border-bottom: 2px solid #0079D3;
     padding: 0px;
     margin: 0px;

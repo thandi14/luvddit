@@ -61,6 +61,8 @@ function CommunityPageEdit() {
   useEffect(() => {
 
     async function fetchData() {
+
+      await dispatch()
       if (id) await dispatch(communityActions.thunkGetCommunityMemberships())
       else return
     }
@@ -196,13 +198,11 @@ function CommunityPageEdit() {
   let ePost = singleCommunity.Posts?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
 
-
-
     return (
         <div id="fifty">
         <div id="edit-page-menu">
             <div id="twenty">
-            <span id="a"><i onClick={handleAll} class="fi fi-br-angle-left"></i><span id="d">Back to mod tools</span><i onClick={(() => history.push(`/communities/${id}`))} class="fi fi-rr-cross-small"></i></span>
+            <span id="a"><i onClick={((e) => history.push(`/communities/${id}/mod`))} class="fi fi-br-angle-left"></i><span onClick={((e) => history.push(`/communities/${id}/mod`))} id="d">Back to mod tools</span><i onClick={(() => history.push(`/communities/${id}`))} class="fi fi-rr-cross-small"></i></span>
            {icon ?
            <>
            <span id="b">Name & icon</span>

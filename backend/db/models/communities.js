@@ -21,7 +21,8 @@ module.exports = (sequelize, DataTypes) => {
       Communities.hasMany(
         models.Posts,
           { foreignKey: 'communityId', onDelete: 'CASCADE',  hooks: true }
-      );// additional attributes for the join table can be included in the options
+      );
+      // additional attributes for the join table can be included in the options
       Communities.belongsToMany(
         models.User,
           { through: models.CommunityMembers,

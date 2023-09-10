@@ -31,6 +31,8 @@ const validateSignup = [
 ];
 
 
+
+
 // Sign up
 router.post(
     '/',
@@ -50,7 +52,8 @@ router.post(
 
       let community = await Communities.create({
             userId: user.id,
-            name: username
+            name: username,
+            type: "Profile"
        })
 
       return res.json({
@@ -58,5 +61,7 @@ router.post(
       });
     }
   );
+
+
 
 module.exports = router;

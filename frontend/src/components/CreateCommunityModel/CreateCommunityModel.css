@@ -112,7 +112,7 @@
     font-size: 15px;
     height: 15px;
     margin-right: 5px;
-    cursor: not-allowed;
+    cursor: pointer;
 
 }
 
@@ -183,8 +183,8 @@
 
 }
 
-input[type="text"]:focus {
-    outline: none;
+#cc-name > div > input:focus {
+    border: 1px solid black;
 }
 
 #cc-name > div > span {
@@ -231,7 +231,9 @@ input[type="text"]:focus {
 }
 
 
-
+#c-type {
+    color: #0079D3
+}
 
 #cc-submit > :first-child {
     width: 16%;

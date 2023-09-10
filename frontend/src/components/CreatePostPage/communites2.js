@@ -7,30 +7,40 @@ import { useModal } from "../../context/Modal"
 
 
 function CommunitiesProfile({ page, community }) {
-    const { communities, userCommunities, singleCommunity, communityMemberships } = useSelector((state) => state.communities)
+    const { communities, userCommunities, singleCommunity, communityMemberships, memberships } = useSelector((state) => state.communities)
     const { user } = useSelector((state) => state.session)
     const [ id, setId ] = useState(null)
     const dispatch = useDispatch()
     const history = useHistory()
     const { closeModal } = useModal()
+    let joined = null
 
-    const [ joined, setJoined ] = useState(null)
-    const memberships = Object.values(communityMemberships)
-    const member = memberships.filter((m) => m.communityId === singleCommunity.id)
+
+    let members
+    if (communityMemberships) members = Object.values(communityMemberships)
+
+    let approved = members.some((m) => m.status === "Approved" && m.userId === user.id) && singleCommunity.id
+
+    approved = !approved && singleCommunity.id ? false : true
+
+    console.log(members)
+
+    const myMemberships = Object.values(memberships)
+    const member = myMemberships.filter((m) => m.id === singleCommunity.id)
+
+    if (member) joined = true
+    if (!member.length) joined = false
 
     useEffect(() => {
 
         async function fetchData() {
            if (community && community.id) await dispatch(communityActions.thunkGetDetailsById(community.id))
-            await dispatch(communityActions.thunkGetCommunityMemberships())
+            if (user) await dispatch(communityActions.thunkGetCommunityMemberships())
 
         }
 
         fetchData()
 
-        const member = memberships.filter((m) => m.communityId === singleCommunity.id)
-        if (member) setJoined(true)
-        if (!member) setJoined(false)
 
 
     }, [dispatch])
@@ -50,21 +60,22 @@ function CommunitiesProfile({ page, community }) {
     }, []);
 
     const handleJoinClick = async (e) => {
-        e.stopPropagation()
         let response
-        setJoined(true)
-        await dispatch(communityActions.thunkJoinCommunities(singleCommunity.id))
-    }
+        e.stopPropagation()
+        joined = true
+        if (singleCommunity.type === "Public") await dispatch(communityActions.thunkJoinCommunities(singleCommunity.id))
+        if (singleCommunity.type === "Private" || singleCommunity.type === "Restricted") await dispatch(communityActions.thunkJoinCommunities(singleCommunity.id, singleCommunity.type))
+      }
 
-    const handleUnjoinClick = async (e) => {
-        e.stopPropagation()
+      const handleUnjoinClick = async (e) => {
         let response
-        setJoined(false)
-        response = await dispatch(communityActions.thunkUnjoinCommunities(community.id))
-    }
+        e.stopPropagation()
+        joined = false
+        response = await dispatch(communityActions.thunkUnjoinCommunities(singleCommunity.id))
+      }
 
     const handleClick = () => {
-        if (page === "create") return
+        if (community.type === "Profile") return
         closeModal()
         history.push(`/communities/${community.id}`)
 
@@ -84,9 +95,6 @@ function CommunitiesProfile({ page, community }) {
     ];
 
 
-
-    const profile = community.id
-
     let myCommunities
     if (Object.values(userCommunities).length) myCommunities = Object.values(userCommunities)
 
@@ -95,10 +103,10 @@ function CommunitiesProfile({ page, community }) {
 
     const formattedDate = `${months[dateObject.getMonth()]}, ${dateObject.getDate()}, ${dateObject.getFullYear()}`;
 
-    console.log(singleCommunity)
+
     return (
         <>
-        {profile === firstCommunity ? <div onClick={((e) => {
+        {community.type === "Profile" ? <div onClick={((e) => {
                     e.stopPropagation()
                     window.alert("Feature not avaliable")
                     })} className="your-community">
@@ -130,8 +138,8 @@ function CommunitiesProfile({ page, community }) {
         </div>
         </div> :
          <div onClick={handleClick} id="your-community-profile">
-                    <div id="header-profile-comm4">
-                    </div>
+                    {!singleCommunity.communityStyles?.length ? <div id="header-profile-comm4">
+                    </div> : <div className="header-postC"><img id="header-profile-comm10" src={singleCommunity.communityStyles[0].header} ></img></div> }
                     <div id="profile-content">
                         <span id="profile-comm-title7">{ singleCommunity.communityStyles && singleCommunity.communityStyles.length ? <img id="PFP36" src={singleCommunity.communityStyles[0].profile}></img> : <div>l/</div>}{community?.name}</span>
                         <span id="profile-about7">{community?.about}</span>

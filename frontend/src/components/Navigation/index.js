@@ -16,12 +16,13 @@ import pfp from "./icons/IMG6.jpg"
 import { useRef } from 'react';
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import * as communityActions from '../../store/communities'
+import * as sessionActions from '../../store/session'
 
 
 function Navigation({ isLoaded }){
   const sessionUser = useSelector(state => state.session.user);
   const { user } = useSelector(state => state.session);
-  let { communityMemberships, userCommunities, singleCommunity } = useSelector(state => state.communities);
+  let { communityMemberships, userCommunities, singleCommunity, memberships } = useSelector(state => state.communities);
   const history = useHistory()
   const [ homeButton, setHomeButton ] = useState("home")
   const location = useLocation();
@@ -40,6 +41,7 @@ function Navigation({ isLoaded }){
   };
 
   useEffect(() => {
+    dispatch(sessionActions.restoreUser())
     if (id) dispatch(communityActions.thunkGetDetailsById(id))
   }, [id])
 
@@ -75,10 +77,11 @@ function Navigation({ isLoaded }){
 
   }, [location]);
 
-  let memberships = Object.values(communityMemberships)
-  let myCommunities = Object.values(userCommunities)
-  myCommunities = myCommunities.slice(1, myCommunities.length)
+  let myMemberships = Object.values(memberships)
+  let myCommunities = Object.values(userCommunities).filter((c) => c.type !== "Profile")
 
+  console.log(myCommunities)
+  console.log(userCommunities)
 
   let sessionLinks;
   if (sessionUser) {
@@ -123,6 +126,7 @@ function Navigation({ isLoaded }){
   const homeButtonMenu = isVisible ? "homeButton2" : "homeButton";
   const homeMenu = isVisible ? "home-menu" : "hidden";
 
+
   return (
     <div className="navigation">
       <div onClick={(() => history.push('/'))} className="logo">
@@ -164,12 +168,15 @@ function Navigation({ isLoaded }){
             </div>
             <div id="yourC-ms">
             <span id="menu-tit"><div></div>Your communities</span>
-            <span onClick={(() => setModalContent(<CreateCommunity />))} ><div></div><i class="fi fi-rr-plus"></i>Create Community</span>
-            {memberships.map((c) =>
             <span onClick={(() => {
-              history.push(`/communities/${c.Community?.id}`)
+              setModalContent(<CreateCommunity />)
               setIsVisible(false)
-            })}><div></div>{ c.Community.communityStyles && c.Community.communityStyles.length ? <img id="pfp30" src={c.Community.communityStyles[0].profile}></img> : <span id="no-pfp">l/</span>}l/{c.Community?.name}</span>
+              })} ><div></div><i class="fi fi-rr-plus"></i>Create Community</span>
+            {myMemberships.map((c) =>
+            <span onClick={(() => {
+              history.push(`/communities/${c.id}`)
+              setIsVisible(false)
+            })}><div></div>{c.communityStyles && c.communityStyles.length ? <img id="pfp30" src={c.communityStyles[0].profile}></img> : <span id="no-pfp">l/</span>}l/{c.name}</span>
             )}
             </div>
             <div id="feeds-ms">
@@ -186,7 +193,10 @@ function Navigation({ isLoaded }){
             <span id="menu-tit"><div></div>Other</span>
             <span onClick={(() => window.alert("Feature not available"))}><div></div><img id="pfp-ms" src={avatar}></img>User Settings</span>
             <span onClick={(() => window.alert("Feature not available"))}><div></div><img id="pfp-ms" src={avatar}></img>Messages</span>
-            <span onClick={(() => history.push('/posts/new'))}><div></div><i class="fi fi-rr-plus"></i>Create Post</span>
+            <span onClick={(() => {
+              history.push('/posts/new')
+              setIsVisible(false)
+              })}><div></div><i class="fi fi-rr-plus"></i>Create Post</span>
             <span onClick={(() => window.alert("Feature not available"))}><div></div><i class="fi fi-rs-cowbell"></i>Notifications</span>
             <span onClick={(() => window.alert("Feature not available"))}><div></div><i class="fa-solid fa-shield-halved"></i>Premium</span>
             <span onClick={(() => window.alert("Feature not available"))}><div></div><i class="fi fi-rr-vest"></i>Avatar</span>

@@ -22,6 +22,27 @@ function YourCommunitesProfile() {
 
     }, [singleCommunity.name]);
 
+
+    let members
+    if (communityMemberships) members = Object.values(communityMemberships)
+
+    console.log(members)
+    let approved = members.some((m) => m.status === "Approved" && m.userId === user.id) && singleCommunity.id
+
+    approved = !approved && singleCommunity.id ? false : true
+
+    useEffect(() => {
+
+        async function fetchData() {
+          await dispatch(communityActions.thunkGetCommunityMemberships(id))
+        //   if (id) await dispatch(communityActions.thunkGetDetailsById(id))
+        //   else return
+        }
+
+        fetchData()
+
+    }, [dispatch, id])
+
     useEffect( () => {
 
         async function fetchData() {
@@ -36,7 +57,6 @@ function YourCommunitesProfile() {
 
     }, [dispatch, data1])
 
-    console.log(singleCommunityName)
 
     const handleSubmit = async () => {
 
@@ -77,14 +97,13 @@ function YourCommunitesProfile() {
 
     const formattedDate = `${months[dateObject.getMonth()]}, ${dateObject.getDate()}, ${dateObject.getFullYear()}`;
 
-
-    console.log(singleCommunity)
+    console.log(approved)
 
     return (
             <div className="home-section">
                 <div id="cs-background">
                     <p>About Community</p>
-                    { user && singleCommunity.userId === user.id ? <p onClick={((e) => history.push(`/communities2/${id}`))} id="seven"><span id="tools"><i class="fi fi-rs-shield"></i>MOD TOOLS</span><i class="fi fi-rr-menu-dots"></i></p> : <i onClick={(() => window.alert("Feature not available"))} id="comm-sets" class="fi fi-rr-menu-dots"></i>}
+                    { user && singleCommunity.userId === user.id ? <p onClick={((e) => history.push(`/communities/${id}/mod`))} id="seven"><span id="tools"><i class="fi fi-rs-shield"></i>MOD TOOLS</span><i class="fi fi-rr-menu-dots"></i></p> : <i onClick={(() => window.alert("Feature not available"))} id="comm-sets" class="fi fi-rr-menu-dots"></i>}
                 </div>
                 <div id="home-section">
                 <div id="cs-side1">
@@ -96,6 +115,7 @@ function YourCommunitesProfile() {
                     { user && singleCommunity.about && !isVisible ? <span id={user.id === singleCommunity.userId ? "can-you-edit" : ""} onClick={(() => setIsVisible(!isVisible))}>{singleCommunity.about}{user.id === singleCommunity.userId ? <i id="edit-icon4" class="fi fi-rr-magic-wand"></i> : null} </span> : null}
                     { !user && singleCommunity.about ?  <span>{singleCommunity.about}</span> : null}
                     <span><i class="fi fi-rr-cake-birthday"></i>{formattedDate}</span>
+                    { (singleCommunity.type === "Restricted" || singleCommunity.type === "Private") && <span><i class="fi fi-rs-crossed-eye"></i>{singleCommunity.type}</span>}
                 </div>
                 <div id="line"></div>
                 <div id="cs-side2">
@@ -108,7 +128,7 @@ function YourCommunitesProfile() {
                     <span>Add a Primary Topic<i class="fa-solid fa-chevron-down"></i></span>
                 </div>
                 <div id="line"></div>
-                { user ? <button onClick={(() => history.push(`/posts/new/${singleCommunity.id}`))} id="but3">Create Post</button> : <button onClick={(() => window.alert('Feature coming soon'))} id="but3">Create Post</button>}
+                { user ? <button onClick={(() => history.push(`/posts/new/${singleCommunity.id}`))} id="but3">{ singleCommunity && singleCommunity.type !== "Public" && !approved ? "Draft Post" : "Create Post"}</button> : <button onClick={(() => window.alert('Feature coming soon'))} id="but3">Create Post</button>}
                 <div id="line"></div>
                 <div id="cs-side5">
                     <span onClick={(() => window.alert("Feature not available"))}>COMMUNITY OPTIONS</span>

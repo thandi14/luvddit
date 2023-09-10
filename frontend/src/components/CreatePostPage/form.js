@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import * as postActions from "../../store/posts"
 import { useHistory, useParams } from "react-router-dom";
+import * as communityActions from '../../store/communities'
 
 function PostForm() {
-    const { communities, singleCommunity } = useSelector((state) => state.communities)
+    const { communities, singleCommunity, communityMemberships, userCommunities } = useSelector((state) => state.communities)
     //const { singleCommunity2 } = useSelector((state) => state.posts)
     const { user } = useSelector((state) => state.session)
     const history = useHistory()
@@ -23,7 +24,18 @@ function PostForm() {
     const [ image, setImage ] = useState(false)
     const [ link, setLink ] = useState(false)
     const { button } = useParams()
+    const [ focus, setFocus ] = useState(false)
 
+    let members
+    if (communityMemberships) members = Object.values(communityMemberships)
+
+    let approved = members.some((m) => m.status === "Approved" && m.userId === user.id) && singleCommunity.id
+
+    approved = !approved && singleCommunity.id ? false : true
+
+    let profile = Object.values(userCommunities).filter((c) => c.type === "Profile" && c.userId === user.id)
+
+    console.log(profile)
 
     useEffect(() => {
         if (button === "image") {
@@ -66,12 +78,29 @@ function PostForm() {
     const dispatch = useDispatch()
 
     useEffect(() => {
-        if (Object.values(singleCommunity).length && title.length) {
+
+        async function fetchData() {
+          if (singleCommunity && singleCommunity.id)  await dispatch(communityActions.thunkGetCommunityMemberships(singleCommunity.id))
+        }
+        fetchData()
+
+        if (singleCommunity.type === "Public" && title.length) {
           setIsDisabled(false);
-        } else {
+        }
+        else if (!approved && singleCommunity.type === "Restricted" || !approved && singleCommunity.type === "Private") {
+            setIsDisabled(true);
+        }
+        else if (title.length && singleCommunity.type === "Profile") {
+            setIsDisabled(false)
+        }
+        else if (approved && singleCommunity.type === "Restricted" && title.length || approved && singleCommunity.type === "Private" && title.length) {
+            setIsDisabled(false)
+        }
+        else {
           setIsDisabled(true);
         }
-    }, [singleCommunity, title]);
+
+    }, [singleCommunity.id, title, approved]);
 
 
     useEffect( () => {
@@ -127,9 +156,9 @@ function PostForm() {
     return (
             <div className="form">
                     <div id="type-of-post">
-                    <p onClick={handlePost} id={postIdName}><i class="fi fi-rr-blog-text"></i>Post</p>
-                    <p onClick={handlePicture}id={imageIdName}><i class="fi fi-rr-picture"></i>Image & Video</p>
-                    <p onClick={handleLink}id={linkIdName}><i class="fi fi-rr-link-alt"></i>Link</p>
+                    <p onClick={handlePost} id={postIdName}><i class="fi fi-rr-blog-text"></i><span>Post</span></p>
+                    <p onClick={handlePicture}id={imageIdName}><i class="fi fi-rr-picture"></i><span>Image & Video</span></p>
+                    <p onClick={handleLink}id={linkIdName}><i class="fi fi-rr-link-alt"></i><span>Link</span></p>
                     <p id="pol"><i class="fi fi-rr-square-poll-vertical"></i>Poll</p>
                     </div>
                     <div id="padding3">
@@ -137,7 +166,7 @@ function PostForm() {
                     <input type="text" placeholder="Title" onChange={((e) => setTitle(e.target.value))}></input>
                     </div>
                     <div className="post-input">
-                    {post && <div id="add-to">
+                    {post && <div id={ focus ? "add-to2" : "add-to"}>
                     <i class="fi fi-rr-bold"></i>
                     <i class="fa-solid fa-italic"></i>
                     <i class="fi fi-rr-link-alt"></i>
@@ -156,10 +185,15 @@ function PostForm() {
                     <i class="fi fi-rr-picture"></i>
                     <i class="fa-brands fa-youtube"></i>
                     </div>}
-                    {post && <textarea onChange={((e) => setDescription(e.target.value))} placeholder="Text(optional)"></textarea>}
+                    {post && <textarea onFocus={(() => setFocus(true))} onBlur={(() => setFocus(false))} id="description-posts" onChange={((e) => setDescription(e.target.value))} placeholder="Text(optional)"></textarea>}
                     {image && <input onChange={((e) => setImageDescription(e.target.value))} placeholder="ImageUrl"></input>}
                     {link && <input onChange={((e) => setLinkDescription(e.target.value))} placeholder="Url"></input>}
                     </div>
+                    {(singleCommunity.type === "Restricted" || singleCommunity.type === "Private") && !approved && (profile[0]?.id !== singleCommunity?.id) && <div id="Unapproved">
+                            <span style={{ fontSize: "12px", fontWeight: "900", marginBottom: "4px"}}>Request to post is pending...</span>
+                            <span style={{ fontSize: "14px"}}>Your request to post in {singleCommunity.name} was sent and is pending. In the meantime, you can draft a post and</span>
+                            <span style={{ fontSize: "14px", color: "#0079D3", cursor: "pointer"}}>browse the community</span>
+                    </div> }
                     <div id="tags">
                         <button onClick={((e) => setOc(!oc))} id={!oc ? "oc" : "oc2"}>
                            { !oc ? <i class="fi fi-rr-plus"></i> : <i class="fi fi-rr-check"></i> }

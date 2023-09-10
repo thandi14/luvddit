@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import "./LoginForm.css";
 import SignupFormModal from "../SignupFormPage";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 function LoginFormModal() {
   const dispatch = useDispatch();
@@ -11,18 +12,20 @@ function LoginFormModal() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const { closeModal, setModalContent } = useModal();
+  const history = useHistory()
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrors({});
+    history.push('/')
     return dispatch(sessionActions.login({ credential, password }))
-      .then(closeModal)
-      .catch(async (res) => {
-        const data = await res.json();
-        if (data && data.errors) {
-          setErrors(data.errors);
-        }
-      });
+    .then(closeModal)
+    .catch(async (res) => {
+      const data = await res.json();
+      if (data && data.errors) {
+        setErrors(data.errors);
+      }
+    });
   };
 
   const handleDemo = () => {

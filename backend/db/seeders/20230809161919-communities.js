@@ -14,15 +14,18 @@ module.exports = {
     await Communities.bulkCreate([
       {
         userId: 1,
-        name: "Demo-lition"
+        name: "Demo-lition",
+        type: "Profile"
       },
       {
         userId: 2,
-        name: "FakeUser1"
+        name: "FakeUser1",
+        type: "Profile"
       },
       {
         userId: 3,
-        name: "FakeUser2"
+        name: "FakeUser2",
+        type: "Profile"
       },
       {
        userId: 2,
@@ -37,7 +40,7 @@ module.exports = {
       {
         userId: 3,
         name: "Travel Tales",
-        about: " Share your most memorable travel stories, from epic road trips to off-the-beaten-path discoveries. Whether it's conquering a mountain peak, navigating bustling markets, or simply getting lost in a foreign city, your journey matters here."
+        about: "Share your most memorable travel stories, from epic road trips to off-the-beaten-path discoveries. Whether it's conquering a mountain peak, navigating bustling markets, or simply getting lost in a foreign city, your journey matters here."
       },
       {
         userId: 1,

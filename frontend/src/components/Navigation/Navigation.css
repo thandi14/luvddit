@@ -7,14 +7,15 @@
 .navigation {
     background-color: white;
     position: sticky;
-    width: 100%;
+    width: 98%;
+    padding: 0% 1%;
     top: 0%;
     height: 48px;
     z-index: 10;
     display: flex;
     align-items: center;
     gap: 8px;
-    justify-content: center;
+    justify-content: space-between;
     border-bottom: 1px solid #EDEFF1;
 }
 
@@ -173,6 +174,10 @@ body {
     border: 1px solid #0079D3;
 }
 
+input:focus {
+    outline: none;
+}
+
 #mod-ms > span > i {
     font-size: 18px;
 }
@@ -319,7 +324,7 @@ body {
     border: 1px solid #EDEFF1;
     border-radius: 3px;
     width: 16.5%;
-    height: 400px;
+    height: 650px;
     overflow-y: scroll;
     background: white;
     display: flex;

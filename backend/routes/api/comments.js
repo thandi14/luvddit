@@ -2,7 +2,7 @@ const express = require('express')
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Comments, Posts } = require('../../db/models');
+const { Comments, Posts, User, Votes } = require('../../db/models');
 
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -20,10 +20,42 @@ router.get("/current", async (req, res) => {
        include: [
         { model: Posts },
        ]
+
     });
 
     return res.json(posts)
 })
+
+router.put("/:id", async (req, res) => {
+    let commentId = req.params.id;
+    let commentExist = await Comments.findByPk(commentId);
+    const { comment2 } = req.body
+
+    if (!commentExist) {
+
+    res.status(404).json({"message": "Post couldn't be found"});
+
+    }
+
+    console.log(comment2)
+
+    commentExist.set({
+        comment: comment2
+    })
+
+    await commentExist.save()
+
+    let comment = await Comments.findByPk(commentId, {
+        include: [
+            { model: User },
+            { model: Votes }
+        ]
+    })
+
+
+    return res.json(comment)
+})
+
 
 router.delete("/:id", async (req, res) => {
     const { user } = req

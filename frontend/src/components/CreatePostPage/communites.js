@@ -7,7 +7,7 @@ import { useModal } from "../../context/Modal"
 
 
 function CommunitiesMenu({ value }) {
-    const { communities, singleCommunity, userCommunities, communityMemberships } = useSelector((state) => state.communities)
+    const { communities, singleCommunity, userCommunities, communityMemberships, memberships } = useSelector((state) => state.communities)
     const { user } = useSelector((state) => state.session)
     const [ id, setId ] = useState(null)
     const dispatch = useDispatch()
@@ -18,11 +18,11 @@ function CommunitiesMenu({ value }) {
 
     }, [dispatch, id])
 
-    let community = Object.values(communities)
-    let community2 = Object.values(communityMemberships)
+    let community = Object.values(communities).filter((c) => c.type === "Profile" && c.userId === user.id)[0]
+    let community2 = Object.values(memberships)
     let community3 = Object.values(userCommunities)
 
-    community2 = community2.map((c) => c.Community)
+    //community2 = community2.map((c) => c.Community)
     let style
     if (singleCommunity.communityStyles?.length) style = singleCommunity.communityStyles[0]
 
@@ -30,12 +30,12 @@ function CommunitiesMenu({ value }) {
         <>
         <div id="your-comms">
             <p>Your Profile</p>
-            <div onClick={((e) => setId(community3[0].id))} id="user-community">
+            <div onClick={((e) => setId(community.id))} id="user-community">
             <div id='uc-img'>
             <img src={avatar}></img>
             </div>
             <div id="uc-name">
-            <p>l/{community[0]?.name}</p>
+            <p>l/{community?.name}</p>
             </div>
             </div>
             <div id="div2"></div>

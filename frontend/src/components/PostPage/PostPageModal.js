@@ -14,11 +14,11 @@ import CommunitiesProfile from "../CreatePostPage/communites2";
 import PostLikes from "../HomePage/likes";
 import * as commentActions from '../../store/comments'
 import DeleteComment from "./deleteC";
+import CommentLikes from "../HomePage/likesC";
 
 function PostPageModal({ postId, scroll }) {
-    const { communities, singleCommunity, communityMemberships } = useSelector((state) => state.communities);
-    const { singlePost } = useSelector((state) => state.posts)
-    const { postComments } = useSelector((state) => state.comments)
+    const { communities, singleCommunity, communityMemberships, memberships } = useSelector((state) => state.communities);
+    const { singlePost, postsHistory } = useSelector((state) => state.posts)
     const { user } = useSelector((state) => state.session)
     const { id } = useParams();
     const dispatch = useDispatch()
@@ -30,17 +30,29 @@ function PostPageModal({ postId, scroll }) {
     const [ description, setDescription ] = useState("");
     const [ data1, setData1 ] = useState({})
     const [ data2, setData2 ] = useState({})
+    const [ data3, setData3 ] = useState({})
     const history = useHistory()
     const { closeModal } = useModal();
     const targetRef2 = useRef(null);
     const targetRef3 = useRef(null)
-    const [ isLiked, setIsLiked ] = useState([]);
     const [ comment, setComment ] = useState("")
+    const [ comment2, setComment2 ] = useState("")
     const [ scrolling, setScrolling ] = useState(scroll)
     const [isVisible3, setIsVisible3] = useState(false);
-    const [ commentId, setCommentId ] = useState(null)
+    const [ commentId, setCommentId ] = useState(null);
+    const [ c, setC ] = useState(null)
+    const [ seen, setSeen ] = useState(false)
+    const [ postH, setPostH ] = useState([])
+    const [ focus, setFocus ] = useState(false)
+    const [ focus2, setFocus2 ] = useState(false)
+    const [ focus3, setFocus3 ] = useState(false)
+    const [ newComment, setNewComment ] = useState("")
+    const [ commentM, setCommentM ] = useState(false)
+    const [ commentId2, setCommentId2 ] = useState(null);
+    const [ p, setP ] = useState(null)
+    const [ tags, setTags ] = useState(null)
+    let joined = null
 
-    console.log(scroll)
 
     useEffect(() => {
 
@@ -50,7 +62,46 @@ function PostPageModal({ postId, scroll }) {
     }, [scroll])
 
 
-    const memberships = Object.values(communityMemberships)
+    let members
+    if (communityMemberships) members = Object.values(communityMemberships)
+
+    let approved = members.some((m) => m.status === "Approved" && m.userId === user.id) && singleCommunity.id
+
+    approved = !approved && singleCommunity.id ? false : true
+
+
+    const myMemberships = Object.values(memberships)
+    const member = myMemberships.filter((m) => m.id === singlePost.Community?.id)
+
+    if (member) joined = true
+    if (!member.length) joined = false
+
+    useEffect(() => {
+
+        async function fetchData() {
+          await dispatch(communityActions.thunkGetCommunityMemberships(id))
+          if (id) await dispatch(communityActions.thunkGetDetailsById(id))
+          else return
+        }
+
+        fetchData()
+
+    }, [dispatch, id])
+
+    const handleJoinClick = async (e) => {
+        e.stopPropagation()
+        let response
+        joined = true
+        await dispatch(communityActions.thunkJoinCommunities(singleCommunity.id))
+    }
+
+    const handleUnjoinClick = async (e) => {
+        e.stopPropagation()
+        let response
+        joined = false
+        response = await dispatch(communityActions.thunkUnjoinCommunities(singleCommunity.id))
+    }
+
 
     const handleClick = (e) => {
         e.stopPropagation()
@@ -81,6 +132,89 @@ function PostPageModal({ postId, scroll }) {
 
     }
 
+    const handleComment2 = (e) => {
+        e.stopPropagation()
+
+        if (!user) return window.alert("Please login")
+
+        setData3({
+            comment2
+        })
+
+        setCommentM(false)
+
+    }
+
+    useEffect( () => {
+        if (singlePost.tags) setTags(singlePost.tags.split(','))
+    }, [dispatch, singlePost.tags])
+
+
+    const handleOc = (e) => {
+        e.stopPropagation()
+
+        if (tags && tags.includes("oc")) {
+            setData1({
+                tags: singlePost.tags.split('oc,').join()
+            })
+        }
+        else if (tags && !tags.includes("oc")) {
+            setData1({
+                tags: singlePost.tags += ",oc"
+            })
+        }
+        else if (!tags) {
+            setData1({
+                tags: "oc"
+            })
+        }
+    }
+
+    const handleSpoiler = (e) => {
+        e.stopPropagation()
+
+        if (tags && tags.includes("spoiler")) {
+            setData1({
+                tags: singlePost.tags.split('spoiler,').join()
+            })
+        }
+        else if (tags && !tags.includes("spoiler")) {
+            setData1({
+                tags: singlePost.tags += ",spoiler"
+            })
+        }
+        else if (!tags) {
+            setData1({
+                tags: "spoiler"
+            })
+        }
+
+    }
+
+    const handleNsfw = (e) => {
+
+        e.stopPropagation()
+
+        if (tags && tags.includes("nsfw")) {
+            setData1({
+                tags: singlePost.tags.split('nsfw').join()
+            })
+        }
+        else if (tags && !tags.includes("nsfw")) {
+            setData1({
+                tags: singlePost.tags += ",nsfw"
+            })
+        }
+        else if (!tags) {
+            setData1({
+                tags: "nsfw"
+            })
+        }
+
+
+    }
+
+
     let comments
     if (singlePost.Comments && singlePost.Comments.length) comments = Object.values(singlePost.Comments).reverse()
 
@@ -93,18 +227,15 @@ function PostPageModal({ postId, scroll }) {
 
     }, [dispatch, data2, singlePost.id])
 
-
-
-    useEffect(() => {
+    useEffect( () => {
 
         async function fetchData() {
-          let data = await dispatch(postActions.thunkGetUserVotes())
-          setIsLiked(data)
+            let response
+            if (c && c.id) response = await dispatch(postActions.thunkUpdateComment(data3, c.id))
         }
         fetchData()
 
-    }, [dispatch, singlePost.id])
-
+    }, [dispatch, c, data3])
 
     const scrollToTop = () => {
         const container = document.querySelector('.post-modal'); // Adjust the selector as needed
@@ -115,18 +246,47 @@ function PostPageModal({ postId, scroll }) {
         }
     };
 
+    let pHistory
+    if (postsHistory) pHistory = Object.values(postsHistory)
+
+    useEffect(() => {
+        if (postsHistory && Object.values(postsHistory).some((h) => h.id === singlePost.id)) {
+            setSeen(true)
+            setPostH(Object.values(postsHistory).filter((h) => h.id === singlePost.id))
+        }
+
+    }, [postsHistory])
+
     useEffect( () => {
 
         async function fetchData() {
             if (data1)  await dispatch(postActions.thunkUpdatePosts(singlePost?.id, data1))
             let data
-            if (postId) data =  await dispatch(postActions.thunkGetDetailsById(postId))
+            if (postId) {
+                data =  await dispatch(postActions.thunkGetDetailsById(postId))
+                let data1 = await dispatch(postActions.thunkGetHistoryDetails(postId))
+                setPostH(data1)
+                setP(data)
+            }
+
 
         }
         fetchData()
 
     }, [dispatch, data1, postId])
 
+
+    useEffect( () => {
+
+        async function fetchData() {
+
+            await dispatch(postActions.thunkGetHistory())
+            if (postH.length) await dispatch(postActions.thunkUpdateHistory(postH[0].id))
+            else if (!postH.length) await dispatch(postActions.thunkCreateHistory(postId))
+        }
+        fetchData()
+
+    }, [dispatch, postH])
 
     let editMenu = isVisible ? "edit-menu" : "hidden";
     let editMenu2 = isVisible3 ? "edit-menu" : "hidden";
@@ -185,12 +345,29 @@ function PostPageModal({ postId, scroll }) {
         }
     }, [scrolling]);
 
-      useEffect(() => {
+    useEffect(() => {
 
-          const handleDocumentClick = (event) => {
-              if ((modalRef2.current && !modalRef2.current.contains(event.target)) && (targetRef2.current && !targetRef2.current.contains(event.target)) && (targetRef3.current && !targetRef3.current.contains(event.target))) {
-                  closeModal();
+        const handleDocumentClick = (event) => {
+            if ((modalRef2.current && !modalRef2.current.contains(event.target)) && (targetRef2.current && !targetRef2.current.contains(event.target)) && (targetRef3.current && !targetRef3.current.contains(event.target))) {
+                closeModal();
 
+            }
+
+        };
+
+        document.addEventListener('click', handleDocumentClick);
+        return () => {
+            document.removeEventListener('click', handleDocumentClick);
+        };
+
+    }, []);
+
+    useEffect(() => {
+
+        const handleDocumentClick = (event) => {
+            if ((targetRef.current && !targetRef.current.contains(event.target))) {
+                //console.log("targetRef.current.contains(event.target)")
+                        //   setIsVisible3(false);
                 }
 
             };
@@ -204,27 +381,22 @@ function PostPageModal({ postId, scroll }) {
 
 
 
-        if (!Object.values(singlePost).length) return <h1></h1>
+    if (!Object.values(singlePost).length) return <h1></h1>
 
-        let createdAt
-        if (singlePost.Community && Object.values(singlePost?.Community)?.length) createdAt = new Date(singlePost?.Community.createdAt)
+    let createdAt
+    if (singlePost.Community && Object.values(singlePost?.Community)?.length) createdAt = new Date(singlePost?.Community.createdAt)
 
-        const dateObject = new Date(createdAt);
+    const dateObject = new Date(createdAt);
 
-        const months = [
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        ];
+    const months = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
 
-        const formattedDate = `${months[dateObject.getMonth()]}, ${dateObject.getDate()}, ${dateObject.getFullYear()}`;
+    const formattedDate = `${months[dateObject.getMonth()]}, ${dateObject.getDate()}, ${dateObject.getFullYear()}`;
 
-        let tags
-        if (singlePost.tags) tags = singlePost.tags.split(',')
-
-        let style
-         if (singleCommunity.communityStyles?.length) style = singleCommunity.communityStyles[0]
-
-         console.log(comments)
+    let style
+        if (singleCommunity.communityStyles?.length) style = singleCommunity.communityStyles[0]
 
     return (
         <div className="post-modal">
@@ -233,8 +405,6 @@ function PostPageModal({ postId, scroll }) {
                 <div>
                 <div id="line5"></div>
                 <PostLikes post={singlePost} p={"post"} h={true}
-                vote={isLiked.length && isLiked.some((l) => l.postId === singlePost.id && l.upVote === 1)}
-                downVote={isLiked.length && isLiked.some((l) => l.postId === singlePost.id && l.downVote === 1)}
                 />
                 <div id="line5"></div>
                 <i class="fi fi-rr-picture"></i>
@@ -247,8 +417,6 @@ function PostPageModal({ postId, scroll }) {
             <div className="post-page">
             <div id="vote-side">
                 <PostLikes post={singlePost} p={"post"}
-                vote={isLiked.length && isLiked.some((l) => l.postId === singlePost.id && l.upVote === 1)}
-                downVote={isLiked.length && isLiked.some((l) => l.postId === singlePost.id && l.downVote === 1)}
                 />
             </div>
             <div id="details-side">
@@ -259,11 +427,11 @@ function PostPageModal({ postId, scroll }) {
                     <p>Posted by u/{singlePost.User?.username} {getTimeDifferenceString(singlePost.createdAt)}</p>
                     </div>
             <h1>{singlePost?.title}</h1>
-            <span id="tags">{ tags && tags.includes("oc") ? <div id="oc5">OC</div> : null} {tags && tags.includes("spoiler") ? <div id="spoiler5">Spoiler</div> : null } { tags && tags.includes("nsfw") ? <div id="nsfw5">NSFW</div> : null}</span>
+            <span id="tags">{ tags && tags.includes("oc") ? <div id="oc6">OC</div> : null} {tags && tags.includes("spoiler") ? <div id="spoiler6">Spoiler</div> : null } { tags && tags.includes("nsfw") ? <div id="nsfw6">NSFW</div> : null}</span>
             <div id="post-info1">
             { isVisible2 ? null : singlePost.description ? <p>{singlePost?.description}</p> : null}
             { isVisible2 ? <div className="post-input7">
-                         <div id="add-to7">
+                         <div id={ focus2 ? "add-to11" : "add-to7"}>
                         <i class="fi fi-rr-bold"></i>
                         <i class="fa-solid fa-italic"></i>
                         <i class="fi fi-rr-link-alt"></i>
@@ -282,7 +450,7 @@ function PostPageModal({ postId, scroll }) {
                         <i class="fi fi-rr-picture"></i>
                         <i class="fa-brands fa-youtube"></i>
                         </div>
-                       <textarea defaultValue={singlePost.description} onChange={((e) => setDescription(e.target.value) )} placeholder="Text(optional)"></textarea>
+                       <textarea onFocus={(() => setFocus2(true))} onBlur={(() => setFocus2(false))} defaultValue={singlePost.description} onChange={((e) => setDescription(e.target.value) )} placeholder="Text(optional)"></textarea>
             </div> : null}
             {singlePost.PostImages?.length ? <div><img id="post-image1" src={singlePost.PostImages[0].imgURL} alt="postimg"></img></div> : null}
             </div>
@@ -351,16 +519,16 @@ function PostPageModal({ postId, scroll }) {
                         setModalContent2(<div> <DeletePost id={singlePost.id} /></div>)
                         setIsVisible(false)
                     })}><i class="fi fi-rr-trash-xmark"></i>Delete</p>
-                    <label>
-                    <input type="checkbox" />
+                   <label onClick={handleOc}>
+                    <input defaultChecked={tags?.includes("oc")} type="checkbox" />
                     Mark as OC
                     </label>
-                    <label>
-                    <input type="checkbox" />
+                    <label onClick={handleSpoiler}>
+                    <input defaultChecked={tags?.includes("spoiler")} type="checkbox" />
                     Mark as Spolier
                     </label>
-                    <label>
-                    <input type="checkbox" />
+                    <label onClick={handleNsfw}>
+                    <input defaultChecked={tags?.includes("nsfw")} type="checkbox" />
                     Mark as NSFW
                     </label>
                     <label>
@@ -378,8 +546,11 @@ function PostPageModal({ postId, scroll }) {
             </div>
             <div className="comment-input">
                {user ? <p>Comment as <span>{user.username}</span></p> : "Please login"}
-                <textarea value={comment} onChange={((e) => setComment(e.target.value))} placeholder="What are your thoughts?"></textarea>
-            <div id="my-comments">
+                <textarea onFocus={(() => setFocus(true))} onBlur={(() => setFocus(false))} value={comment} onChange={((e) => setComment(e.target.value))} placeholder="What are your thoughts?"></textarea>
+            <div id={focus ? "my-comments2" : "my-comments"}>
+                <i class="fi fi-rr-gif-square"></i>
+                <i class="fi fi-rr-picture"></i>
+                <div id="divider16"></div>
                 <i class="fi fi-rr-bold"></i>
                 <i class="fa-solid fa-italic"></i>
                 <i class="fi fi-rr-link-alt"></i>
@@ -389,14 +560,13 @@ function PostPageModal({ postId, scroll }) {
                 <i class="fi fi-rr-diamond-exclamation"></i>
                 <div id="divider16"></div>
                 <i class="fi fi-rr-heading"></i>
-                <i class="fi fi-rr-rectangle-list"></i>
+                <i class="fi fi-rr-menu-dots"></i>
+                {/* <i class="fi fi-rr-rectangle-list"></i>
                 <i class="fa-solid fa-list-ol"></i>
                 <i class="fi fi-rr-square-quote"></i>
                 <i class="fi fi-rr-square-code"></i>
                 <div id="divider16"></div>
-                <i class="fi fi-rr-grid-alt"></i>
-                <i class="fi fi-rr-picture"></i>
-                <i class="fa-brands fa-youtube"></i>
+                <i class="fa-brands fa-youtube"></i> */}
                 <button id={!comment ? "submit-c" : "submit-c2"} onClick={handleComment}>Comment</button>
             </div>
             </div>
@@ -426,19 +596,46 @@ function PostPageModal({ postId, scroll }) {
                 </div> :
                 <div id="if-comments">
                     {comments.map((c, i) =>
-                        <div className="a-comment">
+                        <div onClick={(() => setC(c))} className="a-comment">
                             <div id="left-csec">
                             <img id="avatar6" src={pfp}></img>
                             <div id="c-line"></div>
                             </div>
                             <div id="right-csec">
-                                <span><span id="username45">{c.User?.username || user.username}</span> { c.User && c.User.id === singlePost.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.createdAt)}</div></span>
-                                <p>{c.comment}</p>
-                                <div id="comment-extras">
-                                    <div id="comm-likes9">
-                                        <div><i  id="heart95" class="fi fi-rs-heart"></i></div>
-                                        <p id="numofcl">0</p>
-                                        <div><i id="heartcrack95" class="fi fi-rs-heart-crack"></i></div>
+                                <span><span id="username45">{c.User?.username}</span> { c.User && c.User.id === singlePost.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.createdAt)}</div></span>
+                                { !(commentM && commentId2 === i) ? <p>{c.comment}</p> :
+                                <div className="comment-input">
+                                    <textarea onFocus={(() => setFocus3(true))} onBlur={(() => setFocus3(false))} defaultValue={c.comment} onChange={((e) => setComment2(e.target.value))}></textarea>
+                                <div id={focus3 ? "my-comments2" : "my-comments"}>
+                                <i class="fi fi-rr-gif-square"></i>
+                                        <i class="fi fi-rr-picture"></i>
+                                        <div id="divider16"></div>
+                                        <i class="fi fi-rr-bold"></i>
+                                        <i class="fa-solid fa-italic"></i>
+                                        <i class="fi fi-rr-link-alt"></i>
+                                        <i class="fi fi-rr-strikethrough"></i>
+                                        <i class="fi fi-rr-code-simple"></i>
+                                        <i class="fa-solid fa-superscript"></i>
+                                        <i class="fi fi-rr-diamond-exclamation"></i>
+                                        <div id="divider16"></div>
+                                        <i class="fi fi-rr-heading"></i>
+                                        <i class="fi fi-rr-menu-dots"></i>
+                                        {/* <i class="fi fi-rr-rectangle-list"></i>
+                                        <i class="fa-solid fa-list-ol"></i>
+                                        <i class="fi fi-rr-square-quote"></i>
+                                        <i class="fi fi-rr-square-code"></i>
+                                        <div id="divider16"></div>
+                                        <i class="fa-brands fa-youtube"></i> */}
+                                    <button id="cancel-c" onClick={((e) => {
+                                        e.stopPropagation()
+                                        setCommentM(false)
+                                        })}>Cancel</button>
+                                    <button id="submit-c2" onClick={handleComment2}>Save Edits</button>
+                                </div>
+                                </div> }
+                                { commentM && commentId2 === i ? null : <div id="comment-extras">
+                                    <div>
+                                        <CommentLikes comment={c} />
                                     </div>
                                     <div>
                                         <i class="fa-regular fa-message"></i>
@@ -448,7 +645,7 @@ function PostPageModal({ postId, scroll }) {
                                         <i class="fi fi-rs-heart-arrow"></i>
                                         <p>Share</p>
                                     </div>
-                                    <i onClick={(() => {
+                                    <i ref={targetRef} onClick={(() => {
                                         setIsVisible3(true)
                                         setCommentId(i)
                                        if (commentId === i) setIsVisible3(!isVisible3)
@@ -456,25 +653,32 @@ function PostPageModal({ postId, scroll }) {
                                     { commentId === i ? <div className="menu">
                                     <div id="comm-sec25">
                                     <div onClick={((e) => e.stopPropagation())} id={editMenu2}>
-                                    {singlePost.PostImages.length && singlePost.PostImages[0].imgURL ? null : <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
+                                    {c.userId !== user.id ? null : <p onClick={(() => {
+                                        setCommentM(true)
+                                        setIsVisible3(false)
+                                        setCommentId2(i)
+                                       // if (commentId !== i) setCommentM(!commentM)
+                                        })}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
+                                     {c.userId === user.id ? null : <p><i class="fi fi-rr-flag"></i>Report</p>}
                                      <p><i class="fi fi-rr-bookmark"></i>Save</p>
-                                     <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
-                                     <p onClick={(() => {
+                                     {c.userId === user.id ? null : <p><i class="fi fi-rs-cowbell"></i>Follow</p>}
+                                     {c.userId !== user.id ? null : <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>}
+                                     {c.userId !== user.id ? null : <p onClick={(() => {
                                      setModalContent2(<div> <DeleteComment id={c.id} /></div>)
                                      setIsVisible(false)
                                      setIsVisible3(false)
-                                     })}><i class="fi fi-rr-trash-xmark"></i>Delete</p>
-                                     <label>
+                                     })}><i class="fi fi-rr-trash-xmark"></i>Delete</p> }
+                                    {c.userId !== user.id ? null : <label>
                                      <input type="checkbox" />
                                      Send me reply notifications
-                                     </label>
+                                     </label> }
                                      </div>
                                      </div>
                                     </div>
                                      : null }
                                     </i>
 
-                                </div>
+                                </div> }
                             </div>
                         </div>
                     )}
@@ -488,8 +692,8 @@ function PostPageModal({ postId, scroll }) {
                     history.push(`/communities/${singlePost.Community.id}`)
                     closeModal()
                      })} id="your-community-profile">
-                    <div id="header-profile-comm4">
-                    </div>
+                     {!singlePost.Community?.communityStyles.length ? <div id="header-profile-comm4">
+                    </div> : <div className="header-postC"><img id="header-profile-comm10" src={singlePost.Community.communityStyles[0].header} ></img></div> }
                     <div id="profile-content">
                         <span id="profile-comm-title7"> { singlePost.Community?.communityStyles.length ? <img id="pfp10" src={singlePost.Community.communityStyles[0].profile}></img> : <div>l/</div>} {singlePost.Community?.name}</span>
                         <span id="profile-about7">{singlePost.Community?.about}</span>
@@ -500,7 +704,8 @@ function PostPageModal({ postId, scroll }) {
                          <span><div id="online"><i class="fi fi-ss-bullet"></i>{randomNum}</div>Online</span>
                         </div>
                         <div id="line"></div>
-                            <button id="join-now2">Join</button>
+                           { !member.length ? <button onClick={handleJoinClick} id="join-now">Join</button> :
+                            <button onClick={handleUnjoinClick} id="join-now2"></button> }
                         <div id="line"></div>
                         <div id="cs-side5">
                         <span>COMMUNITY OPTIONS</span>
@@ -515,7 +720,7 @@ function PostPageModal({ postId, scroll }) {
                 <div id="home-section7">
                 <button onClick={(() => window.alert("Feature not available"))} id="but4"><i class="fi fi-rr-envelope"></i>Message the mods</button>
                 <div id="cs-side7">
-                    {user ? <span>{user.username}</span> : "" }
+                    {user ? <span>{singlePost.User.username}</span> : "" }
                     <span>VIEW ALL MODERATORS</span>
                 </div>
                 </div>

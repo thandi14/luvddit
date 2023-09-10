@@ -40,7 +40,7 @@ function PostLikes({ post, p, h }) {
 
     let voted
 
-    if (vote.length) voted = vote.filter((v) => v.userId === user.id )
+    if (vote && vote.length) voted = vote.filter((v) => v.userId === user?.id )
 
     let upVoted
 
@@ -54,19 +54,13 @@ function PostLikes({ post, p, h }) {
     }
 
 
-
-
-    console.log(upVoted)
-
-
         const handleFavoriteClick = async () => {
             if (!user) return window.alert('Please login')
             if (upVoted) {
               await dispatch(postsActions.thunkDeleteVote(voted[0].id, post.id))
             }
             else if (downVoted) {
-              await dispatch(postsActions.thunkDeleteVote(voted[0].id, post.id))
-              await dispatch(postsActions.thunkCreateVote(post?.id, 1))
+              await dispatch(postsActions.thunkUpdateVote(voted[0].id, 1))
             }
             else await dispatch(postsActions.thunkCreateVote(post?.id, 1))
         }
@@ -77,31 +71,30 @@ function PostLikes({ post, p, h }) {
             await dispatch(postsActions.thunkDeleteVote(voted[0].id, post.id))
           }
           else if (upVoted) {
-            await dispatch(postsActions.thunkDeleteVote(voted[0].id, post.id))
-            await dispatch(postsActions.thunkCreateVote(post?.id, 0))
+            await dispatch(postsActions.thunkUpdateVote(voted[0].id, 0))
           }
           else await dispatch(postsActions.thunkCreateVote(post?.id, 0))
       }
 
     return (
         <>
-        <div id="upvote" onClick={((e) => {
+        <div id={ h ? "upvote2" : "upvote"} onClick={((e) => {
             e.stopPropagation()
             handleFavoriteClick()
             })} >
-        {upVoted ? <i id="upvoted"
-       class="fi fi-rs-heart"></i> : <i id="upvote"
+        {upVoted ? <i id={ h ? "upvoted2" : "upvoted"}
+       class="fi fi-rs-heart"></i> : <i id={ h ? "upvote2" : "upvote"}
        class="fi fi-rs-heart"></i> }
        </div>
-       <span>{ vote.length }</span>
-       <div id="downvote" onClick={((e) => {
+       <span>{ vote && vote.length === 0 ? "Love" : vote && vote.length }</span>
+       <div id={ h ? "downvote2" : "downvote"} onClick={((e) => {
           e.stopPropagation()
           handleFavoriteClick2()
         })} >
        { downVoted ? <i
-       id="downvoted"
+       id={ h ? "downvoted2" : "downvoted"}
        class="fi fi-rs-heart-crack"></i> : <i
-       id="downvote"
+       id={ h ? "downvote2" : "downvote"}
        class="fi fi-rs-heart-crack"></i> }
        </div>
        </>

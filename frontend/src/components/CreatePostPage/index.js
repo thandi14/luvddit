@@ -21,9 +21,11 @@ function CreatePost() {
   const dispatch = useDispatch()
   const history = useHistory()
 
+  let members = Object.values(communityMemberships)
+
 
     useEffect(() => {
-     window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
+    window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
     }, []);
 
 
@@ -75,7 +77,8 @@ function CreatePost() {
     let memberships = Object.values(communityMemberships)
     if (memberships.filter((m) => m.communityId == singleCommunity.id).length) community = Object.values(singleCommunity)
 
-    console.log(singleCommunity)
+
+
     return (
         <div className="create-post-page">
             <div className="create-post">

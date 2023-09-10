@@ -5,7 +5,7 @@ import * as communitiesActions from "../../store/communities"
 import './HomePage.css'
 import pfp from './IMG6.jpg'
 import avatar from  './imagedit2.png'
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
+import { useHistory, useParams } from 'react-router-dom/cjs/react-router-dom.min'
 import PostPageModal from '../PostPage/PostPageModal'
 import { useModal } from '../../context/Modal'
 import CreateCommunity from '../CreateCommunityModel'
@@ -15,12 +15,15 @@ import DeletePost from '../PostPage/delete'
 import { useModal2 } from '../../context/Modal2'
 import DeleteComment from '../PostPage/deleteC'
 import '../PostPage/PostPage.css'
+import * as sessionActions from "../../store/session"
 
-function YourProfilePage() {
+
+function OtherProfilePage() {
     const { posts, singlePost, userPosts } = useSelector((state) => state.posts);
-    const { userCommunities, communityMemberships, memberships } = useSelector((state) => state.communities);
-    const { user } = useSelector((state) => state.session);
+    const { communities, communityMemberships, memberships } = useSelector((state) => state.communities);
+    const { user, other } = useSelector((state) => state.session);
     const dispatch = useDispatch()
+    let { id } = useParams()
     const [isVisible, setIsVisible] = useState(false);
     const [isVisible2, setIsVisible2] = useState(false);
     const [isVisible3, setIsVisible3] = useState(true);
@@ -38,36 +41,62 @@ function YourProfilePage() {
     const [ joined, setJoined ] = useState(true)
     const targetRef2 = useRef()
 
-    console.log(communityMemberships)
 
 
     useEffect(() => {
         window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
     }, []);
 
+
+    useEffect(() => {
+        let data
+
+        async function fetchData() {
+            if (id) data = await dispatch(sessionActions.getOther(id))
+            else return
+        }
+
+        fetchData()
+
+    }, [dispatch, id, other?.id])
+
+    console.log(other)
+
+    useEffect(() => {
+
+        async function fetchData() {
+          let data = await dispatch(communitiesActions.thunkGetUserCommunities())
+           if (profile) await dispatch(communitiesActions.thunkGetDetailsById(profile.id))
+        }
+
+        fetchData()
+
+    }, [dispatch])
+
     useEffect(() => {
         // if (!showMenu) return;
 
-         const closeMenu = (e) => {
-           if (targetRef2 && !targetRef2.current.contains(e.target)) {
-             setIsVisible2(false);
-           }
-         };
+        const closeMenu = (e) => {
+            if (targetRef2 && !targetRef2.current.contains(e.target)) {
+                setIsVisible2(false);
+            }
+        };
 
-         document.addEventListener('click', closeMenu);
+        document.addEventListener('click', closeMenu);
 
-         return () => document.removeEventListener("click", closeMenu);
+        return () => document.removeEventListener("click", closeMenu);
 
-        }, []);
+    }, []);
 
     let sortedPosts = Object.values(posts)
 
     let filterdPosts = sortedPosts.filter((p) => {
-        return p.userId === user.id || p.Comments.some((c) => c.userId === user.id)
+        return p.userId === other.id || p.Comments.some((c) => c.userId === other.id)
     })
+    // console.log(filterdPosts)
 
     filterdPosts.forEach((p) => {
-       if (p.Comments && p.Comments.length) p.Comments = p.Comments.filter((c) => c.userId === user.id)
+        if (p.Comments && p.Comments.length) p.Comments = p.Comments.filter((c) => c.userId === other.id)
     })
 
     filterdPosts.forEach((p) => {
@@ -81,7 +110,7 @@ function YourProfilePage() {
 
     filterdPosts.forEach((p) => {
 
-        if (p.userId !== user.id) {
+        if (p.userId !== other.id) {
             p.Comments.forEach((c) => {
                 let commentDate = new Date(c.updatedAt)
                 c.updatedAt = Date.parse(commentDate)
@@ -104,38 +133,21 @@ function YourProfilePage() {
 
     let top = isVisible ? "top" : "down";
 
+    let moderating = []
+    moderating = Object.values(communities).filter((c) => c.userId === other.id && c.type !== "Profile")
+
     let profile
 
-    let moderating = Object.values(userCommunities)
+    if (user) profile = other.profile
 
-    if (user) profile = moderating.filter((m) => m.type === "Profile")[0]
+    console.log()
 
+    // let member
 
-    console.log(profile)
+    // const memberships = Object.values(communityMemberships)
+    // member = memberships.filter((m) => moderating.some((c) => m.communityId === c.id))
 
-    moderating.shift()
-
-    let member
-
-    const myMemberships = Object.values(memberships)
-    //const member = myMemberships.filter((m) => m.id === singleCommunity.id)
-
-    useEffect(() => {
-
-        async function fetchData() {
-            dispatch(communitiesActions.thunkGetMemberships())
-            let data = await dispatch(communitiesActions.thunkGetUserCommunities())
-            if (profile) await dispatch(communitiesActions.thunkGetDetailsById(profile.id))
-        }
-
-        fetchData()
-
-      }, [dispatch])
-
-    //   const memberships = Object.values(communityMemberships)
-    //   member = memberships.filter((m) => moderating.some((c) => m.communityId === c.id))
-
-    useEffect(() => {
+  useEffect(() => {
 
     async function fetchData() {
       let data = await dispatch(postsActions.thunkGetUserVotes())
@@ -218,23 +230,16 @@ function YourProfilePage() {
       // const memberships = Object.values(communityMemberships)
       // const member = memberships.filter((m) => moderating.some((c) => m.communityId === c.id))
 
-      console.log(myMemberships)
+      const myMemberships = Object.values(memberships)
 
     return (
         <>
 
     <div id="aHeader">
         <div id="aH">
-        <span id="aHl">OVERVIEW</span>
-        <span onClick={(() => history.push("/profile/posts"))} id="aH2">POSTS</span>
-        <span onClick={(() => history.push("/profile/comments"))} id="aH3">COMMENTS</span>
-        <span onClick={(() => history.push("/profile/history"))}id="aH4">HISTORY</span>
-        <span onClick={(() => window.alert("Feature not avaliable"))}id="aH5">SAVED</span>
-        <span onClick={(() => window.alert("Feature not avaliable"))}id="aH6">HIDDEN</span>
-        <span onClick={(() => history.push("/profile/upvoted"))}id="aH7">UPVOTED</span>
-        <span onClick={(() => history.push("/profile/downvoted"))}id="aH8">DOWNVOTED</span>
-        <span onClick={(() => window.alert("Feature not avaliable"))}id="aH9">AWARDS RECIEVED</span>
-        <span onClick={(() => window.alert("Feature not avaliable"))}id="aH10">AWARDS GIVEN</span>
+        <span onClick={(() => history.push(`/profile2/${id}`))}id="aHl">OVERVIEW</span>
+        <span onClick={(() => history.push(`/profile2/${id}/posts`))} id="aH2">POSTS</span>
+        <span onClick={(() => history.push(`/profile2/${id}/comments`))} id="aH3">COMMENTS</span>
         </div>
     </div>
     <div className="splashPage">
@@ -259,20 +264,20 @@ function YourProfilePage() {
             // <div id={`${post.id}`} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={scrolling} />))} className="post-content">
             <div id="omg">
             <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id={`${post.id}`} className="post-content2">
-            {post.userId !== user.id ? <div id="pc-side104"><i id="posted-c" class="fa-regular fa-message"></i></div> : <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side8">
+            {post.userId !== other.id ? <div id="pc-side104"><i id="posted-c" class="fa-regular fa-message"></i></div> : <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side8">
             <PostLikes post={post}
             vote={isLiked.length && isLiked.some((l) => l.postId === post.id && l.upVote === 1)}
             downVote={isLiked.length && isLiked.some((l) => l.postId === post.id && l.downVote === 1)}/>
             </div> }
             <div id="pc-side2">
-            { post.userId !== user.id ? <div id="nameOf2">
+            { post.userId !== other.id ? <div id="nameOf2">
             <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))}  id="almostd">
             <span onClick={((e) => {
                 e.stopPropagation()
-                window.alert("Feature not avaliable")})}className="userName2">{user.username} </span>
+                window.alert("Feature not avaliable")})}className="userName2">{other.username} </span>
              commented on {post.title} · <span onClick={((e) => {
                 e.stopPropagation()
-                history.push(`/communities/${post.Community.id}`)})}>l/{post.Community.name}</span> · Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
+                history.push(`/communities/${post.Community.id}`)})}>l/{post.Community.name}</span> · Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== other.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
             {/* <p >Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user.id ? null : getTimeDifferenceString(post.createdAt)}</p> */}
             </div> : <div id="nameOf">
             {post.Community.communityStyles && post.Community.communityStyles.length ? <img onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} src={post.Community.communityStyles[0].profile}></img> : <img onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} src={pfp}></img>}
@@ -281,22 +286,22 @@ function YourProfilePage() {
                 history.push(`/communities/${post.communityId}`)
                 })} className="userName" id="community">l/{post.Community.name}</span>
             <p>·</p>
-            <p>Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
+            <p>Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== other.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
             { !myMemberships.filter((m) => m.id === post.communityId).length ? <button onClick={((e) => {
                   e.stopPropagation()
                   dispatch(communitiesActions.thunkJoinCommunities(post.communityId))
                   })} id="miniJoin">Join</button> : null }
             </div> }
-            { post.userId !== user.id ? null : <h3  id="p-tit2" onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title"><h3 id="title-content2">{post.title}<span>{ post.tags && post.tags.includes("oc") ? <div id="oc5">OC</div> : null} {post.tags && post.tags.includes("spoiler") ? <span id="spoiler5">Spoiler</span> : null } { post.tags && post.tags.includes("nsfw") ? <span id="nsfw5">NSFW</span> : null}</span></h3></h3>}
+            { post.userId !== other.id ? null : <h3  id="p-tit2" onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title"><h3 id="title-content2">{post.title}<span>{ post.tags && post.tags.includes("oc") ? <div id="oc5">OC</div> : null} {post.tags && post.tags.includes("spoiler") ? <span id="spoiler5">Spoiler</span> : null } { post.tags && post.tags.includes("nsfw") ? <span id="nsfw5">NSFW</span> : null}</span></h3></h3>}
             <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="content">
-            {post.userId !== user.id ? null : <div id="img">
+            {post.userId !== other.id ? null : <div id="img">
             {post.PostImages.length ? <img src={post.PostImages[0]?.imgURL} alt="meaningful-text"></img> : null}
             </div>}
             <div id="finishing4">
-              { post.userId !== user.id ? null : post.description}
+              { post.userId !== other.id ? null : post.description}
               </div>
             </div>
-            {post.userId !== user.id ? null : <div id="post-extras2">
+            {post.userId !== other.id ? null : <div id="post-extras2">
             <div id="comment5">
                 <i onClick={((e) => {
                     e.stopPropagation()
@@ -377,7 +382,7 @@ function YourProfilePage() {
             { post.Comments && post.Comments.length ?
             <div id="if-comments2">
                     {post.Comments.map((c, i) =>
-                    c.userId === user.id &&
+                    c.userId === other.id &&
                     <div id="comm-border9">
                         {post.Comments && post.Comments.length ? <div id="p-border"></div> : null }
                         <div onClick={((e) => {
@@ -388,7 +393,7 @@ function YourProfilePage() {
                             <div id="c-line2"></div>
                             </div>
                             <div className="commentB" id="right-csec4">
-                                <span><span id="username45">{user.username}</span> { user.id === post.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.updatedAt)}</div></span>
+                                <span><span id="username45">{other.username}</span> { other.id === post.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.updatedAt)}</div></span>
                                 <p>{c.comment}</p>
                                 <div id="comment-extras90">
                                     <div>
@@ -436,12 +441,12 @@ function YourProfilePage() {
 
     </div>
     <div className="sidebar">
-        <CommunitiesProfile community={profile} />
+        <CommunitiesProfile community={profile} user={other} />
         <div id="terms2">
             <div id="terms-9">
             <span>You're a moderator of these <br></br>
                 communities</span>
-            {moderating.map((c) =>
+            {moderating && moderating.map((c) =>
             <div id="modss">
                 <div>
                {c.communityStyles && c.communityStyles.length ? <img id="tpfp" src={c.communityStyles[0].profile}></img> : <div id="nopfp">l/</div> }
@@ -475,4 +480,4 @@ function YourProfilePage() {
 }
 
 
-export default YourProfilePage
+export default OtherProfilePage

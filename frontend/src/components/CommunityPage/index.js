@@ -10,10 +10,11 @@ import { useModal } from "../../context/Modal";
 import PostPageModal from "../PostPage/PostPageModal";
 import * as postsActions from '../../store/posts'
 import PostLikes from "../HomePage/likes";
+import NoPosts from "../YourProfilePage/none";
 
 function CommunityPage() {
   const { id } = useParams();
-  const { communities, communityMemberships, singleCommunity } = useSelector((state) => state.communities);
+  const { communities, communityMemberships, singleCommunity, memberships } = useSelector((state) => state.communities);
   const { posts } = useSelector((state) => state.posts);
   const { user } = useSelector((state) => state.session);
   const { setModalContent } = useModal()
@@ -22,11 +23,11 @@ function CommunityPage() {
   const [isVisible2, setIsVisible2] = useState(false);
   const history = useHistory()
   const [ isLiked, setIsLiked ] = useState([]);
-  const [ joined, setJoined ] = useState(null)
+  let joined = null
   const [ scrolling, setScrolling ] = useState(false)
   const [singleCommunityName, setSingleCommunityName] = useState(singleCommunity.name)
 
-
+  console.log(singleCommunity)
 
   useEffect(() => {
     window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
@@ -37,20 +38,13 @@ function CommunityPage() {
 
   }, [singleCommunity.name]);
 
-  useEffect(() => {
+  const myMemberships = Object.values(memberships)
+  const member = myMemberships.filter((m) => m.id === singleCommunity.id)
 
-    async function fetchData() {
-      if (id) await dispatch(communityActions.thunkGetCommunityMemberships())
-      else return
-    }
+  
 
-    fetchData()
-
-    const member = memberships.filter((m) => m.communityId === singleCommunity.id)
-    if (member) setJoined(true)
-    if (!member) setJoined(false)
-
-  }, [dispatch, id])
+  if (member) joined = true
+  if (!member.length) joined = false
 
   let ePost
 
@@ -58,8 +52,6 @@ function CommunityPage() {
 
 
   ePost = ePost.filter((p) => p.communityId === singleCommunity.id)
-
-  console.log(ePost)
 
   ePost = ePost.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
@@ -87,19 +79,17 @@ function CommunityPage() {
 
   let top = isVisible ? "top" : "down"
 
-  const memberships = Object.values(communityMemberships)
-  const member = memberships.filter((m) => m.communityId === singleCommunity.id)
 
   const handleJoinClick = async () => {
     let response
-    setJoined(true)
-    await dispatch(communityActions.thunkJoinCommunities(singleCommunity.id))
-
+    joined = true
+    if (singleCommunity.type === "Public") await dispatch(communityActions.thunkJoinCommunities(singleCommunity.id))
+    if (singleCommunity.type === "Private" || singleCommunity.type === "Restricted") await dispatch(communityActions.thunkJoinCommunities(singleCommunity.id, singleCommunity.type))
   }
 
   const handleUnjoinClick = async () => {
     let response
-    setJoined(false)
+    joined = false
     response = await dispatch(communityActions.thunkUnjoinCommunities(singleCommunity.id))
   }
 
@@ -160,31 +150,9 @@ function CommunityPage() {
     }
   };
 
-  const getTimeDifferenceString2 = (createdAt) => {
-    const currentTime = new Date();
-    const createdAtDate = new Date(createdAt);
-
-    const timeDifferenceInSeconds = Math.floor((currentTime - createdAtDate) / 1000);
-
-    if (timeDifferenceInSeconds < 60) {
-      return timeDifferenceInSeconds === 1 ? `${timeDifferenceInSeconds} sec` : `${timeDifferenceInSeconds} secs`;
-    } else if (timeDifferenceInSeconds < 3600) {
-      const minutes = Math.floor(timeDifferenceInSeconds / 60);
-      return `${minutes} mins`
-    } else if (timeDifferenceInSeconds < 86400) {
-      const hours = Math.floor(timeDifferenceInSeconds / 3600);
-      return hours === 1 ? `${hours} hr` : `${hours} hrs`;
-    } else {
-      const days = Math.floor(timeDifferenceInSeconds / 86400);
-      return `${days} d`;
-    }
-  };
-
-
     let style
     if (singleCommunity.communityStyles && singleCommunity.communityStyles.length) style = singleCommunity.communityStyles[0]
 
-    console.log(singleCommunity)
 
 
     return (
@@ -205,7 +173,7 @@ function CommunityPage() {
                 {singleCommunity.name}
                 <span>l/{singleCommunityName}</span>
             </div>
-            {user && member.length && joined ? <button onClick={handleUnjoinClick} id="joined">Joined</button> : <button onClick={handleJoinClick} id="join">Join</button> }
+            {user && myMemberships.length && joined ? <button onClick={handleUnjoinClick} id="joined"></button> : <button onClick={handleJoinClick} id="join">Join</button> }
             </div>
         </div>
         {user && singleCommunity.userId !== user.id ? <div id="comm-head11">
@@ -251,28 +219,26 @@ function CommunityPage() {
                 <i class="fa-solid fa-chevron-down"></i>
                 </div>
                 </div>
-                {ePost?.map((post) =>
+                {ePost && !ePost.length ? <NoPosts name={"posted"} /> : ePost.map((post) =>
                     <div className="post-content">
                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="pc-side1">
                     <PostLikes post={post}
-                    vote={isLiked.length && isLiked.some((l) => l.postId === post.id && l.upVote === 1)}
-                    downVote={isLiked.length && isLiked.some((l) => l.postId === post.id && l.downVote === 1)}/>
+                   />
                     </div>
                     <div id="pc-side2">
                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={scrolling} />))} id="nameOf">
                     {/* <img src={pfp}></img> */}
-                    <p>Posted by <span className="userName">u/{post.User?.username}</span> {getTimeDifferenceString(post.createdAt)}</p>
+                    <p id="cp">Posted by <span className="userName">u/{post.User?.username}</span> {getTimeDifferenceString(post.createdAt)}</p>
                     </div>
-                    <h3  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title45">{ post.tags && post.tags.includes("oc") ? <div id="oc5">OC</div> : null} {post.tags && post.tags.includes("spoiler") ? <div id="spoiler5">Spoiler</div> : null } { post.tags && post.tags.includes("nsfw") ? <div id="nsfw5">NSFW</div> : null}{post.title}</h3>
-                    <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={scrolling} />))} id="content">
+                    <h3  id="p-tit" onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title"><h3 id={singleCommunity.userId === post.userId ? "title-content2" : "title-content"}>{post.title}<span>{ post.tags && post.tags.includes("oc") ? <div id="oc5">OC</div> : null} {post.tags && post.tags.includes("spoiler") ? <span id="spoiler5">Spoiler</span> : null } { post.tags && post.tags.includes("nsfw") ? <span id="nsfw5">NSFW</span> : null}</span></h3></h3>                    <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={scrolling} />))} id="content">
                     <div id="img">
                     {post.PostImages?.length ? <img src={post.PostImages[0]?.imgURL} alt="meaningful-text"></img> : null}
                     </div>
-                    <div id="finishing">
+                    <div id={singleCommunity.userId === post.userId ? "finishing60" : "finishing2"}>
                       {post.description}
                       </div>
                     </div>
-                    {user && post.User?.id !== user.id ?<div id="post-extras3">
+                    {user && post.User?.id !== user.id ?<div id="post-extras9">
                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="comment">
                     <i class="fa-regular fa-message"></i>
                     <p >{post.Comments?.length} Comments</p>
@@ -291,7 +257,7 @@ function CommunityPage() {
                     </div>
                     <i onClick={(() => window.alert('Feature not available'))}class="fi fi-rr-menu-dots"></i>
             </div> :
-                    <div id="post-extras">
+                    <div id="post-extras9">
                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="comment">
                     <i class="fa-regular fa-message"></i>
                     <p>{post.Comments.length}</p>
@@ -332,7 +298,7 @@ function CommunityPage() {
                 <div id="home-section">
                 <button onClick={(() => window.alert("Feature not available"))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>
                 <div onClick={(() => window.alert('Feature not available'))} id="cs-side6">
-                    {user ? <span>{user.username}</span> : "" }
+                    {user ? <span>{singleCommunity.User?.username}</span> : "" }
                     <span>VIEW ALL MODERATORS</span>
                 </div>
                 </div>

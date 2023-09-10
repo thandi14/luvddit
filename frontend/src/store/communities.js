@@ -6,6 +6,12 @@ const GET_DETAILS = 'communities/getDetails';
 const GET_USER_COMMUNITIES = 'communities/getUserCommunities';
 const REMOVE_COMMUNITIES = 'communities/removeCommunities'
 const GET_COMMUNITY_MEMBERSHIPS = 'communities/getCommunityMemberships';
+const ADD_COMMUNITY_MEMBERSHIPS = 'communities/addCommunityMemberships';
+const REMOVE_COMMUNITY_MEMBERSHIPS = 'communities/removeCommunityMemberships';
+const GET_COMMUNITY_MEMBERS = 'communities/getCommunityMembers';
+const ADD_COMMUNITY_MEMBER = 'communities/addCommunityMembers';
+const REMOVE_COMMUNITY_MEMBER = 'communities/removeCommunityMembers';
+const GET_MEMBERSHIPS = 'communities/getMemberships';
 
 
 const getCommunities = (communities) => {
@@ -37,12 +43,62 @@ const getUserCommunities = (communities) => {
     }
 };
 
+const getMemberships = (memberships) => {
+    return {
+        type: GET_MEMBERSHIPS,
+        memberships,
+
+    }
+};
+
+
 const getCommunityMemberships = (memberships) => {
     return {
         type: GET_COMMUNITY_MEMBERSHIPS,
         memberships,
     }
 };
+
+
+const addCommunityMemberships = (memberships) => {
+    return {
+        type: ADD_COMMUNITY_MEMBERSHIPS,
+        memberships,
+    }
+};
+
+const removeCommunityMemberships = (id) => {
+    return {
+        type: REMOVE_COMMUNITY_MEMBERSHIPS,
+        id,
+    }
+};
+
+const getCommunityMembers = (memberships) => {
+    return {
+        type: GET_COMMUNITY_MEMBERS,
+        memberships,
+    }
+};
+
+
+const addCommunityMember = (membership) => {
+    return {
+        type: ADD_COMMUNITY_MEMBER,
+        membership,
+    }
+};
+
+const removeCommunityMember = (userId) => {
+    return {
+        type: REMOVE_COMMUNITY_MEMBER,
+        userId,
+    }
+};
+
+
+
+
 
 
 
@@ -75,8 +131,8 @@ export const thunkGetUserCommunities = () => async (dispatch) => {
     return data;
 };
 
-export const thunkGetCommunityMemberships = () => async (dispatch) => {
-    let response = await fetch(`/api/communities/memberships`, {
+export const thunkGetCommunityMemberships = (id) => async (dispatch) => {
+    let response = await fetch(`/api/communities/${id}/memberships`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -86,6 +142,34 @@ export const thunkGetCommunityMemberships = () => async (dispatch) => {
     dispatch(getCommunityMemberships(data));
     return data;
 };
+
+export const thunkGetCommunityMembers = (id) => async (dispatch) => {
+    let response = await fetch(`/api/communities/${id}/membership`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+    console.log("REDUCER", data)
+    dispatch(getCommunityMembers(data));
+    return data;
+};
+
+export const thunkGetMemberships = () => async (dispatch) => {
+    let response = await fetch(`/api/communities/other`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+    console.log("REDUCER", data)
+    dispatch(getMemberships(data));
+    return data;
+};
+
+
 
 export const thunkCreateCommunity = (data) => async (dispatch) => {
     if (Object.values(data).length) {
@@ -117,14 +201,24 @@ export const thunkUpdateCommunities = (id, data) => async (dispatch) => {
     }
 }
 
-export const thunkJoinCommunities = (id) => async (dispatch) => {
+export const thunkJoinCommunities = (id, type) => async (dispatch) => {
+
+    let status
+
+    if (type) {
+        status = { status: "Unapproved" }
+    }
+
     const response = await csrfFetch(`/api/communities/${id}/memberships`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
+            body: JSON.stringify(status)
         })
         const data1 = await response.json(response)
+        console.log("REDUCER", data1)
+        dispatch(addCommunityMemberships(data1))
         return data1
 }
 
@@ -135,9 +229,51 @@ export const thunkUnjoinCommunities = (id) => async (dispatch) => {
             'Content-Type': 'application/json'
           },
     })
-    let data = await response.json()
+    let data = await response.json();
+    dispatch(removeCommunityMemberships(id))
     return data
-  }
+}
+
+export const thunkAddMember = (communityId, userId) => async (dispatch) => {
+    const response = await csrfFetch(`/api/communities/${communityId}/member/${userId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+        const data1 = await response.json(response)
+        console.log("REDUCER", data1)
+        dispatch(addCommunityMember(data1))
+        return data1
+}
+
+export const thunkUpdateMember = (communityId, userId, status) => async (dispatch) => {
+    console.log("REDUCER, STATUS:", status)
+    const response = await csrfFetch(`/api/communities/${communityId}/member/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status })
+        })
+        const data1 = await response.json(response)
+        console.log("REDUCER", data1)
+        dispatch(addCommunityMember(data1))
+        return data1
+}
+
+// export const thunkRemoveMember = (communityId, userId) => async (dispatch) => {
+//     console.log("REDUCER, USERID:", userId)
+//     const response = await csrfFetch(`/api/communities/${communityId}/member2/${userId}`, {
+//         method: 'PUT',
+//         headers: {
+//             'Content-Type': 'application/json'
+//           },
+//     })
+//     let data = await response.json();
+//     dispatch(addCommunityMember(userId))
+//     return data
+// }
 
 
 
@@ -162,6 +298,8 @@ let initialState = {
     userCommunities: {},
     singleCommunity: {},
     communityMemberships: {},
+    communityMembers: {},
+    memberships: {}
 };
 
 
@@ -200,9 +338,51 @@ const communitiesReducer = (state = initialState, action) => {
     case GET_COMMUNITY_MEMBERSHIPS: {
         newState = { ...state };
         newState.communityMemberships = {};
-        action.memberships.forEach(
-          (community) => (newState.communityMemberships[community.communityId] = community)
+        if (action.memberships.length) action.memberships?.forEach(
+          (member) => (newState.communityMemberships[member.userId] = member)
         );
+        return newState;
+    }
+    case GET_MEMBERSHIPS: {
+        newState = { ...state };
+        newState.memberships = {};
+        action.memberships.forEach(
+          (memberships) => (newState.memberships[memberships.Community.id] = memberships.Community)
+        );
+        return newState;
+    }
+    case ADD_COMMUNITY_MEMBERSHIPS: {
+        newState = { ...state };
+        const community = action.memberships;
+        newState.communityMemberships[community.id] = { ...community };
+        newState.memberships[community.communityId] = { ...community.Community }
+        return newState;
+    }
+    case REMOVE_COMMUNITY_MEMBERSHIPS: {
+        newState = { ...state };
+        delete newState.communityMemberships[action.id]
+        delete newState.memberships[action.id]
+        return newState;
+    }
+    case GET_COMMUNITY_MEMBERS: {
+        newState = { ...state };
+        newState.communityMembers = {};
+        console.log(action.memberships)
+        action.memberships.forEach(
+          (member) => (newState.communityMembers[member.userId] = member.User)
+        );
+        return newState;
+    }
+    case ADD_COMMUNITY_MEMBER: {
+        newState = { ...state };
+        const member = action.membership;
+       //delete newState.communityMemberships[member.userId];
+        newState.communityMemberships[member.userId] = member;
+        return newState;
+    }
+    case REMOVE_COMMUNITY_MEMBER: {
+        newState = { ...state };
+        delete newState.communityMemberships[action.userId]
         return newState;
     }
     default:

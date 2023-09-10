@@ -87,7 +87,7 @@ router.get("/current", async (req, res) => {
     return res.json(communities)
 })
 
-router.get('/memberships', async (req, res) => {
+router.get("/other", async (req, res) => {
     const { user } = req
     const userId = user.dataValues.id
 
@@ -99,23 +99,42 @@ router.get('/memberships', async (req, res) => {
             {
                 model: Communities,
                 include: [
-                    { model: communityStyles }
+                        { model: Posts },
+                        { model: User },
+                        { model: communityStyles },
                 ]
 
-            },
+            }
 
         ]
+
     });
 
-    if (!communitiesExist.length) {
+    // let communities = await Communities.findAll({
+    //    where: {
+    //     userId,
+    //    },
+    //    include: [
+    //     { model: Posts },
+    //     { model: User },
+    //     { model: communityStyles },
+    //  ]
+    // });
 
-        res.status(404).json({"message": "Memberships couldn't be found"});
+    for (let i = 0; i < communitiesExist.length; i++) {
+        let members = await CommunityMembers.findAll({
+          where: {
+            communityId: communitiesExist[i].Community.dataValues.id
+          }
+        });
+
+        communitiesExist[i].Community.dataValues.CommunityMembers = members.length
 
     }
 
-    res.json(communitiesExist)
-
+    return res.json(communitiesExist)
 })
+
 
 
 
@@ -124,7 +143,7 @@ router.get("/:id", async (req, res) => {
     let communityExist = await Communities.findByPk(communityId);
 
     if (!communityExist) {
-    res.status(404).json({"message": "Community couldn't be found"});
+        res.status(404).json({"message": "Community couldn't be found"});
     }
 
     let community = await Communities.findByPk(communityId, {
@@ -136,20 +155,20 @@ router.get("/:id", async (req, res) => {
                     { model: Communities},
                     { model: User},
                     { model: PostImages},
-                 ]
+                ]
             },
             { model: User },
             { model: communityStyles }
-         ]
-        });
+        ]
+    });
 
-            let members = await CommunityMembers.findAll({
-              where: {
-                communityId: community.id
-              }
-            });
+    let members = await CommunityMembers.findAll({
+        where: {
+            communityId: community.id
+        }
+    });
 
-            community.dataValues.CommunityMembers = members.length
+    community.dataValues.CommunityMembers = members.length
 
 
 
@@ -158,14 +177,15 @@ router.get("/:id", async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-    const { name, about } = req.body
+    const { name, about, type } = req.body
     const { user } = req
     const userId = user.dataValues.id
 
     let community = await Communities.create({
         userId,
         name,
-        about
+        about,
+        type
     })
 
     let member = await CommunityMembers.create({
@@ -183,7 +203,7 @@ router.put("/:id", async (req, res) => {
 
     if (!communityExist) {
 
-    res.status(404).json({"message": "Community couldn't be found"});
+        res.status(404).json({"message": "Community couldn't be found"});
 
     }
 
@@ -202,7 +222,7 @@ router.delete("/:id", async (req, res) => {
 
     if (!communityExist) {
 
-    res.status(404).json({"message": "Community couldn't be found"});
+        res.status(404).json({"message": "Community couldn't be found"});
 
     }
 
@@ -211,6 +231,85 @@ router.delete("/:id", async (req, res) => {
     res.json({
         message: "Successfully deleted"
     })
+
+})
+
+router.get('/:id/memberships', async (req, res) => {
+    const communityId = req.params.id
+    const { user } = req
+    const userId = user.dataValues.id
+
+    let communitiesExist = await CommunityMembers.findAll({
+        where: {
+            communityId
+        },
+        include: [
+            {
+                model: User
+            },
+
+        ]
+    });
+
+
+    for (let i = 0; i < communitiesExist.length; i++) {
+        let community = await Communities.findOne({
+          where: {
+            userId,
+            type: "Profile"
+          },
+          include: [
+            { model: communityStyles }
+          ]
+        });
+
+        communitiesExist[i].dataValues.Community = community
+
+    }
+
+
+    if (!communitiesExist) {
+
+        res.status(404).json({"message": "Memberships couldn't be found"});
+
+    }
+
+    return res.json(communitiesExist)
+
+})
+
+router.get('/memberships', async (req, res) => {
+    const { user } = req
+    const userId = user.dataValues.id
+
+    let communitiesExist = await CommunityMembers.findAll({
+        where: {
+            userId
+        },
+        include: [
+            {
+                model: User,
+            },
+            {
+                model: Communities,
+                include: [
+                    { model: communityStyles }
+                ]
+
+            }
+
+        ]
+    });
+
+
+
+    if (!communitiesExist.length) {
+
+        res.status(404).json({"message": "Memberships couldn't be found"});
+
+    }
+
+    res.json(communitiesExist)
 
 })
 
@@ -225,26 +324,145 @@ router.get('/:id/members', async (req, res) => {
 
     let members = await CommunityMembers.findAll({
        where: { communityId },
-       include: User
+       include: [
+            {
+                model: User,
+            }
+        ]
     })
 
     res.json(members)
 
 })
 
-router.post('/:id/memberships', async (req, res) => {
-    const id = req.params.id
+router.get('/:id/membership', async (req, res) => {
+    let communityId = req.params.id;
+    let communityExist = await Communities.findByPk(communityId);
     const { user } = req
     const userId = user.dataValues.id
 
-    console.log(id)
+    if (!communityExist) {
+    res.status(404).json({"message": "Community couldn't be found"});
+    }
+
+
+    let communitiesExist = await CommunityMembers.findAll({
+        where: {
+            communityId
+        },
+        include: [
+            {
+                model: User,
+                include: [
+                    {
+                        model: Communities,
+                        include: [
+                            { model: communityStyles }
+                        ]
+
+                    }
+                ]
+            }
+
+        ]
+    });
+
+    if (!communitiesExist.length) {
+
+        res.status(404).json({"message": "Memberships couldn't be found"});
+
+    }
+
+    res.json(communitiesExist)
+
+})
+
+
+
+router.post('/:id/memberships', async (req, res) => {
+    const id = req.params.id
+    const { status } = req.body
+    const { user } = req
+    const userId = user.dataValues.id
+
+    console.log(status)
 
     let member = await CommunityMembers.create({
         userId,
-        communityId: id
+        communityId: id,
+        status
+
     })
 
-    return res.json(member)
+
+    let communitiesExist = await CommunityMembers.findOne({
+        where: {
+            communityId: id,
+            userId
+        },
+        include: [
+            {
+                model: Communities,
+                include: [
+                    { model: communityStyles }
+                ]
+
+            },
+
+        ]
+    });
+
+    return res.json(communitiesExist)
+
+})
+
+router.put('/:id/member/:userId', async (req, res) => {
+    const id = req.params.id
+    const userId = req.params.userId
+    const { status } = req.body
+
+    // let communitiesExist2 = await CommunityMembers.findOne({
+    //     where: {
+    //         communityId: id,
+    //         userId
+    //     },
+    // })
+
+    let communitiesExist = await CommunityMembers.findOne({
+        where: {
+            communityId: id,
+            userId
+        },
+        include: [
+            {
+                model: User
+            },
+
+        ]
+    });
+
+    let community = await Communities.findOne({
+        where: {
+          userId,
+          type: "Profile"
+        },
+        include: [
+          { model: communityStyles }
+        ]
+      });
+
+    communitiesExist.dataValues.Community = community
+
+    communitiesExist.set({
+        status
+
+    })
+
+
+    await communitiesExist.save()
+
+    return res.json(communitiesExist)
+
 })
 
 router.delete('/:id/memberships', async (req, res) => {
@@ -271,6 +489,108 @@ router.delete('/:id/memberships', async (req, res) => {
     return res.json({"message": "succesfully deleted"})
 })
 
+router.post('/:id/member/:userId', async (req, res) => {
+    const userId = req.params.userId
+    const id = req.params.id
+
+
+    let member = await CommunityMembers.create({
+        userId,
+        communityId: id
+    })
+
+
+    let communitiesExist = await CommunityMembers.findOne({
+        where: {
+            communityId: id,
+            userId
+        },
+        include: [
+            {
+                model: User
+            },
+
+        ]
+    });
+
+    let community = await Communities.findOne({
+        where: {
+          userId,
+          type: "Profile"
+        },
+        include: [
+          { model: communityStyles }
+        ]
+      });
+
+      communitiesExist.dataValues.Community = community
+
+    return res.json(communitiesExist)
+
+})
+
+// router.delete('/:id/member/:userId', async (req, res) => {
+//     const userId = req.params.userId
+//     const id = req.params.id
+
+//     console.log("USER", userId)
+
+//     let member = await CommunityMembers.findOne({
+//         userId,
+//         communityId: id
+//     });
+
+//     console.log(member)
+
+//     if (!member) {
+
+//         res.status(404).json({"message": "Member couldn't be found"});
+
+//     }
+
+//     await member.destroy()
+
+//     return res.json({"message": "succesfully deleted"})
+// })
+
+router.put('/:id/member2/:userId', async (req, res) => {
+    const id = req.params.id
+    const userId = req.params.userId
+
+    // let communitiesExist = await CommunityMembers.findOne({
+    //     where: {
+    //         communityId: id,
+    //         userId
+    //     },
+    // })
+
+    let communitiesExist = await CommunityMembers.findOne({
+        where: {
+            communityId: id,
+            userId
+        },
+        include: [
+            {
+                model: Communities,
+                include: [
+                    { model: communityStyles }
+                ]
+
+            },
+
+        ]
+    });
+
+    communitiesExist.set({
+        status: "Unapproved"
+
+    })
+
+    await communitiesExist.save()
+
+    return res.json(communitiesExist)
+
+})
 
 
 

@@ -22,6 +22,10 @@ module.exports = (sequelize, DataTypes) => {
         models.PostImages,
           { foreignKey: 'postId', onDelete: 'CASCADE',  hooks: true }
       );
+      Posts.hasMany(
+        models.postsHistories,
+          { foreignKey: 'postId', onDelete: 'CASCADE',  hooks: true }
+      );
       Posts.belongsTo(
         models.Communities,
           { foreignKey: 'communityId' }

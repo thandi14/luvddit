@@ -12,17 +12,21 @@ function CreateCommunity() {
     const [ data1, setData1 ] = useState("");
     const dispatch = useDispatch()
     const history = useHistory()
+    const [ type, setType ] = useState("Public")
 
     const handleSubmit = async () => {
 
         if (name) {
             setData1({
                 name,
+                type
              })
 
         }
 
     }
+
+    console.log(type)
 
     useEffect( () => {
 
@@ -55,9 +59,24 @@ function CreateCommunity() {
             </div>
             <div id="cc-type">
                 <span>Community type</span>
-                <span><i class="fi fi-ss-dot-circle"></i><div><i class="fi fi-rr-following"></i>Public</div>Anyone can view, post, and comment to this community</span>
-                <span><i class="fi fi-rr-circle"></i><div><i class="fi fi-rs-crossed-eye"></i>Restricted</div>Anyone can view this community, but only approved users can post</span>
-                <span><i class="fi fi-rr-circle"></i><div><i class="fi fi-rr-lock"></i>Private</div>Only approved users can view and submit to this community</span>
+                <span>
+                <i onClick={(() => setType("Public"))}
+                id={ type === "Public" ? "c-type" : "" }
+                class={ type === "Public" ? "fi fi-ss-dot-circle" : "fi fi-rr-circle" }></i>
+                <div><i class="fi fi-rr-following"></i>Public</div>
+                Anyone can view, post, and comment to this community</span>
+                <span>
+                <i onClick={(() => setType("Restricted"))}
+                id={ type === "Restricted" ? "c-type" : "" }
+                class={ type === "Restricted" ? "fi fi-ss-dot-circle" : "fi fi-rr-circle" }></i>
+                <div><i class="fi fi-rs-crossed-eye"></i>Restricted</div>
+                Anyone can view this community, but only approved users can post</span>
+                <span>
+                <i onClick={(() => setType("Private"))}
+                id={ type === "Private" ? "c-type" : "" }
+                class={ type === "Private" ? "fi fi-ss-dot-circle" : "fi fi-rr-circle" }></i>
+                <div><i class="fi fi-rr-lock"></i>Private</div>
+                Only approved users can view and submit to this community</span>
             </div>
             <div id="cc-content">
             <span>Adult content</span>
