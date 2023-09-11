@@ -2,8 +2,8 @@ const express = require('express')
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Posts, Comments, Communities, User, PostImages, CommunityMembers, Votes, communityStyles, postsHistories } = require('../../db/models');
-
+const { Posts, Comments, Communities, User, PostImages, CommunityMembers, Votes, communityStyles, postsHistories, PostSetting } = require('../../db/models');
+const { Op } = require('sequelize');
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
@@ -14,9 +14,9 @@ router.get("/", async (req, res) => {
     const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
     const pageSize = 10; // Number of posts per page
 
-    console.log(page)
 
     let posts = await Posts.findAll({
+        order: [['id', 'DESC']],
         include: [
             { model: Comments },
             {
@@ -27,106 +27,133 @@ router.get("/", async (req, res) => {
             },
             { model: User},
             { model: PostImages},
-            { model: Votes}
-         ],
-         limit: pageSize, // Limit the number of results per page
-         offset: (page - 1) * pageSize
-    });
-
-    // console.log(posts[0])
-
-    // for (let p of posts) {
-    //    // console.log(p)
-    //    votes = p.dataValues.Votes
-    //    if (votes.length) {
-    //         for (let v of votes) {
-    //            if (v.dataValues.upVote === 1) p.dataValues.votes = p.dataValues.votes + 1
-    //            if (v.dataValues.downVote === 1) p.dataValues.downVotes = p.dataValues.downVote + 1
-    //         }
-    //    }
-    // }
-
-    return res.json(posts)
-})
-
-
-router.get("/current", async (req, res) => {
-    const { user } = req
-    const userId = user.dataValues.id
-
-    let posts = await Posts.findAll({
-       where: {
-        userId,
-       },
-       include: [
-        { model: Comments },
-        { model: Communities },
-        { model: PostImages },
-        { model: User }
-
-        ]
+            { model: Votes } ,
+            { model: PostSetting }
+        ],
+        limit: pageSize, // Limit the number of results per page
+        offset: (page - 1) * pageSize
     });
 
     return res.json(posts)
 })
 
-router.get("/votes/current", async (req, res) => {
+
+
+
+router.get("/history", async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+    const pageSize = 10; // Number of posts per page
+
     const { user } = req
-
-    if (!user) return res.status(404).json({"message": "User couldnt be found"})
-
     const userId = user.dataValues.id
 
-    let vote = await Votes.findAll({
+    let posts = await PostSetting.findAll({
+        order: [['history', 'DESC']],
         where: {
-            userId,
-        }
-    });
-
-    return res.json(vote)
-})
-
-// router.get(`/votes/${id}`, async (req, res) => {
-//     const { id } = req.params.id
-
-//     let vote = await Votes.findByPk(id)
-
-//     return res.json(vote)
-
-// })
-
-router.get('/history', async (req, res) => {
-
-    let history = await postsHistories.findAll({
+            userId
+        },
         include: [
             {
                 model: Posts,
                 include: [
-                    {
-                        model: Comments,
-                        include: [
-                            { model: User },
-                            { model: Votes }
-                        ]
-                    },
+                    { model: Comments },
                     {
                         model: Communities,
                         include: [
                             { model: communityStyles }
                         ]
                     },
-                    { model: User },
-                    { model: PostImages },
-                    { model: Votes },
-                    { model: postsHistories }
-                 ]
+                    { model: User},
+                    { model: PostImages},
+                    {
+                        model: Votes,
+                    },
+                    {
+                        model: PostSetting,
+                     }
+                ]
             }
-        ]
+         ],
+         limit: pageSize, // Limit the number of results per page
+         offset: (page - 1) * pageSize
+    });
+
+
+
+    return res.json(posts)
+})
+
+router.get("/votes", async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+    const pageSize = 10; // Number of posts per page
+
+    const { user } = req
+    let userId = user.dataValues.id
+
+    let posts = await Votes.findAll({
+        order: [['createdAt', 'DESC']],
+        where: {
+            userId
+        },
+        include: [
+            {
+                model: Posts,
+                include: [
+                    { model: Comments },
+                    {
+                        model: Communities,
+                        include: [
+                            { model: communityStyles }
+                        ]
+                    },
+                    { model: User},
+                    { model: PostImages},
+                    {
+                        model: Votes,
+                        order: [['createdAt', 'DESC']],
+                        where: {
+                            userId
+                        },
+                     },
+                    { model: PostSetting }
+                ]
+            }
+         ],
+         limit: pageSize, // Limit the number of results per page
+         offset: (page - 1) * pageSize
+    });
+
+
+    return res.json(posts)
     })
 
-    return res.json(history)
 
-})
+
+    router.get("/votes/current", async (req, res) => {
+        const { user } = req
+
+        if (!user) return res.status(404).json({"message": "User couldnt be found"})
+
+        const userId = user.dataValues.id
+
+        let vote = await Votes.findAll({
+            where: {
+                userId,
+            }
+        });
+
+        return res.json(vote)
+    })
+
+    // router.get(`/votes/${id}`, async (req, res) => {
+        //     const { id } = req.params.id
+
+        //     let vote = await Votes.findByPk(id)
+
+        //     return res.json(vote)
+
+        // })
+
 
 
 router.get("/:id", async (req, res) => {
@@ -135,7 +162,7 @@ router.get("/:id", async (req, res) => {
 
     if (!postExist) {
 
-    res.status(404).json({"message": "Post couldn't be found"});
+        res.status(404).json({"message": "Post couldn't be found"});
 
     }
 
@@ -143,10 +170,10 @@ router.get("/:id", async (req, res) => {
         include: [
             {
                 model: Comments,
-                include: [
-                    { model: User },
-                    { model: Votes }
-                ]
+            include: [
+                { model: User },
+                { model: Votes }
+            ]
             },
             {
                 model: Communities,
@@ -157,65 +184,237 @@ router.get("/:id", async (req, res) => {
             { model: User },
             { model: PostImages },
             { model: Votes },
-            { model: postsHistories }
-         ]
-        });
+            { model: PostSetting }
+        ]
+    });
 
-        let members = await CommunityMembers.findAll({
-            where: {
-              communityId: post.dataValues.Community.dataValues.id
-            }
-          });
+    let members = await CommunityMembers.findAll({
+    where: {
+        communityId: post.dataValues.Community.dataValues.id
+    }
+    });
 
-          post.dataValues.Community.dataValues.CommunityMembers = members.length
+    post.dataValues.Community.dataValues.CommunityMembers = members.length
 
     return res.json(post)
 })
 
-router.get('/:id/history', async (req, res) => {
-    let postId = req.params.id;
-    let postExist = await Posts.findByPk(postId);
+router.get('/:id/overview', async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+    const pageSize = 5; // Number of posts per page
 
-    if (!postExist) {
+    const { user } = req
+    let userId = req.params.id;
 
-    res.status(404).json({"message": "Post couldn't be found"});
+    const [posts, comments] = await Promise.all([
+        Posts.findAll({
+            order: [['updatedAt', 'DESC']],
+            where: {
+                userId
+            },
+            include: [
+                {
+                  model: Comments,
+                  order: [['updatedAt', 'DESC']],
 
-    }
+                 },
+                {
+                    model: Communities,
+                    include: [
+                        { model: communityStyles }
+                    ]
+                },
+                { model: User},
+                { model: PostImages},
+                { model: Votes } ,
+                { model: PostSetting }
+            ],
+            limit: pageSize, // Limit the number of results per page
+            offset: (page - 1) * pageSize // Optional: Order the results
+        }),
+        Posts.findAll({
+            order: [['updatedAt', 'DESC']],
+            include: [
+                {
+                    model: Comments,
+                    order: [['updatedAt', 'DESC']],
+                    where: {
+                        userId
+                    }
+                },
+                {
+                    model: Communities,
+                    include: [
+                        { model: communityStyles }
+                    ]
+                },
+                { model: User},
+                { model: PostImages},
+                { model: Votes } ,
+                { model: PostSetting }
+            ],
+            limit: pageSize, // Limit the number of results per page
+            offset: (page - 1) * pageSize // Optional: Order the results
+        }),
+    ]);
 
-
-    let history = await postsHistories.findAll({
-        where: {
-            postId
-        },
-        // include: [
-        //     {
-        //         model: Posts,
-        //         include: [
-        //             {
-        //                 model: Comments,
-        //                 include: [
-        //                     { model: User },
-        //                     { model: Votes }
-        //                 ]
-        //             },
-        //             {
-        //                 model: Communities,
-        //                 include: [
-        //                     { model: communityStyles }
-        //                 ]
-        //             },
-        //             { model: User },
-        //             { model: PostImages },
-        //             { model: Votes },
-        //             { model: postsHistories }
-        //          ]
-        //     }
-        // ]
+    return res.json({
+        posts,
+        comments
     })
 
-    return res.json(history)
-
 })
+
+router.get("/:id/current", async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+    const pageSize = 10; // Number of posts per page
+
+    const { user } = req
+    let userId = req.params.id;
+
+    let posts = await Posts.findAll({
+        order: [['createdAt', 'DESC']],
+        where: {
+            userId
+        },
+        include: [
+            { model: Comments },
+            {
+                model: Communities,
+                include: [
+                    { model: communityStyles }
+                ]
+            },
+            { model: User},
+            { model: PostImages},
+            { model: Votes } ,
+            { model: PostSetting }
+         ],
+         limit: pageSize, // Limit the number of results per page
+         offset: (page - 1) * pageSize
+    });
+
+
+    return res.json(posts)
+})
+
+router.get("/:id/comments", async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+    const pageSize = 10; // Number of posts per page
+
+   // const { user } = req
+    let userId = req.params.id;
+
+    let posts = await Comments.findAll({
+        order: [['createdAt', 'DESC']],
+        where: {
+            userId
+        },
+        include: [
+            {
+                model: Posts,
+                include: [
+                    {
+                        model: Comments,
+                        order: [['createdAt', 'DESC']],
+                        where: {
+                            userId
+                        },
+                    },
+                    {
+                        model: Communities,
+                        include: [
+                            { model: communityStyles }
+                        ]
+                    },
+                    { model: User},
+                    { model: PostImages},
+                    { model: Votes } ,
+                    { model: PostSetting }
+                ]
+            }
+         ],
+         limit: pageSize, // Limit the number of results per page
+         offset: (page - 1) * pageSize
+    });
+
+
+    return res.json(posts)
+})
+
+
+
+router.get("/:id/communities", async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+    const pageSize = 10; // Number of posts per page
+
+   // const { user } = req
+    let communityId = req.params.id;
+
+    let posts = await Posts.findAll({
+        order: [['createdAt', 'DESC']],
+        where : {
+            communityId
+        },
+        include: [
+            {
+                model: Comments,
+
+            },
+            {
+                model: Communities,
+                include: [
+                    { model: communityStyles }
+                ]
+            },
+            { model: User},
+            { model: PostImages},
+            { model: Votes } ,
+            { model: PostSetting }
+         ],
+         limit: pageSize, // Limit the number of results per page
+         offset: (page - 1) * pageSize
+    });
+
+
+    return res.json(posts)
+})
+
+
+// router.get('/:id/history', async (req, res) => {
+    //     const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+    //     const pageSize = 10; // Number of posts per page
+
+//     const { user } = req
+//     const userId = user.dataValues.id
+
+//     let posts = await Posts.findAll({
+//         where: {
+//             userId
+//         },
+//         include: [
+//             { model: Comments },
+//             {
+//                 model: Communities,
+//                 include: [
+//                     { model: communityStyles }
+//                 ]
+//             },
+//             { model: User},
+//             { model: PostImages},
+//             { model: Votes } ,
+//             {
+//                 model: PostSetting,
+//              }
+//          ],
+//          limit: pageSize, // Limit the number of results per page
+//          offset: (page - 1) * pageSize
+//     });
+
+
+//     return res.json(posts)
+
+// })
 
 
 router.get("/:id/comments", async (req, res) => {
@@ -278,7 +477,7 @@ router.put("/:id", async (req, res) => {
             { model: User },
             { model: PostImages },
             { model: Votes },
-            { model: postsHistories }
+            { model: PostSetting }
          ]
         });
 
@@ -335,6 +534,9 @@ router.post('/:id/images', async (req, res) => {
 router.post('/:id/history', async (req, res) => {
     let postId = req.params.id;
     let postExist = await Posts.findByPk(postId);
+    const { user } = req
+    const userId = user.dataValues.id
+
 
     if (!postExist) {
 
@@ -342,11 +544,13 @@ router.post('/:id/history', async (req, res) => {
 
     }
 
-    let history = await postsHistories.create({
-        postId
+    let setting = await PostSetting.create({
+        postId,
+        userId,
+        history: new Date()
     })
 
-    let history2 = await postsHistories.findByPk(history.dataValues.id, {
+    let history2 = await PostSetting.findByPk(setting.dataValues.id, {
         include: [
             {
                 model: Posts,
@@ -367,7 +571,6 @@ router.post('/:id/history', async (req, res) => {
                     { model: User },
                     { model: PostImages },
                     { model: Votes },
-                    { model: postsHistories }
                  ]
             }
         ]
@@ -379,23 +582,31 @@ router.post('/:id/history', async (req, res) => {
 
 })
 
-router.put('/history/:id', async (req, res) => {
-    let historyId = req.params.id;
-    let historyExsist = await postsHistories.findByPk(historyId);
+router.put('/:id/history', async (req, res) => {
+    let postId = req.params.id;
+    const { user } = req
+    const userId = user.dataValues.id
 
-    if (!historyExsist) {
+    let setting = await PostSetting.findOne({
+        where: {
+            postId,
+            userId
+        }
+    });
 
-    return res.json({"message": "History couldn't be found"});
+    if (!setting) {
+
+    return res.json({"message": "Setting couldn't be found"});
 
     }
 
-    historyExsist.set({
-        createdAt: historyExsist.dataValues.createdAt
+    setting.set({
+        history: new Date()
     })
 
-    await historyExsist.save()
+    await setting.save()
 
-    let history2 = await postsHistories.findByPk(historyId, {
+    let history2 = await PostSetting.findByPk(setting.dataValues.id, {
         include: [
             {
                 model: Posts,
@@ -416,7 +627,6 @@ router.put('/history/:id', async (req, res) => {
                     { model: User },
                     { model: PostImages },
                     { model: Votes },
-                    { model: postsHistories }
                  ]
             }
         ]
@@ -479,13 +689,13 @@ router.post('/:id/votes', async (req, res) => {
 
     }
 
-    if (upVote) {
-        postExist.set({
-            votes: postExist.votes + 1
-        })
-        await postExist.save()
+    // if (upVote) {
+    //     postExist.set({
+    //         votes: postExist.votes + 1
+    //     })
+    //     await postExist.save()
 
-    }
+    // }
 
 
     if (boolean == 0) downVote = await Votes.create({
@@ -495,13 +705,13 @@ router.post('/:id/votes', async (req, res) => {
         upVote: 0
     })
 
-    if (downVote) {
-        postExist.set({
-            downVotes: postExist.downVotes + 1
-        })
-        await postExist.save()
+    // if (downVote) {
+    //     postExist.set({
+    //         downVotes: postExist.downVotes + 1
+    //     })
+    //     await postExist.save()
 
-    }
+    // }
 
 
     let vote = upVote ? upVote : downVote
@@ -538,14 +748,14 @@ router.put('/:id/votes', async (req, res) => {
     }
 
 
-    if (upVote) {
-        post.set({
-            votes: post.votes + 1,
-            downVotes: post.downVotes - 1,
-        })
-        await post.save()
+    // if (upVote) {
+    //     post.set({
+    //         votes: post.votes + 1,
+    //         downVotes: post.downVotes - 1,
+    //     })
+    //     await post.save()
 
-    }
+    // }
 
 
     if (boolean == 0) {
@@ -558,14 +768,14 @@ router.put('/:id/votes', async (req, res) => {
 
     }
 
-    if (downVote) {
-        post.set({
-            downVotes: post.downVotes + 1,
-            votes: post.votes - 1
-        })
-        await post.save()
+    // if (downVote) {
+    //     post.set({
+    //         downVotes: post.downVotes + 1,
+    //         votes: post.votes - 1
+    //     })
+    //     await post.save()
 
-    }
+    // }
 
 
     let vote = upVote ? upVote : downVote

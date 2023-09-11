@@ -5,7 +5,7 @@ import * as communitiesActions from "../../store/communities"
 import './HomePage.css'
 import pfp from './IMG6.jpg'
 import avatar from  './imagedit2.png'
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
+import { useHistory, useParams } from 'react-router-dom/cjs/react-router-dom.min'
 import PostPageModal from '../PostPage/PostPageModal'
 import { useModal } from '../../context/Modal'
 import CreateCommunity from '../CreateCommunityModel'
@@ -34,44 +34,59 @@ function UsersPosts() {
     const  { setModalContent2, modalRef2 } = useModal2()
     const [ postId, setPostId ] = useState(null)
     const [ commentId, setCommentId ] = useState(null)
+    const { page } = useParams(); // Retrieve the page parameter from the URL
     const targetRef2 = useRef()
 
+
+
+
     useEffect(() => {
-        window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
+      window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
     }, []);
 
     useEffect(() => {
-        // if (!showMenu) return;
+      // if (!showMenu) return;
 
-         const closeMenu = (e) => {
-           if (targetRef2 && !targetRef2.current.contains(e.target)) {
-             setIsVisible2(false);
-           }
-         };
+      const closeMenu = (e) => {
+        if (targetRef2 && !targetRef2.current.contains(e.target)) {
+          setIsVisible2(false);
+        }
+      };
 
-         document.addEventListener('click', closeMenu);
+      document.addEventListener('click', closeMenu);
 
-         return () => document.removeEventListener("click", closeMenu);
+      return () => document.removeEventListener("click", closeMenu);
 
-        }, []);
+    }, []);
 
-    let filterdPosts = Object.values(posts)
+    console.log(userPosts)
 
-    filterdPosts = filterdPosts.filter((p) => p.userId === user.id).reverse()
+    let filterdPosts = Object.values(userPosts).reverse()
+
+    filterdPosts = filterdPosts.sort((a, b) => {
+      return b.createdAt - a.createdAt
+    })
 
     let top = isVisible ? "top" : "down";
 
     let moderating = Object.values(userCommunities)
 
+    useEffect(() => {
+        dispatch(postsActions.thunkGetUserPosts(user.id, page)); // Fetch posts for the specified page
+    }, [dispatch, page]);
+
     let profile
 
     if (user) profile = moderating.filter((m) => m.type === "Profile")[0]
 
+
+
+
     useEffect(() => {
 
-        async function fetchData() {
+      async function fetchData() {
           let data = await dispatch(communitiesActions.thunkGetUserCommunities())
-           if (profile) await dispatch(communitiesActions.thunkGetDetailsById(profile.id))
+          if (profile) await dispatch(communitiesActions.thunkGetDetailsById(profile.id))
         }
           fetchData()
 
@@ -164,14 +179,14 @@ function UsersPosts() {
 
     <div id="aHeader3">
         <div id="aH50">
-        <span onClick={(() => history.push("/profile"))} id="aH2">OVERVIEW</span>
-        <span onClick={(() => history.push("/profile/posts"))} id="aHl">POSTS</span>
-        <span onClick={(() => history.push("/profile/comments"))} id="aH3">COMMENTS</span>
-        <span onClick={(() => history.push("/profile/history"))}id="aH4">HISTORY</span>
+        <span onClick={(() => history.push("/profile/:page"))} id="aH2">OVERVIEW</span>
+        <span onClick={(() => history.push("/profile/posts/:page"))} id="aHl">POSTS</span>
+        <span onClick={(() => history.push("/profile/comments/:page"))} id="aH3">COMMENTS</span>
+        <span onClick={(() => history.push("/profile/history/:page"))}id="aH4">HISTORY</span>
         <span onClick={(() => window.alert("Feature not avaliable"))}id="aH5">SAVED</span>
         <span onClick={(() => window.alert("Feature not avaliable"))}id="aH6">HIDDEN</span>
-        <span onClick={(() => history.push("/profile/upvoted"))} id="aH7">UPVOTED</span>
-        <span onClick={(() => history.push("/profile/downvoted"))} id="aH8">DOWNVOTED</span>
+        <span onClick={(() => history.push("/profile/upvoted/:page"))} id="aH7">UPVOTED</span>
+        <span onClick={(() => history.push("/profile/downvoted/:page"))} id="aH8">DOWNVOTED</span>
         <span onClick={(() => window.alert("Feature not avaliable"))}id="aH9">AWARDS RECIEVED</span>
         <span onClick={(() => window.alert("Feature not avaliable"))}id="aH10">AWARDS GIVEN</span>
         </div>

@@ -160,7 +160,7 @@ function Navigation({ isLoaded }){
             {myCommunities.map((c) =>
             <>
             <span onClick={(() => {
-              history.push(`/communities/${c.id}`)
+              history.push(`/communities/${c.id}/:page`)
               setIsVisible(false)
               })}><div></div>{ c.communityStyles && c.communityStyles.length ? <img id="pfp30" src={c.communityStyles[0].profile}></img> : <span id="no-pfp">l/</span>}l/{c.name}</span>
             </>
@@ -174,7 +174,7 @@ function Navigation({ isLoaded }){
               })} ><div></div><i class="fi fi-rr-plus"></i>Create Community</span>
             {myMemberships.map((c) =>
             <span onClick={(() => {
-              history.push(`/communities/${c.id}`)
+              history.push(`/communities/${c.id}/:page`)
               setIsVisible(false)
             })}><div></div>{c.communityStyles && c.communityStyles.length ? <img id="pfp30" src={c.communityStyles[0].profile}></img> : <span id="no-pfp">l/</span>}l/{c.name}</span>
             )}

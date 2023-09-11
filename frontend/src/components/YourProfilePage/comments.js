@@ -5,7 +5,7 @@ import * as communitiesActions from "../../store/communities"
 import './HomePage.css'
 import pfp from './IMG6.jpg'
 import avatar from  './imagedit2.png'
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
+import { useHistory, useParams } from 'react-router-dom/cjs/react-router-dom.min'
 import PostPageModal from '../PostPage/PostPageModal'
 import { useModal } from '../../context/Modal'
 import CreateCommunity from '../CreateCommunityModel'
@@ -17,7 +17,7 @@ import DeleteComment from '../PostPage/deleteC'
 import '../PostPage/PostPage.css'
 
 function CommentedPosts() {
-    const { posts, singlePost, userPosts } = useSelector((state) => state.posts);
+    const { posts, singlePost, postsComments } = useSelector((state) => state.posts);
     const { userCommunities, communityMemberships, memberships } = useSelector((state) => state.communities);
     const { user } = useSelector((state) => state.session);
     const dispatch = useDispatch()
@@ -35,6 +35,12 @@ function CommentedPosts() {
     const [ postId, setPostId ] = useState(null)
     const [ commentId, setCommentId ] = useState(null)
     const targetRef2 = useRef()
+    const { page } = useParams(); // Retrieve the page parameter from the URL
+
+
+    useEffect(() => {
+        dispatch(postsActions.thunkGetComments(user.id, page)); // Fetch posts for the specified page
+    }, [dispatch, page]);
 
     useEffect(() => {
         window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
@@ -55,22 +61,21 @@ function CommentedPosts() {
 
         }, []);
 
-    let filterdPosts = Object.values(posts)
+    let filterdPosts = Object.values(postsComments)
 
     filterdPosts = filterdPosts.filter((p) => p.Comments.some((c) => c.userId === user.id))
 
     filterdPosts.forEach((p) => {
-            p.Comments.forEach((c) => {
-                let commentDate = new Date(c.updatedAt)
-                c.updatedAt = Date.parse(commentDate)
-            })
-            p.Comments.sort((a, b) => {
-                return b.updatedAt - a.updatedAt
-            })
+      p.Comments.forEach((c) => {
+          let commentDate = new Date(c.updatedAt)
+          c.updatedAt = Date.parse(commentDate)
+      })
+      p.Comments.sort((a, b) => {
+          return b.updatedAt - a.updatedAt
+      })
+     // p.Comments = p.Comments.filter((c) => c.userId === user.id)
 
-                p.updatedAt = p.Comments[0].updatedAt
-
-
+      p.updatedAt = p.Comments[0].updatedAt
 
     })
 
@@ -193,14 +198,14 @@ function CommentedPosts() {
 
     <div id="aHeader3">
         <div id="aH50">
-        <span onClick={(() => history.push("/profile"))} id="aH3">OVERVIEW</span>
-        <span onClick={(() => history.push("/profile/posts"))} id="aH2">POSTS</span>
-        <span onClick={(() => history.push("/profile/comments"))} id="aHl">COMMENTS</span>
-        <span onClick={(() => history.push("/profile/history"))}id="aH4">HISTORY</span>
+        <span onClick={(() => history.push("/profile/:page"))} id="aH3">OVERVIEW</span>
+        <span onClick={(() => history.push("/profile/posts/:page"))} id="aH2">POSTS</span>
+        <span onClick={(() => history.push("/profile/comments/:page"))} id="aHl">COMMENTS</span>
+        <span onClick={(() => history.push("/profile/history/:page"))}id="aH4">HISTORY</span>
         <span onClick={(() => window.alert("Feature not avaliable"))}id="aH5">SAVED</span>
         <span onClick={(() => window.alert("Feature not avaliable"))}id="aH6">HIDDEN</span>
-        <span onClick={(() => history.push("/profile/upvoted"))}id="aH7">UPVOTED</span>
-        <span onClick={(() => history.push("/profile/downvoted"))}id="aH8">DOWNVOTED</span>
+        <span onClick={(() => history.push("/profile/upvoted/:page"))}id="aH7">UPVOTED</span>
+        <span onClick={(() => history.push("/profile/downvoted/:page"))}id="aH8">DOWNVOTED</span>
         <span onClick={(() => window.alert("Feature not avaliable"))}id="aH9">AWARDS RECIEVED</span>
         <span onClick={(() => window.alert("Feature not avaliable"))}id="aH10">AWARDS GIVEN</span>
         </div>

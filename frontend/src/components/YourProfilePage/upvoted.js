@@ -5,7 +5,7 @@ import * as communitiesActions from "../../store/communities"
 import './HomePage.css'
 import pfp from './IMG6.jpg'
 import avatar from  './imagedit2.png'
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
+import { useHistory, useParams } from 'react-router-dom/cjs/react-router-dom.min'
 import PostPageModal from '../PostPage/PostPageModal'
 import { useModal } from '../../context/Modal'
 import CreateCommunity from '../CreateCommunityModel'
@@ -18,7 +18,7 @@ import '../PostPage/PostPage.css'
 import NoPosts from './none'
 
 function UpvotedPosts() {
-    const { posts, singlePost, userPosts } = useSelector((state) => state.posts);
+    const { posts, singlePost, userPosts, postsFavorites } = useSelector((state) => state.posts);
     const { userCommunities, communityMemberships, memberships } = useSelector((state) => state.communities);
     const { user } = useSelector((state) => state.session);
     const dispatch = useDispatch()
@@ -35,6 +35,12 @@ function UpvotedPosts() {
     const [ postId, setPostId ] = useState(null)
     const [ commentId, setCommentId ] = useState(null)
     const targetRef2 = useRef()
+    const { page } = useParams(); // Retrieve the page parameter from the URL
+
+
+    useEffect(() => {
+        dispatch(postsActions.thunkGetFavorites(page)); // Fetch posts for the specified page
+    }, [dispatch, page]);
 
     useEffect(() => {
         window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
@@ -55,9 +61,9 @@ function UpvotedPosts() {
 
         }, []);
 
-    let filterdPosts = Object.values(posts)
+    let filterdPosts = Object.values(postsFavorites)
 
-    filterdPosts = filterdPosts.filter((p) => p.Votes.some((v) => v.userId === user.id && v.upVote === 1))
+    filterdPosts = filterdPosts.filter((p) => p.Votes.some((v) => v.upVote === 1))
 
     filterdPosts.forEach((p) => {
         p.Votes.forEach((v) => {
@@ -180,14 +186,14 @@ function UpvotedPosts() {
 
     <div id="aHeader3">
         <div id="aH50">
-        <span onClick={(() => history.push("/profile"))} id="aH2">OVERVIEW</span>
-        <span onClick={(() => history.push("/profile/posts"))} id="aH7">POSTS</span>
-        <span onClick={(() => history.push("/profile/comments"))} id="aH3">COMMENTS</span>
-        <span onClick={(() => history.push("/profile/history"))} id="aH4">HISTORY</span>
+        <span onClick={(() => history.push("/profile/:page"))} id="aH2">OVERVIEW</span>
+        <span onClick={(() => history.push("/profile/posts/:page"))} id="aH7">POSTS</span>
+        <span onClick={(() => history.push("/profile/comments/:page"))} id="aH3">COMMENTS</span>
+        <span onClick={(() => history.push("/profile/history/:page"))} id="aH4">HISTORY</span>
         <span onClick={(() => window.alert("Feature not avaliable"))}id="aH5">SAVED</span>
         <span onClick={(() => window.alert("Feature not avaliable"))}id="aH6">HIDDEN</span>
-        <span onClick={(() => history.push("/profile/upvoted"))} id="aHl">UPVOTED</span>
-        <span onClick={(() => history.push("/profile/downvoted"))}id="aH8">DOWNVOTED</span>
+        <span onClick={(() => history.push("/profile/upvoted/:page"))} id="aHl">UPVOTED</span>
+        <span onClick={(() => history.push("/profile/downvoted/:page"))}id="aH8">DOWNVOTED</span>
         <span onClick={(() => window.alert("Feature not avaliable"))}id="aH9">AWARDS RECIEVED</span>
         <span onClick={(() => window.alert("Feature not avaliable"))}id="aH10">AWARDS GIVEN</span>
         </div>

@@ -2,7 +2,7 @@ const express = require('express')
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Communities, Posts, User, CommunityMembers, Comments, PostImages, communityStyles } = require('../../db/models');
+const { Communities, postsHistories, PostSetting, Votes, Posts, User, CommunityMembers, Comments, PostImages, communityStyles } = require('../../db/models');
 
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -15,7 +15,6 @@ router.post('/:id/posts', async (req, res) => {
     const { user } = req
     const userId = user.dataValues.id
 
-    console.log("tags")
 
     let post = await Posts.create({
         communityId,
@@ -26,7 +25,40 @@ router.post('/:id/posts', async (req, res) => {
         votes: 0,
     })
 
-    return res.json(post)
+    console.log(post)
+
+    let post2 = await Posts.findByPk(post.dataValues.id, {
+        include: [
+            {
+                model: Comments,
+                include: [
+                    { model: User },
+                    { model: Votes }
+                ]
+            },
+            {
+                model: Communities,
+                include: [
+                    { model: communityStyles }
+                ]
+            },
+            { model: User },
+            { model: PostImages },
+            { model: Votes },
+            { model: postsHistories },
+            { model: PostSetting }
+         ]
+        });
+
+    let members = await CommunityMembers.findAll({
+        where: {
+            communityId: post2.dataValues.Community.dataValues.id
+        }
+        });
+
+    post2.dataValues.Community.dataValues.CommunityMembers = members.length
+
+    return res.json(post2)
 })
 
 router.get("/", async (req, res) => {
@@ -99,7 +131,14 @@ router.get("/other", async (req, res) => {
             {
                 model: Communities,
                 include: [
-                        { model: Posts },
+                        {
+                            model: Posts,
+                            include: [
+                                { model: PostImages },
+                                { model: User},
+                                { model: Comments }
+                            ]
+                         },
                         { model: User },
                         { model: communityStyles },
                 ]

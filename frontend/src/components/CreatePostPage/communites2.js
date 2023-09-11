@@ -74,10 +74,11 @@ function CommunitiesProfile({ page, community }) {
         response = await dispatch(communityActions.thunkUnjoinCommunities(singleCommunity.id))
       }
 
-    const handleClick = () => {
+    const handleClick = (e) => {
+        e.stopPropagation()
         if (community.type === "Profile") return
         closeModal()
-        history.push(`/communities/${community.id}`)
+        history.push(`/communities/${community.id}/:page`)
 
     }
 

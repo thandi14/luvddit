@@ -182,6 +182,19 @@ function PostPage() {
     }, [dispatch, data1, id])
 
     useEffect( () => {
+
+        async function fetchData() {
+
+            if (singlePost.PostSetting?.history) await dispatch(postActions.thunkUpdateHistory(singlePost.id))
+            else if (!singlePost.PostSetting || singlePost.PostSetting && !singlePost.PostSetting.history) await dispatch(postActions.thunkCreateHistory(singlePost.id))
+
+        }
+        fetchData()
+
+    }, [dispatch, singlePost.PostSetting])
+
+
+    useEffect( () => {
         if (singlePost.tags) setTags(singlePost.tags.split(','))
     }, [dispatch, singlePost.tags])
 

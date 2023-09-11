@@ -8,6 +8,7 @@ import avatar from "./IMG6.jpg"
 
 function ModTools() {
     const { communities, communityMemberships, singleCommunity, communityMembers } = useSelector((state) => state.communities);
+    const { user } = useSelector((state) => state.session);
     const { id } = useParams()
     const dispatch = useDispatch()
     const history = useHistory()
@@ -58,7 +59,7 @@ function ModTools() {
     let members = []
     if (communityMemberships) members = Object.values(communityMemberships)
 
-    console.log(singleCommunity)
+    console.log(members, user)
 
     return(
         <div>
@@ -141,7 +142,10 @@ function ModTools() {
                             </div>
                             {members.map((m) =>
                                 <div className="eMember">
-                                <div onClick={(() => history.push(`/profile2/${m.userId}`))}>
+                                <div onClick={(() => {
+                                   if (m.userId !== user.id) history.push(`/profile2/${m.userId}/:page`)
+                                   if (m.userId === user.id) history.push(`/profile/:page`)
+                                })}>
                                 { m.Community?.communityStyles?.length ? <img style={{ backgroundColor: "#0079D3", borderRadius: "4px", width: "28px", height: "28px"}} src={m.Community.communityStyles[0].profile}></img> : <img style={{ backgroundColor: "#0079D3", borderRadius: "4px", width: "28px", height: "28px"}} src={avatar}></img> }
                                 <span style={{ fontSize: "14px", fontWeight: "900" }}>{m.User.username}</span>
                                 </div>

@@ -19,7 +19,7 @@ import * as sessionActions from "../../store/session"
 
 
 function Commented2Posts() {
-    const { posts, singlePost, userPosts } = useSelector((state) => state.posts);
+    const { posts, singlePost, postsComments } = useSelector((state) => state.posts);
     const { communities, communityMemberships, memberships } = useSelector((state) => state.communities);
     const { user, other } = useSelector((state) => state.session);
     const dispatch = useDispatch()
@@ -38,6 +38,12 @@ function Commented2Posts() {
     const [ commentId, setCommentId ] = useState(null)
     const targetRef2 = useRef()
     const { id } = useParams()
+    const { page } = useParams(); // Retrieve the page parameter from the URL
+
+
+    useEffect(() => {
+        dispatch(postsActions.thunkGetAllPosts(page)); // Fetch posts for the specified page
+    }, [dispatch, page]);
 
 
     useEffect(() => {
@@ -47,37 +53,59 @@ function Commented2Posts() {
     useEffect(() => {
         // if (!showMenu) return;
 
-         const closeMenu = (e) => {
-           if (targetRef2 && !targetRef2.current.contains(e.target)) {
-             setIsVisible2(false);
-           }
-         };
+      const closeMenu = (e) => {
+        if (targetRef2 && !targetRef2.current.contains(e.target)) {
+          setIsVisible2(false);
+        }
+      };
 
-         document.addEventListener('click', closeMenu);
+      document.addEventListener('click', closeMenu);
 
-         return () => document.removeEventListener("click", closeMenu);
+      return () => document.removeEventListener("click", closeMenu);
 
-        }, []);
+    }, []);
 
-    let filterdPosts = Object.values(posts)
+
+    useEffect(() => {
+      let data
+
+      async function fetchData() {
+          if (id) data = await dispatch(sessionActions.getOther(id))
+          else return
+      }
+
+      fetchData()
+
+  }, [dispatch, id])
+
+  useEffect(() => {
+    dispatch(postsActions.thunkGetComments(id, page)); // Fetch posts for the specified page
+  }, [dispatch, page, id]);
+
+    let filterdPosts = Object.values(postsComments)
+
+    filterdPosts = filterdPosts.filter((p) => p.Comments.some((c) => c.userId === other.id))
 
     filterdPosts = filterdPosts.filter((p) => p.Comments.some((c) => c.userId === other.id))
 
     filterdPosts.forEach((p) => {
-            p.Comments.forEach((c) => {
-                let commentDate = new Date(c.updatedAt)
-                c.updatedAt = Date.parse(commentDate)
-            })
-            p.Comments.sort((a, b) => {
-                return b.updatedAt - a.updatedAt
-            })
+      p.Comments.forEach((c) => {
+          let commentDate = new Date(c.updatedAt)
+          c.updatedAt = Date.parse(commentDate)
+      })
+      p.Comments.sort((a, b) => {
+          return b.updatedAt - a.updatedAt
+      })
+     // p.Comments = p.Comments.filter((c) => c.userId === user.id)
 
-                p.updatedAt = p.Comments[0].updatedAt
+      p.updatedAt = p.Comments[0].updatedAt
+
     })
 
     filterdPosts.sort((a, b) => {
         return b.updatedAt - a.updatedAt
     })
+
 
 
     let top = isVisible ? "top" : "down";
@@ -89,7 +117,7 @@ function Commented2Posts() {
 
     if (user) profile = other.profile
 
-    console.log(profile)
+    console.log(filterdPosts)
 
     useEffect(() => {
 
@@ -111,15 +139,6 @@ function Commented2Posts() {
       fetchData()
 
   }, [dispatch, posts])
-
-  useEffect(() => {
-    async function fetchData() {
-      let data = await dispatch(postsActions.thunkGetUserPosts())
-      }
-      fetchData()
-
-  }, [dispatch])
-
 
     console.log(isLiked)
 
@@ -156,7 +175,6 @@ function Commented2Posts() {
     recent = recent.reverse()
     recent = recent.slice(0, 5)
 
-    moderating.shift()
 
 
     const getTimeDifferenceString = (createdAt) => {
@@ -198,9 +216,9 @@ function Commented2Posts() {
 
     <div id="aHeader3">
         <div id="aH50">
-        <span onClick={(() => history.push(`/profile2/${id}`))} id="aH2">OVERVIEW</span>
-        <span onClick={(() => history.push(`/profile2/${id}/posts`))} id="aH3">POSTS</span>
-        <span onClick={(() => history.push(`/profile2/${id}/comments`))} id="aHl">COMMENTS</span>
+        <span onClick={(() => history.push(`/profile2/${id}/:page`))} id="aH2">OVERVIEW</span>
+        <span onClick={(() => history.push(`/profile2/${id}/posts/:page`))} id="aH3">POSTS</span>
+        <span onClick={(() => history.push(`/profile2/${id}/comments/:page`))} id="aHl">COMMENTS</span>
         </div>
     </div>
     <div className="splashPage2">
@@ -304,17 +322,17 @@ function Commented2Posts() {
     </div>
     <div className="sidebar2">
         <CommunitiesProfile community={profile} />
-        <div id="terms2">
+        { moderating.length && <div id="terms2">
             <div id="terms-9">
-            <span>You're a moderator of these <br></br>
+            <span>Moderator of these <br></br>
                 communities</span>
             {moderating.map((c) =>
             <div id="modss">
                 <div>
                {c.communityStyles && c.communityStyles.length ? <img id="tpfp" src={c.communityStyles[0].profile}></img> : <div id="nopfp">l/</div> }
                <div id="modss20">
-                <span id="justbold" onClick={(() => history.push(`/communities/${c.id}`))}>l/{c.name}</span>
-                <span>{c.CommunityMembers.length} members</span>
+                <span id="justbold">l/{c.name}</span>
+                <span>{c.CommunityMembers} members</span>
                </div>
                </div>
                { myMemberships.filter((m) => m.id === c.id).length ? <button onClick={(() => {
@@ -326,13 +344,15 @@ function Commented2Posts() {
                   })}
                   id="mod-butt2"></button> }
             </div>
+
+
             )}
             </div>
             <p onClick={((e) => {
                     e.stopPropagation()
                     window.alert("Feature not avaliable")
                     })}>VIEW MORE</p>
-        </div>
+        </div> }
         { isVisible3 ? <button className={top} onClick={((e) => window.scrollTo({ top: 0, left: 0, behavior: "smooth"}))}>Back to Top</button> : null}
     </div>
 </div>

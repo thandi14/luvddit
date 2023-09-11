@@ -5,7 +5,7 @@ import * as communitiesActions from "../../store/communities"
 import './HomePage.css'
 import pfp from './IMG6.jpg'
 import avatar from  './imagedit2.png'
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
+import { useHistory, useParams } from 'react-router-dom/cjs/react-router-dom.min'
 import PostPageModal from '../PostPage/PostPageModal'
 import { useModal } from '../../context/Modal'
 import CreateCommunity from '../CreateCommunityModel'
@@ -22,6 +22,7 @@ function HistoryPosts() {
     const { userCommunities, communityMemberships, memberships } = useSelector((state) => state.communities);
     const { user } = useSelector((state) => state.session);
     const dispatch = useDispatch()
+    const { page } = useParams(); // Retrieve the page parameter from the URL
     const [isVisible, setIsVisible] = useState(false);
     const [isVisible2, setIsVisible2] = useState(false);
     const [isVisible3, setIsVisible3] = useState(true);
@@ -35,6 +36,10 @@ function HistoryPosts() {
     const [ postId, setPostId ] = useState(null)
     const [ commentId, setCommentId ] = useState(null)
     const targetRef2 = useRef()
+
+    useEffect(() => {
+      dispatch(postsActions.thunkGetHistory(page)); // Fetch posts for the specified page
+    }, [dispatch, page]);
 
     useEffect(() => {
         window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
@@ -55,17 +60,15 @@ function HistoryPosts() {
 
         }, []);
 
-    let filterdPosts = Object.values(postsHistory).sort((a, b) => {
-        if (b.postsHistories && a.postsHistories) {
-            return new Date(b.postsHistories[0].createdAt) - new Date(a.postsHistories[0].createdAt)
-        }
-    })
+    let filterdPosts = Object.values(postsHistory)
+    // .filter((p) => {
+    //     return p.PostSetting?.userId === user.id
+    // })
 
     let top = isVisible ? "top" : "down";
 
-    //console.log(filterdPosts)
-
     let moderating = Object.values(userCommunities)
+
 
     let profile
 
@@ -117,28 +120,20 @@ function HistoryPosts() {
     }, [])
 
     filterdPosts.forEach((p) => {
-        p.postsHistories?.forEach((h) => {
-            let historyDate = new Date(h.updatedAt)
-            h.updatedAt = Date.parse(historyDate)
-        })
-        p.postsHistories?.sort((a, b) => {
-            return b.updatedAt - a.updatedAt
-        })
-
-            p.createdAt = p.postsHistories ? p.postsHistories[0].updatedAt : p.updatedAt
-
-
-
+          let setting = p.PostSetting;
+          if (setting) {
+            let historyDate = new Date(p.PostSetting.history)
+            p.PostSetting.history = Date.parse(historyDate)
+          }
     })
 
     filterdPosts.sort((a, b) => {
-        return b.updatedAt - a.updatedAt
+       if (b.PostSetting && a.PostSetting) {
+         return b.PostSetting.history - a.PostSetting.history
+       }
     })
 
-
-
-
-   // if (!ePost.length) return <h1 className="data-not-here"></h1>
+   //if (!ePost.length) return <h1 className="data-not-here"></h1>
 
     let recent = Object.values(posts)
     recent = recent.reverse()
@@ -173,26 +168,6 @@ function HistoryPosts() {
         }
       };
 
-      const getTimeDifferenceString2 = (createdAt) => {
-        const currentTime = new Date();
-        const createdAtDate = new Date(createdAt);
-
-        const timeDifferenceInSeconds = Math.floor((currentTime - createdAtDate) / 1000);
-
-        if (timeDifferenceInSeconds < 60) {
-          return timeDifferenceInSeconds === 1 ? `${timeDifferenceInSeconds} sec` : `${timeDifferenceInSeconds} secs`;
-        } else if (timeDifferenceInSeconds < 3600) {
-          const minutes = Math.floor(timeDifferenceInSeconds / 60);
-          return `${minutes} mins`
-        } else if (timeDifferenceInSeconds < 86400) {
-          const hours = Math.floor(timeDifferenceInSeconds / 3600);
-          return hours === 1 ? `${hours} hr` : `${hours} hrs`;
-        } else {
-          const days = Math.floor(timeDifferenceInSeconds / 86400);
-          return `${days} d`;
-        }
-      };
-
       let editMenu = isVisible2 ? "edit-menu" : "hidden";
       let editMenu2 = isVisible4 ? "edit-menu" : "hidden";
 
@@ -204,14 +179,14 @@ function HistoryPosts() {
 
     <div id="aHeader3">
         <div id="aH50">
-        <span onClick={(() => history.push("/profile"))} id="aH4">OVERVIEW</span>
-        <span onClick={(() => history.push("/profile/posts"))} id="aH2">POSTS</span>
-        <span onClick={(() => history.push("/profile/comments"))} id="aH3">COMMENTS</span>
-        <span onClick={(() => history.push("/profile/history"))}id="aHl">HISTORY</span>
+        <span onClick={(() => history.push("/profile/:page"))} id="aH4">OVERVIEW</span>
+        <span onClick={(() => history.push("/profile/posts/:page"))} id="aH2">POSTS</span>
+        <span onClick={(() => history.push("/profile/comments/:page"))} id="aH3">COMMENTS</span>
+        <span onClick={(() => history.push("/profile/history/:page"))}id="aHl">HISTORY</span>
         <span onClick={(() => window.alert("Feature not avaliable"))}id="aH5">SAVED</span>
         <span onClick={(() => window.alert("Feature not avaliable"))}id="aH6">HIDDEN</span>
-        <span onClick={(() => history.push("/profile/upvoted"))} id="aH7">UPVOTED</span>
-        <span onClick={(() => history.push("/profile/downvoted"))}id="aH8">DOWNVOTED</span>
+        <span onClick={(() => history.push("/profile/upvoted/:page"))} id="aH7">UPVOTED</span>
+        <span onClick={(() => history.push("/profile/downvoted/:page"))}id="aH8">DOWNVOTED</span>
         <span onClick={(() => window.alert("Feature not avaliable"))}id="aH9">AWARDS RECIEVED</span>
         <span onClick={(() => window.alert("Feature not avaliable"))}id="aH10">AWARDS GIVEN</span>
         </div>

@@ -48,7 +48,7 @@ function YourCommunitesProfile() {
         async function fetchData() {
             const response = await dispatch(communityActions.thunkUpdateCommunities(singleCommunity.id, data1))
             if (response) {
-                history.push(`/communities/${response.id}`)
+                history.push(`/communities/${response.id}/:page`)
                 setIsVisible(!isVisible)
             }
 

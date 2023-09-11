@@ -249,14 +249,6 @@ function PostPageModal({ postId, scroll }) {
     let pHistory
     if (postsHistory) pHistory = Object.values(postsHistory)
 
-    useEffect(() => {
-        if (postsHistory && Object.values(postsHistory).some((h) => h.id === singlePost.id)) {
-            setSeen(true)
-            setPostH(Object.values(postsHistory).filter((h) => h.id === singlePost.id))
-        }
-
-    }, [postsHistory])
-
     useEffect( () => {
 
         async function fetchData() {
@@ -264,8 +256,6 @@ function PostPageModal({ postId, scroll }) {
             let data
             if (postId) {
                 data =  await dispatch(postActions.thunkGetDetailsById(postId))
-                let data1 = await dispatch(postActions.thunkGetHistoryDetails(postId))
-                setPostH(data1)
                 setP(data)
             }
 
@@ -280,13 +270,14 @@ function PostPageModal({ postId, scroll }) {
 
         async function fetchData() {
 
-            await dispatch(postActions.thunkGetHistory())
-            if (postH.length) await dispatch(postActions.thunkUpdateHistory(postH[0].id))
-            else if (!postH.length) await dispatch(postActions.thunkCreateHistory(postId))
+            if (singlePost.PostSetting?.history) await dispatch(postActions.thunkUpdateHistory(postId))
+            else if (!singlePost.PostSetting || singlePost.PostSetting && !singlePost.PostSetting.history) await dispatch(postActions.thunkCreateHistory(postId))
+
         }
         fetchData()
 
-    }, [dispatch, postH])
+    }, [dispatch, singlePost.PostSetting])
+
 
     let editMenu = isVisible ? "edit-menu" : "hidden";
     let editMenu2 = isVisible3 ? "edit-menu" : "hidden";
@@ -689,7 +680,7 @@ function PostPageModal({ postId, scroll }) {
             <div className="side-community2">
                 { singlePost.Community?.id === 1 ? <CommunitiesProfile community={singlePost.Community} /> :
                  <div onClick={(() => {
-                    history.push(`/communities/${singlePost.Community.id}`)
+                    history.push(`/communities/${singlePost.Community.id}/:page`)
                     closeModal()
                      })} id="your-community-profile">
                      {!singlePost.Community?.communityStyles.length ? <div id="header-profile-comm4">

@@ -22,29 +22,39 @@ import ModTools from "./components/CommunityPage/mod";
 import OtherProfilePage from "./components/YourProfilePage/index2";
 import OthersPosts from "./components/YourProfilePage/posts2";
 import Commented2Posts from "./components/YourProfilePage/comments2";
+import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 
 function App() {
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.session)
+  const { user, other } = useSelector((state) => state.session)
+  const { singleCommunity } = useSelector((state) => state.communities)
   const [isLoaded, setIsLoaded] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage2, setCurrentPage2] = useState(1);
   const [threshold, setThreshold] = useState(450);
   const location = useLocation();
+  const { id } = useParams()
 
+  console.log('APP:', singleCommunity)
+
+  useEffect(() => {
+    localStorage.setItem("currentPage", currentPage.toString());
+  }, [currentPage]);
 
   useEffect(() => {
     dispatch(sessionActions.restoreUser()).then(() => setIsLoaded(true));
     dispatch(communitiesActions.thunkGetAllCommunities())
-    dispatch(postsActions.thunkGetHistory())
     if (user && user.id) dispatch(communitiesActions.thunkGetMemberships())
     if (user && user.id) dispatch(communitiesActions.thunkGetUserCommunities())
   }, [dispatch, isLoaded]);
 
   useEffect(() => {
+
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
+
   }, [currentPage]);
 
   const handleScroll = () => {
@@ -53,19 +63,32 @@ function App() {
     const scrollTop = window.scrollY;
 
     if (windowHeight + scrollTop >= documentHeight - threshold) {
+      const storedCurrentPage = localStorage.getItem("currentPage");
+
       setCurrentPage(currentPage + 1);
       setThreshold(threshold + 200);
-      dispatch(postsActions.thunkGetAllPosts(currentPage))
-      console.log("bottom of page")
+      dispatch(postsActions.thunkGetAllPosts(currentPage));
+      dispatch(postsActions.thunkGetHistory(currentPage))
+      dispatch(postsActions.thunkGetFavorites(currentPage))
+      dispatch(postsActions.thunkGetComments(currentPage))
 
+      if (location.pathname.includes("/profile2/") && other.id) {
+        dispatch(postsActions.thunkGetUserPosts(other.id, currentPage)) // Fetch next page
+        dispatch(postsActions.thunkGetComments(other.id, currentPage))
+        dispatch(postsActions.thunkGetOverview(other.id, currentPage)) // Fetch next page
 
-    }
+      }
+      else if (singleCommunity && singleCommunity.id) {
+        dispatch(postsActions.thunkGetCommunityPosts(singleCommunity.id, currentPage))
+      }
+      else if (user && user.id) {
+        dispatch(postsActions.thunkGetUserPosts(user.id, currentPage)) // Fetch next page
+        dispatch(postsActions.thunkGetComments(user.id, currentPage))
+        dispatch(postsActions.thunkGetOverview(user.id, currentPage)) // Fetch next page
+      }
+
   };
-
-  console.log("CURRENT PAGE", currentPage)
-
-
-
+  }
 
 
   return (
@@ -76,22 +99,22 @@ function App() {
           <Route exact path="/">
             <HomePage />
           </Route>
-          <Route exact path="/profile">
+          <Route exact path="/profile/:page">
           {user ? <YourProfilePage /> : <HomePage /> }
           </Route>
-          <Route exact path="/profile/posts">
+          <Route exact path="/profile/posts/:page">
           {user ? <UsersPosts /> : <HomePage /> }
           </Route>
-          <Route exact path="/profile/upvoted">
+          <Route exact path="/profile/upvoted/:page">
           {user ? <UpvotedPosts /> : <HomePage /> }
           </Route>
-          <Route exact path="/profile/downvoted">
+          <Route exact path="/profile/downvoted/:page">
           {user ? <DownvotedPosts /> : <HomePage /> }
           </Route>
-          <Route exact path="/profile/history">
+          <Route exact path="/profile/history/:page">
           {user ? <HistoryPosts /> : <HomePage /> }
           </Route>
-          <Route exact path="/profile/comments">
+          <Route exact path="/profile/comments/:page">
           {user ? <CommentedPosts /> : <HomePage /> }
           </Route>
           <Route exact path="/posts/new/">
@@ -100,26 +123,26 @@ function App() {
           <Route exact path="/posts/new/:button">
            {user ? <CreatePost /> : <HomePage />}
            </Route>
-          <Route exact path="/profile2/:id">
+          <Route exact path="/profile2/:id/:page">
           {user ? <OtherProfilePage /> : <HomePage /> }
           </Route>
-          <Route exact path="/profile2/:id/comments">
+          <Route exact path="/profile2/:id/comments/:page">
           {user ? <Commented2Posts /> : <HomePage /> }
           </Route>
-          <Route exact path="/profile2/:id/posts">
+          <Route exact path="/profile2/:id/posts/:page">
           {user ? <OthersPosts /> : <HomePage /> }
           </Route>
-          <Route exact path="/posts/:id">
+          <Route exact path="/posts/:id/">
             <PostPage />
           </Route>
-          <Route exact path="/communities/:id">
+          <Route exact path="/communities/:id/mod/">
+            { user ? <ModTools /> : <HomePage /> }
+          </Route>
+          <Route exact path="/communities/:id/:page">
             <CommunityPage />
           </Route>
-          <Route exact path="/communities2/:id">
+          <Route exact path="/communities2/:id/:page">
             { user ? <CommunityPageEdit /> : <HomePage /> }
-          </Route>
-          <Route exact path="/communities/:id/mod">
-            { user ? <ModTools /> : <HomePage /> }
           </Route>
           <Route exact path="/posts-modal/:id">
             <PostPageModal />

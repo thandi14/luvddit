@@ -5,7 +5,7 @@ import * as communitiesActions from "../../store/communities"
 import './HomePage.css'
 import pfp from './IMG6.jpg'
 import avatar from  './imagedit2.png'
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
+import { useHistory, useParams } from 'react-router-dom/cjs/react-router-dom.min'
 import PostPageModal from '../PostPage/PostPageModal'
 import { useModal } from '../../context/Modal'
 import CreateCommunity from '../CreateCommunityModel'
@@ -17,7 +17,7 @@ import DeleteComment from '../PostPage/deleteC'
 import '../PostPage/PostPage.css'
 
 function YourProfilePage() {
-    const { posts, singlePost, userPosts } = useSelector((state) => state.posts);
+    const { posts, singlePost, postsOverview } = useSelector((state) => state.posts);
     const { userCommunities, communityMemberships, memberships } = useSelector((state) => state.communities);
     const { user } = useSelector((state) => state.session);
     const dispatch = useDispatch()
@@ -37,8 +37,12 @@ function YourProfilePage() {
     const [ singleCommunity, setSingleCommunity ] = useState(null)
     const [ joined, setJoined ] = useState(true)
     const targetRef2 = useRef()
+    const { page } = useParams(); // Retrieve the page parameter from the URL
 
-    console.log(communityMemberships)
+
+    useEffect(() => {
+        dispatch(postsActions.thunkGetOverview(user.id, page)); // Fetch posts for the specified page
+    }, [dispatch, page]);
 
 
     useEffect(() => {
@@ -60,47 +64,38 @@ function YourProfilePage() {
 
         }, []);
 
-    let sortedPosts = Object.values(posts)
+   // let ePosts = Object.values(posts).reverse()
 
-    let filterdPosts = sortedPosts.filter((p) => {
-        return p.userId === user.id || p.Comments.some((c) => c.userId === user.id)
-    })
-
-    filterdPosts.forEach((p) => {
-       if (p.Comments && p.Comments.length) p.Comments = p.Comments.filter((c) => c.userId === user.id)
-    })
+    let filterdPosts = Object.values(postsOverview).reverse()
 
     filterdPosts.forEach((p) => {
         let postDate = new Date(p.updatedAt)
         p.updatedAt = Date.parse(postDate)
     })
 
-    filterdPosts.sort((a, b) => {
-        return b.updatedAt - a.updatedAt
-    })
-
     filterdPosts.forEach((p) => {
 
-        if (p.userId !== user.id) {
-            p.Comments.forEach((c) => {
-                let commentDate = new Date(c.updatedAt)
-                c.updatedAt = Date.parse(commentDate)
-            })
-            p.Comments.sort((a, b) => {
-                return b.updatedAt - a.updatedAt
-            })
+        p.Comments?.forEach((c) => {
+            let commentDate = new Date(c.updatedAt)
+            c.updatedAt = Date.parse(commentDate)
+        })
+        p.Comments?.sort((a, b) => {
+            return b.updatedAt - a.updatedAt
+        })
 
-            if (p.updatedAt < p.Comments[0].updatedAt) {
-                p.updatedAt = p.Comments[0].updatedAt
-
-            }
+        if (p.Comments[0] && p.updatedAt < p.Comments[0].updatedAt) {
+            p.updatedAt = p.Comments[0].updatedAt
 
         }
+
     })
+
 
     filterdPosts.sort((a, b) => {
         return b.updatedAt - a.updatedAt
     })
+
+    console.log(filterdPosts)
 
     let top = isVisible ? "top" : "down";
 
@@ -226,13 +221,13 @@ function YourProfilePage() {
     <div id="aHeader">
         <div id="aH">
         <span id="aHl">OVERVIEW</span>
-        <span onClick={(() => history.push("/profile/posts"))} id="aH2">POSTS</span>
-        <span onClick={(() => history.push("/profile/comments"))} id="aH3">COMMENTS</span>
-        <span onClick={(() => history.push("/profile/history"))}id="aH4">HISTORY</span>
+        <span onClick={(() => history.push("/profile/posts/:page"))} id="aH2">POSTS</span>
+        <span onClick={(() => history.push("/profile/comments/:page"))} id="aH3">COMMENTS</span>
+        <span onClick={(() => history.push("/profile/history/:page"))}id="aH4">HISTORY</span>
         <span onClick={(() => window.alert("Feature not avaliable"))}id="aH5">SAVED</span>
         <span onClick={(() => window.alert("Feature not avaliable"))}id="aH6">HIDDEN</span>
-        <span onClick={(() => history.push("/profile/upvoted"))}id="aH7">UPVOTED</span>
-        <span onClick={(() => history.push("/profile/downvoted"))}id="aH8">DOWNVOTED</span>
+        <span onClick={(() => history.push("/profile/upvoted/:page"))}id="aH7">UPVOTED</span>
+        <span onClick={(() => history.push("/profile/downvoted/:page"))}id="aH8">DOWNVOTED</span>
         <span onClick={(() => window.alert("Feature not avaliable"))}id="aH9">AWARDS RECIEVED</span>
         <span onClick={(() => window.alert("Feature not avaliable"))}id="aH10">AWARDS GIVEN</span>
         </div>

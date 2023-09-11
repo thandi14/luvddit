@@ -15,7 +15,7 @@ import NoPosts from "../YourProfilePage/none";
 function CommunityPage() {
   const { id } = useParams();
   const { communities, communityMemberships, singleCommunity, memberships } = useSelector((state) => state.communities);
-  const { posts } = useSelector((state) => state.posts);
+  const { communityPosts } = useSelector((state) => state.posts);
   const { user } = useSelector((state) => state.session);
   const { setModalContent } = useModal()
   const dispatch = useDispatch()
@@ -29,6 +29,13 @@ function CommunityPage() {
 
   console.log(singleCommunity)
 
+  const { page } = useParams(); // Retrieve the page parameter from the URL
+
+
+  useEffect(() => {
+      dispatch(postsActions.thunkGetCommunityPosts(id, page)); // Fetch posts for the specified page
+  }, [dispatch, page, id]);
+
   useEffect(() => {
     window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
   }, []);
@@ -41,19 +48,15 @@ function CommunityPage() {
   const myMemberships = Object.values(memberships)
   const member = myMemberships.filter((m) => m.id === singleCommunity.id)
 
-  
+
 
   if (member) joined = true
   if (!member.length) joined = false
 
-  let ePost
+  let ePost = []
 
-  ePost = Object.values(posts)
+  ePost = Object.values(communityPosts).reverse().sort((a, b) => a.createdAt - b.createdAt)
 
-
-  ePost = ePost.filter((p) => p.communityId === singleCommunity.id)
-
-  ePost = ePost.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   useEffect(() => {
 

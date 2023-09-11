@@ -19,7 +19,7 @@ import * as sessionActions from "../../store/session"
 
 
 function OtherProfilePage() {
-    const { posts, singlePost, userPosts } = useSelector((state) => state.posts);
+    const { posts, singlePost, userPosts, postsOverview } = useSelector((state) => state.posts);
     const { communities, communityMemberships, memberships } = useSelector((state) => state.communities);
     const { user, other } = useSelector((state) => state.session);
     const dispatch = useDispatch()
@@ -40,12 +40,15 @@ function OtherProfilePage() {
     const [ singleCommunity, setSingleCommunity ] = useState(null)
     const [ joined, setJoined ] = useState(true)
     const targetRef2 = useRef()
+    const { page } = useParams(); // Retrieve the page parameter from the URL
 
 
 
     useEffect(() => {
         window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
     }, []);
+
+    console.log(id)
 
 
     useEffect(() => {
@@ -58,14 +61,26 @@ function OtherProfilePage() {
 
         fetchData()
 
-    }, [dispatch, id, other?.id])
+    }, [dispatch, id])
 
     console.log(other)
 
     useEffect(() => {
+        let data
 
         async function fetchData() {
-          let data = await dispatch(communitiesActions.thunkGetUserCommunities())
+            if (id) data = dispatch(postsActions.thunkGetOverview(id, page)); // Fetch posts for the specified page
+            else return
+        }
+
+        fetchData()
+
+    }, [dispatch, page, id]);
+
+    useEffect(() => {
+
+        async function fetchData() {
+            let data = await dispatch(communitiesActions.thunkGetUserCommunities())
            if (profile) await dispatch(communitiesActions.thunkGetDetailsById(profile.id))
         }
 
@@ -88,48 +103,53 @@ function OtherProfilePage() {
 
     }, []);
 
-    let sortedPosts = Object.values(posts)
+    let filterdPosts = Object.values(postsOverview).reverse()
 
-    let filterdPosts = sortedPosts.filter((p) => {
-        return p.userId === other.id || p.Comments.some((c) => c.userId === other.id)
-    })
-    // console.log(filterdPosts)
+    // filterdPosts = filterdPosts.filter((p) => {
+        //     return (p.Comments.some((c) => c.userId === user.id) && p.userId !== user.id) || (p.userId === user.id)
+        // })
 
-    filterdPosts.forEach((p) => {
-        if (p.Comments && p.Comments.length) p.Comments = p.Comments.filter((c) => c.userId === other.id)
-    })
+        // // // filterdPosts.concat(userPs)
+
+        // filterdPosts.forEach((p) => {
+            //    if (p.Comments && p.Comments.length) p.Comments = p.Comments.filter((c) => c.userId === user.id)
+            // })
 
     filterdPosts.forEach((p) => {
         let postDate = new Date(p.updatedAt)
         p.updatedAt = Date.parse(postDate)
     })
 
-    filterdPosts.sort((a, b) => {
-        return b.updatedAt - a.updatedAt
-    })
+    // // // filterdPosts.sort((a, b) => {
+        // // //     return b.updatedAt - a.updatedAt
+        // // // })
 
     filterdPosts.forEach((p) => {
 
-        if (p.userId !== other.id) {
-            p.Comments.forEach((c) => {
-                let commentDate = new Date(c.updatedAt)
-                c.updatedAt = Date.parse(commentDate)
-            })
-            p.Comments.sort((a, b) => {
-                return b.updatedAt - a.updatedAt
-            })
+        p.Comments?.forEach((c) => {
+            let commentDate = new Date(c.updatedAt)
+            c.updatedAt = Date.parse(commentDate)
+        })
+        p.Comments?.sort((a, b) => {
+            return b.updatedAt - a.updatedAt
+        })
 
-            if (p.updatedAt < p.Comments[0].updatedAt) {
-                p.updatedAt = p.Comments[0].updatedAt
-
-            }
+        if (p.Comments[0] && p.updatedAt < p.Comments[0].updatedAt) {
+            p.updatedAt = p.Comments[0].updatedAt
 
         }
+
     })
+
 
     filterdPosts.sort((a, b) => {
         return b.updatedAt - a.updatedAt
     })
+
+
+    console.log(filterdPosts)
+
+
 
     let top = isVisible ? "top" : "down";
 
@@ -237,9 +257,9 @@ function OtherProfilePage() {
 
     <div id="aHeader">
         <div id="aH">
-        <span onClick={(() => history.push(`/profile2/${id}`))}id="aHl">OVERVIEW</span>
-        <span onClick={(() => history.push(`/profile2/${id}/posts`))} id="aH2">POSTS</span>
-        <span onClick={(() => history.push(`/profile2/${id}/comments`))} id="aH3">COMMENTS</span>
+        <span onClick={(() => history.push(`/profile2/${id}/:page`))}id="aHl">OVERVIEW</span>
+        <span onClick={(() => history.push(`/profile2/${id}/posts/:page`))} id="aH2">POSTS</span>
+        <span onClick={(() => history.push(`/profile2/${id}/comments/:page`))} id="aH3">COMMENTS</span>
         </div>
     </div>
     <div className="splashPage">
@@ -266,8 +286,7 @@ function OtherProfilePage() {
             <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id={`${post.id}`} className="post-content2">
             {post.userId !== other.id ? <div id="pc-side104"><i id="posted-c" class="fa-regular fa-message"></i></div> : <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side8">
             <PostLikes post={post}
-            vote={isLiked.length && isLiked.some((l) => l.postId === post.id && l.upVote === 1)}
-            downVote={isLiked.length && isLiked.some((l) => l.postId === post.id && l.downVote === 1)}/>
+            />
             </div> }
             <div id="pc-side2">
             { post.userId !== other.id ? <div id="nameOf2">
@@ -442,22 +461,21 @@ function OtherProfilePage() {
     </div>
     <div className="sidebar">
         <CommunitiesProfile community={profile} user={other} />
-        <div id="terms2">
+        { moderating.length && <div id="terms2">
             <div id="terms-9">
-            <span>You're a moderator of these <br></br>
+            <span>Moderator of these <br></br>
                 communities</span>
-            {moderating && moderating.map((c) =>
+            {moderating.map((c) =>
             <div id="modss">
                 <div>
                {c.communityStyles && c.communityStyles.length ? <img id="tpfp" src={c.communityStyles[0].profile}></img> : <div id="nopfp">l/</div> }
                <div id="modss20">
-                <span id="justbold" onClick={(() => history.push(`/communities/${c.id}`))}>l/{c.name}</span>
+                <span id="justbold">l/{c.name}</span>
                 <span>{c.CommunityMembers} members</span>
                </div>
                </div>
                { myMemberships.filter((m) => m.id === c.id).length ? <button onClick={(() => {
                   dispatch(communitiesActions.thunkUnjoinCommunities(c.id))
-                  setJoined(true)
                 })}
                 id="mod-butt"></button> :
                 <button onClick={(() => {
@@ -465,13 +483,15 @@ function OtherProfilePage() {
                   })}
                   id="mod-butt2"></button> }
             </div>
+
+
             )}
             </div>
             <p onClick={((e) => {
                     e.stopPropagation()
                     window.alert("Feature not avaliable")
                     })}>VIEW MORE</p>
-        </div>
+        </div> }
         { isVisible3 ? <button className={top} onClick={((e) => window.scrollTo({ top: 0, left: 0, behavior: "smooth"}))}>Back to Top</button> : null}
     </div>
 </div>

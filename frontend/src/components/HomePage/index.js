@@ -5,7 +5,7 @@ import * as communitiesActions from "../../store/communities"
 import './HomePage.css'
 import pfp from './IMG6.jpg'
 import avatar from  './imagedit2.png'
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min'
+import { useHistory, useParams } from 'react-router-dom/cjs/react-router-dom.min'
 import PostPageModal from '../PostPage/PostPageModal'
 import { useModal } from '../../context/Modal'
 import CreateCommunity from '../CreateCommunityModel'
@@ -13,7 +13,9 @@ import PostLikes from './likes'
 
 
 function HomePage() {
-    const { posts, singlePost } = useSelector((state) => state.posts);
+    const { posts, singlePost, postsHistory } = useSelector((state) => state.posts);
+    const { memberships } = useSelector((state) => state.communities);
+
     const { user } = useSelector((state) => state.session);
     const dispatch = useDispatch()
     const [isVisible, setIsVisible] = useState(false);
@@ -25,8 +27,14 @@ function HomePage() {
     const { setModalContent } = useModal()
     const [ scrolling, setScrolling ] = useState(null)
     const targetRef = useRef()
+    const { page } = useParams(); // Retrieve the page parameter from the URL
+
 
     let top = isVisible ? "top" : "down"
+
+    // useEffect(() => {
+    //   dispatch(postsActions.thunkGetHistory(page)); // Fetch posts for the specified page
+    // }, [dispatch, page]);
 
 
 
@@ -73,15 +81,23 @@ function HomePage() {
 
     }, [])
 
-    const ePost = Object.values(posts)
 
+    let ePost = Object.values(posts).reverse().sort((a, b) => a.createdAt - b.createdAt)
 
     if (!ePost.length) return <h1 className="data-not-here"></h1>
 
-    let recent = Object.values(posts)
-    recent = recent.reverse()
-    recent = recent.slice(0, 5)
+    let recent = []
 
+    let cm = Object.values(memberships)
+
+    for (let c of cm ) {
+      console.log(c)
+      for ( let p of c.Posts ) recent.push(p)
+    }
+
+   recent = recent.reverse().sort((a, b) => a.createdAt - b.createdAt)
+
+   recent = recent.slice(0, 5)
 
 
     const getTimeDifferenceString = (createdAt) => {

@@ -174,27 +174,6 @@ function CommunityPageEdit() {
     }
   };
 
-  const getTimeDifferenceString2 = (createdAt) => {
-    const currentTime = new Date();
-    const createdAtDate = new Date(createdAt);
-
-    const timeDifferenceInSeconds = Math.floor((currentTime - createdAtDate) / 1000);
-
-    if (timeDifferenceInSeconds < 60) {
-      return timeDifferenceInSeconds === 1 ? `${timeDifferenceInSeconds} sec` : `${timeDifferenceInSeconds} secs`;
-    } else if (timeDifferenceInSeconds < 3600) {
-      const minutes = Math.floor(timeDifferenceInSeconds / 60);
-      return `${minutes} mins`
-    } else if (timeDifferenceInSeconds < 86400) {
-      const hours = Math.floor(timeDifferenceInSeconds / 3600);
-      return hours === 1 ? `${hours} hr` : `${hours} hrs`;
-    } else {
-      const days = Math.floor(timeDifferenceInSeconds / 86400);
-      return `${days} d`;
-    }
-  };
-
-
   let ePost = singleCommunity.Posts?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
 

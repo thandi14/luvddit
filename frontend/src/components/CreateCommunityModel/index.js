@@ -34,7 +34,7 @@ function CreateCommunity() {
             const response = await dispatch(communityActions.thunkCreateCommunity(data1))
             console.log(response)
             if (response) {
-                history.push(`/communities/${response.id}`)
+                history.push(`/communities/${response.id}/:page`)
                 closeModal()
             }
 

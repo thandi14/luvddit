@@ -38,6 +38,12 @@ function OthersPosts() {
     const [ postId, setPostId ] = useState(null)
     const [ commentId, setCommentId ] = useState(null)
     const targetRef2 = useRef()
+    const { page } = useParams(); // Retrieve the page parameter from the URL
+
+
+    useEffect(() => {
+        dispatch(postsActions.thunkGetAllPosts(page)); // Fetch posts for the specified page
+    }, [dispatch, page]);
 
     useEffect(() => {
         window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
@@ -58,33 +64,36 @@ function OthersPosts() {
 
         }, []);
 
-    let filterdPosts = Object.values(posts)
-
-    filterdPosts = filterdPosts.filter((p) => p.userId === other.id).reverse()
-
     let top = isVisible ? "top" : "down";
 
-    console.log(other)
-
     useEffect(() => {
+      let data
 
-        async function fetchData() {
-          if (id) await dispatch(sessionActions.getOther(id))
-          let data = await dispatch(communitiesActions.thunkGetUserCommunities())
-           if (profile) await dispatch(communitiesActions.thunkGetDetailsById(profile.id))
-        }
-          fetchData()
-
-      }, [dispatch])
-
-
-  useEffect(() => {
-    async function fetchData() {
-      let data = await dispatch(postsActions.thunkGetUserPosts())
+      async function fetchData() {
+          if (id) data = await dispatch(sessionActions.getOther(id))
+          else return
       }
+
       fetchData()
 
-  }, [dispatch])
+  }, [dispatch, id])
+
+    useEffect(() => {
+      async function fetchData() {
+        if (id) dispatch(postsActions.thunkGetUserPosts(id, page)); // Fetch posts for the specified page
+        else return
+      }
+
+    fetchData()
+
+    }, [dispatch, page, id]);
+
+      let filterdPosts = Object.values(userPosts).reverse()
+
+      filterdPosts = filterdPosts.sort((a, b) => {
+        return b.createdAt - a.createdAt
+      })
+
 
 
     useEffect(() => {
@@ -155,26 +164,6 @@ function OthersPosts() {
         }
       };
 
-      const getTimeDifferenceString2 = (createdAt) => {
-        const currentTime = new Date();
-        const createdAtDate = new Date(createdAt);
-
-        const timeDifferenceInSeconds = Math.floor((currentTime - createdAtDate) / 1000);
-
-        if (timeDifferenceInSeconds < 60) {
-          return timeDifferenceInSeconds === 1 ? `${timeDifferenceInSeconds} sec` : `${timeDifferenceInSeconds} secs`;
-        } else if (timeDifferenceInSeconds < 3600) {
-          const minutes = Math.floor(timeDifferenceInSeconds / 60);
-          return `${minutes} mins`
-        } else if (timeDifferenceInSeconds < 86400) {
-          const hours = Math.floor(timeDifferenceInSeconds / 3600);
-          return hours === 1 ? `${hours} hr` : `${hours} hrs`;
-        } else {
-          const days = Math.floor(timeDifferenceInSeconds / 86400);
-          return `${days} d`;
-        }
-      };
-
       let editMenu = isVisible2 ? "edit-menu" : "hidden";
       let editMenu2 = isVisible4 ? "edit-menu" : "hidden";
 
@@ -184,9 +173,9 @@ function OthersPosts() {
 
     <div id="aHeader3">
         <div id="aH50">
-        <span onClick={(() => history.push(`/profile2/${id}`))} id="aH2">OVERVIEW</span>
-        <span onClick={(() => history.push(`/profile2/${id}/posts`))} id="aHl">POSTS</span>
-        <span onClick={(() => history.push(`/profile2/${id}/comments`))} id="aH3">COMMENTS</span>
+        <span onClick={(() => history.push(`/profile2/${id}/:page`))} id="aH2">OVERVIEW</span>
+        <span onClick={(() => history.push(`/profile2/${id}/posts/:page`))} id="aHl">POSTS</span>
+        <span onClick={(() => history.push(`/profile2/${id}/comments/:page`))} id="aH3">COMMENTS</span>
         </div>
     </div>
     <div className="splashPage2">
@@ -322,9 +311,9 @@ function OthersPosts() {
     </div>
     <div className="sidebar2">
         <CommunitiesProfile community={profile} />
-        <div id="terms2">
+        { moderating.length && <div id="terms2">
             <div id="terms-9">
-            <span>You're a moderator of these <br></br>
+            <span>Moderator of these <br></br>
                 communities</span>
             {moderating.map((c) =>
             <div id="modss">
@@ -352,7 +341,7 @@ function OthersPosts() {
                     e.stopPropagation()
                     window.alert("Feature not avaliable")
                     })}>VIEW MORE</p>
-        </div>
+        </div> }
         { isVisible3 ? <button className={top} onClick={((e) => window.scrollTo({ top: 0, left: 0, behavior: "smooth"}))}>Back to Top</button> : null}
     </div>
 </div>

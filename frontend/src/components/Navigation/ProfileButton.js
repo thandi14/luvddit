@@ -53,7 +53,7 @@ function ProfileButton({ user, menu, r }) {
         <span>Online status</span>
         <span onClick={(() => {
           setShowMenu(false)
-          history.push("/profile")
+          history.push("/profile/:page")
           })}>Profile</span>
         <span>Create Avatar</span>
         <span>User settings</span>
