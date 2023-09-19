@@ -16,6 +16,7 @@ import { useModal2 } from '../../context/Modal2'
 import DeleteComment from '../PostPage/deleteC'
 import '../PostPage/PostPage.css'
 import NoPosts from './none'
+import { useFilter } from '../../context/filter'
 
 function DownvotedPosts() {
     const { posts, singlePost, userPosts, postsFavorites } = useSelector((state) => state.posts);
@@ -36,6 +37,41 @@ function DownvotedPosts() {
     const [ commentId, setCommentId ] = useState(null)
     const targetRef2 = useRef()
     const { page } = useParams(); // Retrieve the page parameter from the URL
+    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage2, setCurrentPage2] = useState(1);
+    const [threshold, setThreshold] = useState(450);
+    const { filter, setFilter } = useFilter()
+    const [ seeMore, setSeeMore ] = useState(false)
+
+
+    useEffect(() => {
+      setFilter(false)
+      localStorage.setItem("currentPage", currentPage.toString());
+    }, [currentPage]);
+
+    useEffect(() => {
+
+      window.addEventListener('scroll', handleScroll);
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+      };
+
+    }, [currentPage]);
+
+    const handleScroll = () => {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.scrollY;
+
+      if (windowHeight + scrollTop >= documentHeight - threshold) {
+        const storedCurrentPage = localStorage.getItem("currentPage");
+
+        setCurrentPage(currentPage + 1);
+        setThreshold(threshold + 200);
+        dispatch(postsActions.thunkGetFavorites(currentPage)); // Fetch posts for the specified page
+      }
+    }
+
 
 
     useEffect(() => {
@@ -50,7 +86,7 @@ function DownvotedPosts() {
         // if (!showMenu) return;
 
          const closeMenu = (e) => {
-           if (targetRef2 && !targetRef2.current.contains(e.target)) {
+           if (targetRef2 && !targetRef2.current?.contains(e.target)) {
              setIsVisible2(false);
            }
          };
@@ -86,11 +122,13 @@ function DownvotedPosts() {
 
     let top = isVisible ? "top" : "down";
 
-    let moderating = Object.values(userCommunities)
+    let moderating = Object.values(userCommunities).filter((c) => c.type !== "Profile").slice(0, 3)
+    if (seeMore) moderating = Object.values(userCommunities).filter((c) => c.type !== "Profile")
+    if (!seeMore) moderating = Object.values(userCommunities).filter((c) => c.type !== "Profile").slice(0, 3)
 
     let profile
 
-    if (user) profile = moderating.filter((m) => m.type === "Profile")[0]
+    if (user) profile = Object.values(userCommunities).filter((m) => m.type === "Profile")[0]
 
     useEffect(() => {
 
@@ -314,7 +352,7 @@ function DownvotedPosts() {
 
     </div>
     <div className="sidebar2">
-        <CommunitiesProfile community={profile} />
+    <CommunitiesProfile community={profile} page="/profile" />
         <div id="terms2">
             <div id="terms-9">
             <span>You're a moderator of these <br></br>
@@ -322,10 +360,10 @@ function DownvotedPosts() {
             {moderating.map((c) =>
             <div id="modss">
                 <div>
-               {c.communityStyles && c.communityStyles.length ? <img id="tpfp" src={c.communityStyles[0].profile}></img> : <div id="nopfp">l/</div> }
+                {c.CommunityStyle.icon ? <img id="tpfp" src={c.CommunityStyle.icon}></img> : <div style={{ backgroundColor: `${c.CommunityStyle.base}`}}id="nopfp">l/</div> }
                <div id="modss20">
-                <span id="justbold" onClick={(() => history.push(`/communities/${c.id}`))} >l/{c.name}</span>
-                <span>{c.CommunityMembers} members</span>
+               <span onClick={(() => history.push(`/communities/${c.id}/:page`))} id="justbold">l/{c.name}</span>
+               <span>{c.CommunityMembers} { c.CommunityMembers === 1 ? "member" : "members" }</span>
                </div>
                </div>
                { myMemberships.filter((m) => m.id === c.id).length ? <button onClick={(() => {
@@ -341,10 +379,10 @@ function DownvotedPosts() {
 
             )}
             </div>
-            <p onClick={((e) => {
+            { Object.values(userCommunities).filter((c) => c.type !== "Profile").length > 3 && <p onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature not avaliable")
-                    })}>VIEW MORE</p>
+                    setSeeMore(!seeMore)
+                    })}><span id="view-more">{ !seeMore ? "VIEW MORE" : "VIEW LESS"}</span></p>}
         </div>
         { isVisible3 ? <button className={top} onClick={((e) => window.scrollTo({ top: 0, left: 0, behavior: "smooth"}))}>Back to Top</button> : null}
     </div>

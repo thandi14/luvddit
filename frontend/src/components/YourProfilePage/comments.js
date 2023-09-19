@@ -15,6 +15,7 @@ import DeletePost from '../PostPage/delete'
 import { useModal2 } from '../../context/Modal2'
 import DeleteComment from '../PostPage/deleteC'
 import '../PostPage/PostPage.css'
+import { useFilter } from '../../context/filter'
 
 function CommentedPosts() {
     const { posts, singlePost, postsComments } = useSelector((state) => state.posts);
@@ -36,6 +37,39 @@ function CommentedPosts() {
     const [ commentId, setCommentId ] = useState(null)
     const targetRef2 = useRef()
     const { page } = useParams(); // Retrieve the page parameter from the URL
+    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage2, setCurrentPage2] = useState(1);
+    const [threshold, setThreshold] = useState(450);
+    const { filter, setFilter } = useFilter()
+    const [ seeMore, setSeeMore ] = useState(false)
+
+    useEffect(() => {
+      setFilter(false)
+      localStorage.setItem("currentPage", currentPage.toString());
+    }, [currentPage]);
+
+    useEffect(() => {
+
+      window.addEventListener('scroll', handleScroll);
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+      };
+
+    }, [currentPage]);
+
+    const handleScroll = () => {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.scrollY;
+
+      if (windowHeight + scrollTop >= documentHeight - threshold) {
+        const storedCurrentPage = localStorage.getItem("currentPage");
+
+        setCurrentPage(currentPage + 1);
+        setThreshold(threshold + 200);
+        dispatch(postsActions.thunkGetComments(user.id, currentPage)); // Fetch posts for the specified page
+      }
+    }
 
 
     useEffect(() => {
@@ -50,7 +84,7 @@ function CommentedPosts() {
         // if (!showMenu) return;
 
          const closeMenu = (e) => {
-           if (targetRef2 && !targetRef2.current.contains(e.target)) {
+           if (targetRef2 && !targetRef2.current?.contains(e.target)) {
              setIsVisible2(false);
            }
          };
@@ -86,11 +120,13 @@ function CommentedPosts() {
 
     let top = isVisible ? "top" : "down";
 
-    let moderating = Object.values(userCommunities)
+    let moderating = Object.values(userCommunities).filter((c) => c.type !== "Profile").slice(0, 3)
+    if (seeMore) moderating = Object.values(userCommunities).filter((c) => c.type !== "Profile")
+    if (!seeMore) moderating = Object.values(userCommunities).filter((c) => c.type !== "Profile").slice(0, 3)
 
     let profile
 
-    if (user) profile = moderating.filter((m) => m.type === "Profile")[0]
+    if (user) profile = Object.values(userCommunities).filter((m) => m.type === "Profile")[0]
 
     useEffect(() => {
 
@@ -156,7 +192,7 @@ function CommentedPosts() {
     recent = recent.reverse()
     recent = recent.slice(0, 5)
 
-    moderating.shift()
+    //moderating.shift()
 
 
     const getTimeDifferenceString = (createdAt) => {
@@ -212,18 +248,18 @@ function CommentedPosts() {
     </div>
     <div className="splashPage2">
     <div className="posts7">
-        <div className="filter">
+    <div className="filter">
         <div id="filter-side1">
-        <div onClick={(() => window.alert("Feature not avaliable"))} id="best">
-        <i class="fi fi-rr-bahai"></i>
-        <p>New</p>
+        <div style={{ backgroundColor: "#EDEFF1"}} onClick={(() => history.push("/profile/comments/:page"))} id="best">
+        <i style={{ color: '#0079D3'}}class="fi fi-sr-bahai"></i>
+        <p style={{ color: '#0079D3'}}>New</p>
         </div>
-        <div onClick={(() => window.alert("Feature not avaliable"))}id="best">
+        <div onClick={(() => history.push("/profile/comments/hot/:page"))}id="best">
         <i class="fi fi-rs-flame"></i>
         <p>Hot</p>
         </div>
-        <div onClick={(() => window.alert("Feature not avaliable"))} id="best">
-        <i class="fi fi-rs-signal-bars-good"></i>
+        <div onClick={(() => history.push("/profile/comments/top/:page"))} id="best">
+        <i class="fi fi-ts-signal-bars-good"></i>
         <p>Top</p>
         </div>
         </div>
@@ -241,7 +277,9 @@ function CommentedPosts() {
                 window.alert("Feature not avaliable")})}className="userName2">{user.username} </span>
              commented on {post.title} · <span onClick={((e) => {
                 e.stopPropagation()
-                history.push(`/communities/${post.Community.id}`)})}>l/{post.Community.name}</span> · Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
+                history.push(`/communities/${post.Community.id}/:page`)})}>l/{post.Community.name}</span> · Posted by <span onClick={((e) => {
+                  e.stopPropagation()
+                  post.userId !== user.id ? history.push(`/profile2/${post.userId}/:page`) : history.push('/profile/:page')})} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
             {/* <p >Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user.id ? null : getTimeDifferenceString(post.createdAt)}</p> */}
             </div>
             <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="content">
@@ -310,7 +348,7 @@ function CommentedPosts() {
 
     </div>
     <div className="sidebar2">
-        <CommunitiesProfile community={profile} />
+        <CommunitiesProfile community={profile} page="/profile" />
         <div id="terms2">
             <div id="terms-9">
             <span>You're a moderator of these <br></br>
@@ -318,10 +356,10 @@ function CommentedPosts() {
             {moderating.map((c) =>
             <div id="modss">
                 <div>
-               {c.communityStyles && c.communityStyles.length ? <img id="tpfp" src={c.communityStyles[0].profile}></img> : <div id="nopfp">l/</div> }
+                {c.CommunityStyle.icon ? <img id="tpfp" src={c.CommunityStyle.icon}></img> : <div style={{ backgroundColor: `${c.CommunityStyle.base}`}}id="nopfp">l/</div> }
                <div id="modss20">
-                <span id="justbold" onClick={(() => history.push(`/communities/${c.id}`))}>l/{c.name}</span>
-                <span>{c.CommunityMembers} members</span>
+               <span onClick={(() => history.push(`/communities/${c.id}/:page`))} id="justbold">l/{c.name}</span>
+               <span>{c.CommunityMembers} { c.CommunityMembers === 1 ? "member" : "members" }</span>
                </div>
                </div>
                { myMemberships.filter((m) => m.id === c.id).length ? <button onClick={(() => {
@@ -335,10 +373,10 @@ function CommentedPosts() {
             </div>
             )}
             </div>
-            <p onClick={((e) => {
+            { Object.values(userCommunities).filter((c) => c.type !== "Profile").length > 3 && <p onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature not avaliable")
-                    })}>VIEW MORE</p>
+                    setSeeMore(!seeMore)
+                    })}><span id="view-more">{ !seeMore ? "VIEW MORE" : "VIEW LESS"}</span></p>}
         </div>
         { isVisible3 ? <button className={top} onClick={((e) => window.scrollTo({ top: 0, left: 0, behavior: "smooth"}))}>Back to Top</button> : null}
     </div>

@@ -65,8 +65,8 @@ function ModTools() {
         <div>
             <div id="name-head">
                 <div style={{ fontWeight: "900" }}id="name-headC2">
-                {singleCommunity.communityStyles?.length ? <img id="pfp30" src={singleCommunity.communityStyles && singleCommunity.communityStyles[0]?.profile}></img> : <div style={{ backgroundColor: "#0079D3", color: "white", display: "flex", alignItems: "center", justifyContent: "center"}} id="pfp30">l/</div>}
-                <div onClick={((e) => history.push(`/communities/${id}`))}
+                {singleCommunity.CommunityStyle?.icon ? <img id="pfp30" src={singleCommunity.CommunityStyle.icon}></img> : <div style={{ backgroundColor: `${singleCommunity.CommunityStyle?.base}`, color: "white", display: "flex", alignItems: "center", justifyContent: "center"}} id="pfp30">l/</div>}
+                <div onClick={((e) => history.push(`/communities/${id}/:page`))}
                 style={{ color: "#0079D3", cursor: "pointer"}}>
                     <span>l/</span><span>{singleCommunity.name}</span>
                 </div>
@@ -76,7 +76,7 @@ function ModTools() {
                 <div id="mmod">
 
                 <div id="mod-menu">
-                    <div onClick={((e) => history.push(`/communities/${id}`))} id="color45"><i class="fi fi-rr-arrow-left"></i><span>Exit mod tools</span></div>
+                    <div onClick={((e) => history.push(`/communities/${id}/:page`))} id="color45"><i class="fi fi-rr-arrow-left"></i><span>Exit mod tools</span></div>
                     <div id="ov-mod">
                         <div id="color45">OVERVIEW</div>
                         <span><i class="fi fi-rr-envelopes"></i><span>Queues</span></span>
@@ -102,14 +102,14 @@ function ModTools() {
                         <div id="color45">SETTINGS</div>
                         <span><i class="fi fi-rr-settings"></i><span>General Settings</span></span>
                         <span><i class="fi fi-rr-notebook"></i><span>Posts and Comments</span></span>
-                        <span onClick={((e) => history.push(`/communities2/${id}`))} id="color45"><i class="fi fi-rr-paint-roller"></i><span>Community Appearance</span></span>
+                        <span onClick={((e) => history.push(`/communities2/${id}/:page`))} id="color45"><i class="fi fi-rr-paint-roller"></i><span>Community Appearance</span></span>
                         <span><i class="fi fi-rs-cowbell"></i><span>Notifications</span></span>
                         <span><i class="fi fi-rr-square-e"></i><span>Content Rating</span></span>
                         <span><i class="fi fi-rr-kiss-wink-heart"></i><span>Awards and Emojis</span></span>
                     </div>
                     <div id="ov-mod2">
                         <div id="color45">SUPPORT</div>
-                        <span><span><i class="fa-brands fa-reddit-alien"></i><span>Mod Help Center</span></span><i class="fi fi-rr-arrow-up-right-from-square"></i></span>
+                        <span onClick={(() => window.open("/communities/10/:page", "_blank"))} id="color45"><span><i class="fa-brands fa-reddit-alien"></i><span>Mod Help Center</span></span><i class="fi fi-rr-arrow-up-right-from-square"></i></span>
                         <span><span><i class="fa-brands fa-reddit-alien"></i><span>Mod Code of Conduct</span></span><i class="fi fi-rr-arrow-up-right-from-square"></i></span>
                         <span><span><i class="fa-brands fa-reddit-alien"></i><span>ModSupport</span></span><i class="fi fi-rr-arrow-up-right-from-square"></i></span>
                         <span><span><i class="fa-brands fa-reddit-alien"></i><span>ModHelp</span></span><i class="fi fi-rr-arrow-up-right-from-square"></i></span>
@@ -124,8 +124,8 @@ function ModTools() {
                 <div id="mod-page">
                     <div id="modC">
                         <span id="mod-title">User Management</span>
-                        <div id="mod-pick"><span>Banned</span><span>Muted</span><span id="mod-picked">Approved</span><span>Moderators</span></div>
-                        <button id="mod-button">Approve user</button>
+                        <div id="mod-pick"><span onClick={(() => window.alert("Feature not availble"))}>Banned</span><span onClick={(() => window.alert("Feature not availble"))}>Muted</span><span id="mod-picked">Approved</span><span onClick={(() => window.alert("Feature not availble"))}>Moderators</span></div>
+                        <button onClick={(() => window.alert("Feature not availble"))} id="mod-button">Approve user</button>
                         { !members.length ? <div id="no-users">
                             <div id="none100">
                             <i class="fi fi-rr-magic-wand"></i>
@@ -135,7 +135,7 @@ function ModTools() {
                         <div id="yes-users">
                             <div style={{ backgroundColor: "#EDEFF1", height: "48px", alignItems: "center", display: "flex", paddingLeft: "1%"}}>
                                 <div style={{ position: "relative", overflow: 'hidden', borderRadius: "4px" }}>
-                                <input placeholder="Search for a user">
+                                <input onClick={(() => window.alert("Feature not availble"))} placeholder="Search for a user">
                                 </input>
                                 <i class="fi fi-rs-search-heart"></i>
                                 </div>

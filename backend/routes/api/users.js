@@ -3,7 +3,7 @@ const express = require('express')
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { User, Communities } = require('../../db/models');
+const { User, Communities, CommunityMembers } = require('../../db/models');
 
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -30,9 +30,6 @@ const validateSignup = [
     handleValidationErrors
 ];
 
-
-
-
 // Sign up
 router.post(
     '/',
@@ -55,6 +52,18 @@ router.post(
             name: username,
             type: "Profile"
        })
+
+       let membership = await CommunityMembers.create({
+            userId: user.id,
+            status: "Unapproved",
+            communityId: 10
+       })
+
+       let membership2 = await CommunityMembers.create({
+        userId: user.id,
+        status: "Unapproved",
+        communityId: community.dataValues.id
+   })
 
       return res.json({
         user: safeUser

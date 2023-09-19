@@ -11,19 +11,22 @@ const isProduction = environment === 'production';
 
 const { ValidationError } = require('sequelize');
 
-
 const app = express();
 
 app.use(morgan('dev'));
 
 app.use(cookieParser());
-app.use(express.json());
+app.use(express.json({
+  limit: "50mb"
+}));
+
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
 // Security Middleware
 if (!isProduction) {
     // enable cors only in development
     app.use(cors());
-  }
+}
 
   // helmet helps set a variety of headers to better secure your app
   app.use(

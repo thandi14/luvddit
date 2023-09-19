@@ -23,6 +23,33 @@ import OtherProfilePage from "./components/YourProfilePage/index2";
 import OthersPosts from "./components/YourProfilePage/posts2";
 import Commented2Posts from "./components/YourProfilePage/comments2";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
+import CommunityPageEdit2 from "./components/CommunityPage/edit";
+import SearchPage from "./components/SearchPage";
+import SearchCommunities from "./components/SearchPage/communities";
+import SearchProfiles from "./components/SearchPage/profiles";
+import SearchComments from "./components/SearchPage/comments";
+import * as commentActions from './store/comments'
+import { useSearch } from "./context/search";
+import { useFilter } from "./context/filter";
+import SearchCommunityPage from "./components/SearchPage/community";
+import SearchCommunityComments from "./components/SearchPage/community2";
+import BestPage from "./components/HomePage/best";
+import HotPage from "./components/HomePage/hot";
+import TopPage from "./components/HomePage/top";
+import TopCommunityPage from "./components/CommunityPage/top";
+import HotCommunityPage from "./components/CommunityPage/hot";
+import YourHotProfilePage from "./components/YourProfilePage/hot";
+import YourTopProfilePage from "./components/YourProfilePage/top";
+import OtherTopProfilePage from "./components/YourProfilePage/top2";
+import OtherHotProfilePage from "./components/YourProfilePage/hot2";
+import Commented2HotPosts from "./components/YourProfilePage/hotComments2";
+import OthersHotPosts from "./components/YourProfilePage/hotPosts2";
+import Commented2TopPosts from "./components/YourProfilePage/topComments2";
+import OthersTopPosts from "./components/YourProfilePage/topPosts2";
+import UsersHotPosts from "./components/YourProfilePage/hotPosts";
+import UsersTopPosts from "./components/YourProfilePage/topPosts";
+import CommentedHotPosts from "./components/YourProfilePage/hotComments";
+import CommentedTopPosts from "./components/YourProfilePage/topComments";
 
 function App() {
   const dispatch = useDispatch();
@@ -34,8 +61,10 @@ function App() {
   const [threshold, setThreshold] = useState(450);
   const location = useLocation();
   const { id } = useParams()
+  const { search }= useSearch()
+  const { filter } = useFilter()
 
-  console.log('APP:', singleCommunity)
+  console.log(search)
 
   useEffect(() => {
     localStorage.setItem("currentPage", currentPage.toString());
@@ -65,27 +94,14 @@ function App() {
     if (windowHeight + scrollTop >= documentHeight - threshold) {
       const storedCurrentPage = localStorage.getItem("currentPage");
 
-      setCurrentPage(currentPage + 1);
-      setThreshold(threshold + 200);
-      dispatch(postsActions.thunkGetAllPosts(currentPage));
-      dispatch(postsActions.thunkGetHistory(currentPage))
-      dispatch(postsActions.thunkGetFavorites(currentPage))
-      dispatch(postsActions.thunkGetComments(currentPage))
-
-      if (location.pathname.includes("/profile2/") && other.id) {
-        dispatch(postsActions.thunkGetUserPosts(other.id, currentPage)) // Fetch next page
-        dispatch(postsActions.thunkGetComments(other.id, currentPage))
-        dispatch(postsActions.thunkGetOverview(other.id, currentPage)) // Fetch next page
-
-      }
-      else if (singleCommunity && singleCommunity.id) {
-        dispatch(postsActions.thunkGetCommunityPosts(singleCommunity.id, currentPage))
-      }
-      else if (user && user.id) {
-        dispatch(postsActions.thunkGetUserPosts(user.id, currentPage)) // Fetch next page
-        dispatch(postsActions.thunkGetComments(user.id, currentPage))
-        dispatch(postsActions.thunkGetOverview(user.id, currentPage)) // Fetch next page
-      }
+        setCurrentPage(currentPage + 1);
+        setThreshold(threshold + 200);
+        dispatch(postsActions.thunkGetHotPosts(currentPage))
+        dispatch(postsActions.thunkGetBestPosts(currentPage))
+        dispatch(postsActions.thunkGetAllPosts(currentPage))
+        dispatch(postsActions.thunkGetTopPosts(currentPage))
+        dispatch(postsActions.thunkGetHotCommunityPosts(currentPage))
+        dispatch(postsActions.thunkGetTopCommunityPosts(currentPage))
 
   };
   }
@@ -97,13 +113,52 @@ function App() {
       {isLoaded && (
         <Switch>
           <Route exact path="/">
+            <BestPage />
+          </Route>
+          <Route exact path="/hot">
+            <HotPage />
+          </Route>
+          <Route exact path="/recent">
             <HomePage />
+          </Route>
+          <Route exact path="/top">
+            <TopPage />
+          </Route>
+          <Route exact path="/search/:page/:search">
+          <SearchPage />
           </Route>
           <Route exact path="/profile/:page">
           {user ? <YourProfilePage /> : <HomePage /> }
           </Route>
+          <Route exact path="/profile/hot/:page">
+          {user ? <YourHotProfilePage /> : <HomePage /> }
+          </Route>
+          <Route exact path="/profile/top/:page">
+          {user ? <YourTopProfilePage /> : <HomePage /> }
+          </Route>
+          <Route exact path="/search/communities/:page/:search">
+          <SearchCommunities />
+          </Route>
+          <Route exact path="/search2/community/:id/:page/:search">
+            <SearchCommunityPage />
+          </Route>
+          <Route exact path="/search2/comments/:id/:page/:search">
+            <SearchCommunityComments />
+          </Route>
+          <Route exact path="/search/profiles/:page/:search">
+          <SearchProfiles />
+          </Route>
+          <Route exact path="/search/comments/:page/:search">
+          <SearchComments />
+          </Route>
           <Route exact path="/profile/posts/:page">
           {user ? <UsersPosts /> : <HomePage /> }
+          </Route>
+          <Route exact path="/profile/posts/hot/:page">
+          {user ? <UsersHotPosts /> : <HomePage /> }
+          </Route>
+          <Route exact path="/profile/posts/top/:page">
+          {user ? <UsersTopPosts /> : <HomePage /> }
           </Route>
           <Route exact path="/profile/upvoted/:page">
           {user ? <UpvotedPosts /> : <HomePage /> }
@@ -117,6 +172,12 @@ function App() {
           <Route exact path="/profile/comments/:page">
           {user ? <CommentedPosts /> : <HomePage /> }
           </Route>
+          <Route exact path="/profile/comments/hot/:page">
+          {user ? <CommentedHotPosts /> : <HomePage /> }
+          </Route>
+          <Route exact path="/profile/comments/top/:page">
+          {user ? <CommentedTopPosts /> : <HomePage /> }
+          </Route>
           <Route exact path="/posts/new/">
            {user ? <CreatePost /> : <HomePage />}
           </Route>
@@ -126,20 +187,44 @@ function App() {
           <Route exact path="/profile2/:id/:page">
           {user ? <OtherProfilePage /> : <HomePage /> }
           </Route>
+          <Route exact path="/profile2/top/:id/:page">
+          {user ? <OtherTopProfilePage /> : <HomePage /> }
+          </Route>
+          <Route exact path="/profile2/hot/:id/:page">
+          {user ? <OtherHotProfilePage /> : <HomePage /> }
+          </Route>
           <Route exact path="/profile2/:id/comments/:page">
           {user ? <Commented2Posts /> : <HomePage /> }
           </Route>
           <Route exact path="/profile2/:id/posts/:page">
           {user ? <OthersPosts /> : <HomePage /> }
           </Route>
+          <Route exact path="/profile2/:id/comments/hot/:page">
+          {user ? <Commented2HotPosts /> : <HomePage /> }
+          </Route>
+          <Route exact path="/profile2/:id/posts/hot/:page">
+          {user ? <OthersHotPosts /> : <HomePage /> }
+          </Route>
+          <Route exact path="/profile2/:id/comments/top/:page">
+          {user ? <Commented2TopPosts /> : <HomePage /> }
+          </Route>
+          <Route exact path="/profile2/:id/posts/top/:page">
+          {user ? <OthersTopPosts /> : <HomePage /> }
+          </Route>
           <Route exact path="/posts/:id/">
             <PostPage />
+          </Route>
+          <Route exact path="/communities/top/:id/:page">
+            <TopCommunityPage />
+          </Route>
+          <Route exact path="/communities/recent/:id/:page">
+            <CommunityPage />
           </Route>
           <Route exact path="/communities/:id/mod/">
             { user ? <ModTools /> : <HomePage /> }
           </Route>
           <Route exact path="/communities/:id/:page">
-            <CommunityPage />
+            <HotCommunityPage />
           </Route>
           <Route exact path="/communities2/:id/:page">
             { user ? <CommunityPageEdit /> : <HomePage /> }

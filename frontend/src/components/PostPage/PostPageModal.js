@@ -15,9 +15,13 @@ import PostLikes from "../HomePage/likes";
 import * as commentActions from '../../store/comments'
 import DeleteComment from "./deleteC";
 import CommentLikes from "../HomePage/likesC";
+import MyCarousel from "./postCrousel";
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 function PostPageModal({ postId, scroll }) {
-    const { communities, singleCommunity, communityMemberships, memberships } = useSelector((state) => state.communities);
+    const { communities, singleCommunity, communityMemberships, memberships, userCommunities } = useSelector((state) => state.communities);
     const { singlePost, postsHistory } = useSelector((state) => state.posts)
     const { user } = useSelector((state) => state.session)
     const { id } = useParams();
@@ -35,13 +39,14 @@ function PostPageModal({ postId, scroll }) {
     const { closeModal } = useModal();
     const targetRef2 = useRef(null);
     const targetRef3 = useRef(null)
+    const targetRef5 = useRef(null)
     const [ comment, setComment ] = useState("")
     const [ comment2, setComment2 ] = useState("")
     const [ scrolling, setScrolling ] = useState(scroll)
     const [isVisible3, setIsVisible3] = useState(false);
     const [ commentId, setCommentId ] = useState(null);
     const [ c, setC ] = useState(null)
-    const [ seen, setSeen ] = useState(false)
+    const [ button, setButton ] = useState(false)
     const [ postH, setPostH ] = useState([])
     const [ focus, setFocus ] = useState(false)
     const [ focus2, setFocus2 ] = useState(false)
@@ -50,7 +55,11 @@ function PostPageModal({ postId, scroll }) {
     const [ commentM, setCommentM ] = useState(false)
     const [ commentId2, setCommentId2 ] = useState(null);
     const [ p, setP ] = useState(null)
+    const [ message, setMessage ] = useState(false)
     const [ tags, setTags ] = useState(null)
+    const [ cHover, setCHover] = useState(false)
+    const [ scrollH, setScrollH ] = useState(false)
+    const [ saveH, setSaveH ] = useState(false)
     let joined = null
 
 
@@ -70,7 +79,7 @@ function PostPageModal({ postId, scroll }) {
     approved = !approved && singleCommunity.id ? false : true
 
 
-    const myMemberships = Object.values(memberships)
+    const myMemberships = Object.values(memberships).concat(Object.values(userCommunities))
     const member = myMemberships.filter((m) => m.id === singlePost.Community?.id)
 
     if (member) joined = true
@@ -120,7 +129,8 @@ function PostPageModal({ postId, scroll }) {
         setIsVisible2(false)
     }
 
-    const handleComment = () => {
+    const handleComment = (e) => {
+        e.stopPropagation()
 
         if (!user) return window.alert("Please login")
 
@@ -270,14 +280,21 @@ function PostPageModal({ postId, scroll }) {
 
         async function fetchData() {
 
-            if (singlePost.PostSetting?.history) await dispatch(postActions.thunkUpdateHistory(postId))
+            if (singlePost.PostSetting && singlePost.PostSetting.history) await dispatch(postActions.thunkUpdateHistory(postId))
             else if (!singlePost.PostSetting || singlePost.PostSetting && !singlePost.PostSetting.history) await dispatch(postActions.thunkCreateHistory(postId))
 
         }
         fetchData()
 
-    }, [dispatch, singlePost.PostSetting])
+    }, [dispatch, postId])
 
+
+    function isURLOrFile(str) {
+        const urlRegex = /^(https?:\/\/)?([\w.-]+)\.([a-z]{2,})(\/\S*)?$/i;
+        if (urlRegex) return urlRegex.test(str);
+        const filePathRegex = /^[a-zA-Z]:\\([a-zA-Z0-9\s_@-^!#$%&+={}[\]]+\\)*[a-zA-Z0-9\s_@-^!#$%&+={}[\]]+\.\w{1,}$/;
+        if (filePathRegex) return filePathRegex.test(str);
+    }
 
     let editMenu = isVisible ? "edit-menu" : "hidden";
     let editMenu2 = isVisible3 ? "edit-menu" : "hidden";
@@ -356,9 +373,8 @@ function PostPageModal({ postId, scroll }) {
     useEffect(() => {
 
         const handleDocumentClick = (event) => {
-            if ((targetRef.current && !targetRef.current.contains(event.target))) {
-                //console.log("targetRef.current.contains(event.target)")
-                        //   setIsVisible3(false);
+            if ((targetRef5.current && !targetRef5.current.contains(event.target))) {
+                           setIsVisible(false);
                 }
 
             };
@@ -370,6 +386,21 @@ function PostPageModal({ postId, scroll }) {
 
         }, []);
 
+    useEffect(() => {
+
+    const handleDocumentClick = (event) => {
+        if ((targetRef.current && !targetRef.current.contains(event.target))) {
+                    setIsVisible3(false);
+            }
+
+        };
+
+        document.addEventListener('click', handleDocumentClick);
+        return () => {
+            document.removeEventListener('click', handleDocumentClick);
+        };
+
+    }, []);
 
 
     if (!Object.values(singlePost).length) return <h1></h1>
@@ -379,15 +410,49 @@ function PostPageModal({ postId, scroll }) {
 
     const dateObject = new Date(createdAt);
 
+    console.log(isVisible2, isVisible2, isVisible3)
+
     const months = [
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
     ];
 
+    function reduceOpacity(color, opacity) {
+        if (/^#/.test(color)) {
+          // If the color is a hex value
+          const hexColor = color.replace('#', '');
+          const r = parseInt(hexColor.slice(0, 2), 16);
+          const g = parseInt(hexColor.slice(2, 4), 16);
+          const b = parseInt(hexColor.slice(4, 6), 16);
+
+          return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+        } else {
+          // If the color is a named color
+          const tempElement = document.createElement('div');
+          tempElement.style.color = color;
+          document.body.appendChild(tempElement);
+
+          const computedColor = getComputedStyle(tempElement).color;
+          const match = computedColor.match(/\d+/g);
+          const [r, g, b] = match ? match.map(Number) : [0, 0, 0];
+
+          document.body.removeChild(tempElement);
+
+          return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+        }
+      }
+
     const formattedDate = `${months[dateObject.getMonth()]}, ${dateObject.getDate()}, ${dateObject.getFullYear()}`;
 
     let style
-        if (singleCommunity.communityStyles?.length) style = singleCommunity.communityStyles[0]
+        if (singlePost.Community.CommunityStyle) style = singlePost.Community.CommunityStyle.highlight
+
+    function isLink(text) {
+        // Regular expression to match a URL
+        const urlRegex = /(https?:\/\/[^\s]+)/;
+
+        return urlRegex.test(text);
+    }
 
     return (
         <div className="post-modal">
@@ -405,23 +470,29 @@ function PostPageModal({ postId, scroll }) {
                 </div>
                 <div id="2">
         <div ref={targetRef2} className="whole-post-page2">
-            <div className="post-page">
+            <div style={{ position: "relative" }} className="post-page">
             <div id="vote-side">
                 <PostLikes post={singlePost} p={"post"}
                 />
             </div>
             <div id="details-side">
             <div id="nameOf3">
-                    <img src={singlePost.Community && singlePost.Community.communityStyles && singlePost.Community.communityStyles.length ? singlePost.Community.communityStyles[0].profile : pfp}></img>
+                    {singlePost.Community.CommunityStyle.icon && <img src={singlePost.Community.CommunityStyle.icon}></img>}
+                    {!singlePost.Community.CommunityStyle.icon && <div id="pfp30" style={{ color: "white", backgroundColor: `${singlePost.Community.CommunityStyle.base}`}}>l/</div>}
                     <span id="community">l/{singlePost.Community?.name}</span>
                     <p>·</p>
-                    <p>Posted by u/{singlePost.User?.username} {getTimeDifferenceString(singlePost.createdAt)}</p>
+                    <p style={{ display: "flex", width: "100%", alignItems: "center"}} >Posted by l/{singlePost?.User?.username} {getTimeDifferenceString(singlePost.createdAt)}<i style={{ fontSize: "20px", marginRight: "1%", marginTop: "0.6%", position: "absolute", right: "0" }} onClick={((e) => {
+                                        e.stopPropagation()
+                                        window.alert("Feature not available")
+                                    })}class="fi fi-rs-cowbell"></i></p>
+
+                    {/* <p>Posted by u/{singlePost.User?.username} {getTimeDifferenceString(singlePost.createdAt)}</p> */}
                     </div>
             <h1>{singlePost?.title}</h1>
             <span id="tags">{ tags && tags.includes("oc") ? <div id="oc6">OC</div> : null} {tags && tags.includes("spoiler") ? <div id="spoiler6">Spoiler</div> : null } { tags && tags.includes("nsfw") ? <div id="nsfw6">NSFW</div> : null}</span>
             <div id="post-info1">
-            { isVisible2 ? null : singlePost.description ? <p>{singlePost?.description}</p> : null}
-            { isVisible2 ? <div className="post-input7">
+                        { isVisible2 ? null : !isLink(singlePost.description) ? <p>{singlePost?.description}</p> : null}
+                        { isVisible2 ? null : isLink(singlePost.description) ? <a href={`${singlePost?.description}`}>{singlePost?.description}</a> : null}            { isVisible2 ? <div className="post-input7">
                          <div id={ focus2 ? "add-to11" : "add-to7"}>
                         <i class="fi fi-rr-bold"></i>
                         <i class="fa-solid fa-italic"></i>
@@ -443,29 +514,39 @@ function PostPageModal({ postId, scroll }) {
                         </div>
                        <textarea onFocus={(() => setFocus2(true))} onBlur={(() => setFocus2(false))} defaultValue={singlePost.description} onChange={((e) => setDescription(e.target.value) )} placeholder="Text(optional)"></textarea>
             </div> : null}
-            {singlePost.PostImages?.length ? <div><img id="post-image1" src={singlePost.PostImages[0].imgURL} alt="postimg"></img></div> : null}
+            {singlePost.PostImages?.length ? singlePost.PostImages?.length === 1 ? <div><img id="post-image1" src={singlePost.PostImages[0].imgURL} alt="postimg"></img></div> : <MyCarousel images={singlePost.PostImages}/> : null}
             </div>
-            { isVisible2 ? <div id="save"><button onClick={((e) => {
+            { isVisible2 ? <div id="save"><button style={{ color: `${singlePost.Community.CommunityStyle.highlight}`}} onClick={((e) => {
                 e.stopPropagation()
                 handleClick2()
-                })} >Cancel</button> <button id={ !description ? "save-submit" : "save-submit2"} onClick={((e) => {
+                })} >Cancel</button>
+                { !description && <button id={"save-submit"} onClick={((e) => {
                     e.stopPropagation()
                     handleSave()
-                    })}>Save</button></div> : null}
+                    })}>Save</button>}
+                { !saveH && description && <button onMouseEnter={(() => setSaveH(true))} style={{ backgroundColor: `${singlePost.Community.CommunityStyle.highlight}`}} id={ !description ? "save-submit" : "save-submit2"} onClick={((e) => {
+                    e.stopPropagation()
+                    handleSave()
+                    })}>Save</button>}
+                    { description && saveH && <button onMouseLeave={(() => setSaveH(false))} style={{ backgroundColor: `${reduceOpacity(singlePost.Community.CommunityStyle.highlight, 0.5)}`}} id={ !description ? "save-submit" : "save-submit2"} onClick={((e) => {
+                    e.stopPropagation()
+                    handleSave()
+                    })}>Save</button>}
+                    </div> : null}
             {user && singlePost.User?.id !== user.id ?<div id="post-extras3">
-                    <div id="comment">
+                    <div style={{ backgroundColor: "transparent"}} id="comment">
                     <i class="fa-regular fa-message"></i>
                     <p>{comments && comments.length} Comments</p>
                     </div>
-                    <div id="comment">
+                    <div onClick={(() => window.alert("Feature not available"))} id="comment">
                     <i class="fi fi-rr-box-heart"></i>
                     <p>Awards</p>
                     </div>
-                    <div id="comment">
+                    <div onClick={(() => window.alert("Feature not available"))}id="comment">
                     <i class="fi fi-rs-heart-arrow"></i>
                     <p>Share</p>
                     </div>
-                    <div id="comment">
+                    <div onClick={(() => window.alert("Feature not available"))} id="comment">
                     <i class="fi fi-rr-bookmark"></i>
                     <p>Save</p>
                     </div>
@@ -473,7 +554,7 @@ function PostPageModal({ postId, scroll }) {
             </div>
              :
              <div id="post-extras1">
-                <div id="comment5">
+                <div style={{ backgroundColor: "transparent"}} id="comment5">
                 <i class="fa-regular fa-message"></i>
                 <p>{comments && comments.length}</p>
                 </div>
@@ -502,10 +583,16 @@ function PostPageModal({ postId, scroll }) {
                 <i  onClick={handleClick} id="menu" class="fi fi-rr-menu-dots">
                 <div id="post-menu25">
                 <div className="menu">
-                <div id={editMenu}>
+                <div ref={targetRef5} id={editMenu}>
                    {singlePost.PostImages.length && singlePost.PostImages[0].imgURL ? null : <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                    <p><i class="fi fi-rr-bookmark"></i>Save</p>
-                    <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
+                    <p onClick={((e) => {
+                        e.stopPropagation()
+                        window.alert("Feature not available")
+                    })}><i class="fi fi-rr-bookmark"></i>Save</p>
+                    <p onClick={((e) => {
+                        e.stopPropagation()
+                        window.alert("Feature not available")
+                    })}><i class="fi fi-rr-eye-crossed"></i>Hide</p>
                     <p onClick={(() => {
                         setModalContent2(<div> <DeletePost id={singlePost.id} /></div>)
                         setIsVisible(false)
@@ -533,10 +620,10 @@ function PostPageModal({ postId, scroll }) {
             </div> }
             <div id="insights">
                 <p>Post Insights</p>
-                <p>Check back later to see views, shares, and more. <span>Share your post</span> to spread the word!</p>
+                <p>Check back later to see views, shares, and more. <span onClick={(() => window.alert("Feature not available"))} style={{ color: `${singlePost.Community.CommunityStyle.highlight}`}}>Share your post</span> to spread the word!</p>
             </div>
             <div className="comment-input">
-               {user ? <p>Comment as <span>{user.username}</span></p> : "Please login"}
+               {user ? <p>Comment as <span style={{ color: `${singlePost.Community.CommunityStyle.highlight}`}} >{user.username}</span></p> : "Please login"}
                 <textarea onFocus={(() => setFocus(true))} onBlur={(() => setFocus(false))} value={comment} onChange={((e) => setComment(e.target.value))} placeholder="What are your thoughts?"></textarea>
             <div id={focus ? "my-comments2" : "my-comments"}>
                 <i class="fi fi-rr-gif-square"></i>
@@ -558,13 +645,16 @@ function PostPageModal({ postId, scroll }) {
                 <i class="fi fi-rr-square-code"></i>
                 <div id="divider16"></div>
                 <i class="fa-brands fa-youtube"></i> */}
-                <button id={!comment ? "submit-c" : "submit-c2"} onClick={handleComment}>Comment</button>
+            {!comment && <button id={"submit-c3"} onClick={handleComment}>Comment</button> }
+            {comment &&  !cHover && <button onMouseEnter={(() => setCHover(true))} style={{ backgroundColor: `${singlePost.Community.CommunityStyle.highlight}`}} id={"submit-c4"} onClick={handleComment}>Comment</button> }
+            {comment &&  cHover && <button onMouseLeave={(() => setCHover(false))} style={{ backgroundColor: `${reduceOpacity(singlePost.Community.CommunityStyle.highlight, 0.5)}`}} id={"submit-c4"} onClick={handleComment}>Comment</button> }
+
             </div>
             </div>
             <div className="comments-for-post">
-                <div id="sort-comments">
+                <div onClick={(() => window.alert("Feature not available"))} style={{ color: `${singlePost.Community.CommunityStyle.highlight}`}} id="sort-comments">
                     <div>
-                    <p>Sort By: Q&A (Suggested)<i class="fi fi-rr-caret-down"></i></p>
+                    <p >Sort By: Q&A (Suggested)<i class="fi fi-rr-caret-down"></i></p>
                     </div>
                     <div>
                     <p>Clear suggested sort</p>
@@ -581,7 +671,7 @@ function PostPageModal({ postId, scroll }) {
                 </div>
                     <div id="go-to-c"></div>
                 { !comments || !comments.length ? <div id="any-comments">
-                    <i class="fi fi-rr-comment-heart"></i>
+                    <i style={{ color: `${singlePost.Community.CommunityStyle.base}`}} class="fi fi-rr-comment-heart"></i>
                     <p>No Comments Yet</p>
                     <span>Be the first to share what you think</span>
                 </div> :
@@ -589,11 +679,14 @@ function PostPageModal({ postId, scroll }) {
                     {comments.map((c, i) =>
                         <div onClick={(() => setC(c))} className="a-comment">
                             <div id="left-csec">
-                            <img id="avatar6" src={pfp}></img>
+                            { !c.Profile?.CommunityStyle ? <img id="avatar6" src={pfp}></img> : null}
+                            { c.Profile?.CommunityStyle?.icon ? <img id="avatar6" src={c.Profile?.CommunityStyle.icon}></img> : null}
                             <div id="c-line"></div>
                             </div>
                             <div id="right-csec">
-                                <span><span id="username45">{c.User?.username}</span> { c.User && c.User.id === singlePost.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.createdAt)}</div></span>
+                                <span><span onClick={(() => {
+                                    closeModal()
+                                    c.userId === user.id ? history.push('/profile/:page') : history.push(`profile2/${c.userId}/:page`)})} id="username45">{c.User?.username}</span> { c.User && c.User.id === singlePost.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.createdAt)}</div></span>
                                 { !(commentM && commentId2 === i) ? <p>{c.comment}</p> :
                                 <div className="comment-input">
                                     <textarea onFocus={(() => setFocus3(true))} onBlur={(() => setFocus3(false))} defaultValue={c.comment} onChange={((e) => setComment2(e.target.value))}></textarea>
@@ -636,7 +729,7 @@ function PostPageModal({ postId, scroll }) {
                                         <i class="fi fi-rs-heart-arrow"></i>
                                         <p>Share</p>
                                     </div>
-                                    <i ref={targetRef} onClick={(() => {
+                                    <i ref={commentId === i ? targetRef : null} onClick={(() => {
                                         setIsVisible3(true)
                                         setCommentId(i)
                                        if (commentId === i) setIsVisible3(!isVisible3)
@@ -650,10 +743,19 @@ function PostPageModal({ postId, scroll }) {
                                         setCommentId2(i)
                                        // if (commentId !== i) setCommentM(!commentM)
                                         })}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                                     {c.userId === user.id ? null : <p><i class="fi fi-rr-flag"></i>Report</p>}
-                                     <p><i class="fi fi-rr-bookmark"></i>Save</p>
+                                     {c.userId === user.id ? null : <p onClick={((e) => {
+                                            e.stopPropagation()
+                                            window.alert("Feature not available")
+                                        })}><i class="fi fi-rr-flag"></i>Report</p>}
+                                     <p onClick={((e) => {
+                                        e.stopPropagation()
+                                        window.alert("Feature not available")
+                                    })}><i class="fi fi-rr-bookmark"></i>Save</p>
                                      {c.userId === user.id ? null : <p><i class="fi fi-rs-cowbell"></i>Follow</p>}
-                                     {c.userId !== user.id ? null : <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>}
+                                     {c.userId !== user.id ? null : <p onClick={((e) => {
+                                            e.stopPropagation()
+                                            window.alert("Feature not available")
+                                        })}><i class="fi fi-rr-eye-crossed"></i>Hide</p>}
                                      {c.userId !== user.id ? null : <p onClick={(() => {
                                      setModalContent2(<div> <DeleteComment id={c.id} /></div>)
                                      setIsVisible(false)
@@ -678,15 +780,15 @@ function PostPageModal({ postId, scroll }) {
             </div>
             </div>
             <div className="side-community2">
-                { singlePost.Community?.id === 1 ? <CommunitiesProfile community={singlePost.Community} /> :
+                { singlePost.Community.type === "Profile" ? <CommunitiesProfile community={singlePost.Community} /> :
                  <div onClick={(() => {
                     history.push(`/communities/${singlePost.Community.id}/:page`)
                     closeModal()
                      })} id="your-community-profile">
-                     {!singlePost.Community?.communityStyles.length ? <div id="header-profile-comm4">
-                    </div> : <div className="header-postC"><img id="header-profile-comm10" src={singlePost.Community.communityStyles[0].header} ></img></div> }
+                     {!isURLOrFile(singlePost.Community?.CommunityStyle.banner) ? <div style={{ backgroundColor: `${singlePost.Community.CommunityStyle.base}`}} id="header-profile-comm4">
+                    </div> : <div className="header-postC"><img id="header-profile-comm10" src={singlePost.Community.CommunityStyle.banner} ></img></div> }
                     <div id="profile-content">
-                        <span id="profile-comm-title7"> { singlePost.Community?.communityStyles.length ? <img id="pfp10" src={singlePost.Community.communityStyles[0].profile}></img> : <div>l/</div>} {singlePost.Community?.name}</span>
+                        <span id="profile-comm-title7"> { singlePost.Community?.CommunityStyle.icon ? <img id="pfp10" src={singlePost.Community.CommunityStyle.icon}></img> : <div style={{ backgroundColor: `${singlePost.Community.CommunityStyle.base}`}}id="pfp10">l/</div>} {singlePost.Community?.name}</span>
                         <span id="profile-about7">{singlePost.Community?.about}</span>
                         <span id="when-created"><i class="fi fi-rr-cake-birthday"></i>Created {formattedDate}</span>
                         <div id="line"></div>
@@ -695,8 +797,9 @@ function PostPageModal({ postId, scroll }) {
                          <span><div id="online"><i class="fi fi-ss-bullet"></i>{randomNum}</div>Online</span>
                         </div>
                         <div id="line"></div>
-                           { !member.length ? <button onClick={handleJoinClick} id="join-now">Join</button> :
-                            <button onClick={handleUnjoinClick} id="join-now2"></button> }
+                        {user && myMemberships.length && joined && !button ? <button  onMouseEnter={(() => setButton(true))} style={{ color: `${singlePost.Community.CommunityStyle.highlight}`, border: `1px solid ${singlePost.Community.CommunityStyle.highlight}`, width: "100%"}} onClick={handleUnjoinClick} id="joined">Joined</button> : null }
+                        {user && myMemberships.length && joined && button ? <button  onMouseLeave={(() => setButton(false))} style={{ backgroundColor: `${reduceOpacity(singlePost.Community.CommunityStyle.highlight, 0.1)}`, color: `${singlePost.Community.CommunityStyle.highlight}`, border: `1px solid ${singlePost.Community.CommunityStyle.highlight}`, width: "100%"}} onClick={handleUnjoinClick} id="joined">Leave</button> : null }
+                        {user && !myMemberships.length && !joined ? <button style={{ backgroundColor: `${singlePost.Community.CommunityStyle.highlight}`, border: `1px solid ${singlePost.Community.CommunityStyle.highlight}`, width: "100%"}} onClick={handleJoinClick} id="join">Join</button> : null }
                         <div id="line"></div>
                         <div id="cs-side5">
                         <span>COMMUNITY OPTIONS</span>
@@ -704,20 +807,28 @@ function PostPageModal({ postId, scroll }) {
                 </div>
                 </div>
                 </div> }
-                <div id="side-bar7">
-                <div id="cs-background7">
+                { singlePost.Community.type !== "Profile" && <div id="side-bar7">
+                <div style={{ backgroundColor: `${singlePost.Community.CommunityStyle.base}`}} id="cs-background7">
                 <p>Moderators</p>
                 </div>
                 <div id="home-section7">
-                <button onClick={(() => window.alert("Feature not available"))} id="but4"><i class="fi fi-rr-envelope"></i>Message the mods</button>
+                { !message && <button onMouseEnter={(() => setMessage(!message))} style={{ borderColor: `${singlePost.Community.CommunityStyle.highlight}`, color: `${singlePost.Community.CommunityStyle.highlight}`}} onClick={(() => window.alert("Feature not available"))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>}
+                { message && <button onMouseLeave={(() => setMessage(!message))} style={{backgroundColor: `${reduceOpacity(singlePost.Community.CommunityStyle.highlight, 0.1)}`, borderColor: `${singlePost.Community.CommunityStyle.highlight}`, color: `${singlePost.Community.CommunityStyle.highlight}`}} onClick={(() => window.alert("Feature not available"))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>}
                 <div id="cs-side7">
-                    {user ? <span>{singlePost.User.username}</span> : "" }
-                    <span>VIEW ALL MODERATORS</span>
+                    {user.id !== singlePost.User.id ? <span style={{ color: `${singlePost.Community.CommunityStyle.highlight}`}} onClick={(() => {
+                        history.push(`/profile2/${singlePost.User.id}/:page`)
+                        closeModal()
+                        })}> {singlePost.User?.username}</span> : "" }
+                    {user.id === singlePost.User.id ? <span style={{ color: `${singlePost.Community.CommunityStyle.highlight}`}} onClick={(() => {
+                        history.push(`/profile/:page`)
+                        closeModal()
+                        })}> {singlePost.User?.username}</span> : "" }
+                    <span style={{ color: `${singlePost.Community.CommunityStyle.highlight}`}} >VIEW ALL MODERATORS</span>
                 </div>
                 </div>
-                </div>
-            <button className="top2" onClick={scrollToTop}>Back to Top</button>
-            </div>
+                </div> }
+                { !scrollH && <button onMouseEnter={(() => setScrollH(true))} style={{ backgroundColor: `${singlePost.Community.CommunityStyle.base}`}} className="top2" onClick={scrollToTop}>Back to Top</button>}
+                { scrollH && <button onMouseLeave={(() => setScrollH(false))} style={{ backgroundColor: `${reduceOpacity(singlePost.Community.CommunityStyle.base, 0.5)}`}} className="top2" onClick={scrollToTop}>Back to Top</button>}            </div>
                 </div>
                 </div>
         </div>

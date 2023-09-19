@@ -91,7 +91,7 @@
     height: auto;
 }
 
-#grey {
+.grey {
     color: #7c7c7c;
 
 }
@@ -250,13 +250,13 @@
     cursor: pointer;
 }
 
-#red {
+.red {
     color: red;
 }
 
 
 #add-about {
-    width: 91%;
+    width: 100%;
     margin-top: 20px;
     margin-bottom: 10px;
     height: 34px;
@@ -275,7 +275,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    width: 92%;
+    width: 100%;
     margin-top: 20px;
     margin-bottom: 10px;
     height: 34px;

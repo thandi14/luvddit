@@ -10,6 +10,8 @@ import PostPageModal from '../PostPage/PostPageModal'
 import { useModal } from '../../context/Modal'
 import CreateCommunity from '../CreateCommunityModel'
 import PostLikes from './likes'
+import MyCarousel from '../PostPage/postCrousel'
+import { useFilter } from '../../context/filter'
 
 
 function HomePage() {
@@ -28,7 +30,12 @@ function HomePage() {
     const [ scrolling, setScrolling ] = useState(null)
     const targetRef = useRef()
     const { page } = useParams(); // Retrieve the page parameter from the URL
-
+    const [ bestP, setBestP ] = useState(true)
+    const [ hotP, setHotP ] = useState(false)
+    const [ topP, setTopP ] = useState(false)
+    const [ newP, setNewP ] = useState(false)
+    const [currentPage, setCurrentPage] = useState(1);
+    const [threshold, setThreshold] = useState(450);
 
     let top = isVisible ? "top" : "down"
 
@@ -36,10 +43,13 @@ function HomePage() {
     //   dispatch(postsActions.thunkGetHistory(page)); // Fetch posts for the specified page
     // }, [dispatch, page]);
 
+    useEffect(() => {
+      window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
+    }, []);
+
 
 
   useEffect(() => {
-
     async function fetchData() {
       let data
       if (user) data = await dispatch(postsActions.thunkGetUserVotes())
@@ -49,12 +59,14 @@ function HomePage() {
 
   }, [dispatch, posts, user])
 
+
+
   useEffect(() => {
     async function fetchData() {
-      let data = await dispatch(postsActions.thunkGetAllPosts())
+      await dispatch(postsActions.thunkGetAllPosts(page))
       }
       fetchData()
-  }, [singlePost.Comments])
+  }, [singlePost.Comments, page])
 
     useEffect(() => {
       const handleScroll = () => {
@@ -84,7 +96,7 @@ function HomePage() {
 
     let ePost = Object.values(posts).reverse().sort((a, b) => a.createdAt - b.createdAt)
 
-    if (!ePost.length) return <h1 className="data-not-here"></h1>
+    // if (!ePost.length) return <h1 className="data-not-here"></h1>
 
     let recent = []
 
@@ -152,7 +164,8 @@ function HomePage() {
         <div className="splashPage">
             <div className="posts">
                 { user ? <div className="create">
-                    <img src={pfp}></img>
+                { !user.Community?.CommunityStyle?.icon ? <img src={pfp} alt="pfp"></img> : null}
+                { user.Community?.CommunityStyle?.icon ? <img src={user.Community.CommunityStyle?.icon} alt="pfp"></img> : null}
                     <input onClick={(() => history.push('/posts/new'))} type="text" placeholder="Create Post"></input>
                     <div><i onClick={(() => history.push('/posts/new/image'))} class="fi fi-rr-picture"></i></div>
                     <div><i onClick={(() => history.push('/posts/new/link'))} class="fi fi-rr-link-alt"></i></div>
@@ -165,23 +178,43 @@ function HomePage() {
                 </div> }
                 <div className="filter">
                 <div id="filter-side1">
-                <div onClick={(() => window.alert("Feature not avaliable"))} id="best">
-                <i class="fi fi-sr-bow-arrow"></i>
-                <p>Best</p>
+                <div onClick={(() => {
+                  history.push("/")
+                })} id="best">
+                <i
+                class="fi fi-sr-bow-arrow"></i>
+                <p
+                >Best</p>
                 </div>
-                <div onClick={(() => window.alert("Feature not avaliable"))}id="best">
-                <i class="fi fi-rs-flame"></i>
-                <p>Hot</p>
+                <div  onClick={(() => {
+                  history.push('/hot')
+                })}id="best">
+                <i
+                class="fi fi-rs-flame"></i>
+                <p
+                >Hot</p>
                 </div>
-                <div onClick={(() => window.alert("Feature not avaliable"))} id="best">
-                <i class="fi fi-rr-bahai"></i>
-                <p>New</p>
+                <div style={{ backgroundColor: "#EDEFF1"}}
+                onClick={(() => {
+                  history.push("/recent")
+                })}id="best">
+                <i
+                style={{ color: '#0079D3'}}
+                class="fi fi-sr-bahai"></i>
+                <p
+                style={{ color: '#0079D3'}}
+                >
+                  New</p>
                 </div>
-                <div onClick={(() => window.alert("Feature not avaliable"))} id="best">
-                <i class="fi fi-rs-signal-bars-good"></i>
-                <p>Top</p>
+                <div onClick={(() => {
+                  history.push("/top")
+                })} id="best">
+                <i class="fi fi-ts-signal-bars-good"></i>
+                <p
+                >
+                  Top</p>
                 </div>
-                <i onClick={(() => window.alert("Feature not avaliable"))} class="fi fi-rr-menu-dots"></i>
+                <i class="fi fi-rr-menu-dots"></i>
                 </div>
                 <div onClick={(() => window.alert("Feature not avaliable"))} id="filter-side2">
                 <i class="fi fi-rr-horizontal-rule"></i>
@@ -198,24 +231,26 @@ function HomePage() {
                     </div>
                     <div id="pc-side2">
                     <div id="nameOf">
-                    {post.Community.communityStyles && post.Community.communityStyles.length ? <img onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} src={post.Community.communityStyles[0].profile}></img> : <img onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} src={pfp}></img>}
-                    <span onClick={(() => history.push(`/communities/${post.communityId}`))} className="userName" id="community">l/{post.Community.name}</span>
+                    {post.Community?.CommunityStyle?.icon ? <img onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} src={post.Community?.CommunityStyle?.icon}></img> : <div style={{ backgroundColor: `${post.Community?.CommunityStyle?.base}`, color: "white" }} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pfp30">l/</div>}
+                    <span onClick={(() => history.push(`/communities/${post.communityId}/:page`))} className="userName" id="community">l/{post.Community?.name}</span>
                     <p>·</p>
-                    <p >Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User.username}</span> {getTimeDifferenceString(post.createdAt)}</p>
-                    </div>
+                    <p style={{ marginLeft: "0px"}} id="cp">Posted by <span onClick={((e) => {
+                        e.stopPropagation()
+                        post.userId !== user.id ? history.push(`/profile2/${post.userId}/:page`) : history.push('/profile/:page')})} className="userName">u/{post.User?.username}</span> {getTimeDifferenceString(post.createdAt)}</p>                    </div>
                     <h3  id="p-tit" onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title"><h3 id="title-content">{post.title}{ post.tags && post.tags.includes("oc") ? <div id="oc5">OC</div> : null} {post.tags && post.tags.includes("spoiler") ? <span id="spoiler5">Spoiler</span> : null } { post.tags && post.tags.includes("nsfw") ? <span id="nsfw5">NSFW</span> : null}</h3></h3>
                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="content">
-                    <div id="img">
-                    {post.PostImages.length ? <img src={post.PostImages[0]?.imgURL} alt="meaningful-text"></img> : null}
-                    </div>
-                    <div id="finishing2">
-                      {post.description}
-                      </div>
+                  {post.PostImages?.length !== 0 && <div id="img2">
+                    {post.PostImages?.length === 1 ? <img style={{ maxWidth: "100%", maxHeight: "511px", alignSelf: "flex-end" }} src={post.PostImages[0]?.imgURL} alt="meaningful-text"></img> : <MyCarousel images={post.PostImages}/>}
+                    </div>}
+                    { post.description && <div style={{position: "relative"}} id="finishing2">
+                      <span id="post-des">{post.description}</span>
+                      { post.description.length > 140 && <div id="faded"></div>}
+                      </div>}
                     </div>
                     <div id="post-extras9">
                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="comment">
                     <i class="fa-regular fa-message"></i>
-                    <p id={`${post.id}`} >{Object.values(post.Comments).length} Comments</p>
+                    <p id={`${post.id}`} >{post.Comments ? Object.values(post.Comments)?.length : 0} Comments</p>
                     </div>
                     <div onClick={(() => window.alert('Feature coming soon'))} id="comment">
                     <i class="fi fi-rr-box-heart"></i>

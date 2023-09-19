@@ -1,6 +1,6 @@
 'use strict';
 
-const { Posts } = require('../models');
+const { Post } = require('../models');
 const bcrypt = require("bcryptjs");
 
 let options = {};
@@ -11,7 +11,7 @@ if (process.env.NODE_ENV === 'production') {
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await Posts.bulkCreate([
+    await Post.bulkCreate([
       { communityId: 4, userId: 2, votes: 0, downVotes: 0, title: "Late-night cravings satisfied with a juicy burger and crispy fries. Good food, good vibes.", tags: "oc" },
       { communityId: 4, userId: 1, votes: 0, downVotes: 0, title: "Found my urban oasis at a corner café. Sipped a latte, people-watched, and let the city's rhythm fade away." },
       { communityId: 4, userId: 3, votes: 0, downVotes: 0, title: "Tacos on a Tuesday because why not? The perfect blend of flavors in every bite.", tags: "oc"},
@@ -183,7 +183,14 @@ module.exports = {
       },
       { communityId: 7, userId: 2, votes: 0, downVotes: 0, title: "Cozy movie night with 'Amélie.' A whimsical tale of Parisian charm and the magic of small gestures. #FrenchCinema #WhimsicalJourney", tags: "oc" },
       { communityId: 4, userId: 1, votes: 0, downVotes: 0, title: "Exploring culinary fusion with a spicy ramen burger. A flavor explosion that bridges cultures on a single bun. #FoodFusion #RamenBurger" },
-      { communityId: 5, userId: 3, votes: 0, downVotes: 0, title: "Sunny days call for flowing maxi dresses and wide-brimmed hats. Embracing the breeze and sunshine with effortless grace. #MaxiDress #SunnyStyle" }
+      { communityId: 5, userId: 3, votes: 0, downVotes: 0, title: "Sunny days call for flowing maxi dresses and wide-brimmed hats. Embracing the breeze and sunshine with effortless grace. #MaxiDress #SunnyStyle" },
+      { communityId: 10, userId: 4, votes: 0, downVotes: 0, title: "How to style your community."},
+      { communityId: 10, userId: 4, votes: 0, downVotes: 0, title: "How to approve or unapprove members in your community."},
+      { communityId: 10, userId: 4, votes: 0, downVotes: 0, title: "Tips**", description: "You may not change the title of the community or delete one, its a shared space that belongs to other members!"},
+      { communityId: 10, userId: 4, votes: 0, downVotes: 0, title: "Tips**", description: "You can add upto 3 images and you may not edit posts with images!"},
+      { communityId: 10, userId: 4, votes: 0, downVotes: 0, title: "Tips**", description: "You must select a community and your post must include a title!"},
+      { communityId: 10, userId: 4, votes: 0, downVotes: 0, title: "Email me!", description: "You can reach me through message the creator!"}
+
     ], {});
   },
 

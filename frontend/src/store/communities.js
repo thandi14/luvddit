@@ -2,6 +2,8 @@ import { csrfFetch } from "./csrf";
 
 
 const GET_COMMUNITIES = 'communities/getCommunities';
+const GET_COMMUNITY_POSTS = 'communities/getCommunityPosts';
+const GET_COMMUNITY_COMMENTS = 'communities/getCommunityComments';
 const GET_DETAILS = 'communities/getDetails';
 const GET_USER_COMMUNITIES = 'communities/getUserCommunities';
 const REMOVE_COMMUNITIES = 'communities/removeCommunities'
@@ -12,7 +14,8 @@ const GET_COMMUNITY_MEMBERS = 'communities/getCommunityMembers';
 const ADD_COMMUNITY_MEMBER = 'communities/addCommunityMembers';
 const REMOVE_COMMUNITY_MEMBER = 'communities/removeCommunityMembers';
 const GET_MEMBERSHIPS = 'communities/getMemberships';
-
+const SEARCHED_COMMUNITIES = 'communities/searchedCommunities'
+const SEARCHED_PROFILES = 'communities/searchedProfiles'
 
 const getCommunities = (communities) => {
     return {
@@ -20,6 +23,35 @@ const getCommunities = (communities) => {
         communities
     }
 }
+
+const getCommunitySearchedPosts = (posts) => {
+    return {
+        type: GET_COMMUNITY_POSTS,
+        posts
+    }
+}
+const getCommunitySearchedComments = (comments) => {
+    return {
+        type: GET_COMMUNITY_COMMENTS,
+        comments
+    }
+}
+
+const searchedCommunities = (communities) => {
+    return {
+        type: SEARCHED_COMMUNITIES,
+        communities
+    }
+}
+
+const searchProfiles = (communities) => {
+    return {
+        type: SEARCHED_PROFILES,
+        communities
+    }
+}
+
+
 
 const getDetails = (details) => {
     return {
@@ -107,15 +139,75 @@ export const thunkGetAllCommunities = () => async (dispatch) => {
     const response1 = await csrfFetch('/api/communities')
     const data1 = await response1.json();
     dispatch(getCommunities(data1));
+    // console.log("WTF IS HAPPENING???", data1)
     return response1;
 }
 
+
+export const thunkGetAllSearchedCommunitites = (page) => async (dispatch) => {
+    const response1 = await csrfFetch(`/api/communities/search?page=${page}`);
+    let data1 = await response1.json();
+    dispatch(getCommunities(data1));
+    return response1;
+
+}
+
+export const thunkGetAllSearched2Communitites = (page, search) => async (dispatch) => {
+    const response1 = await csrfFetch(`/api/communities/search/community?page=${page}&search=${search}`);
+    let data1 = await response1.json();
+    dispatch(searchedCommunities(data1));
+    return response1;
+
+}
+
+export const thunkGetSearchedCommunitiyPosts = (id, page, search) => async (dispatch) => {
+    const response1 = await csrfFetch(`/api/communities/${id}/posts?page=${page}&search=${search}`);
+    let data1 = await response1.json();
+    dispatch(getCommunitySearchedPosts(data1));
+    return response1;
+
+}
+
+export const thunkGetSearchedCommunitiyComments = (id, page, search) => async (dispatch) => {
+    const response1 = await csrfFetch(`/api/communities/${id}/comments?page=${page}&search=${search}`);
+    let data1 = await response1.json();
+    dispatch(getCommunitySearchedComments(data1));
+    return response1;
+
+}
+
+
+export const thunkGetAllSearched3Communitites = (page, search) => async (dispatch) => {
+    console.log("THIS SHOULD BE HITTING")
+    const response1 = await csrfFetch(`/api/communities/search/community2?page=${page}&search=${search}`);
+    let data1 = await response1.json();
+    dispatch(searchProfiles(data1));
+    return response1;
+
+}
+
+
+export const thunkGetAllSearchedProfiles = (page) => async (dispatch) => {
+    const response1 = await csrfFetch(`/api/communities/search2?page=${page}`);
+    let data1 = await response1.json();
+    dispatch(getCommunities(data1));
+    return response1;
+
+}
+
+export const thunkRefreshSearch = (id) => async (dispatch) => {
+
+    dispatch(searchProfiles([]))
+    dispatch(searchedCommunities([]))
+    return "succesfully refreshed"
+  }
 
 
 export const thunkGetDetailsById = (id) => async (dispatch) => {
     const response1 = await csrfFetch(`/api/communities/${id}`)
     const data1 = await response1.json();
-    dispatch(getDetails(data1));
+     console.log("WTF IS THIS ERROR", response1)
+    if (data1) dispatch(getDetails(data1));
     return data1;
 }
 
@@ -128,6 +220,7 @@ export const thunkGetUserCommunities = () => async (dispatch) => {
 
     const data = await response.json();
     dispatch(getUserCommunities(data));
+    // console.log("WTF IS HAPPENING???", data)
     return data;
 };
 
@@ -140,6 +233,7 @@ export const thunkGetCommunityMemberships = (id) => async (dispatch) => {
 
     const data = await response.json();
     dispatch(getCommunityMemberships(data));
+    // console.log("WTF IS HAPPENING???", data)
     return data;
 };
 
@@ -151,8 +245,8 @@ export const thunkGetCommunityMembers = (id) => async (dispatch) => {
     });
 
     const data = await response.json();
-    console.log("REDUCER", data)
     dispatch(getCommunityMembers(data));
+    // console.log("WTF IS HAPPENING???", data)
     return data;
 };
 
@@ -164,8 +258,8 @@ export const thunkGetMemberships = () => async (dispatch) => {
     });
 
     const data = await response.json();
-    console.log("REDUCER", data)
     dispatch(getMemberships(data));
+    // console.log("WTF IS HAPPENING???", data)
     return data;
 };
 
@@ -182,6 +276,7 @@ export const thunkCreateCommunity = (data) => async (dispatch) => {
         })
         const data1 = await response.json()
         dispatch(getDetails(data1))
+       // console.log("WTF IS HAPPENING???", data1)
         return data1
     }
 }
@@ -195,17 +290,114 @@ export const thunkUpdateCommunities = (id, data) => async (dispatch) => {
               },
             body: JSON.stringify(data)
         })
+
+
         const data1 = await response.json()
         dispatch(getDetails(data1))
         return data1
     }
 }
 
+export const thunkUpdateCommunityStyle = (id, icon, banner, background) => async (dispatch) => {
+    console.log("REDUCER", id, banner)
+    let response
+    if (icon && Object.values(icon).length) {
+        console.log("PLEASE HITTIN WITH NO icon")
+         response = await csrfFetch(`/api/communities/${id}/style?i=${true}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                  },
+                body: JSON.stringify(icon)
+            })
+    }
+    if (banner && Object.values(banner).length) {
+        console.log("PLEASE HITTIN WITH NO banner")
+         response = await csrfFetch(`/api/communities/${id}/style?ban=${true}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                  },
+                body: JSON.stringify(banner)
+            })
+    }
+    if (background && Object.values(background).length) {
+        console.log("PLEASE HITTIN WITH NO background")
+         response = await csrfFetch(`/api/communities/${id}/style?bg=${true}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                  },
+                body: JSON.stringify(background)
+            })
+    }
+
+    const data1 = await response?.json()
+    dispatch(getDetails(data1))
+    return data1
+
+}
+
+export const thunkUpdateCommunityImages = (id, images) => async (dispatch) => {
+
+    const formData = new FormData();
+
+    if (images && images.length !== 0) {
+        for (var i = 0; i < images.length; i++) {
+        formData.append("image", images[i]);
+        }
+    }
+
+
+    let response
+
+    if (images && images.length) {
+            console.log("PLEASE HITTIN WITH  IMGSS")
+            if (images[0]) {
+            response = await csrfFetch(`/api/communities/${id}/style/images?icon=${true}`, {
+                method: 'PUT',
+                headers: {
+                "Content-Type": "multipart/form-data",
+                },
+                body: formData
+
+            })
+            }
+            if ( images[1] )
+            response = await csrfFetch(`/api/communities/${id}/style/images?banner=${true}`, {
+            method: 'PUT',
+            headers: {
+            "Content-Type": "multipart/form-data",
+            },
+            body: formData
+
+            })
+            if ( images[2] )
+            response = await csrfFetch(`/api/communities/${id}/style/images?bg=${true}`, {
+            method: 'PUT',
+            headers: {
+            "Content-Type": "multipart/form-data",
+            },
+            body: formData
+
+            })
+
+
+
+        }
+
+        const data1 = await response?.json()
+        dispatch(getDetails(data1))
+        return data1
+
+}
+
+
 export const thunkJoinCommunities = (id, type) => async (dispatch) => {
 
     let status
 
-    if (type) {
+    if (!type) {
         status = { status: "Unapproved" }
     }
 
@@ -217,8 +409,8 @@ export const thunkJoinCommunities = (id, type) => async (dispatch) => {
             body: JSON.stringify(status)
         })
         const data1 = await response.json(response)
-        console.log("REDUCER", data1)
         dispatch(addCommunityMemberships(data1))
+        // console.log("WTF IS HAPPENING???", data1)
         return data1
 }
 
@@ -231,6 +423,7 @@ export const thunkUnjoinCommunities = (id) => async (dispatch) => {
     })
     let data = await response.json();
     dispatch(removeCommunityMemberships(id))
+    // console.log("WTF IS HAPPENING???", data)
     return data
 }
 
@@ -242,7 +435,7 @@ export const thunkAddMember = (communityId, userId) => async (dispatch) => {
             },
         })
         const data1 = await response.json(response)
-        console.log("REDUCER", data1)
+        // console.log("REDUCER", data1)
         dispatch(addCommunityMember(data1))
         return data1
 }
@@ -257,7 +450,7 @@ export const thunkUpdateMember = (communityId, userId, status) => async (dispatc
             body: JSON.stringify({ status })
         })
         const data1 = await response.json(response)
-        console.log("REDUCER", data1)
+        // console.log("REDUCER", data1)
         dispatch(addCommunityMember(data1))
         return data1
 }
@@ -277,10 +470,6 @@ export const thunkUpdateMember = (communityId, userId, status) => async (dispatc
 
 
 
-export const thunResetCommunity = () => async (dispatch) => {
-    dispatch(getDetails({}))
-}
-
 // export const addPostImages = (id, data) => async (dispatch) => {
 //     const response = await csrfFetch(`/api/posts/${id}/images`, {
 //         method: 'POST',
@@ -299,7 +488,13 @@ let initialState = {
     singleCommunity: {},
     communityMemberships: {},
     communityMembers: {},
-    memberships: {}
+    memberships: {},
+    searchCommunities: {},
+    searchProfiles: {},
+    searchPosts: {},
+    searchComments: {},
+    hotCommunityPosts: {},
+    topCommunityPosts: {}
 };
 
 
@@ -312,10 +507,40 @@ const communitiesReducer = (state = initialState, action) => {
           (community) => (newState.communities[community.id] = community)
         );
       return newState;
+      case SEARCHED_COMMUNITIES:
+        newState = { ...state };
+        if (!action.communities?.length) return newState
+        action.communities.forEach(
+          (community) => (newState.searchCommunities[community.id] = community)
+        );
+      return newState;
+      case GET_COMMUNITY_POSTS:
+        newState = { ...state };
+        if (!action.posts?.length) return newState
+        action.posts.forEach(
+          (post) => (newState.searchPosts[post.id] = post)
+        );
+      return newState;
+      case GET_COMMUNITY_COMMENTS:
+        newState = { ...state };
+        if (!action.comments?.length) return newState
+        action.comments.forEach(
+          (comment) => (newState.searchComments[comment.id] = comment)
+        );
+      return newState;
+      case SEARCHED_PROFILES:
+        newState = { ...state };
+        if (!action.communities?.length) return newState
+        action.communities.forEach(
+          (community) => (newState.searchProfiles[community.id] = community)
+        );
+      return newState;
     case GET_DETAILS: {
         newState = { ...state };
+        console.log("reducer:", action.detailS)
         const community = action.details;
         newState.singleCommunity = { ...community };
+        // newState.memberships[community.id] = { ...community }
         return newState;
     }
     case REMOVE_COMMUNITIES: {
@@ -330,7 +555,7 @@ const communitiesReducer = (state = initialState, action) => {
     case GET_USER_COMMUNITIES: {
         newState = { ...state };
         newState.userCommunities = {};
-        action.communities.forEach(
+        if (action.communities && action.communities.length) action.communities.forEach(
           (community) => (newState.userCommunities[community.id] = community)
         );
         return newState;
@@ -367,7 +592,6 @@ const communitiesReducer = (state = initialState, action) => {
     case GET_COMMUNITY_MEMBERS: {
         newState = { ...state };
         newState.communityMembers = {};
-        console.log(action.memberships)
         action.memberships.forEach(
           (member) => (newState.communityMembers[member.userId] = member.User)
         );

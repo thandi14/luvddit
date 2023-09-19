@@ -16,6 +16,7 @@ import { useModal2 } from '../../context/Modal2'
 import DeleteComment from '../PostPage/deleteC'
 import '../PostPage/PostPage.css'
 import NoPosts from './none'
+import { useFilter } from '../../context/filter'
 
 function UsersPosts() {
     const { posts, singlePost, userPosts } = useSelector((state) => state.posts);
@@ -36,8 +37,39 @@ function UsersPosts() {
     const [ commentId, setCommentId ] = useState(null)
     const { page } = useParams(); // Retrieve the page parameter from the URL
     const targetRef2 = useRef()
+    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage2, setCurrentPage2] = useState(1);
+    const [threshold, setThreshold] = useState(450);
+    const { filter, setFilter } = useFilter()
+    const [ seeMore, setSeeMore ] = useState(false)
 
+    useEffect(() => {
+      setFilter(false)
+        localStorage.setItem("currentPage", currentPage.toString());
+      }, [currentPage]);
 
+      useEffect(() => {
+
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+          window.removeEventListener('scroll', handleScroll);
+        };
+
+      }, [currentPage]);
+
+      const handleScroll = () => {
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        const scrollTop = window.scrollY;
+
+        if (windowHeight + scrollTop >= documentHeight - threshold) {
+          const storedCurrentPage = localStorage.getItem("currentPage");
+
+          setCurrentPage(currentPage + 1);
+          setThreshold(threshold + 200);
+          dispatch(postsActions.thunkGetUserPosts(user.id, currentPage)); // Fetch posts for the specified page
+        }
+      }
 
 
     useEffect(() => {
@@ -48,7 +80,7 @@ function UsersPosts() {
       // if (!showMenu) return;
 
       const closeMenu = (e) => {
-        if (targetRef2 && !targetRef2.current.contains(e.target)) {
+        if (targetRef2 && !targetRef2.current?.contains(e.target)) {
           setIsVisible2(false);
         }
       };
@@ -59,25 +91,25 @@ function UsersPosts() {
 
     }, []);
 
-    console.log(userPosts)
-
-    let filterdPosts = Object.values(userPosts).reverse()
+    let filterdPosts = Object.values(userPosts).filter((p) => p.userId === user.id).reverse()
 
     filterdPosts = filterdPosts.sort((a, b) => {
       return b.createdAt - a.createdAt
     })
 
-    let top = isVisible ? "top" : "down";
+    let profile
 
-    let moderating = Object.values(userCommunities)
+    let top = isVisible ? "top" : "down";
+    let moderating = Object.values(userCommunities).filter((c) => c.type !== "Profile").slice(0, 3)
+    if (seeMore) moderating = Object.values(userCommunities).filter((c) => c.type !== "Profile")
+    if (!seeMore) moderating = Object.values(userCommunities).filter((c) => c.type !== "Profile").slice(0, 3)
+
+    if (user) profile = Object.values(userCommunities).filter((m) => m.type === "Profile")[0]
 
     useEffect(() => {
         dispatch(postsActions.thunkGetUserPosts(user.id, page)); // Fetch posts for the specified page
     }, [dispatch, page]);
 
-    let profile
-
-    if (user) profile = moderating.filter((m) => m.type === "Profile")[0]
 
 
 
@@ -195,16 +227,16 @@ function UsersPosts() {
     <div className="posts3">
         <div className="filter">
         <div id="filter-side1">
-        <div onClick={(() => window.alert("Feature not avaliable"))} id="best">
-        <i class="fi fi-rr-bahai"></i>
-        <p>New</p>
+        <div style={{ backgroundColor: "#EDEFF1"}} onClick={(() => history.push("/profile/posts/:page"))} id="best">
+        <i style={{ color: '#0079D3'}} class="fi fi-sr-bahai"></i>
+        <p style={{ color: '#0079D3'}}>New</p>
         </div>
-        <div onClick={(() => window.alert("Feature not avaliable"))}id="best">
+        <div onClick={(() => history.push("/profile/posts/hot/:page"))}id="best">
         <i class="fi fi-rs-flame"></i>
         <p>Hot</p>
         </div>
-        <div onClick={(() => window.alert("Feature not avaliable"))} id="best">
-        <i class="fi fi-rs-signal-bars-good"></i>
+        <div onClick={(() => history.push("/profile/posts/top/:page"))} id="best">
+        <i class="fi fi-ts-signal-bars-good"></i>
         <p>Top</p>
         </div>
         </div>
@@ -227,7 +259,7 @@ function UsersPosts() {
                 e.stopPropagation()
                 history.push(`/communities/${post.communityId}`)
                 })} className="userName" id="community">l/{post.Community.name}</span>
-            { !myMemberships.filter((m) => m.id === post.communityId).length ? <button onClick={((e) => {
+            { !myMemberships.filter((m) => m.id === post.communityId).length && post.Communiy && post.Community.type !== "Profile" ? <button onClick={((e) => {
                   e.stopPropagation()
                   dispatch(communitiesActions.thunkJoinCommunities(post.communityId))
                   })} id="miniJoin2">Join</button> : null }
@@ -323,7 +355,7 @@ function UsersPosts() {
 
     </div>
     <div className="sidebar2">
-        <CommunitiesProfile community={profile} />
+        <CommunitiesProfile community={profile} page="/profile" />
         <div id="terms2">
             <div id="terms-9">
             <span>You're a moderator of these <br></br>
@@ -331,10 +363,10 @@ function UsersPosts() {
             {moderating.map((c) =>
             <div id="modss">
                 <div>
-               {c.communityStyles && c.communityStyles.length ? <img id="tpfp" src={c.communityStyles[0].profile}></img> : <div id="nopfp">l/</div> }
+                {c.CommunityStyle.icon ? <img id="tpfp" src={c.CommunityStyle.icon}></img> : <div style={{ backgroundColor: `${c.CommunityStyle.base}`}}id="nopfp">l/</div> }
                <div id="modss20">
-                <span id="justbold">l/{c.name}</span>
-                <span>{c.CommunityMembers} members</span>
+               <span onClick={(() => history.push(`/communities/${c.id}/:page`))} id="justbold">l/{c.name}</span>
+               <span>{c.CommunityMembers} { c.CommunityMembers === 1 ? "member" : "members" }</span>
                </div>
                </div>
                { myMemberships.filter((m) => m.id === c.id).length ? <button onClick={(() => {
@@ -350,10 +382,10 @@ function UsersPosts() {
 
             )}
             </div>
-            <p onClick={((e) => {
+            { Object.values(userCommunities).filter((c) => c.type !== "Profile").length > 3 && <p onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature not avaliable")
-                    })}>VIEW MORE</p>
+                    setSeeMore(!seeMore)
+                    })}><span id="view-more">{ !seeMore ? "VIEW MORE" : "VIEW LESS"}</span></p>}
         </div>
         { isVisible3 ? <button className={top} onClick={((e) => window.scrollTo({ top: 0, left: 0, behavior: "smooth"}))}>Back to Top</button> : null}
     </div>

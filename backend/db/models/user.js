@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       User.hasMany(
-        models.Posts,
+        models.Post,
           { foreignKey: 'userId', onDelete: 'CASCADE',  hooks: true }
       );
       User.hasMany(
@@ -19,11 +19,11 @@ module.exports = (sequelize, DataTypes) => {
           { foreignKey: 'userId', onDelete: 'CASCADE',  hooks: true }
       );
       User.hasMany(
-        models.Communities,
+        models.Community,
           { foreignKey: 'userId', onDelete: 'CASCADE',  hooks: true }
       );
       User.belongsToMany(
-        models.Communities,
+        models.Community,
           { through: models.CommunityMembers,
             foreignKey: 'userId',
             otherKey: 'communityId'

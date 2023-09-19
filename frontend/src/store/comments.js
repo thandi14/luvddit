@@ -1,10 +1,11 @@
 import { csrfFetch } from "./csrf";
 
 
-const GET_POST_COMMENTS = 'posts/getPostComments';
-const GET_DETAILS = 'posts/getDetails';
-const GET_USER_COMMENTS = 'posts/getUserComments';
-const REMOVE_COMMENT = 'posts/removeComment'
+const GET_POST_COMMENTS = 'comments/getPostComments';
+const GET_SEARCHED_COMMENTS = 'comments/getSearchedComments';
+const GET_DETAILS = 'comments/getDetails';
+const GET_USER_COMMENTS = 'comments/getUserComments';
+const REMOVE_COMMENT = 'comments/removeComment'
 
 
 const getPostComments = (comments) => {
@@ -13,6 +14,14 @@ const getPostComments = (comments) => {
         comments
     }
 }
+
+const getSearchedComments = (comments) => {
+    return {
+        type: GET_SEARCHED_COMMENTS,
+        comments
+    }
+}
+
 
 const getDetails = (details) => {
     return {
@@ -39,6 +48,24 @@ export const thunkGetPostComments = (id) => async (dispatch) => {
     dispatch(getPostComments(data1));
     return response1;
 }
+
+export const thunkGetComments = (page, search) => async (dispatch) => {
+
+    const response2 = await csrfFetch(`/api/comments/search?page=${page}`)
+    let data2 = await response2.json();
+    dispatch(getPostComments(data2));
+    return response2 ;
+
+}
+
+export const thunkGetSearchedComments = (page, search) => async (dispatch) => {
+    let response1 = await csrfFetch(`/api/comments/search/comments?page=${page}&search=${search}`)
+    let data1 = await response1.json();
+    dispatch(getSearchedComments(data1));
+    return data1
+}
+
+
 
 export const thunkGetUserComments = () => async (dispatch) => {
   const response1 = await csrfFetch(`/api/comments/current`)
@@ -90,6 +117,13 @@ export const thunkUpdateComment = (data, id) => async (dispatch) => {
       }
   }
 
+  export const thunkRefreshSearch = (id) => async (dispatch) => {
+
+    dispatch(getSearchedComments([]))
+    return "succesfully refreshed"
+  }
+
+
 // export const thunkDeleteComment = (id) => async (dispatch) => {
 //     console.log("THUNK:", id)
 //     const response = await csrfFetch(`/api/comments/${id}`, {
@@ -109,6 +143,7 @@ let initialState = {
     userComments: {},
     // singlePost: {},
     removedComment: {},
+    searchComments: {}
 };
 
 
@@ -117,12 +152,17 @@ const commentsReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_POST_COMMENTS:
         newState = { ...state };
-        newState.postComments = {}
-        console.log(action)
         action.comments.forEach(
           (comment) => (newState.postComments[comment.id] = comment)
         );
       return newState;
+    case GET_SEARCHED_COMMENTS:
+        newState = { ...state };
+        if (!action.comments?.length) return newState
+        action.comments.forEach(
+          (comment) => (newState.searchComments[comment.id] = comment)
+        );
+    return newState;
     case GET_DETAILS:
         newState = { ...state };
         let comment = action.details;

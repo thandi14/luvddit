@@ -8,7 +8,6 @@ if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;  // define your schema in options object
 }
 
-
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
@@ -34,11 +33,27 @@ module.exports = {
         postId: 5
       },
       {
+        imgURL: "https://hips.hearstapps.com/hmg-prod/images/st-lucia-154917524-1494616323.jpg",
+        postId: 32
+      },
+      {
+        imgURL: "https://hips.hearstapps.com/hbz.h-cdn.co/assets/16/16/bora-bora-gettyimages-575766591.jpg?crop=1.0xw:1xh;center,top&resize=980:*",
+        postId: 32
+      },
+      {
         imgURL: "https://i.pinimg.com/736x/c7/44/15/c7441501cea67b210e05b06ceec545a4.jpg",
         postId: 6
       },
       {
         imgURL: "https://i.pinimg.com/originals/70/9b/2f/709b2f3e00782ccc2de3e88b3f852a76.jpg",
+        postId: 8
+      },
+      {
+        imgURL: "https://i.pinimg.com/736x/3d/4d/f5/3d4df5b12bb4208c466d6f470d8a9785.jpg",
+        postId: 8
+      },
+      {
+        imgURL: "https://i.pinimg.com/736x/dd/a3/2b/dda32b5259dbfbba2807f319880b2376.jpg",
         postId: 8
       },
       {
@@ -88,7 +103,71 @@ module.exports = {
       {
         imgURL: "https://i.ebayimg.com/images/g/FNUAAOSwgSNglOtx/s-l1200.webp",
         postId: 68,
-      }
+      },
+      {
+        imgURL: "https://i.pinimg.com/736x/70/c2/e7/70c2e736f7cefcaa36feaf0a91e7fe80.jpg",
+        postId: 17,
+      },
+      {
+        imgURL: "https://i.pinimg.com/564x/05/68/9b/05689b6b841bd305a303ff4b9acdf3a1.jpg",
+        postId: 17,
+      },
+      {
+        imgURL: "https://i.pinimg.com/736x/a0/a4/f6/a0a4f6fef01aaae904807a922c967a18.jpg",
+        postId: 17,
+      },
+      {
+        imgURL: "https://i.pinimg.com/1200x/9d/6e/86/9d6e864d936019aab066fb7c7319ee13.jpg",
+        postId: 11,
+      },
+      {
+        imgURL: "https://i.pinimg.com/736x/1f/9d/65/1f9d6549636fe95e29c83eaa59c10d61.jpg",
+        postId: 11,
+      },
+      {
+        imgURL: "https://i.pinimg.com/736x/4f/0e/dd/4f0eddc4a5b5b426b2b6352f32294067.jpg",
+        postId: 23,
+      },
+      {
+        imgURL: "https://i.pinimg.com/1200x/9c/11/9a/9c119ada70944edbcf9e8b9fe2e6c656.jpg",
+        postId: 27,
+      },
+      {
+        imgURL: "https://i.pinimg.com/originals/cb/f0/c4/cbf0c4206e04e026a54494a52f34f906.jpg",
+        postId: 27,
+      },
+      {
+        imgURL: "https://i.pinimg.com/1200x/8f/29/fa/8f29fa01331463181eb6c5d299d210ea.jpg",
+        postId: 27,
+      },
+      {
+        imgURL: "https://i.pinimg.com/564x/26/22/80/2622809bc9e37be7e072eab8385c9428.jpg",
+        postId: 20,
+      },
+      {
+        imgURL: "https://i.pinimg.com/550x/62/ff/b2/62ffb2273ea333747a7a64f2d043af7b.jpg",
+        postId: 29
+      },
+      {
+        imgURL: "https://drive.google.com/uc?export=view&id=1czPG1YFkAfew8_eEBofhoD_P9Xx1ATvs",
+        postId: 69
+      },
+      {
+        imgURL: 'https://drive.google.com/uc?export=view&id=1bnt-Z8meSaiqrqExB3xMT7tY-7RlpNOC',
+        postId: 69
+      },
+      {
+        imgURL: 'https://drive.google.com/uc?export=view&id=1wP6nRrTIYoN_3pjO7UYgzeNRtpwwZh4k',
+        postId: 69
+      },
+      {
+        imgURL: 'https://drive.google.com/uc?export=view&id=1czPG1YFkAfew8_eEBofhoD_P9Xx1ATvs',
+        postId: 70
+      },
+      {
+        imgURL: 'https://drive.google.com/uc?export=view&id=1CoX-lchXGOE9njKhIjQAd0Hv2uXrxNT2',
+        postId: 70
+      },
     ])
 
   },

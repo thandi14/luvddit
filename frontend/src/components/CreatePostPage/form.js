@@ -4,6 +4,10 @@ import { useSelector, useDispatch } from "react-redux";
 import * as postActions from "../../store/posts"
 import { useHistory, useParams } from "react-router-dom";
 import * as communityActions from '../../store/communities'
+import { useRef } from "react";
+// import axios from "axios";
+
+
 
 function PostForm() {
     const { communities, singleCommunity, communityMemberships, userCommunities } = useSelector((state) => state.communities)
@@ -18,6 +22,7 @@ function PostForm() {
     const [ spoiler, setSpolier ] = useState(false);
     const [ nsfw, setNsfw ] = useState(false);
     const [ isDisabled, setIsDisabled ] = useState(false)
+    const [ isDisabled2, setIsDisabled2 ] = useState(false)
     const [ data1, setData1 ] = useState({});
     const [ dataImg, setDataImg ] = useState({});
     const [ post, setPost ] = useState(true)
@@ -25,6 +30,27 @@ function PostForm() {
     const [ link, setLink ] = useState(false)
     const { button } = useParams()
     const [ focus, setFocus ] = useState(false)
+    const fileInputRef = useRef(null);
+    const fileInputRef2 = useRef(null);
+    const fileInputRef3 = useRef(null);
+    const [imagePreview, setImagePreview] = useState(null);
+    const [imagePreview2, setImagePreview2] = useState(null);
+    const [imagePreview3, setImagePreview3] = useState(null);
+    const [isVisible, setIsVisible] = useState(false);
+    const [isVisible2, setIsVisible2] = useState(false);
+    const [ numImages, setNumImages ] = useState([])
+    const [ imageId, setImageId ] = useState(null)
+    const [ moreImages, setMoreImages ] = useState(null)
+    const [ boxOne, setBoxOne ] = useState(false)
+    const [ boxTwo, setBoxTwo ] = useState(false)
+    const [ boxThree, setBoxThree ] = useState(false)
+    const [ boxFour, setBoxFour ] = useState(false)
+    const [ restrict, setRestrict ] = useState(false)
+
+
+
+    let images = []
+
 
     let members
     if (communityMemberships) members = Object.values(communityMemberships)
@@ -34,8 +60,6 @@ function PostForm() {
     approved = !approved && singleCommunity.id ? false : true
 
     let profile = Object.values(userCommunities).filter((c) => c.type === "Profile" && c.userId === user.id)
-
-    console.log(profile)
 
     useEffect(() => {
         if (button === "image") {
@@ -96,34 +120,193 @@ function PostForm() {
         else if (approved && singleCommunity.type === "Restricted" && title.length || approved && singleCommunity.type === "Private" && title.length) {
             setIsDisabled(false)
         }
+        else if (singleCommunity.userId === user.id && title.length ) {
+            setIsDisabled(false)
+        }
+        else if (!singleCommunity.id) {
+            setIsDisabled(true)
+        }
         else {
           setIsDisabled(true);
         }
 
+        if (approved && title.length && singleCommunity.id) {
+            setIsDisabled2(false)
+        }
+        else {
+            setIsDisabled2(true)
+        }
+
     }, [singleCommunity.id, title, approved]);
 
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedImage2, setSelectedImage2] = useState(null);
+    const [selectedImage3, setSelectedImage3] = useState(null);
 
-    useEffect( () => {
+    const triggerFileInput = () => {
+        fileInputRef.current.click();
+
+    };
+
+    const triggerFileInput2 = () => {
+        fileInputRef2.current.click();
+    };
+
+    const triggerFileInput3 = () => {
+        fileInputRef3.current.click();
+    };
+
+
+
+    const handleImageChange2 = (e) => {
+      const file = e.target.files[0];
+
+      if (file) {
+          setSelectedImage2(file);
+
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+            setImagePreview2(reader.result);
+        };
+
+
+        reader.readAsDataURL(file); // Read the selected file as a data URL
+      } else {
+        setSelectedImage2(null);
+        setImagePreview2(null);
+      }
+    };
+
+    const handleImageChange = (e) => {
+        //setSelectedImage(e.target.files[0]);
+        const file = e.target.files[0];
+
+        if (file) {
+            setSelectedImage(file);
+
+          const reader = new FileReader();
+
+          reader.onloadend = () => {
+              setImagePreview(reader.result);
+              setNumImages([...numImages, { imagePreview: reader.result }]);
+          };
+
+
+          reader.readAsDataURL(file);
+        } else {
+          setSelectedImage(null);
+          setImagePreview(null);
+        }
+      };
+
+      const handleImageChange3 = (e) => {
+        const file = e.target.files[0];
+
+        if (file) {
+            setSelectedImage3(file);
+
+          const reader = new FileReader();
+
+          reader.onloadend = () => {
+              setImagePreview3(reader.result);
+          };
+
+
+          reader.readAsDataURL(file);
+        } else {
+          setSelectedImage3(null);
+          setImagePreview3(null);
+        }
+      };
+
+
+
+
+
+    console.log(imagePreview)
+    const [ key, setKey ] = useState(Date.now()); // Create a unique key
+    const [ key2, setKey2 ] = useState(Date.now()); // Create a unique key
+    const [ key3, setKey3 ] = useState(Date.now()); // Create a unique key
+
+
+    function cancelImageChange() {
+        setSelectedImage(null);
+        setImagePreview(null)
+        setBoxOne(false)
+        setKey(Date.now());
+    }
+
+    function cancelImageChange2() {
+        setSelectedImage2(null);
+        setImagePreview2(null)
+        setBoxTwo(false)
+        setKey2(Date.now());
+    }
+
+    function cancelImageChange3() {
+        setSelectedImage3(null);
+        setImagePreview3(null)
+        setBoxThree(false)
+        setKey3(Date.now());
+    }
+
+
+    const [isHovered, setIsHovered] = useState(false);
+    const [isHovered2, setIsHovered2] = useState(false);
+    const [isHovered3, setIsHovered3] = useState(false);
+
+    function handleMouseEnter(i) {
+      setImageId(i)
+      setIsHovered(true);
+    };
+
+    const handleMouseLeave = () => {
+      setImageId(null)
+      setIsHovered(false);
+    };
+
+    useEffect(() => {
 
         async function fetchData() {
-            const response = await dispatch(postActions.thunkCreatePost(data1, singleCommunity.id, dataImg))
-            if (response) history.push(`/posts/${response.id}`)
 
+            const postResponse = await dispatch(postActions.thunkCreatePost(data1, singleCommunity.id, selectedImage, moreImages));
+
+            if (!postResponse) {
+                return;
+            }
+
+            history.push(`/posts/${postResponse.id}`);
         }
-        fetchData()
 
-    }, [dispatch, data1, singleCommunity])
+        fetchData();
+        }, [dispatch, data1, numImages, history]);
 
+       const [ load, setLoad ] = useState()
 
 
     const handleSubmit = async () => {
+
+        setLoad(true)
+
+        if (selectedImage && selectedImage2 && selectedImage3 ) {
+            setMoreImages([
+                selectedImage, selectedImage2, selectedImage3
+            ])
+        }
+        else if (selectedImage && selectedImage2 ) {
+            setMoreImages([
+                selectedImage, selectedImage2
+            ])
+        }
+
         let tags = ""
 
         if (oc) tags += ",oc"
         if (spoiler) tags += ",spoiler"
         if (nsfw) tags += ",nsfw"
 
-        if (tags) {
+        if (tags && description) {
             tags = tags.slice(1, tags.length)
             setData1({
                 title,
@@ -132,25 +315,34 @@ function PostForm() {
              })
 
         }
-        if (imageDescription) {
+        if (tags && linkDescription) {
+            tags = tags.slice(1, tags.length)
             setData1({
-                title
-            })
-            setDataImg({
-                imgURL: imageDescription
-            })
+                title,
+                description: linkDescription,
+                tags,
+             })
         }
-        else if (!tags) {
+        else if (!tags && description) {
             setData1({
                 title,
                 description
             })
 
         }
+        else if (!tags && linkDescription) {
+            setData1({
+                title,
+                description: linkDescription
+            })
 
+        }
 
 
     }
+
+    let idName = isVisible ? "search2" : "hidden";
+    let idName2 = !isVisible ? "choose-comms3" : "choose-comms1";
 
 
     return (
@@ -162,8 +354,9 @@ function PostForm() {
                     <p id="pol"><i class="fi fi-rr-square-poll-vertical"></i>Poll</p>
                     </div>
                     <div id="padding3">
-                    <div className="post-input2">
-                    <input type="text" placeholder="Title" onChange={((e) => setTitle(e.target.value))}></input>
+                    <div style={{ position: "relative"}} className="post-input2">
+                    <input type="text" placeholder="Title" maxLength={300} onChange={((e) => setTitle(e.target.value))}></input>
+                    <span id="title-limit">{title.length}/300</span>
                     </div>
                     <div className="post-input">
                     {post && <div id={ focus ? "add-to2" : "add-to"}>
@@ -186,7 +379,102 @@ function PostForm() {
                     <i class="fa-brands fa-youtube"></i>
                     </div>}
                     {post && <textarea onFocus={(() => setFocus(true))} onBlur={(() => setFocus(false))} id="description-posts" onChange={((e) => setDescription(e.target.value))} placeholder="Text(optional)"></textarea>}
-                    {image && <input onChange={((e) => setImageDescription(e.target.value))} placeholder="ImageUrl"></input>}
+                        { image &&
+                        <>
+                        <input
+                        id="boxOne"
+                        key={key} // Set the key on the file input
+                        ref={fileInputRef}
+                        onChange={((e) => {
+                            if (selectedImage) cancelImageChange()
+                            handleImageChange(e)
+                            setBoxOne(true)
+                        })}
+                        style={{ position: "absolute", zIndex: "-1"}} type="file">
+                        </input>
+                        <input
+                        id="boxTwo"
+                        ref={fileInputRef2}
+                        key={key2} // Set the key on the file input
+                        onChange={((e) => {
+                            if (selectedImage2) cancelImageChange2()
+                            handleImageChange2(e)
+                            setBoxTwo(true)
+                        })}
+                        style={{ position: "absolute", zIndex: "-1"}} type="file">
+                        </input>
+                        <input
+                        id="boxThree"
+                        key={key3} // Set the key on the file input
+                        ref={fileInputRef3}
+                        onChange={((e) => {
+                            if (selectedImage3) cancelImageChange3()
+                            handleImageChange3(e)
+                            setBoxThree(true)
+
+                        })}
+                        style={{ position: "absolute", zIndex: "-1"}} type="file">
+                        </input>
+                        </>
+
+                        }
+                        {image && !selectedImage && !selectedImage2 && !selectedImage3 ? <div id="input-upload">
+                        <label style={{ width: "100%", position: "absolute", zIndex: "2", display: "flex", gap: "10px", alignItems: "center", justifyContent: "center", color: `${singleCommunity.CommunityStyle?.highlight}` }}><span>Drag and drop images or</span>
+                        <button onClick={(() => {
+                            triggerFileInput()
+
+                        })} style={{ cursur: "pointer", color: `${singleCommunity.CommunityStyle?.highlight}`, borderColor: `${singleCommunity.CommunityStyle?.highlight}`}}id="upload-b">Upload</button></label>
+                        </div> :
+                        image && <div id="input-uploaded">
+                            <>
+                       { (boxOne || selectedImage) && <div id="i-selected"
+                        onMouseEnter={(() => setIsHovered(true))}
+                        onMouseLeave={(() => setIsHovered(false))}
+                        >
+                        <i onClick={(() => {
+                            cancelImageChange()
+
+                        })} id={ isHovered ? "i-no" : "hidden"}
+                        class="fi fi-sr-cross-circle"></i>
+                        <img style={{ width: "100%", height: "100%", borderRadius: "4px"}} src={imagePreview}></img>
+                        </div>}
+                        { (boxTwo || selectedImage2) &&<div id="i-selected"
+                        onMouseEnter={(() => setIsHovered2(true))}
+                        onMouseLeave={(() => setIsHovered2(false))}
+                        >
+                        <i onClick={(() => {
+                            cancelImageChange2()
+                        })} id={ isHovered2 ? "i-no" : "hidden"}
+                        class="fi fi-sr-cross-circle"></i>
+                        <img style={{ width: "100%", height: "100%", borderRadius: "4px"}} src={imagePreview2}></img>
+                        </div>}
+                        { (boxThree || selectedImage3) && <div id="i-selected"
+                        onMouseEnter={(() => setIsHovered3(true))}
+                        onMouseLeave={(() => setIsHovered3(false))}
+                        >
+                        <i onClick={(() => {
+                            cancelImageChange3()
+                        })} id={ isHovered3 ? "i-no" : "hidden"}
+                        class="fi fi-sr-cross-circle"></i>
+                        <img style={{ width: "100%", height: "100%", borderRadius: "4px"}} src={imagePreview3}></img>
+                        </div>}
+                        { boxOne && !selectedImage2 && <div
+                            onClick={(() => {
+                                triggerFileInput2()
+                            })}
+                            id="i-more"><i id="i-m" class="fa-solid fa-plus"></i></div>}
+                        { boxOne && boxTwo && !selectedImage3 && <div
+                            onClick={(() => {
+                            triggerFileInput3()
+                            })} id="i-more"><i id="i-m" class="fa-solid fa-plus"></i></div>}
+                            { !boxOne && !selectedImage && <div
+                            onClick={(() => {
+                            triggerFileInput()
+                            })} id="i-more"><i id="i-m" class="fa-solid fa-plus"></i></div>}
+                        { boxThree && boxOne && boxTwo && <div onClick={(() => window.alert("You can only upload up to three"))} id="i-more"><i id="i-m" class="fa-solid fa-plus"></i></div>}
+                            </>
+                        </div>
+                        }
                     {link && <input onChange={((e) => setLinkDescription(e.target.value))} placeholder="Url"></input>}
                     </div>
                     {(singleCommunity.type === "Restricted" || singleCommunity.type === "Private") && !approved && (profile[0]?.id !== singleCommunity?.id) && <div id="Unapproved">
@@ -215,17 +503,24 @@ function PostForm() {
                     </div>
                     <div id="border3"></div>
                     <div id="submit-buttons">
-                        {singleCommunity.name && singleCommunity.name !== user.username ? <i class="fi fi-rr-followcollection"></i> : null}
+                        {singleCommunity.type !== "Profile" ? <i onClick={(() => window.alert("Feature not available"))} class="fi fi-rr-followcollection"></i> : null}
                         <button onClick={(() => window.alert("Feature not avaliable"))} id="draft">Save Draft</button>
-                        <button className={singleCommunity.name && singleCommunity.name !== user.username ? "marg" : ""} disabled={isDisabled} id={isDisabled ? "post" : "post2"} onClick={handleSubmit}>Post{singleCommunity.name && singleCommunity.name !== user.username ? <i class="fi fi-sr-tool-box"></i> : null }</button>
+                    { singleCommunity.userId === user.id && isDisabled && <button className={singleCommunity.type !== "Profile" ? "marg" : ""} disabled={isDisabled} id={"post"}>Post{singleCommunity.type !== "Profile" ? <i style={{ backgroundColor: `${singleCommunity.CommunityStyle?.highlight}`}} class="fi fi-sr-tool-box"></i> : null }</button> }
+                    { !load && singleCommunity.userId === user.id && !isDisabled && <button style={{ backgroundColor: `${singleCommunity.CommunityStyle?.highlight}`}} className={singleCommunity.type !== "Profile" ? "marg" : ""} disabled={isDisabled} id={"post2"} onClick={handleSubmit}>Post{singleCommunity.type !== "Profile" ? <i style={{ backgroundColor: `${singleCommunity.CommunityStyle?.highlight}`}} class="fi fi-sr-tool-box"></i> : null }</button> }
+                    { load && singleCommunity.userId === user.id && !isDisabled ? <button id="post"><i id="load" style={{ fontSize: "20px", height: "20px"}} class="fi fi-rr-spinner"></i></button> : null}
+
+                    { singleCommunity.userId !== user.id && isDisabled2 ? <button onClick={(() => !approved ? setRestrict(true) : setRestrict(false))} className={""} id={"post"} >Post</button> : null}
+                    { !load && singleCommunity.userId !== user.id && !isDisabled2 ? <button style={{ backgroundColor: `${singleCommunity.CommunityStyle?.highlight}`}} className={""} disabled={isDisabled2} id={"post2"} onClick={handleSubmit}>Post</button> : null}
+                    { load && singleCommunity.userId !== user.id && !isDisabled2 ? <button id="post"><i id="load" style={{ fontSize: "20px", height: "20px"}} class="fi fi-rr-spinner"></i></button> : null}
                     </div>
+                    { restrict ? <p style={{ textAlign: "right", color: "red", fontSize: "12px"}}>This community only allows trusted members to post here</p> : null}
                     </div>
                     <div id="notify-me">
                     <label>
                     <input type="checkbox" />
                     Send me post reply notifications
                     </label>
-                    <p onClick={(() => window.alert("Feature not avaliable"))} >Connect accounts to share your post<i class="fi fi-rr-info"></i></p>
+                    <p  style={{ color: `${singleCommunity.CommunityStyle?.highlight}`}} onClick={(() => window.alert("Feature not avaliable"))} >Connect accounts to share your post<i class="fi fi-rr-info"></i></p>
                     </div>
                 </div>
     )

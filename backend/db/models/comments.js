@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
           { foreignKey: 'userId' }
       );
       Comments.belongsTo(
-        models.Posts,
+        models.Post,
           { foreignKey: 'postId' }
       );
       Comments.hasMany(

@@ -3,11 +3,14 @@ import { useDispatch } from 'react-redux';
 import * as sessionActions from '../../store/session';
 import pfp from "./icons/IMG6.jpg"
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import CreateCommunity from "../CreateCommunityModel";
+import { useModal } from "../../context/Modal";
 
 function ProfileButton({ user, menu, r }) {
   const dispatch = useDispatch();
   const [showMenu, setShowMenu] = useState(menu);
   const history = useHistory()
+  const { setModalContent } = useModal()
   //const ulRef = useRef();
 
   const openMenu = () => {
@@ -24,7 +27,7 @@ function ProfileButton({ user, menu, r }) {
    // if (!showMenu) return;
 
     const closeMenu = (e) => {
-      if (r && !r.current.contains(e.target)) {
+      if (r && r.current && !r.current.contains(e.target)) {
         setShowMenu(false);
       }
     };
@@ -49,7 +52,7 @@ function ProfileButton({ user, menu, r }) {
       {/* </img> */}
       <div className={ulClassName} >
         <div>
-        <span id="nine"><i class="fi fi-rr-user"></i>My stuff</span>
+        <span id="nine"><i class="fi fi-rr-following"></i>My stuff</span>
         <span>Online status</span>
         <span onClick={(() => {
           setShowMenu(false)
@@ -63,15 +66,15 @@ function ProfileButton({ user, menu, r }) {
           <span>Mod Mode</span>
           <span>Dark Mode</span>
         </div>
-        <div id="thirtythree" onClick={(() => window.alert("Feature not avilable"))}>
-          <span><div id="luvvI">l/</div>Create a community</span>
-          <span><i class="fi fi-rr-bullhorn"></i>Advertise on luddit</span>
-          <span><i class="fi fi-rr-coins"></i>Coins</span>
-          <span><i class="fa-solid fa-shield-halved"></i>Premium</span>
-          <span><i class="fi fi-rr-telescope"></i>Explore</span>
-          <span><i class="fi fi-rr-interrogation"></i>Help Center</span>
-          <span><i class="fi fi-rr-circle-i"></i>More</span>
-          <span><i class="fa-solid fa-scroll"></i>Terms and Policies</span>
+        <div id="thirtythree">
+          <span onClick={(() => setModalContent(<CreateCommunity />))}><div id="luvvI">l/</div>Create a community</span>
+          <span onClick={(() => window.alert("Feature not avilable"))}><i class="fi fi-rr-bullhorn"></i>Advertise on luddit</span>
+          <span onClick={(() => window.alert("Feature not avilable"))}><i class="fi fi-rr-coins"></i>Coins</span>
+          <span onClick={(() => window.alert("Feature not avilable"))}><i class="fa-solid fa-shield-halved"></i>Premium</span>
+          <span onClick={(() => window.alert("Feature not avilable"))}><i class="fi fi-rr-telescope"></i>Explore</span>
+          <span onClick={(() => window.alert("Feature not avilable"))}><i class="fi fi-rr-interrogation"></i>Help Center</span>
+          <span onClick={(() => window.alert("Feature not avilable"))}><i class="fi fi-rr-circle-i"></i>More</span>
+          <span onClick={(() => window.alert("Feature not avilable"))}><i class="fa-solid fa-scroll"></i>Terms and Policies</span>
           <span id="menu33">User Agreement</span>
           <span id="menu33">Privacy Policy</span>
           <span id="menu33">Content Policy</span>

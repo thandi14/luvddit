@@ -3,42 +3,43 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Posts extends Model {
+  class Post extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Posts.belongsTo(
+      // define association here
+      Post.belongsTo(
         models.User,
           { foreignKey: 'userId' }
       );
-      Posts.hasMany(
+      Post.hasMany(
         models.Comments,
           { foreignKey: 'postId', onDelete: 'CASCADE',  hooks: true }
       );
-      Posts.hasMany(
+      Post.hasMany(
         models.PostImages,
           { foreignKey: 'postId', onDelete: 'CASCADE',  hooks: true }
       );
-      Posts.hasOne(
+      Post.hasOne(
         models.PostSetting,
           { foreignKey: 'postId', onDelete: 'CASCADE',  hooks: true }
       );
-      Posts.belongsTo(
-        models.Communities,
+      Post.belongsTo(
+        models.Community,
           { foreignKey: 'communityId' }
       );
-      Posts.hasMany(
+      Post.hasMany(
         models.Votes,
           { foreignKey: 'postId', onDelete: 'CASCADE',  hooks: true }
       );
     }
   }
-  Posts.init({
-    communityId: DataTypes.INTEGER,
+  Post.init({
     userId: DataTypes.INTEGER,
+    communityId: DataTypes.INTEGER,
     title: DataTypes.TEXT,
     description: {
       type: DataTypes.TEXT,
@@ -48,14 +49,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       defaultValue: null
     },
-    votes: DataTypes.INTEGER,
-    downVotes: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0
-    }
+    deletedAt: DataTypes.DATE
   }, {
     sequelize,
-    modelName: 'Posts',
+    modelName: 'Post',
   });
-  return Posts;
+  return Post;
 };

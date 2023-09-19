@@ -1,0 +1,200 @@
+
+#post-extras50, #c-votes {
+    width: 100%;
+    color: #7c7c7c;
+    font-size: 12px;
+    gap: 15px;
+    display: flex;
+    margin-left: 1%;
+    margin-bottom: 10px;
+}
+
+#img4 {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-right: 1%;
+}
+
+#pick-search > button:not(#picked-S) {
+    font-size: 14px;
+    font-weight: 700;
+    padding: 2% 3%;
+    border-radius: 20px;
+    border: 0px;
+    background-color: transparent;
+    cursor: pointer;
+
+}
+
+#pick-search > button:not(#picked-S):hover {
+    background-color: #ffffffaa;
+
+}
+
+#pick-sort > button {
+    padding: 0.5% 2%;
+    background-color: transparent;
+    border: 0px;
+    font-size: 13px;
+    font-weight: 100;
+    margin-bottom: 15px;
+    cursor: pointer;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px
+}
+
+#nsfw-on {
+    background-color: transparent;
+    height: 92px;
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 900px;
+}
+
+#none-hereS {
+    background-color: white;
+    height: 274px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+
+#follow3 {
+    position: absolute;
+    right: 0;
+    cursor: pointer;
+    width: 8%;
+    color: #0079D3;
+    border-radius: 20px;
+    height: 32px;
+    background-color: #F6F7F8;
+    border: 1px solid #F6F7F8;
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 12px;
+    margin-top: 2%;
+    font-weight: 700;
+    font-family: 'Noto Sans', sans-serif;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0px
+}
+
+#underl-name:hover {
+    text-decoration: underline;
+}
+
+#thread:hover {
+    color: #0078d357
+}
+
+#content30 {
+    background-color: #e9f5fd;
+    padding: 1%;
+    display: flex;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+    gap: 10px;
+    padding-top: 1.5%
+}
+
+#community-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 100%;
+    /* object-fit: fill; */
+    margin-left: 1%;
+}
+
+
+#c-about {
+    font-size: 12px;
+    margin: 0px;
+    margin-left: 1%;
+    margin-bottom: 5px;
+    color: #7C7C7C;
+}
+
+
+#pick-sort > button:hover {
+    background-color: #ffffffaa;
+    cursor: pointer;
+}
+
+
+#pick-sort {
+    display: flex;
+    gap: 5px;
+}
+
+#picked-S {
+    font-size: 14px;
+    font-weight: 700;
+    padding: 2% 3%;
+    border-radius: 20px;
+    border: 0px;
+    cursor: pointer;
+    background-color: #FFFFFF;
+}
+
+#pick-search {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 25px;
+    align-items: center;
+    width: 100%;
+}
+
+#img4 > img {
+    width: 24%;
+    height: 100px;
+    border-radius: 4px;
+}
+
+#avatar2 {
+    width: 72px;
+    height: 126px;
+    margin-top: -30px;
+}
+
+#mod-butt5:hover, #follow3:hover {
+    background-color: #e9e9e9;
+    cursor: pointer;
+}
+
+
+
+#mod-butt5 {
+    cursor: pointer;
+    width: 40%;
+    color: #0079D3;
+    border-radius: 20px;
+    height: 32px;
+    background-color: #F6F7F8;
+    border: 1px solid #F6F7F8;
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 12px;
+    margin-top: 2%;
+    font-weight: 700;
+    font-family: 'Noto Sans', sans-serif;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

@@ -8,7 +8,7 @@ const { handleValidationErrors } = require('../../utils/validation')
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, restoreUser } = require('../../utils/auth');
-const { User, Communities, communityStyles } = require('../../db/models');
+const { User, Community, CommunityStyle } = require('../../db/models');
 const router = express.Router();
 
 
@@ -76,14 +76,30 @@ router.delete(
 // Restore session user
 router.get(
     '/',
-    (req, res) => {
+    async (req, res) => {
       const { user } = req;
+
+      let profile
+
+      if (user) {
+        profile = await Community.findOne({
+          where: {
+            userId: user.id,
+            type: "Profile"
+          },
+          include: [
+            { model: CommunityStyle }
+          ]
+        })
+
+      }
       if (user) {
         const safeUser = {
           id: user.id,
           email: user.email,
           username: user.username,
-          karma: user.karma
+          karma: user.karma,
+          Community: profile
         };
         return res.json({
           user: safeUser
@@ -94,52 +110,41 @@ router.get(
 
 
   router.get("/:id", async (req, res) => {
-   // const userId = user.dataValues.id
-    const userId = req.params.id
+    const userId = req.params.id;
 
     let user = await User.findByPk(userId, {
-        include: [
-          {
-            model: Communities,
-            where: {
-              userId,
-            },
-            include: [
-              { model: communityStyles }
-            ]
-          }
-        ]
-
+        // include: [
+        //     {
+        //         model: Community,
+        //         where: {
+        //             userId,
+        //         },
+        //         include: [
+        //             { model: CommunityStyle }
+        //         ]
+        //     }
+        // ]
     });
 
-    let profile = await Communities.findOne({
-      where: {
-        userId,
-        type: "Profile"
-      }
-    })
-
-    // for (let i = 0; i < user.dataValues.Communities?.length; i++) {
-    //   let community = user.dataValues.Communities[i]
-    //   let members = await CommunityMembers.findAll({
-    //     where: {
-    //       communityId: community.dataValues.id
-    //     }
-    //   });
-
-    //   community.dataValues.members = members.length
-
-    // }
-
-    user.dataValues.profile = profile
-
+    console.log(user)
 
     if (!user) return res.status(404).json({
         "message": "User not found"
     })
 
-    return res.json({ user: user })
+    let profile = await Community.findOne({
+        where: {
+            userId,
+            type: "Profile"
+        },
+        include: [
+              { model: CommunityStyle }
+        ]
+    })
 
+    user.dataValues.profile = profile
+
+    return res.json({ user: user })
 })
 
 

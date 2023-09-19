@@ -9,29 +9,38 @@ if (process.env.NODE_ENV === 'production') {
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Communities', {
+    await queryInterface.createTable('CommunityStyles', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      userId: {
+      communityId:{
         type: Sequelize.INTEGER,
         references: {
-          model: 'Users',
+          model: 'Communities',
           key: 'id',
-      }
       },
-      name: {
+      onDelete: 'cascade'
+      },
+      icon: {
         type: Sequelize.STRING
       },
-      about: {
-        type: Sequelize.TEXT
+      banner: {
+        type: Sequelize.STRING
       },
-      type: {
+      highlight: {
         type: Sequelize.STRING,
-        defaultValue: "Public"
+        defaultValue: "0079D3"
+      },
+      background: {
+        type: Sequelize.STRING,
+        defaultValue: "#DAE0E6"
+      },
+      base: {
+        type: Sequelize.STRING,
+        defaultValue: "0079D3"
       },
       createdAt: {
         allowNull: false,
@@ -44,7 +53,7 @@ module.exports = {
     }, options);
   },
   async down(queryInterface, Sequelize) {
-    options.tableName = "Communities";
+    options.tableName = "CommunityStyles";
     await queryInterface.dropTable(options);
   }
 };

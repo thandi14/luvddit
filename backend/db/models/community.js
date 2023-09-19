@@ -3,27 +3,28 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Communities extends Model {
+  class Community extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Communities.belongsTo(
+      // define association here
+      Community.belongsTo(
         models.User,
           { foreignKey: 'userId' }
       );
-      Communities.hasMany(
-        models.communityStyles,
+      Community.hasOne(
+        models.CommunityStyle,
           { foreignKey: 'communityId', onDelete: 'CASCADE',  hooks: true }
       );
-      Communities.hasMany(
-        models.Posts,
+      Community.hasMany(
+        models.Post,
           { foreignKey: 'communityId', onDelete: 'CASCADE',  hooks: true }
       );
       // additional attributes for the join table can be included in the options
-      Communities.belongsToMany(
+      Community.belongsToMany(
         models.User,
           { through: models.CommunityMembers,
             foreignKey: 'communityId',
@@ -33,17 +34,22 @@ module.exports = (sequelize, DataTypes) => {
       );
     }
   }
-  Communities.init({
+  Community.init({
     userId: DataTypes.INTEGER,
     name: DataTypes.STRING,
     about: DataTypes.TEXT,
     type: {
       type: DataTypes.STRING,
       defaultValue: "Public"
-    }
+    },
+    tabOne: DataTypes.STRING,
+    tabTwo: DataTypes.STRING,
+    tabThree: DataTypes.STRING,
+    tabFour: DataTypes.STRING,
+    tabFive: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'Communities',
+    modelName: 'Community',
   });
-  return Communities;
+  return Community;
 };

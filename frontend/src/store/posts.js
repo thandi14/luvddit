@@ -2,11 +2,19 @@ import { csrfFetch } from "./csrf";
 
 
 const GET_POSTS = 'posts/getPosts';
+const GET_HOT_POSTS = 'posts/getHotPosts';
+const GET_TOP_POSTS = 'posts/getTopPosts';
+const GET_BEST_POSTS = 'posts/getBestPosts';
+const GET_SEARCH = 'posts/getSearch';
 const GET_COMMUNITY_POSTS = 'posts/getCommunityPosts';
 const GET_HISTORY = 'posts/getHistory';
 const GET_OVERVIEW = 'posts/getOverview';
+const GET_HOT_OVERVIEW = 'posts/getHotOverview';
+const GET_TOP_OVERVIEW = 'posts/getTopOverview';
 const GET_FAVORITES = 'posts/getFavorites';
 const GET_COMMENTS = 'posts/getComments';
+const GET_HOT_COMMENTS = 'posts/getHotComments';
+const GET_TOP_COMMENTS = 'posts/getTopComments';
 const ADD_HISTORY = 'posts/addHistory';
 const UPDATE_HISTORY = 'posts/addHistory';
 const GET_DETAILS = 'posts/getDetails';
@@ -18,12 +26,16 @@ const GET_VOTE_DETAILS = 'posts/getVoteDetails';
 const GET_VOTE_UPDATES = 'posts/getVoteUpdates';
 const GET_VOTE_DETAILS2 = 'posts/getVoteDetails2';
 const GET_USER_POSTS = 'posts/getUserPosts';
+const GET_USER_HOT_POSTS = 'posts/getUserHotPosts';
+const GET_USER_TOP_POSTS = 'posts/getUserTopPosts';
 const GET_MORE_POSTS = 'posts/getMorePosts';
 const REMOVE_POST = 'posts/removePosts'
-// const REMOVE_HISTORY = 'posts/removeHistory'
 const REMOVE_COMMENT = 'posts/removeComment'
 const REMOVE_VOTE = 'posts/removeVote'
 const REMOVE_VOTE2 = 'posts/removeVote2'
+const GET_HOT_COMMUNITY_POSTS = 'communities/getCommunityHotPosts';
+const GET_TOP_COMMUNITY_POSTS = 'communities/getCommunityTopPosts';
+
 
 const getPosts = (posts) => {
     return {
@@ -31,6 +43,52 @@ const getPosts = (posts) => {
         posts
     }
 }
+
+const getHotPosts = (posts) => {
+  return {
+      type: GET_HOT_POSTS,
+      posts
+  }
+}
+
+const getTopPosts = (posts) => {
+  return {
+      type: GET_TOP_POSTS,
+      posts
+  }
+}
+
+const getBestPosts = (posts) => {
+  return {
+      type: GET_BEST_POSTS,
+      posts
+  }
+}
+
+const getHotCommunityPosts = (communities) => {
+  return {
+      type: GET_HOT_COMMUNITY_POSTS,
+      communities
+  }
+}
+
+const getTopCommunityPosts = (communities) => {
+  return {
+      type: GET_TOP_COMMUNITY_POSTS,
+      communities
+  }
+}
+
+
+const getSearch = (search, result) => {
+  return {
+      type: GET_SEARCH,
+      search,
+      result
+  }
+}
+
+
 
 const getCommunityPosts = (posts) => {
   return {
@@ -54,6 +112,21 @@ const getOverview = (posts) => {
   }
 }
 
+const getHotOverview = (posts) => {
+  return {
+      type: GET_HOT_OVERVIEW,
+      posts
+  }
+}
+
+const getTopOverview = (posts) => {
+  return {
+      type: GET_TOP_OVERVIEW,
+      posts
+  }
+}
+
+
 const getFavorites = (posts) => {
   return {
       type: GET_FAVORITES,
@@ -64,6 +137,20 @@ const getFavorites = (posts) => {
 const getComments = (posts) => {
   return {
       type: GET_COMMENTS,
+      posts
+  }
+}
+
+const getHotComments = (posts) => {
+  return {
+      type: GET_HOT_COMMENTS,
+      posts
+  }
+}
+
+const getTopComments = (posts) => {
+  return {
+      type: GET_TOP_COMMENTS,
       posts
   }
 }
@@ -189,12 +276,15 @@ const getUserPosts = (posts) => ({
     posts,
 });
 
-
-const loadMorePosts = (posts) => ({
-  type: GET_MORE_POSTS,
+const getUserHotPosts = (posts) => ({
+  type: GET_USER_HOT_POSTS,
   posts,
 });
 
+const getUserTopPosts = (posts) => ({
+  type: GET_USER_TOP_POSTS,
+  posts,
+});
 
 
 export const thunkGetAllPosts = (page) => async (dispatch) => {
@@ -205,12 +295,91 @@ export const thunkGetAllPosts = (page) => async (dispatch) => {
 
 }
 
+export const thunkGetAllSearchedPosts = (page, search) => async (dispatch) => {
+  const response1 = await csrfFetch(`/api/posts/search?page=${page}&search=${search}`);
+  let data1 = await response1.json();
+  dispatch(getSearch(data1, search));
+  return response1;
+
+}
+
+export const thunkGetHotPosts = (page) => async (dispatch) => {
+  console.log("HELLO!!!!!!!")
+  const response1 = await csrfFetch(`/api/posts/hot?page=${page}`);
+  let data1 = await response1.json();
+  dispatch(getHotPosts(data1));
+  return response1;
+
+}
+
+export const thunkGetTopPosts = (page) => async (dispatch) => {
+  const response1 = await csrfFetch(`/api/posts/top?page=${page}`);
+  let data1 = await response1.json();
+  dispatch(getTopPosts(data1));
+  return response1;
+
+}
+
+export const thunkGetBestPosts = (page) => async (dispatch) => {
+  const response1 = await csrfFetch(`/api/posts/best?page=${page}`);
+  let data1 = await response1.json();
+  dispatch(getBestPosts(data1));
+  return response1;
+
+}
+
+export const thunkGetHotCommunityPosts = (id, page) => async (dispatch) => {
+  console.log("HELLO!!!!!!!")
+  const response1 = await csrfFetch(`/api/communities/${id}/hot?page=${page}`);
+  let data1 = await response1.json();
+  dispatch(getHotCommunityPosts(data1));
+  return response1;
+
+}
+
+export const thunkGetTopCommunityPosts = (id, page) => async (dispatch) => {
+  const response1 = await csrfFetch(`/api/communities/${id}/top?page=${page}`);
+  let data1 = await response1.json();
+  dispatch(getTopCommunityPosts(data1));
+  return response1;
+
+}
+
+
+export const thunkRefreshCommunities = () => async (dispatch) => {
+  let data = {}
+  dispatch(getCommunityPosts(data))
+}
+
+export const thunkRefreshPosts = () => async (dispatch) => {
+  console.log("HELLLOKJQENVJ")
+  let data = null
+  dispatch(getSearch(data))
+
+}
+
+
 export const thunkGetUserPosts = (id, page) => async (dispatch) => {
     let response = await fetch(`/api/posts/${id}/current?page=${page}`)
     const data = await response.json();
     dispatch(getUserPosts(data));
     return data;
 };
+
+export const thunkGetUserHotPosts = (id, page) => async (dispatch) => {
+  let response = await fetch(`/api/posts/${id}/current/hot?page=${page}`)
+  const data = await response.json();
+  dispatch(getUserHotPosts(data));
+  return data;
+};
+
+export const thunkGetUserTopPosts = (id, page) => async (dispatch) => {
+  let response = await fetch(`/api/posts/${id}/current/top?page=${page}`)
+  const data = await response.json();
+  dispatch(getUserTopPosts(data));
+  return data;
+};
+
 
 
 export const thunkGetHistory = (page) => async (dispatch) => {
@@ -235,12 +404,42 @@ export const thunkGetComments = (id, page) => async (dispatch) => {
   return response1;
 }
 
+export const thunkGetHotComments = (id, page) => async (dispatch) => {
+  const response1 = await csrfFetch(`/api/posts/${id}/comments/hot?page=${page}`)
+  let data1 = await response1.json();
+  dispatch(getHotComments(data1));
+  return response1;
+}
+
+export const thunkGetTopComments = (id, page) => async (dispatch) => {
+  const response1 = await csrfFetch(`/api/posts/${id}/comments/top?page=${page}`)
+  let data1 = await response1.json();
+  dispatch(getTopComments(data1));
+  return response1;
+}
+
 export const thunkGetOverview = (id, page) => async (dispatch) => {
   const response1 = await csrfFetch(`/api/posts/${id}/overview?page=${page}`)
   let data1 = await response1.json();
   dispatch(getOverview(data1));
   return response1;
 }
+
+export const thunkGetHotOverview = (id, page) => async (dispatch) => {
+  console.log(id, page)
+  const response1 = await csrfFetch(`/api/posts/${id}/overview/hot?page=${page}`)
+  let data1 = await response1.json();
+  dispatch(getHotOverview(data1));
+  return response1;
+}
+
+export const thunkGetTopOverview = (id, page) => async (dispatch) => {
+  const response1 = await csrfFetch(`/api/posts/${id}/overview/top?page=${page}`)
+  let data1 = await response1.json();
+  dispatch(getTopOverview(data1));
+  return response1;
+}
+
 
 export const thunkGetCommunityPosts = (id, page) => async (dispatch) => {
   const response1 = await csrfFetch(`/api/posts/${id}/communities?page=${page}`)
@@ -274,28 +473,42 @@ export const thunkGetDetailsById = (id) => async (dispatch) => {
 }
 
 
-export const thunkCreatePost = (data, id, img) => async (dispatch) => {
+export const thunkCreatePost = (data, id, image, images) => async (dispatch) => {
+
   if (Object.values(data).length) {
-        const response = await csrfFetch(`/api/communities/${id}/posts`, {
-            method: 'POST',
+    const response = await csrfFetch(`/api/communities/${id}/posts`, {
+      method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
               },
-            body: JSON.stringify(data)
-        })
+              body: JSON.stringify(data)
+            })
 
         const data1 = await response.json()
         const postId = data1.id
 
-        if (Object.values(img).length) {
-        const response2 = await csrfFetch(`/api/posts/${postId}/images`, {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json'
-            },
-          body: JSON.stringify(img)
-        })
-        }
+
+          const formData = new FormData();
+          if (!images) formData.append("image", image);
+
+          if (images && images.length !== 0) {
+            for (var i = 0; i < images.length; i++) {
+              formData.append("image", images[i]);
+            }
+          }
+
+
+          if (image || images && images.length) {
+              const response2 = await csrfFetch(`/api/posts/${postId}/images`, {
+                method: 'POST',
+                headers: {
+                "Content-Type": "multipart/form-data",
+              },
+              body: formData
+            })
+
+
+          }
 
         dispatch(getDetails(data1))
         return data1
@@ -480,31 +693,35 @@ export const thunkDeleteComment = (id) => async (dispatch) => {
   return data
 }
 
+export const thunkRefreshSearch = (id) => async (dispatch) => {
 
-
-
-// export const addPostImages = (id, data) => async (dispatch) => {
-//     const response = await csrfFetch(`/api/posts/${id}/images`, {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify(data)
-//     })
-//     return response
-// }
+  dispatch(getSearch([]))
+  return "succesfully refreshed"
+}
 
 
 let initialState = {
     posts: {},
+    hotPosts: {},
+    topPosts: {},
+    bestPosts: {},
     userPosts: {},
+    userHotPosts: {},
+    userTopPosts: {},
     singlePost: {},
     communityPosts: {},
     removedPost: {},
     postsHistory: {},
     postsFavorites: {},
     postsComments: {},
-    postsOverview: {}
+    postsHotComments: {},
+    postsTopComments: {},
+    postsOverview: {},
+    postsHotOverview: {},
+    postsTopOverview: {},
+    searchs: {},
+    hotCommunityPosts: {},
+    topCommunityPosts: {}
 };
 
 
@@ -513,20 +730,69 @@ const postsReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_POSTS:
       newState = { ...state };
-      action.posts.forEach(
+      if (action.posts.length) action.posts.forEach(
         (post) => (newState.posts[post.id] = { ...post})
       );
       return newState;
+    case GET_HOT_COMMUNITY_POSTS:
+      newState = { ...state };
+      action.communities.forEach(
+        (community) => (newState.hotCommunityPosts[community.id] = community)
+      );
+    return newState;
+    case GET_TOP_COMMUNITY_POSTS:
+      newState = { ...state };
+      action.communities.forEach(
+        (community) => (newState.topCommunityPosts[community.id] = community)
+      );
+    case GET_HOT_POSTS:
+      newState = { ...state };
+      if (action.posts?.length) action.posts.forEach(
+        (post) => (newState.hotPosts[post.id] = { ...post})
+      );
+      return newState;
+    case GET_TOP_POSTS:
+      newState = { ...state };
+      if (action.posts.length) action.posts.forEach(
+        (post) => (newState.topPosts[post.id] = { ...post})
+      );
+      return newState;
+    case GET_BEST_POSTS:
+      newState = { ...state };
+      if (action.posts.length) action.posts.forEach(
+        (post) => (newState.bestPosts[post.id] = { ...post})
+      );
+    return newState;
+    case GET_SEARCH:
+    newState = { ...state };
+    action.search?.forEach(
+          (post) => (newState.searchs[post.id] = { ...post})
+    );
+    return newState;
     case GET_COMMUNITY_POSTS:
         newState = { ...state };
-        action.posts.forEach(
-          (post) => (newState.communityPosts[post.id] = { ...post})
-        );
+          action.posts.forEach(
+            (post) => (newState.communityPosts[post.id] = { ...post})
+          );
     return newState;
     case GET_USER_POSTS: {
       newState = { ...state };
       if (action.posts.length) action.posts.forEach(
         (post) => (newState.userPosts[post.id] = { ...post})
+      );
+      return newState;
+    }
+    case GET_USER_HOT_POSTS: {
+      newState = { ...state };
+      if (action.posts.length) action.posts.forEach(
+        (post) => (newState.userHotPosts[post.id] = { ...post})
+      );
+      return newState;
+    }
+    case GET_USER_TOP_POSTS: {
+      newState = { ...state };
+      if (action.posts.length) action.posts.forEach(
+        (post) => (newState.userTopPosts[post.id] = { ...post})
       );
       return newState;
     }
@@ -537,6 +803,26 @@ const postsReducer = (state = initialState, action) => {
       let posts = posts1.concat(comments)
       posts.forEach(
         (post) => (newState.postsOverview[post.id] = { ...post})
+      );
+      return newState;
+    }
+    case GET_HOT_OVERVIEW: {
+      newState = { ...state };
+      let posts1 = action.posts.posts
+      let comments = action.posts.comments
+      let posts = posts1.concat(comments)
+      posts.forEach(
+        (post) => (newState.postsHotOverview[post.id] = { ...post})
+      );
+      return newState;
+    }
+    case GET_TOP_OVERVIEW: {
+      newState = { ...state };
+      let posts1 = action.posts.posts
+      let comments = action.posts.comments
+      let posts = posts1.concat(comments)
+      posts.forEach(
+        (post) => (newState.postsTopOverview[post.id] = { ...post})
       );
       return newState;
     }
@@ -562,6 +848,20 @@ const postsReducer = (state = initialState, action) => {
       );
       return newState;
     }
+    case GET_HOT_COMMENTS: {
+      newState = { ...state };
+      action.posts.forEach(
+        (comment) => (newState.postsHotComments[comment.Post.id] = { ...comment.Post })
+      );
+      return newState;
+    }
+    case GET_TOP_COMMENTS: {
+      newState = { ...state };
+      action.posts.forEach(
+        (comment) => (newState.postsTopComments[comment.Post.id] = { ...comment.Post })
+      );
+      return newState;
+    }
     case ADD_DETAILS: {
       newState = { ...state };
       const post = action.details;
@@ -573,12 +873,17 @@ const postsReducer = (state = initialState, action) => {
       newState = { ...state };
       const history = action.history;
       newState.postsHistory[history.Post?.id] = { ...history.Post };
+      // const data = Object.entries(newState.postsHistory);
+      // data.sort((a, b) => b[1].history - a[1].history);
+      // newState.postsHistory = Object.fromEntries(data);
+     //newState.postsHistory.shift(history.Post);
       ///newState.posts = { ...post };
       return newState;
     }
     case UPDATE_HISTORY: {
       newState = { ...state };
       const history = action.history;
+      if (newState.singlePost) newState.singlePost.PostSetting = { ...history }
       newState.postsHistory = newState.postsHistory.filter((h) => h.Post.id !== history.Post.id)
       newState.postsHistory[history.Post?.id] = { ...history.Post };
       ///newState.posts = { ...post };
@@ -595,7 +900,9 @@ const postsReducer = (state = initialState, action) => {
       newState = { ...state };
       const vote = action.details;
       if (Object.values(newState.singlePost).length) newState.singlePost.Votes.push(vote);
-       //newState.posts[vote.postId].Votes.push(vote)
+      if (newState.posts[vote.postId]) {
+         newState.posts[vote.postId].Votes.push(vote)
+      }
        if (newState.userPosts[vote.postId]) {
         newState.userPosts[vote.postId].Votes.push(vote)
       }
@@ -614,7 +921,42 @@ const postsReducer = (state = initialState, action) => {
       if (newState.postsHistory[vote.postId]) {
         newState.postsHistory[vote.postId].Votes.push(vote)
       }
-      console.log("REDUCER", newState.posts)
+      if (newState.bestPosts[vote.postId]) {
+        newState.bestPosts[vote.postId].Votes.push(vote);
+      }
+      if (newState.topPosts[vote.postId]) {
+        newState.topPosts[vote.postId].Votes.push(vote);
+      }
+      if (newState.userHotPosts[vote.postId]) {
+        newState.userHotPosts[vote.postId].Votes.push(vote);
+      }
+      if (newState.userTopPosts[vote.postId]) {
+        newState.userTopPosts[vote.postId].Votes.push(vote);
+      }
+      if (newState.postsHotComments[vote.postId]) {
+        newState.postsHotComments[vote.postId].Votes.push(vote);
+      }
+      if (newState.postsTopComments[vote.postId]) {
+        newState.postsTopComments[vote.postId].Votes.push(vote);
+      }
+      if (newState.postsHotOverview[vote.postId]) {
+        newState.postsHotOverview[vote.postId].Votes.push(vote);
+      }
+      if (newState.postsTopOverview[vote.postId]) {
+        newState.postsTopOverview[vote.postId].Votes.push(vote);
+      }
+      if (newState.searchs[vote.postId]) {
+        newState.searchs[vote.postId].Votes.push(vote);
+      }
+      if (newState.hotCommunityPosts[vote.postId]) {
+        newState.hotCommunityPosts[vote.postId].Votes.push(vote);
+      }
+      if (newState.topCommunityPosts[vote.postId]) {
+        newState.topCommunityPosts[vote.postId].Votes.push(vote);
+      }
+      if (newState.postsFavorites[vote.postId]) {
+        newState.postsFavorites[vote.postId].Votes.push(vote);
+      }
       return newState;
     }
     case GET_VOTE_UPDATES: {
@@ -656,6 +998,67 @@ const postsReducer = (state = initialState, action) => {
         newState.postsHistory[vote.postId].Votes = votes8.filter((v) => v.id !== vote.id)
         newState.postsHistory[vote.postId].Votes.push(vote)
       }
+      let votes9 = newState.bestPosts[vote.postId]?.Votes;
+      let votes10 = newState.topPosts[vote.postId]?.Votes;
+      let votes11 = newState.userHotPosts[vote.postId]?.Votes;
+      let votes12 = newState.userTopPosts[vote.postId]?.Votes;
+      let votes13 = newState.postsHotComments[vote.postId]?.Votes;
+      let votes14 = newState.postsTopComments[vote.postId]?.Votes;
+      let votes15 = newState.postsHotOverview[vote.postId]?.Votes;
+      let votes16 = newState.postsTopOverview[vote.postId]?.Votes;
+      let votes17 = newState.searchs[vote.postId]?.Votes;
+      let votes18 = newState.hotCommunityPosts[vote.postId]?.Votes;
+      let votes19 = newState.topCommunityPosts[vote.postId]?.Votes;
+      let votes20 = newState.postsFavorites[vote.postId]?.Votes;
+      if (votes9) {
+      newState.bestPosts[vote.postId].Votes = votes9.filter((v) => v.id !== vote.id);
+      newState.bestPosts[vote.postId].Votes.push(vote);
+      }
+      if (votes10) {
+      newState.topPosts[vote.postId].Votes = votes10.filter((v) => v.id !== vote.id);
+      newState.topPosts[vote.postId].Votes.push(vote);
+      }
+      if (votes11) {
+      newState.userHotPosts[vote.postId].Votes = votes11.filter((v) => v.id !== vote.id);
+      newState.userHotPosts[vote.postId].Votes.push(vote);
+      }
+      if (votes12) {
+      newState.userTopPosts[vote.postId].Votes = votes12.filter((v) => v.id !== vote.id);
+      newState.userTopPosts[vote.postId].Votes.push(vote);
+      }
+      if (votes13) {
+      newState.postsHotComments[vote.postId].Votes = votes13.filter((v) => v.id !== vote.id);
+      newState.postsHotComments[vote.postId].Votes.push(vote);
+      }
+      if (votes14) {
+      newState.postsTopComments[vote.postId].Votes = votes14.filter((v) => v.id !== vote.id);
+      newState.postsTopComments[vote.postId].Votes.push(vote);
+      }
+      if (votes15) {
+      newState.postsHotOverview[vote.postId].Votes = votes15.filter((v) => v.id !== vote.id);
+      newState.postsHotOverview[vote.postId].Votes.push(vote);
+      }
+      if (votes16) {
+      newState.postsTopOverview[vote.postId].Votes = votes16.filter((v) => v.id !== vote.id);
+      newState.postsTopOverview[vote.postId].Votes.push(vote);
+      }
+      if (votes17) {
+      newState.searchs[vote.postId].Votes = votes17.filter((v) => v.id !== vote.id);
+      newState.searchs[vote.postId].Votes.push(vote);
+      }
+      if (votes18) {
+      newState.hotCommunityPosts[vote.postId].Votes = votes18.filter((v) => v.id !== vote.id);
+      newState.hotCommunityPosts[vote.postId].Votes.push(vote);
+      }
+      if (votes19) {
+      newState.topCommunityPosts[vote.postId].Votes = votes19.filter((v) => v.id !== vote.id);
+      newState.topCommunityPosts[vote.postId].Votes.push(vote);
+      }
+      if (votes20) {
+      newState.postsFavorites[vote.postId].Votes = votes20.filter((v) => v.id !== vote.id);
+      newState.postsFavorites[vote.postId].Votes.push(vote);
+      }
+
       console.log("REDUCER", newState.posts)
       return newState;
     }
@@ -685,6 +1088,30 @@ const postsReducer = (state = initialState, action) => {
       if (votes6) newState.postsOverview[action.postId].Votes = votes6.filter((v) => v.id !== action.voteId)
       if (votes7) newState.communityPosts[action.postId].Votes = votes7.filter((v) => v.id !== action.voteId)
       if (votes8) newState.postsHistory[action.postId].Votes = votes8.filter((v) => v.id !== action.voteId)
+      let votes9 = newState.bestPosts[action.postId]?.Votes;
+      let votes10 = newState.topPosts[action.postId]?.Votes;
+      let votes11 = newState.userHotPosts[action.postId]?.Votes;
+      let votes12 = newState.userTopPosts[action.postId]?.Votes;
+      let votes13 = newState.postsHotComments[action.postId]?.Votes;
+      let votes14 = newState.postsTopComments[action.postId]?.Votes;
+      let votes15 = newState.postsHotOverview[action.postId]?.Votes;
+      let votes16 = newState.postsTopOverview[action.postId]?.Votes;
+      let votes17 = newState.searchs[action.postId]?.Votes;
+      let votes18 = newState.hotCommunityPosts[action.postId]?.Votes;
+      let votes19 = newState.topCommunityPosts[action.postId]?.Votes;
+      let votes20 = newState.postsFavorites[action.postId]?.Votes;
+      if (votes9) newState.bestPosts[action.postId].Votes = votes9.filter((v) => v.id !== action.voteId);
+      if (votes10) newState.topPosts[action.postId].Votes = votes10.filter((v) => v.id !== action.voteId);
+      if (votes11) newState.userHotPosts[action.postId].Votes = votes11.filter((v) => v.id !== action.voteId);
+      if (votes12) newState.userTopPosts[action.postId].Votes = votes12.filter((v) => v.id !== action.voteId);
+      if (votes13) newState.postsHotComments[action.postId].Votes = votes13.filter((v) => v.id !== action.voteId);
+      if (votes14) newState.postsTopComments[action.postId].Votes = votes14.filter((v) => v.id !== action.voteId);
+      if (votes15) newState.postsHotOverview[action.postId].Votes = votes15.filter((v) => v.id !== action.voteId);
+      if (votes16) newState.postsTopOverview[action.postId].Votes = votes16.filter((v) => v.id !== action.voteId);
+      if (votes17) newState.searchs[action.postId].Votes = votes17.filter((v) => v.id !== action.voteId);
+      if (votes18) newState.hotCommunityPosts[action.postId].Votes = votes18.filter((v) => v.id !== action.voteId);
+      if (votes19) newState.topCommunityPosts[action.postId].Votes = votes19.filter((v) => v.id !== action.voteId);
+      if (votes20) newState.postsFavorites[action.postId].Votes = votes20.filter((v) => v.id !== action.voteId);
       return newState;
     }
     case REMOVE_VOTE2: {
@@ -697,15 +1124,53 @@ const postsReducer = (state = initialState, action) => {
       newState = { ...state };
       const post = action.updates;
       newState.singlePost = { ...post };
-      newState.posts[post.id] = { ...post }
+      newState.posts[post.id] = { ...post };
+      newState.communityPosts[post.id] = { ...post };
+      newState.postsOverview[post.id] = { ...post };
+      newState.postsComments[post.id] = { ...post };
+      newState.userPosts[post.id] = { ...post };
+      newState.postsFavorites[post.id] = { ...post };
+      newState.userHotPosts[post.id] = { ...post };
+      newState.userTopPosts[post.id] = { ...post };
+      newState.postsHotComments[post.id] = { ...post };
+      newState.postsTopComments[post.id] = { ...post };
+      newState.postsHotOverview[post.id] = { ...post };
+      newState.postsTopOverview[post.id] = { ...post };
+      newState.searchs[post.id] = { ...post };
+      newState.hotCommunityPosts[post.id] = { ...post };
+      newState.topCommunityPosts[post.id] = { ...post };
       return newState;
     }
     case GET_COMMENT_DETAILS: {
       newState = { ...state };
       let comment = action.details;
-      newState.singlePost.Comments[comment.id] = comment
+      newState.singlePost.Comments.push(comment)
       let post = newState.posts[comment.postId]
-      if (post && post.Comments) post.Comments[comment.id] = comment
+      if (post && post.Comments) newState.posts[comment.postId].Comments.push(comment)
+      let post2 = newState.communityPosts[comment.postId]
+      if (post2 && post2.Comments) newState.communityPosts[comment.postId].Comments.push(comment)
+      let post3 = newState.hotPosts[comment.postId]
+      if (post3 && post3.Comments) newState.hotPosts[comment.postId].Comments.push(comment)
+      let post4 = newState.topPosts[comment.postId]
+      if (post4 && post4.Comments) newState.topPosts[comment.postId].Comments.push(comment)
+      let post5 = newState.userPosts[comment.postId]
+      if (post5 && post5.Comments) newState.userPosts[comment.postId].Comments.push(comment)
+      let post6 = newState.userHotPosts[comment.postId]
+      if (post6 && post6.Comments) newState.userHotPosts[comment.postId].Comments.push(comment)
+      let post7 = newState.userTopPosts[comment.postId]
+      if (post7 && post7.Comments) newState.userTopPosts[comment.postId].Comments.push(comment)
+      let post8 = newState.postsOverview[comment.postId]
+      if (post8 && post8.Comments) newState.postsOverview[comment.postId].Comments.push(comment)
+      let post9 = newState.postsHotOverview[comment.postId]
+      if (post9 && post9.Comments) newState.postsHotOverview[comment.postId].Comments.push(comment)
+      let post10 = newState.postsTopOverview[comment.postId]
+      if (post10 && post9.Comments) newState.postsTopOverview[comment.postId].Comments.push(comment)
+      let post11 = newState.searchs[comment.postId]
+      if (post11 && post11.Comments) newState.searchs[comment.postId].Comments.push(comment)
+      let post12 = newState.hotCommunityPosts[comment.postId]
+      if (post12 && post12.Comments) newState.hotCommunityPosts[comment.postId].Comments.push(comment)
+      let post13 = newState.topCommunityPosts[comment.postId]
+      if (post13 && post13.Comments) newState.topCommunityPosts[comment.postId].Comments.push(comment)
       return newState
     }
     case GET_COMMENT_UPDATES: {
@@ -725,13 +1190,111 @@ const postsReducer = (state = initialState, action) => {
         newState.singlePost = {};
         delete newState.posts[action.id];
         delete newState.postsHistory[action.id];
+        delete newState.userPosts[action.id];
+        delete newState.communityPosts[action.id];
+        delete newState.postsFavorites[action.id];
+        delete newState.postsComments[action.id];
+        delete newState.postsOverview[action.id];
+        delete newState.userHotPosts[action.id];
+        delete newState.userTopPosts[action.id];
+        delete newState.postsComments[action.id];
+        delete newState.postsHotComments[action.id];
+        delete newState.postsTopComments[action.id];
+        delete newState.postsHotOverview[action.id];
+        delete newState.postsTopOverview[action.id];
+        delete newState.hotCommunityPosts[action.id];
+        delete newState.topCommunityPosts[action.id];
         return newState;
     }
     case REMOVE_COMMENT: {
       newState = { ...state };
       newState.singlePost.Comments = newState.singlePost.Comments.filter((c) => c.id !== action.commentId);
-      let post = newState.posts[newState.singlePost.id]
-      post.Comments = post.Comments.filter((c) => c.id !== action.commentId)
+      newState.singlePost.Comments = newState.singlePost.Comments.filter((c) => c.id !== action.commentId);
+
+      let post = newState.posts[newState.singlePost.id];
+      if (post && post.Comments) {
+      newState.posts[newState.singlePost.id].Comments = post.Comments.filter((c) => c.id !== action.commentId);
+      }
+
+      let communityPost = newState.communityPosts[newState.singlePost.id];
+      if (communityPost && communityPost.Comments) {
+      newState.communityPosts[newState.singlePost.id].Comments = communityPost.Comments.filter((c) => c.id !== action.commentId);
+      }
+
+      let topPosts = newState.topPosts[newState.singlePost.id];
+      if (topPosts && topPosts.Comments) {
+      newState.topPosts[newState.singlePost.id].Comments = topPosts.Comments.filter((c) => c.id !== action.commentId);
+      }
+
+      let bestPosts = newState.bestPosts[newState.singlePost.id];
+      if (bestPosts && bestPosts.Comments) {
+      newState.bestPosts[newState.singlePost.id].Comments = bestPosts.Comments.filter((c) => c.id !== action.commentId);
+      }
+
+      let userPosts = newState.userPosts[newState.singlePost.id];
+      if (userPosts && userPosts.Comments) {
+      newState.userPosts[newState.singlePost.id].Comments = userPosts.Comments.filter((c) => c.id !== action.commentId);
+      }
+
+      let userHotPosts = newState.userHotPosts[newState.singlePost.id];
+      if (userHotPosts && userHotPosts.Comments) {
+      newState.userHotPosts[newState.singlePost.id].Comments = userHotPosts.Comments.filter((c) => c.id !== action.commentId);
+      }
+
+      let userTopPosts = newState.userTopPosts[newState.singlePost.id];
+      if (userTopPosts && userTopPosts.Comments) {
+      newState.userTopPosts[newState.singlePost.id].Comments = userTopPosts.Comments.filter((c) => c.id !== action.commentId);
+      }
+
+      let postsFavorites = newState.postsFavorites[newState.singlePost.id];
+      if (postsFavorites && postsFavorites.Comments) {
+      newState.postsFavorites[newState.singlePost.id].Comments = postsFavorites.Comments.filter((c) => c.id !== action.commentId);
+      }
+
+      let postsComments = newState.postsComments[newState.singlePost.id];
+      if (postsComments && postsComments.Comments) {
+      newState.postsComments[newState.singlePost.id].Comments = postsComments.Comments.filter((c) => c.id !== action.commentId);
+      }
+
+      let postsHotComments = newState.postsHotComments[newState.singlePost.id];
+      if (postsHotComments && postsHotComments.Comments) {
+      newState.postsHotComments[newState.singlePost.id].Comments = postsHotComments.Comments.filter((c) => c.id !== action.commentId);
+      }
+
+      let postsTopComments = newState.postsTopComments[newState.singlePost.id];
+      if (postsTopComments && postsTopComments.Comments) {
+      newState.postsTopComments[newState.singlePost.id].Comments = postsTopComments.Comments.filter((c) => c.id !== action.commentId);
+      }
+
+      let postsOverview = newState.postsOverview[newState.singlePost.id];
+      if (postsOverview && postsOverview.Comments) {
+      newState.postsOverview[newState.singlePost.id].Comments = postsOverview.Comments.filter((c) => c.id !== action.commentId);
+      }
+
+      let postsHotOverview = newState.postsHotOverview[newState.singlePost.id];
+      if (postsHotOverview && postsHotOverview.Comments) {
+      newState.postsHotOverview[newState.singlePost.id].Comments = postsHotOverview.Comments.filter((c) => c.id !== action.commentId);
+      }
+
+      let postsTopOverview = newState.postsTopOverview[newState.singlePost.id];
+      if (postsTopOverview && postsTopOverview.Comments) {
+      newState.postsTopOverview[newState.singlePost.id].Comments = postsTopOverview.Comments.filter((c) => c.id !== action.commentId);
+      }
+
+      let searchs = newState.searchs[newState.singlePost.id];
+      if (searchs && searchs.Comments) {
+      newState.searchs[newState.singlePost.id].Comments = searchs.Comments.filter((c) => c.id !== action.commentId);
+      }
+
+      let hotCommunityPosts = newState.hotCommunityPosts[newState.singlePost.id];
+      if (hotCommunityPosts && hotCommunityPosts.Comments) {
+      newState.hotCommunityPosts[newState.singlePost.id].Comments = hotCommunityPosts.Comments.filter((c) => c.id !== action.commentId);
+      }
+
+      let topCommunityPosts = newState.topCommunityPosts[newState.singlePost.id];
+      if (topCommunityPosts && topCommunityPosts.Comments) {
+      newState.topCommunityPosts[newState.singlePost.id].Comments = topCommunityPosts.Comments.filter((c) => c.id !== action.commentId);
+      }
       return newState;
     }
     default:

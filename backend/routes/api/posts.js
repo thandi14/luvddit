@@ -2,42 +2,226 @@ const express = require('express')
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Posts, Comments, Communities, User, PostImages, CommunityMembers, Votes, communityStyles, postsHistories, PostSetting } = require('../../db/models');
-const { Op } = require('sequelize');
+const { Post, Comments, Community, User, PostImages, CommunityMembers, Votes, CommunityStyle, PostSetting } = require('../../db/models');
+const { Op, Sequelize } = require('sequelize');
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
-
+const multer = require('multer');
+const { singleMulterUpload, singlePublicFileUpload, multiplePublicFileUpload, multipleMulterUpload } = require('../../aws3');
+//const upload = multer({dest: 'uploads/'});
 const router = express.Router();
+
+const storage = multer.memoryStorage(); // You can change this storage configuration as needed
+
+const upload = multer({
+    dest: 'uploads/',
+    storage: storage,
+    limits: {
+      fileSize: 100 * 1024 * 1024, // 10MB limit (adjust as needed)
+    },
+});
+
 
 
 router.get("/", async (req, res) => {
     const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+
     const pageSize = 10; // Number of posts per page
 
+    let communityId = await Community.findAll({
+        attributes: ['id'],
+        where: {
+            type: 'Private'
+        },
+    })
 
-    let posts = await Posts.findAll({
-        order: [['id', 'DESC']],
+
+
+    communityId = communityId.map(community => community.dataValues.id);
+    let posts = await Post.findAll({
+            order: [['id', 'DESC']],
+            where: {
+                communityId: {
+                    [Op.notIn]: communityId
+                },
+
+            },
+            include: [
+                { model: Comments },
+                {
+                    model: Community,
+                    include: [
+                        { model: CommunityStyle }
+                    ]
+                },
+                { model: User},
+                { model: PostImages},
+                { model: Votes } ,
+                { model: PostSetting }
+            ],
+            limit: pageSize, // Limit the number of results per page
+            offset: (page - 1) * pageSize
+        });
+
+    return res.json(posts)
+})
+
+router.get("/hot", async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+
+    const pageSize = 10; // Number of posts per page
+
+    let communityId = await Community.findAll({
+        attributes: ['id'],
+        where: {
+            type: 'Private'
+        },
+    })
+
+
+    let posts = await Post.findAll({
+        attributes: {
+            include: [[Sequelize.literal('(SELECT COUNT(*) FROM "Votes" WHERE "Votes"."postId" = "Post"."id")'), 'voteCount']]
+          },
+        where: {
+            communityId: {
+                [Op.notIn]: communityId
+            },
+
+        },
         include: [
             { model: Comments },
             {
-                model: Communities,
+                model: Community,
                 include: [
-                    { model: communityStyles }
+                    { model: CommunityStyle }
                 ]
             },
             { model: User},
             { model: PostImages},
-            { model: Votes } ,
+            {
+                model: Votes,
+               // order: [['upVote', 'DESC']],
+
+            } ,
             { model: PostSetting }
         ],
+        order: [[Sequelize.literal('voteCount'), 'DESC']],
         limit: pageSize, // Limit the number of results per page
         offset: (page - 1) * pageSize
+
     });
 
     return res.json(posts)
 })
 
 
+router.get("/best", async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+
+    const pageSize = 10; // Number of posts per page
+
+    let communityId = await Community.findAll({
+        attributes: ['id'],
+        where: {
+            type: 'Private'
+        },
+    })
+
+
+    let posts = await Post.findAll({
+        attributes: {
+            include: [[Sequelize.literal('(SELECT COUNT(*) FROM "Comments" WHERE "Comments"."postId" = "Post"."id")'), 'commentCount']]
+        },
+        where: {
+            communityId: {
+                [Op.notIn]: communityId
+            },
+
+        },
+        include: [
+            { model: Comments },
+            {
+                model: Community,
+                include: [
+                    { model: CommunityStyle }
+                ]
+            },
+            { model: User},
+            { model: PostImages},
+            {
+                model: Votes,
+               // order: [['upVote', 'DESC']],
+
+            } ,
+            { model: PostSetting }
+        ],
+        order: [[Sequelize.literal('commentCount'), 'DESC']],
+        limit: pageSize, // Limit the number of results per page
+        offset: (page - 1) * pageSize
+
+    });
+
+    return res.json(posts)
+})
+
+
+
+router.get("/top", async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+
+    const pageSize = 10; // Number of posts per page
+
+    let communityId = await Community.findAll({
+        attributes: ['id'],
+        where: {
+            type: 'Private'
+        },
+    })
+
+
+    let posts = await Post.findAll({
+        attributes: {
+            include: [
+              [
+                Sequelize.literal(
+                  '(SELECT COUNT(*) FROM "Votes" WHERE "Votes"."postId" = "Post"."id" AND "Votes"."upVote" = 1)'
+                ),
+                'upvoteCount'
+              ]
+            ]
+          },
+        where: {
+            communityId: {
+                [Op.notIn]: communityId
+            },
+
+        },
+        include: [
+            { model: Comments },
+            {
+                model: Community,
+                include: [
+                    { model: CommunityStyle }
+                ]
+            },
+            { model: User},
+            { model: PostImages},
+            {
+                model: Votes,
+               // order: [['upVote', 'DESC']],
+
+            } ,
+            { model: PostSetting }
+        ],
+        order: [[Sequelize.literal('upvoteCount'), 'DESC']],
+        limit: pageSize, // Limit the number of results per page
+        offset: (page - 1) * pageSize
+
+    });
+
+    return res.json(posts)
+})
 
 
 router.get("/history", async (req, res) => {
@@ -54,13 +238,13 @@ router.get("/history", async (req, res) => {
         },
         include: [
             {
-                model: Posts,
+                model: Post,
                 include: [
                     { model: Comments },
                     {
-                        model: Communities,
+                        model: Community,
                         include: [
-                            { model: communityStyles }
+                            { model: CommunityStyle }
                         ]
                     },
                     { model: User},
@@ -97,13 +281,13 @@ router.get("/votes", async (req, res) => {
         },
         include: [
             {
-                model: Posts,
+                model: Post,
                 include: [
                     { model: Comments },
                     {
-                        model: Communities,
+                        model: Community,
                         include: [
-                            { model: communityStyles }
+                            { model: CommunityStyle }
                         ]
                     },
                     { model: User},
@@ -127,6 +311,49 @@ router.get("/votes", async (req, res) => {
     return res.json(posts)
     })
 
+    router.get("/best", async (req, res) => {
+        const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+        const pageSize = 10; // Number of posts per page
+
+        const { user } = req
+        let userId = user.dataValues.id
+
+        let posts = await Votes.findAll({
+            order: [['upVote', 'ASC']],
+            where: {
+                userId
+            },
+            include: [
+                {
+                    model: Post,
+                    include: [
+                        { model: Comments },
+                        {
+                            model: Community,
+                            include: [
+                                { model: CommunityStyle }
+                            ]
+                        },
+                        { model: User},
+                        { model: PostImages},
+                        {
+                            model: Votes,
+                            order: [['createdAt', 'DESC']],
+                            where: {
+                                userId
+                            },
+                         },
+                        { model: PostSetting }
+                    ]
+                }
+             ],
+             limit: pageSize, // Limit the number of results per page
+             offset: (page - 1) * pageSize
+        });
+
+
+        return res.json(posts)
+        })
 
 
     router.get("/votes/current", async (req, res) => {
@@ -145,20 +372,56 @@ router.get("/votes", async (req, res) => {
         return res.json(vote)
     })
 
-    // router.get(`/votes/${id}`, async (req, res) => {
-        //     const { id } = req.params.id
+    router.get("/search", async (req, res) => {
+        const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+        const search = req.query.search
 
-        //     let vote = await Votes.findByPk(id)
+        const pageSize = 10; // Number of posts per page
 
-        //     return res.json(vote)
+        let communityId = await Community.findAll({
+            attributes: ['id'],
+            where: {
+                type: 'Private'
+            },
+        })
 
-        // })
+        communityId = communityId.map(community => community.dataValues.id);
+        let posts = await Post.findAll({
+            order: [['id', 'DESC']],
+            where: {
+                communityId: {
+                    [Op.notIn]: communityId
+                },
+                title: {
+                    [Op.substring]: search
+
+                }
+            },
+            include: [
+                { model: Comments },
+                {
+                    model: Community,
+                    include: [
+                        { model: CommunityStyle }
+                    ]
+                },
+                { model: User},
+                { model: PostImages},
+                { model: Votes } ,
+                { model: PostSetting }
+            ],
+            limit: pageSize, // Limit the number of results per page
+            offset: (page - 1) * pageSize
+        });
+
+        return res.json(posts)
+    })
 
 
 
 router.get("/:id", async (req, res) => {
     let postId = req.params.id;
-    let postExist = await Posts.findByPk(postId);
+    let postExist = await Post.findByPk(postId);
 
     if (!postExist) {
 
@@ -166,22 +429,36 @@ router.get("/:id", async (req, res) => {
 
     }
 
-    let post = await Posts.findByPk(postId, {
+    let post = await Post.findByPk(postId, {
         include: [
             {
                 model: Comments,
             include: [
-                { model: User },
+                { model: User,
+                    // include: [
+                    //     {
+                    //         model: Community,
+                    //         where: {
+                    //             type: "Profile"
+                    //         },
+                    //         include: [
+                    //             { model: CommunityStyle }
+                    //         ]
+                    //     },
+                    // ]
+                },
                 { model: Votes }
             ]
             },
             {
-                model: Communities,
+                model: Community,
                 include: [
-                    { model: communityStyles }
+                    { model: CommunityStyle }
                 ]
             },
-            { model: User },
+            {
+                model: User,
+            },
             { model: PostImages },
             { model: Votes },
             { model: PostSetting }
@@ -194,10 +471,120 @@ router.get("/:id", async (req, res) => {
     }
     });
 
+
+    for (let c of post.dataValues.Comments) {
+        let profile = await Community.findOne({
+            where: {
+                userId: c.dataValues.userId,
+                type: "Profile"
+            },
+            include: [
+                  { model: CommunityStyle }
+            ]
+        })
+
+        c.dataValues.Profile = profile
+
+    }
+
     post.dataValues.Community.dataValues.CommunityMembers = members.length
 
     return res.json(post)
 })
+
+
+router.get("/hot", async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+
+    const pageSize = 10; // Number of posts per page
+
+    let userId = req.params.id
+
+
+    let posts = await Post.findAll({
+        attributes: {
+            include: [[Sequelize.literal('(SELECT COUNT(*) FROM "Votes" WHERE "Votes"."postId" = "Post"."id")'), 'voteCount']]
+          },
+        where: {
+            userId
+
+        },
+        include: [
+            { model: Comments },
+            {
+                model: Community,
+                include: [
+                    { model: CommunityStyle }
+                ]
+            },
+            { model: User},
+            { model: PostImages},
+            {
+                model: Votes,
+               // order: [['upVote', 'DESC']],
+
+            } ,
+            { model: PostSetting }
+        ],
+        order: [[Sequelize.literal('voteCount'), 'DESC']],
+        limit: pageSize, // Limit the number of results per page
+        offset: (page - 1) * pageSize
+
+    });
+
+    return res.json(posts)
+})
+
+
+router.get("/:id/top", async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+
+    const pageSize = 10; // Number of posts per page
+
+    let userId = req.params.id
+
+
+    let posts = await Post.findAll({
+        attributes: {
+            include: [
+              [
+                Sequelize.literal(
+                  '(SELECT COUNT(*) FROM "Votes" WHERE "Votes"."postId" = "Post"."id" AND "Votes"."upVote" = 1)'
+                ),
+                'upvoteCount'
+              ]
+            ]
+          },
+        where: {
+            userId
+
+        },
+        include: [
+            { model: Comments },
+            {
+                model: Community,
+                include: [
+                    { model: CommunityStyle }
+                ]
+            },
+            { model: User},
+            { model: PostImages},
+            {
+                model: Votes,
+               // order: [['upVote', 'DESC']],
+
+            } ,
+            { model: PostSetting }
+        ],
+        order: [[Sequelize.literal('upvoteCount'), 'DESC']],
+        limit: pageSize, // Limit the number of results per page
+        offset: (page - 1) * pageSize
+
+    });
+
+    return res.json(posts)
+})
+
 
 router.get('/:id/overview', async (req, res) => {
     const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
@@ -207,7 +594,7 @@ router.get('/:id/overview', async (req, res) => {
     let userId = req.params.id;
 
     const [posts, comments] = await Promise.all([
-        Posts.findAll({
+        Post.findAll({
             order: [['updatedAt', 'DESC']],
             where: {
                 userId
@@ -219,9 +606,9 @@ router.get('/:id/overview', async (req, res) => {
 
                  },
                 {
-                    model: Communities,
+                    model: Community,
                     include: [
-                        { model: communityStyles }
+                        { model: CommunityStyle }
                     ]
                 },
                 { model: User},
@@ -232,7 +619,178 @@ router.get('/:id/overview', async (req, res) => {
             limit: pageSize, // Limit the number of results per page
             offset: (page - 1) * pageSize // Optional: Order the results
         }),
-        Posts.findAll({
+        Post.findAll({
+            attributes: {
+                include: [[
+                      Sequelize.literal(
+                        `(SELECT MAX("updatedAt") FROM "Comments" WHERE "postId" = "Post"."id")`
+                      ),
+                      'latestCommentUpdatedAt'
+                    ]]
+            },
+            include: [
+                {
+                    model: Comments,
+                    order: [['updatedAt', 'DESC']],
+                    where: {
+                        userId
+                    }
+                },
+                {
+                    model: Community,
+                    include: [
+                        { model: CommunityStyle }
+                    ]
+                },
+                { model: User},
+                { model: PostImages},
+                { model: Votes } ,
+                { model: PostSetting }
+            ],
+            order: [
+                [Sequelize.literal('latestCommentUpdatedAt'), 'DESC'],
+                ['updatedAt', 'DESC'],
+              ],
+            limit: pageSize, // Limit the number of results per page
+            offset: (page - 1) * pageSize // Optional: Order the results
+        }),
+    ]);
+
+    return res.json({
+        posts,
+        comments
+    })
+
+})
+
+router.get('/:id/overview/top', async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+    const pageSize = 5; // Number of posts per page
+
+    const { user } = req
+    let userId = req.params.id;
+
+    const [posts, comments] = await Promise.all([
+        Post.findAll({
+            attributes: {
+                include: [
+                  [
+                    Sequelize.literal(
+                      '(SELECT COUNT(*) FROM "Votes" WHERE "Votes"."postId" = "Post"."id" AND "Votes"."upVote" = 1)'
+                    ),
+                    'upvoteCount'
+                  ]
+                ]
+              },
+            order: [['updatedAt', 'DESC']],
+            where: {
+                userId
+            },
+            include: [
+                {
+                  model: Comments,
+                  order: [['updatedAt', 'DESC']],
+
+                 },
+                {
+                    model: Community,
+                    include: [
+                        { model: CommunityStyle }
+                    ]
+                },
+                { model: User},
+                { model: PostImages},
+                { model: Votes } ,
+                { model: PostSetting }
+            ],
+            order: [[Sequelize.literal('upvoteCount'), 'DESC']],
+            limit: pageSize, // Limit the number of results per page
+            offset: (page - 1) * pageSize // Optional: Order the results
+        }),
+        Post.findAll({
+            attributes: {
+                include: [
+                  [
+                    Sequelize.literal(
+                      '(SELECT COUNT(*) FROM "Votes" WHERE "Votes"."postId" = "Post"."id" AND "Votes"."upVote" = 1)'
+                    ),
+                    'upvoteCount'
+                  ]
+                ]
+              },
+            include: [
+                {
+                    model: Comments,
+                    order: [['updatedAt', 'DESC']],
+                    where: {
+                        userId
+                    }
+                },
+                {
+                    model: Community,
+                    include: [
+                        { model: CommunityStyle }
+                    ]
+                },
+                { model: User},
+                { model: PostImages},
+                { model: Votes } ,
+                { model: PostSetting }
+            ],
+            order: [[Sequelize.literal('upvoteCount'), 'DESC']],
+            limit: pageSize, // Limit the number of results per page
+            offset: (page - 1) * pageSize // Optional: Order the results
+        }),
+    ]);
+
+    return res.json({
+        posts,
+        comments
+    })
+
+})
+
+router.get('/:id/overview/hot', async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+    const pageSize = 5; // Number of posts per page
+
+    const { user } = req
+    let userId = req.params.id;
+
+    const [posts, comments] = await Promise.all([
+        Post.findAll({
+            attributes: {
+                include: [[Sequelize.literal('(SELECT COUNT(*) FROM "Votes" WHERE "Votes"."postId" = "Post"."id")'), 'voteCount']]
+              },
+            where: {
+                userId
+            },
+            include: [
+                {
+                  model: Comments,
+                  order: [['updatedAt', 'DESC']],
+
+                 },
+                {
+                    model: Community,
+                    include: [
+                        { model: CommunityStyle }
+                    ]
+                },
+                { model: User},
+                { model: PostImages},
+                { model: Votes } ,
+                { model: PostSetting }
+
+            ],
+            order: [[Sequelize.literal('voteCount'), 'DESC']],
+            limit: pageSize, // Limit the number of results per page
+            offset: (page - 1) * pageSize // Optional: Order the results
+        }),
+        Post.findAll({
+            attributes: {
+                include: [[Sequelize.literal('(SELECT COUNT(*) FROM "Votes" WHERE "Votes"."postId" = "Post"."id")'), 'voteCount']]
+              },
             order: [['updatedAt', 'DESC']],
             include: [
                 {
@@ -243,9 +801,9 @@ router.get('/:id/overview', async (req, res) => {
                     }
                 },
                 {
-                    model: Communities,
+                    model: Community,
                     include: [
-                        { model: communityStyles }
+                        { model: CommunityStyle }
                     ]
                 },
                 { model: User},
@@ -253,6 +811,7 @@ router.get('/:id/overview', async (req, res) => {
                 { model: Votes } ,
                 { model: PostSetting }
             ],
+            order: [[Sequelize.literal('voteCount'), 'DESC']],
             limit: pageSize, // Limit the number of results per page
             offset: (page - 1) * pageSize // Optional: Order the results
         }),
@@ -272,7 +831,7 @@ router.get("/:id/current", async (req, res) => {
     const { user } = req
     let userId = req.params.id;
 
-    let posts = await Posts.findAll({
+    let posts = await Post.findAll({
         order: [['createdAt', 'DESC']],
         where: {
             userId
@@ -280,9 +839,9 @@ router.get("/:id/current", async (req, res) => {
         include: [
             { model: Comments },
             {
-                model: Communities,
+                model: Community,
                 include: [
-                    { model: communityStyles }
+                    { model: CommunityStyle }
                 ]
             },
             { model: User},
@@ -298,6 +857,89 @@ router.get("/:id/current", async (req, res) => {
     return res.json(posts)
 })
 
+router.get("/:id/current/top", async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+    const pageSize = 10; // Number of posts per page
+
+    const { user } = req
+    let userId = req.params.id;
+
+    let posts = await Post.findAll({
+        order: [['createdAt', 'DESC']],
+        where: {
+            userId
+        },
+        attributes: {
+            include: [
+              [
+                Sequelize.literal(
+                  '(SELECT COUNT(*) FROM "Votes" WHERE "Votes"."postId" = "Post"."id" AND "Votes"."upVote" = 1)'
+                ),
+                'upvoteCount'
+              ]
+            ]
+          },
+        include: [
+            { model: Comments },
+            {
+                model: Community,
+                include: [
+                    { model: CommunityStyle }
+                ]
+            },
+            { model: User},
+            { model: PostImages},
+            { model: Votes } ,
+            { model: PostSetting }
+         ],
+         order: [[Sequelize.literal('upvoteCount'), 'DESC']],
+         limit: pageSize, // Limit the number of results per page
+         offset: (page - 1) * pageSize
+    });
+
+
+    return res.json(posts)
+})
+
+router.get("/:id/current/hot", async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+    const pageSize = 10; // Number of posts per page
+
+    const { user } = req
+    let userId = req.params.id;
+
+    let posts = await Post.findAll({
+        order: [['createdAt', 'DESC']],
+        where: {
+            userId
+        },
+        attributes: {
+            include: [[Sequelize.literal('(SELECT COUNT(*) FROM "Votes" WHERE "Votes"."postId" = "Post"."id")'), 'voteCount']]
+          },
+        include: [
+            { model: Comments },
+            {
+                model: Community,
+                include: [
+                    { model: CommunityStyle }
+                ]
+            },
+            { model: User},
+            { model: PostImages},
+            { model: Votes } ,
+            { model: PostSetting }
+         ],
+         order: [[Sequelize.literal('voteCount'), 'DESC']],
+         limit: pageSize, // Limit the number of results per page
+         offset: (page - 1) * pageSize
+    });
+
+
+    return res.json(posts)
+})
+
+
+
 router.get("/:id/comments", async (req, res) => {
     const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
     const pageSize = 10; // Number of posts per page
@@ -312,7 +954,7 @@ router.get("/:id/comments", async (req, res) => {
         },
         include: [
             {
-                model: Posts,
+                model: Post,
                 include: [
                     {
                         model: Comments,
@@ -322,9 +964,9 @@ router.get("/:id/comments", async (req, res) => {
                         },
                     },
                     {
-                        model: Communities,
+                        model: Community,
                         include: [
-                            { model: communityStyles }
+                            { model: CommunityStyle }
                         ]
                     },
                     { model: User},
@@ -342,6 +984,108 @@ router.get("/:id/comments", async (req, res) => {
     return res.json(posts)
 })
 
+router.get("/:id/comments/hot", async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+    const pageSize = 10; // Number of posts per page
+
+   // const { user } = req
+    let userId = req.params.id;
+
+    let posts = await Comments.findAll({
+        attributes: {
+            include: [[Sequelize.literal('(SELECT COUNT(*) FROM "Votes" WHERE "Votes"."postId" = "Post"."id")'), 'voteCount']]
+          },
+        order: [['createdAt', 'DESC']],
+        where: {
+            userId
+        },
+        include: [
+            {
+                model: Post,
+                include: [
+                    {
+                        model: Comments,
+                        order: [['createdAt', 'DESC']],
+                        where: {
+                            userId
+                        },
+                    },
+                    {
+                        model: Community,
+                        include: [
+                            { model: CommunityStyle }
+                        ]
+                    },
+                    { model: User},
+                    { model: PostImages},
+                    { model: Votes } ,
+                    { model: PostSetting }
+                ]
+            }
+         ],
+         order: [[Sequelize.literal('voteCount'), 'DESC']],
+         limit: pageSize, // Limit the number of results per page
+         offset: (page - 1) * pageSize
+    });
+
+
+    return res.json(posts)
+})
+
+router.get("/:id/comments/top", async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+    const pageSize = 10; // Number of posts per page
+
+   // const { user } = req
+    let userId = req.params.id;
+
+    let posts = await Comments.findAll({
+        attributes: {
+            include: [
+              [
+                Sequelize.literal(
+                  '(SELECT COUNT(*) FROM "Votes" WHERE "Votes"."postId" = "Post"."id" AND "Votes"."upVote" = 1)'
+                ),
+                'upvoteCount'
+              ]
+            ]
+          },
+        order: [['createdAt', 'DESC']],
+        where: {
+            userId
+        },
+        include: [
+            {
+                model: Post,
+                include: [
+                    {
+                        model: Comments,
+                        order: [['createdAt', 'DESC']],
+                        where: {
+                            userId
+                        },
+                    },
+                    {
+                        model: Community,
+                        include: [
+                            { model: CommunityStyle }
+                        ]
+                    },
+                    { model: User},
+                    { model: PostImages},
+                    { model: Votes } ,
+                    { model: PostSetting }
+                ]
+            }
+         ],
+         order: [[Sequelize.literal('upvoteCount'), 'DESC']],
+         limit: pageSize, // Limit the number of results per page
+         offset: (page - 1) * pageSize
+    });
+
+
+    return res.json(posts)
+})
 
 
 router.get("/:id/communities", async (req, res) => {
@@ -351,8 +1095,8 @@ router.get("/:id/communities", async (req, res) => {
    // const { user } = req
     let communityId = req.params.id;
 
-    let posts = await Posts.findAll({
-        order: [['createdAt', 'DESC']],
+    let posts = await Post.findAll({
+        order: [['id', 'DESC']],
         where : {
             communityId
         },
@@ -362,9 +1106,9 @@ router.get("/:id/communities", async (req, res) => {
 
             },
             {
-                model: Communities,
+                model: Community,
                 include: [
-                    { model: communityStyles }
+                    { model: CommunityStyle }
                 ]
             },
             { model: User},
@@ -419,7 +1163,7 @@ router.get("/:id/communities", async (req, res) => {
 
 router.get("/:id/comments", async (req, res) => {
     let postId = req.params.id;
-    let postExist = await Posts.findByPk(postId);
+    let postExist = await Post.findByPk(postId);
 
     if (!postExist) {
 
@@ -444,7 +1188,7 @@ router.get("/:id/comments", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
     let postId = req.params.id;
-    let postExist = await Posts.findByPk(postId);
+    let postExist = await Post.findByPk(postId);
     const { description, tags } = req.body
 
     if (!postExist) {
@@ -459,7 +1203,7 @@ router.put("/:id", async (req, res) => {
     })
     await postExist.save()
 
-    let post = await Posts.findByPk(postId, {
+    let post = await Post.findByPk(postId, {
         include: [
             {
                 model: Comments,
@@ -469,9 +1213,9 @@ router.put("/:id", async (req, res) => {
                 ]
             },
             {
-                model: Communities,
+                model: Community,
                 include: [
-                    { model: communityStyles }
+                    { model: CommunityStyle }
                 ]
             },
             { model: User },
@@ -495,7 +1239,11 @@ router.put("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
     let postId = req.params.id;
-    let postExist = await Posts.findByPk(postId);
+    let postExist = await Post.findOne({
+        where: {
+          id: postId
+        }
+    });
 
     if (!postExist) {
 
@@ -511,29 +1259,53 @@ router.delete("/:id", async (req, res) => {
 
 })
 
-router.post('/:id/images', async (req, res) => {
-    let postId = req.params.id;
-    let postExist = await Posts.findByPk(postId);
-    const { imgURL } = req.body
+router.post(
+    '/:id/images',
+    multipleMulterUpload("image"),
+    async (req, res) => {
+        let postId = req.params.id;
+        let postExist = await Post.findByPk(postId);
+        //const { imgURL } = req.body
+        // const imgURL = await multiplePublicFileUpload(req.file);
+        if (!postExist) {
+          res.status(404).json({ "message": "Post couldn't be found" });
+          return; // Return early if post doesn't exist
+        }
+        // console.log(imgURL)
+        const imgURLs = await multiplePublicFileUpload(req.files);
 
-    if (!postExist) {
+        // if (!postExist) {
 
-    res.status(404).json({"message": "Post couldn't be found"});
+        // res.status(404).json({"message": "Post couldn't be found"});
 
-    }
+        // }
 
-    let image = await PostImages.create({
-        imgURL,
-        postId
-    })
+        // let image = await PostImages.create({
+        //     imgURL,
+        //     postId
+        // })
+        const postImages = [];
 
-    return res.json(image)
+        for (const file of imgURLs) {
+
+
+            const image = await PostImages.create({
+              imgURL: file,
+              postId
+            });
+
+            postImages.push(image); // Store the created image in an array
+
+        }
+
+
+        return res.json(postImages)
 
 })
 
 router.post('/:id/history', async (req, res) => {
     let postId = req.params.id;
-    let postExist = await Posts.findByPk(postId);
+    let postExist = await Post.findByPk(postId);
     const { user } = req
     const userId = user.dataValues.id
 
@@ -553,7 +1325,7 @@ router.post('/:id/history', async (req, res) => {
     let history2 = await PostSetting.findByPk(setting.dataValues.id, {
         include: [
             {
-                model: Posts,
+                model: Post,
                 include: [
                     {
                         model: Comments,
@@ -563,14 +1335,15 @@ router.post('/:id/history', async (req, res) => {
                         ]
                     },
                     {
-                        model: Communities,
+                        model: Community,
                         include: [
-                            { model: communityStyles }
+                            { model: CommunityStyle }
                         ]
                     },
                     { model: User },
                     { model: PostImages },
                     { model: Votes },
+                    { model: PostSetting}
                  ]
             }
         ]
@@ -609,7 +1382,7 @@ router.put('/:id/history', async (req, res) => {
     let history2 = await PostSetting.findByPk(setting.dataValues.id, {
         include: [
             {
-                model: Posts,
+                model: Post,
                 include: [
                     {
                         model: Comments,
@@ -619,14 +1392,15 @@ router.put('/:id/history', async (req, res) => {
                         ]
                     },
                     {
-                        model: Communities,
+                        model: Community,
                         include: [
-                            { model: communityStyles }
+                            { model: CommunityStyle }
                         ]
                     },
                     { model: User },
                     { model: PostImages },
                     { model: Votes },
+                    { model: PostSetting }
                  ]
             }
         ]
@@ -660,7 +1434,7 @@ router.delete('/history/:id', async (req, res) => {
 
 router.post('/:id/votes', async (req, res) => {
     let postId = req.params.id;
-    let postExist = await Posts.findByPk(postId);
+    let postExist = await Post.findByPk(postId);
     const boolean = req.query.boolean;
 
     // console.log(boolean)
@@ -689,30 +1463,12 @@ router.post('/:id/votes', async (req, res) => {
 
     }
 
-    // if (upVote) {
-    //     postExist.set({
-    //         votes: postExist.votes + 1
-    //     })
-    //     await postExist.save()
-
-    // }
-
-
     if (boolean == 0) downVote = await Votes.create({
         postId,
         userId,
         downVote: 1,
         upVote: 0
     })
-
-    // if (downVote) {
-    //     postExist.set({
-    //         downVotes: postExist.downVotes + 1
-    //     })
-    //     await postExist.save()
-
-    // }
-
 
     let vote = upVote ? upVote : downVote
 
@@ -724,7 +1480,7 @@ router.put('/:id/votes', async (req, res) => {
     let voteId = req.params.id;
     let voteExist = await Votes.findByPk(voteId);
     const boolean = req.query.boolean;
-    let post = await Posts.findByPk(voteExist.dataValues.postId)
+    let post = await Post.findByPk(voteExist.dataValues.postId)
 
     console.log(boolean)
     const { user } = req
@@ -747,17 +1503,6 @@ router.put('/:id/votes', async (req, res) => {
         await upVote.save()
     }
 
-
-    // if (upVote) {
-    //     post.set({
-    //         votes: post.votes + 1,
-    //         downVotes: post.downVotes - 1,
-    //     })
-    //     await post.save()
-
-    // }
-
-
     if (boolean == 0) {
         downVote = voteExist.set({
                 downVote: 1,
@@ -767,16 +1512,6 @@ router.put('/:id/votes', async (req, res) => {
         await downVote.save()
 
     }
-
-    // if (downVote) {
-    //     post.set({
-    //         downVotes: post.downVotes + 1,
-    //         votes: post.votes - 1
-    //     })
-    //     await post.save()
-
-    // }
-
 
     let vote = upVote ? upVote : downVote
 
@@ -832,7 +1567,7 @@ router.delete('/votes/:id', async (req, res) => {
 
     }
 
-    let post = await Posts.findByPk(voteExist.dataValues.postId)
+    let post = await Post.findByPk(voteExist.dataValues.postId)
 
     if (post && voteExist.dataValues.upVote === 1) {
         post.set({
@@ -877,10 +1612,35 @@ router.post("/:id/comment", async (req, res) => {
 
     let comment2 = await Comments.findByPk(c.dataValues.id, {
         include: [
-            { model: User },
+            {
+                model: User,
+                // include: [
+                //     {
+                //         model: Community,
+                //         where: {
+                //             type: "Profile"
+                //         },
+                //         include: [
+                //             { model: CommunityStyle }
+                //         ]
+                //     },
+                // ]
+             },
             { model: Votes }
         ]
     })
+
+    let profile = await Community.findOne({
+        where: {
+            userId: c.dataValues.userId,
+            type: "Profile"
+        },
+        include: [
+              { model: CommunityStyle }
+        ]
+    })
+
+    comment2.dataValues.Profile = profile
 
 
     return res.json(comment2)

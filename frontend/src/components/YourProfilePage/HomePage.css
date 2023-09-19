@@ -541,13 +541,27 @@
     flex-direction: column;
     gap: 16px;
     margin-bottom: 100px;
+    overflow: hidden;
 
 }
+
+/* #img2 {
+    margin-bottom: "20px";
+} */
 
 .sidebar > div {
     background-color: white;
     width: 100%;
     overflow: hidden;
+}
+
+#view-more {
+    padding: 1% 5%;
+    border-radius: 20px;
+}
+
+#view-more:hover {
+    background-color: #EDEFF1;
 }
 
 .sidebar {
@@ -556,6 +570,7 @@
     flex-direction: column;
     gap: 14.5px;
     align-items: center;
+    margin-bottom: 100px;
 }
 
 #ad, #terms {
@@ -820,6 +835,10 @@
 
 }
 
+.premium > button:hover {
+    opacity: 0.8;
+}
+
 #filter-side2 > .fi {
     position: absolute;
     font-size: 18px;
@@ -845,8 +864,8 @@
 }
 
 #avatar {
-    width: 52px;
-    height: 86px;
+    height: 68px;
+    width: 40px;
     margin-top: -30px;
 }
 
@@ -933,7 +952,7 @@
 }
 
 #home-section > #but1 {
-    width: 92%;
+    width: 100%;
     background-color: #0079D3;
     border-radius: 20px;
     height: 32px;
@@ -973,7 +992,7 @@
 }
 
 #home-section > #but1:hover {
-    width: 92%;
+    width: 100%;
     background-color: #0181e2;
     border-radius: 20px;
     height: 32px;
@@ -987,24 +1006,27 @@
 
 }
 
+#finishing2 {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+
+}
+
 #line {
     background-color: rgba(26,26,27,0.07);
     height: 1px;
-    margin-left: 3px;
-    margin-right: 3px;
     margin-top: 10px;
     margin-bottom: 15px;
-    width: 90%;
+    width: 98%;
 }
 
 #home-section > p {
     font-size: 14px;
-    height: 32px;
+    height: 45px;
     width: 92%;
 }
 
 #home-section > #but2 {
-    width: 92%;
+    width: 100%;
     background-color: white;
     border-radius: 20px;
     height: 32px;
@@ -1073,7 +1095,7 @@
 }
 
 #home-section > #but2:hover {
-    width: 92%;
+    width: 100%;
     background-color: #f4fafe;
     border-radius: 20px;
     height: 32px;
@@ -1096,8 +1118,9 @@
 
 #hs-side1 > h3 {
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 900;
     line-height: 34px;
+    margin: 2%
 }
 
 .premium {
@@ -1221,22 +1244,18 @@
     border-top: 1.2px solid #ccc;
     border-top-right-radius: 4px;
     border-top-left-radius: 4px;
-    overflow: hidden;
-
 }
 
 .posts3 > div:nth-child(2) > div:hover {
     border-top: 1.2px solid black;
     border-top-right-radius: 4px;
     border-top-left-radius: 4px;
-    overflow: hidden;
 
 }
 
 .posts3 > div:last-child > div {
     border-top-right-radius: 4px;
     border-top-left-radius: 4px;
-    overflow: hidden;
 }
 /*
 #what-cont {

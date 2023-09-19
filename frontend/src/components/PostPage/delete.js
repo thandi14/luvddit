@@ -20,8 +20,8 @@ function DeletePost({ id, deleted }){
 
     const handleClick = () => {
         dispatch(postsActions.thunkDeletePosts(id, deleted))
-        if (singlePost?.communityId !== communities[0].id) history.push(`/communities/${singlePost.communityId}`)
-        if (singlePost?.communityId === communities[0].id) history.push(`/`)
+       // if (singlePost?.communityId !== communities[0].id) history.push(`/communities/${singlePost.communityId}/:page`)
+       // if (singlePost?.communityId === communities[0].id) history.push(`/`)
         closeModal2()
     }
 

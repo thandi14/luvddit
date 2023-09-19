@@ -22,14 +22,16 @@ module.exports = {
         references: {
           model: 'Posts',
           key: 'id',
-      }
+      },
+      onDelete: 'cascade'
       },
       userId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'Users',
           key: 'id',
-        }
+        },
+        onDelete: 'cascade'
       },
       commentId:  {
         type: Sequelize.INTEGER,

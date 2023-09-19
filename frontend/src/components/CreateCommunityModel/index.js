@@ -13,15 +13,24 @@ function CreateCommunity() {
     const dispatch = useDispatch()
     const history = useHistory()
     const [ type, setType ] = useState("Public")
+    const [ errors, setErrors ] = useState(false)
+
+    function isNotAllSpaces(inputString) {
+        return !/^[\s]+$/.test(inputString);
+    }
 
     const handleSubmit = async () => {
 
-        if (name) {
+
+        if (name.length >= 3 && isNotAllSpaces(name)) {
             setData1({
                 name,
                 type
              })
 
+        }
+        else {
+            setErrors(true)
         }
 
     }
@@ -44,6 +53,7 @@ function CreateCommunity() {
     }, [dispatch, data1])
 
 
+
     return (
         <div className="community-post">
             <span>Create a community<i onClick={(() => closeModal())} class="fi fi-rr-cross-small"></i></span>
@@ -55,7 +65,8 @@ function CreateCommunity() {
             <span>l/</span>
             <input maxLength={21} onChange={((e) => setName(e.target.value))} type="text"></input>
             </div>
-            <span id={name.length === 21 ? "red" : "grey"}> { 21 - name.length} Characters remaining</span>
+            <span className={name.length === 21 ? "red" : "grey"}> { 21 - name.length} Characters remaining</span>
+            { errors ? <span style={{ fontSize: "12px", color: "red"}}>Community names must be between 3–21 characters, and can only contain letters, numbers, or underscores.</span> : null}
             </div>
             <div id="cc-type">
                 <span>Community type</span>
@@ -89,7 +100,7 @@ function CreateCommunity() {
             </div>
             <div id="cc-submit">
                 <button onClick={(() => closeModal())}>Cancel</button>
-                <button id={name ? "eleven" : "eleven2"} onClick={handleSubmit}>Create Community</button>
+                <button id={name.length >= 3 && isNotAllSpaces(name) ? "eleven" : "eleven2"} onClick={handleSubmit}>Create Community</button>
             </div>
         </div>
     )

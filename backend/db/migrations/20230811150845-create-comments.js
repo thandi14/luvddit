@@ -21,7 +21,8 @@ module.exports = {
         references: {
           model: 'Users',
           key: 'id',
-        }
+        },
+        onDelete: 'cascade'
       },
       comment: {
         type: Sequelize.TEXT
@@ -31,7 +32,8 @@ module.exports = {
         references: {
           model: 'Posts',
           key: 'id',
-      }
+      },
+      onDelete: 'cascade'
       },
       parent: {
         type: Sequelize.INTEGER,

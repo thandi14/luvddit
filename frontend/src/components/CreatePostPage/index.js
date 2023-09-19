@@ -9,6 +9,8 @@ import CommunitiesProfile from "./communites2";
 import { useDispatch } from "react-redux";
 import * as communityActions from "../../store/communities"
 import { useHistory, useParams } from "react-router-dom/cjs/react-router-dom.min";
+import { MenuContext } from "../../context/Menu";
+import { useContext } from "react";
 
 
 function CreatePost() {
@@ -17,9 +19,16 @@ function CreatePost() {
   const [isVisible, setIsVisible] = useState(false);
   const [isVisible2, setIsVisible2] = useState(false);
   const targetRef = useRef(null);
+  const targetRef2 = useRef(null);
   const [ comms, setComms ] = useState("")
+  const [ comms2, setComms2 ] = useState(null)
   const dispatch = useDispatch()
   const history = useHistory()
+  const { menuOpen, toggleMenu } = useContext(MenuContext);
+
+
+  console.log(menuOpen)
+
 
   let members = Object.values(communityMemberships)
 
@@ -28,7 +37,12 @@ function CreatePost() {
     window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
     }, []);
 
+    useEffect(() => {
 
+        setComms2(singleCommunity.name)
+        }, [singleCommunity]);
+
+        console.log(comms2)
 
     const handleClick = () => {
       setIsVisible(!isVisible);
@@ -52,6 +66,10 @@ function CreatePost() {
                 setIsVisible(false);
                 setIsVisible2(false)
             }
+
+            if (targetRef2.current && !targetRef2.current.contains(event.target)) {
+                setIsVisible(false);
+            }
         };
 
 
@@ -70,7 +88,7 @@ function CreatePost() {
         }
     }, [history]);
 
-    let idName = isVisible ? "search2" : "hidden";
+    let idName = "search2" ;
     let idName2 = !isVisible ? "choose-comms3" : "choose-comms1";
 
     let community = Object.values(singleCommunity)
@@ -79,40 +97,32 @@ function CreatePost() {
 
 
 
+
     return (
         <div className="create-post-page">
             <div className="create-post">
                 <div id="cp-title">
                 <h3>Create a post</h3>
-                <div>
-                {singleCommunity.name && singleCommunity.name !== user.username ? <div>
-                <span>COLLECETIONS</span>
+                <div onClick={(() => window.alert("Feature not available"))}>
+                {singleCommunity.name && singleCommunity.name !== user.username ? <div style={{width: "140px"}}>
+                <span style={{ color: `${singleCommunity.CommunityStyle?.highlight}`}} >COLLECETIONS</span>
                 <p>0</p>
                 </div> : null}
-                <div>
-                <span>DRAFTS</span>
+
+                <div  style={{width: "100px"}} onClick={(() => window.alert("Feature not available"))}>
+                <span  style={{ color: `${singleCommunity.CommunityStyle?.highlight}`}} >DRAFTS</span>
                 <p>0</p>
                 </div>
+
                 </div>
                 </div>
-                <div id='border2'></div>
-                <div ref={targetRef} className="search-comms">
-                {!isVisible && !isVisible2 ?
-                 <div onClick={handleClick} id="choose-comms">
-                 {community && community.length ? community[9] && singleCommunity.name !== user.username ? community[9][0]?.profile ? <img id="pfp30" src={community[9][0]?.profile}></img> : <div id="nav-comms90">l/</div>: <img src={avatar}></img> : <i class="fi fi-rr-circle-dashed"></i>}
-                 <input onChange={((e) => setComms(e.target.value))} defaultValue={singleCommunity.name ? `l/${singleCommunity.name}` : ""} placeholder="Choose your community"></input>
-                 <i onClick={handleClick} class="fa-solid fa-chevron-down"></i>
-                 </div>
-                :
-                <div id={idName2}>
-                <i class="fi fi-rs-search-heart"></i>
-                <input id="input-button" onChange={((e) => setComms(e.target.value))} text="type" defaultValue={singleCommunity ? `l/${singleCommunity.name}` : ""} placeholder="Search communities"></input>
-                <i  onClick={handleClick2} class="fa-solid fa-chevron-down"></i>
-                </div>}
-                <div id={idName}>
-                    <CommunitiesMenu value={isVisible} />
-                </div>
-                </div>
+                    {/* <div id='border2'></div>
+                <div ref={targetRef} className="search-comms"> */}
+
+                {/* <div id={idName}> */}
+                    <CommunitiesMenu />
+                {/* </div>
+                </div> */}
                 <PostForm />
             </div>
             <div className="posting-on-l">
