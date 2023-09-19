@@ -33,7 +33,6 @@ const MyCarousel = ({ images }) => {
       display: "flex",
       transition: "transform 0.5s ease",
       transform: `translateX(-${currentIndex * 100}%)`,
-      minHeight: "500px"
     };
 
     console.log(currentImage)
