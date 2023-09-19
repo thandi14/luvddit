@@ -19,16 +19,14 @@ module.exports = (sequelize, DataTypes) => {
   }
   CommunityStyle.init({
     communityId: DataTypes.INTEGER,
-    icon: DataTypes.STRING,
-    banner: {
-      type: DataTypes.STRING,
-    },
+    icon: DataTypes.TEXT,
+    banner: DataTypes.TEXT,
     highlight: {
       type: DataTypes.STRING,
       defaultValue: "#0079D3"
     },
     background: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       defaultValue: "#DAE0E6"
     },
     base: {

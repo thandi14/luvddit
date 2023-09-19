@@ -6,6 +6,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -16,31 +17,31 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      communityId:{
+      communityId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'Communities',
           key: 'id',
       },
       onDelete: 'cascade'
-      },
+    },
       icon: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       banner: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       highlight: {
         type: Sequelize.STRING,
-        defaultValue: "0079D3"
+        defaultValue: "#0079D3"
       },
       background: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         defaultValue: "#DAE0E6"
       },
       base: {
         type: Sequelize.STRING,
-        defaultValue: "0079D3"
+        defaultValue: "#0079D3"
       },
       createdAt: {
         allowNull: false,
