@@ -15,6 +15,7 @@ import tinycolor from "tinycolor2";
 import { useModal2 } from '../../context/Modal2'
 import DeletePost from "../PostPage/delete";
 import MyCarousel from "../PostPage/postCrousel";
+import SignupFormModal from "../SignupFormPage";
 
 
 function TopCommunityPage() {
@@ -151,7 +152,7 @@ function TopCommunityPage() {
 
 
   const handleJoinClick = async () => {
-    if (!user) return window.alert("Please login")
+    if (!user) return setModalContent(<SignupFormModal />)
     let response
     joined = true
     if (singleCommunity.id) {
@@ -407,7 +408,7 @@ const handleNsfw = (e) => {
                     <div><i onClick={(() => history.push('/posts/new/image'))} class="fi fi-rr-picture"></i></div>
                     <div><i onClick={(() => history.push('/posts/new/link'))} class="fi fi-rr-link-alt"></i></div>
                 </div> :
-                <div onClick={(() => window.alert("Please login"))} className="create">
+                <div onClick={(() => setModalContent(<SignupFormModal />))} className="create">
                     <img src={pfp}></img>
                     <input type="text" placeholder="Create Post"></input>
                     <div><i class="fi fi-rr-picture"></i></div>

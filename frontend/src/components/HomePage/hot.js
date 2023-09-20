@@ -12,6 +12,7 @@ import CreateCommunity from '../CreateCommunityModel'
 import PostLikes from './likes'
 import MyCarousel from '../PostPage/postCrousel'
 import { useFilter } from '../../context/filter'
+import SignupFormModal from '../SignupFormPage'
 
 
 function HotPage() {
@@ -179,9 +180,9 @@ function HotPage() {
                 </div> :
                 <div className="create">
                     <img src={pfp}></img>
-                    <input onClick={(() => window.alert('Please login'))} type="text" placeholder="Create Post"></input>
-                    <div><i onClick={(() => window.alert('Please login'))} class="fi fi-rr-picture"></i></div>
-                    <div><i onClick={(() => window.alert('Please login'))} class="fi fi-rr-link-alt"></i></div>
+                    <input onClick={(() => setModalContent(<SignupFormModal />))} type="text" placeholder="Create Post"></input>
+                    <div><i onClick={(() => setModalContent(<SignupFormModal />))} class="fi fi-rr-picture"></i></div>
+                    <div><i onClick={(() => setModalContent(<SignupFormModal />))} class="fi fi-rr-link-alt"></i></div>
                 </div> }
                 <div className="filter">
                 <div id="filter-side1">
@@ -304,8 +305,8 @@ function HotPage() {
                 </>
                 :
                 <>
-                <button onClick={(() => window.alert('Please login'))} id="but1">Create Post</button>
-                <button onClick={(() => window.alert("Please login"))} id="but2">Create Community</button>
+                <button onClick={(() => setModalContent(<SignupFormModal />))} id="but1">Create Post</button>
+                <button onClick={(() => setModalContent(<SignupFormModal />))} id="but2">Create Community</button>
                 </> }
                 </div>
                 </div>

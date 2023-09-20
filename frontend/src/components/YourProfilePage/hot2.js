@@ -18,6 +18,7 @@ import '../PostPage/PostPage.css'
 import MyCarousel from '../PostPage/postCrousel'
 import * as sessionActions from '../../store/session'
 import { useFilter } from '../../context/filter'
+import SignupFormModal from '../SignupFormPage'
 
 function OtherHotProfilePage() {
     const { posts, singlePost, postsHotOverview } = useSelector((state) => state.posts);
@@ -465,7 +466,7 @@ function OtherHotProfilePage() {
                 })}
                 id="mod-butt"></button> :
                 <button onClick={(() => {
-                    if (!user) return window.alert("Please login")
+                    if (!user) return setModalContent(<SignupFormModal />)
 
                   dispatch(communitiesActions.thunkJoinCommunities(c.id))
                   })}

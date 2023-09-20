@@ -13,6 +13,7 @@ import avatar from './IMG6.jpg'
 import alien from "./searchingavatar.png"
 import { useSearch } from '../../context/search'
 import teleAlien from "./telescopeA.png"
+import SignupFormModal from '../SignupFormPage'
 
 function SearchCommunities() {
     const { posts, singlePost, communityPosts } = useSelector((state) => state.posts);
@@ -171,7 +172,7 @@ function SearchCommunities() {
                         </div>
                     { !myMemberships.some((m) => m.userId === user?.id) ? <button onClick={((e) => {
                       e.stopPropagation()
-                      if (!user) return window.alert("Please login")
+                      if (!user) return setModalContent(<SignupFormModal />)
                       dispatch(communitiesActions.thunkJoinCommunities(community.id))
                       })} id="follow3">
                       Join

@@ -17,6 +17,7 @@ import DeleteComment from '../PostPage/deleteC'
 import '../PostPage/PostPage.css'
 import * as sessionActions from "../../store/session"
 import { useFilter } from '../../context/filter'
+import SignupFormModal from '../SignupFormPage'
 
 
 function Commented2Posts() {
@@ -366,7 +367,7 @@ function Commented2Posts() {
                 })}
                 id="mod-butt"></button> :
                 <button onClick={(() => {
-                  if (!user) return window.alert("Please login")
+                  if (!user) return setModalContent(<SignupFormModal />)
                   dispatch(communitiesActions.thunkJoinCommunities(c.id))
                   })}
                   id="mod-butt2"></button> }

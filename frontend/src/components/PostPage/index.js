@@ -17,6 +17,8 @@ import DeleteComment from "./deleteC";
 import CommentLikes from '../HomePage/likesC';
 import MyCarousel from './postCrousel';
 import YourCommunitesProfile from '../CommunityPage/communites3';
+import SignupFormModal from '../SignupFormPage';
+import { useModal } from '../../context/Modal';
 
 //import Slider from 'react-slick';
 // import 'slick-carousel/slick/slick.css';
@@ -57,6 +59,7 @@ function PostPage() {
     const [ cHover, setCHover ] = useState(null)
     const [ scrollH, setScrollH ] = useState(false)
     const [ saveH, setSaveH ] = useState(false)
+    const { setModalContent } = useModal()
 
     useEffect(() => {
         const handleScroll = () => {
@@ -133,7 +136,7 @@ function PostPage() {
     const handleComment2 = (e) => {
         e.stopPropagation()
 
-        if (!user) return window.alert("Please login")
+        if (!user) return setModalContent(<SignupFormModal />)
 
         setData3({
             comment2

@@ -18,6 +18,7 @@ import '../PostPage/PostPage.css'
 import NoPosts from './none'
 import * as sessionActions from "../../store/session"
 import { useFilter } from '../../context/filter'
+import SignupFormModal from '../SignupFormPage'
 
 
 function OthersPosts() {
@@ -365,7 +366,7 @@ function OthersPosts() {
                 })}
                 id="mod-butt"></button> :
                 <button onClick={(() => {
-                  if (!user) return window.alert("Please login")
+                  if (!user) return setModalContent(<SignupFormModal />)
                   dispatch(communitiesActions.thunkJoinCommunities(c.id))
                   })}
                   id="mod-butt2"></button> }

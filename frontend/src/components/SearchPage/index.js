@@ -13,6 +13,7 @@ import avatar from './IMG6.jpg'
 import alien from "./searchingavatar.png"
 import { useSearch } from '../../context/search'
 import teleAlien from "./telescopeA.png"
+import SignupFormModal from '../SignupFormPage'
 
 function SearchPage() {
     const { posts, singlePost, postsHistory, searchs } = useSelector((state) => state.posts);
@@ -253,7 +254,7 @@ function SearchPage() {
                     </div>
                     </div>
                     { !myMemberships.some((m) => m.userId === user?.id).length ? <button onClick={(() => {
-                      if (!user) return window.alert("Please login")
+                      if (!user) return setModalContent(<SignupFormModal />)
                       dispatch(communitiesActions.thunkJoinCommunities(c.id))
                       //   setJoined(true)
                     })}
@@ -311,7 +312,7 @@ function SearchPage() {
                 </>
                 :
                 <>
-                <button style={{ width: "90%" }} onClick={(() => window.alert("Please login"))} id="but2">Create Community</button>
+                <button style={{ width: "90%" }} onClick={(() => setModalContent(<SignupFormModal />))} id="but2">Create Community</button>
                 </> }
                 </div>
                 </div>

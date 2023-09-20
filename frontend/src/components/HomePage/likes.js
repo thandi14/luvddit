@@ -1,4 +1,6 @@
+import { useModal } from '../../context/Modal'
 import * as postsActions from '../../store/posts'
+import SignupFormModal from '../SignupFormPage'
 const { useState, useEffect } = require("react")
 const { useDispatch, useSelector } = require("react-redux")
 
@@ -15,7 +17,7 @@ function PostLikes({ post, p, h }) {
     const [ add, setAdd ] = useState(null)
     const [ sub, setSub] = useState(null)
     const dispatch = useDispatch()
-
+    const { setModalContent } = useModal()
 
     let vote
 
@@ -55,7 +57,7 @@ function PostLikes({ post, p, h }) {
 
 
         const handleFavoriteClick = async () => {
-            if (!user) return window.alert('Please login')
+            if (!user) return setModalContent(<SignupFormModal />)
             if (upVoted) {
               await dispatch(postsActions.thunkDeleteVote(voted[0].id, post.id))
             }
@@ -66,7 +68,7 @@ function PostLikes({ post, p, h }) {
         }
 
         const handleFavoriteClick2 = async () => {
-          if (!user) return window.alert('Please login')
+          if (!user) return setModalContent(<SignupFormModal />)
           if (downVoted) {
             await dispatch(postsActions.thunkDeleteVote(voted[0].id, post.id))
           }

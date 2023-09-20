@@ -19,6 +19,7 @@ import MyCarousel from "./postCrousel";
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import SignupFormModal from "../SignupFormPage";
 
 function PostPageModal({ postId, scroll }) {
     const { communities, singleCommunity, communityMemberships, memberships, userCommunities } = useSelector((state) => state.communities);
@@ -60,6 +61,8 @@ function PostPageModal({ postId, scroll }) {
     const [ cHover, setCHover] = useState(false)
     const [ scrollH, setScrollH ] = useState(false)
     const [ saveH, setSaveH ] = useState(false)
+    const { setModalContent } = useModal()
+
     let joined = null
 
 
@@ -132,7 +135,7 @@ function PostPageModal({ postId, scroll }) {
     const handleComment = (e) => {
         e.stopPropagation()
 
-        if (!user) return window.alert("Please login")
+        if (!user) return setModalContent(<SignupFormModal />)
 
         setData2({
             comment
@@ -145,7 +148,7 @@ function PostPageModal({ postId, scroll }) {
     const handleComment2 = (e) => {
         e.stopPropagation()
 
-        if (!user) return window.alert("Please login")
+        if (!user) return setModalContent(<SignupFormModal />)
 
         setData3({
             comment2
