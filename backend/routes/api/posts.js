@@ -104,11 +104,14 @@ router.get("/best", async (req, res) => {
             } ,
             { model: PostSetting }
         ],
-        order: [[Sequelize.literal('(SELECT COUNT(*) FROM "Comments" WHERE "Comments"."postId" = "Post"."id")'), 'DESC']],
         limit: pageSize, // Limit the number of results per page
         offset: (page - 1) * pageSize
 
     });
+
+    posts = posts.sort((a, b) => b.dataValues.Comments.length - a.dataValues.Comments.length)
+
+    let paginatedPosts = posts.slice((page - 1) * pageSize, page * pageSize);
 
     // let posts = await Votes.findAll({
     //     order: [['upVote', 'DESC']],
@@ -159,6 +162,14 @@ router.get("/hot", async (req, res) => {
         },
     })
 
+    // let postIds = await Post.findAll({
+    //     include: [
+    //         { model: Votes}
+    //     ]
+    // })
+
+
+
 
     let posts = await Post.findAll({
         where: {
@@ -180,18 +191,20 @@ router.get("/hot", async (req, res) => {
             { model: PostImages},
             {
                 model: Votes,
-               // order: [['upVote', 'DESC']],
-
             } ,
             { model: PostSetting }
         ],
-        order: [[Sequelize.literal('(SELECT COUNT(*) FROM "Votes" WHERE "Votes"."postId" = "Post"."id")'), 'DESC']],
-        limit: pageSize, // Limit the number of results per page
-        offset: (page - 1) * pageSize
+        // limit: pageSize, // Limit the number of results per page
+        // offset: (page - 1) * pageSize
 
     });
 
-    return res.json(posts)
+    posts = posts.sort((a, b) => b.dataValues.Votes.length - a.dataValues.Votes.length)
+
+    let paginatedPosts = posts.slice((page - 1) * pageSize, page * pageSize);
+
+
+    return res.json(paginatedPosts)
 })
 
 
@@ -210,16 +223,6 @@ router.get("/top", async (req, res) => {
 
 
     let posts = await Post.findAll({
-        attributes: {
-            include: [
-              [
-                Sequelize.literal(
-                  '(SELECT COUNT(upVote) FROM "Votes" WHERE "Votes"."postId" = "Post"."id" AND "Votes"."upVote" = 1)'
-                ),
-                'upvoteCount'
-              ]
-            ]
-          },
         where: {
             communityId: {
                 [Op.notIn]: communityId
@@ -243,11 +246,15 @@ router.get("/top", async (req, res) => {
             } ,
             { model: PostSetting }
         ],
-        order: [[Sequelize.literal('upvoteCount'), 'DESC']],
-        limit: pageSize, // Limit the number of results per page
-        offset: (page - 1) * pageSize
+        // limit: pageSize, // Limit the number of results per page
+        // offset: (page - 1) * pageSize
 
     });
+
+    posts = posts.sort((a, b) => b.dataValues.Votes.filter((v) => v.dataValues.upVote === 1).length - a.dataValues.Votes.filter((v) => v.dataValues.upVote === 1).length)
+
+    let paginatedPosts = posts.slice((page - 1) * pageSize, page * pageSize);
+
 
     return res.json(posts)
 })
