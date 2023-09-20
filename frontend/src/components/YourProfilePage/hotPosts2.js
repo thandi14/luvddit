@@ -239,7 +239,7 @@ function OthersHotPosts() {
             {post.PostImages.length ? <img src={post.PostImages[0].imgURL}></img> : < i class="fi fi-rr-notebook"></i>}
             </div>
             <div id="pc-side2">
-            { post.userId !== other.id ? null : <h3  id="p-tit2" onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title"><h3 id="title-content2">{post.title}<span>{ post.tags && post.tags.includes("oc") ? <div id="oc5">OC</div> : null} {post.tags && post.tags.includes("spoiler") ? <span id="spoiler5">Spoiler</span> : null } { post.tags && post.tags.includes("nsfw") ? <span id="nsfw5">NSFW</span> : null}</span></h3></h3>}
+            { post.userId !== other.id ? null : <h3  id="p-tit2" onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title0"><h3 id="title-content10">{post.title}<span>{ post.tags && post.tags.includes("oc") ? <div id="oc5">OC</div> : null} {post.tags && post.tags.includes("spoiler") ? <span id="spoiler5">Spoiler</span> : null } { post.tags && post.tags.includes("nsfw") ? <span id="nsfw5">NSFW</span> : null}</span></h3></h3>}
             <div id="nameOf5">
             <span onClick={((e) => {
                 e.stopPropagation()
@@ -338,7 +338,7 @@ function OthersHotPosts() {
 
     </div>
     <div className="sidebar2">
-        <CommunitiesProfile community={profile} />
+        <CommunitiesProfile community={other.profile} />
         { moderating.length > 0 && <div id="terms2">
             <div id="terms-9">
             <span>Moderator of these <br></br>
@@ -357,6 +357,7 @@ function OthersHotPosts() {
                 })}
                 id="mod-butt"></button> :
                 <button onClick={(() => {
+                    if (!user) return window.alert("Please login")
                   dispatch(communitiesActions.thunkJoinCommunities(c.id))
                   })}
                   id="mod-butt2"></button> }

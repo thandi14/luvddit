@@ -643,14 +643,6 @@ router.get('/:id/overview', async (req, res) => {
             offset: (page - 1) * pageSize // Optional: Order the results
         }),
         Post.findAll({
-            attributes: {
-                include: [[
-                      Sequelize.literal(
-                        `(SELECT MAX("updatedAt") FROM "Comments" WHERE "postId" = "Post"."id")`
-                      ),
-                      'latestCommentUpdatedAt'
-                    ]]
-            },
             include: [
                 {
                     model: Comments,
@@ -671,7 +663,6 @@ router.get('/:id/overview', async (req, res) => {
                 { model: PostSetting }
             ],
             order: [
-                [Sequelize.literal('latestCommentUpdatedAt'), 'DESC'],
                 ['updatedAt', 'DESC'],
               ],
             limit: pageSize, // Limit the number of results per page

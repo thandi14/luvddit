@@ -232,7 +232,7 @@ function OtherHotProfilePage() {
       // const member = memberships.filter((m) => moderating.some((c) => m.communityId === c.id))
 
 
-
+      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", other.profile)
     return (
         <>
 
@@ -274,12 +274,12 @@ function OtherHotProfilePage() {
             <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))}  id="almostd">
             <span onClick={((e) => {
                 e.stopPropagation()
-                window.alert("Feature not avaliable")})}className="userName2">{user.username} </span>
+                window.alert("Feature not avaliable")})}className="userName2">{user?.username} </span>
              commented on {post.title} · <span onClick={((e) => {
                 e.stopPropagation()
                 history.push(`/communities/${post.Community.id}/:page`)})}>l/{post.Community.name}</span> · Posted by <span onClick={((e) => {
                     e.stopPropagation()
-                    post.userId !== user?.id ? history.push(`/profile2/${post.userId}/:page`) : history.push('/profile/:page')})} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user?.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
+                    post.userId !== user?.id ? history.push(`/profile2/${post.userId}/:page`) : history.push('/profile/:page')})} className="userName">u/{post.User && post.User?.username}</span> {post.userId !== user?.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
             {/* <p >Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user.id ? null : getTimeDifferenceString(post.createdAt)}</p> */}
             </div> : <div id="nameOf">
             {post.Community.CommunityStyle.icon ? <img onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} src={post.Community.CommunityStyle.icon}></img> : <div style={{ backgroundColor: `${post.Community.CommunityStyle.base}`, color: "white" }} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pfp30">l/</div>}
@@ -400,7 +400,7 @@ function OtherHotProfilePage() {
                             <div id="c-line2"></div>
                             </div>
                             <div className="commentB" id="right-csec4">
-                                <span><span id="username45">{user.username}</span> { user?.id === post.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.updatedAt)}</div></span>
+                                <span><span id="username45">{user?.username}</span> { user?.id === post.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.updatedAt)}</div></span>
                                 <p>{c.comment}</p>
                                 <div id="comment-extras90">
                                     <div>
@@ -448,7 +448,7 @@ function OtherHotProfilePage() {
 
     </div>
     <div className="sidebar">
-    <CommunitiesProfile community={profile} user={other} />
+    <CommunitiesProfile community={other.profile} user={other} />
         <div id="terms2">
             <div id="terms-9">
             <span>Moderator of these <br></br>
@@ -468,6 +468,8 @@ function OtherHotProfilePage() {
                 })}
                 id="mod-butt"></button> :
                 <button onClick={(() => {
+                    if (!user) return window.alert("Please login")
+
                   dispatch(communitiesActions.thunkJoinCommunities(c.id))
                   })}
                   id="mod-butt2"></button> }

@@ -316,19 +316,11 @@ function PostForm() {
                  })
 
             }
-            if (description) {
+            if (title && description) {
                 tags = tags.slice(1, tags.length)
                 setData1({
                     title,
                     description,
-                    tags,
-                 })
-
-            }
-            if (title) {
-                tags = tags.slice(1, tags.length)
-                setData1({
-                    title,
                     tags,
                  })
 
@@ -361,6 +353,7 @@ function PostForm() {
         else {
             setData1({
                 title,
+                description
             })
 
         }

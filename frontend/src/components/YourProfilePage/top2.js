@@ -281,7 +281,7 @@ function OtherTopProfilePage() {
             <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))}  id="almostd">
             <span onClick={((e) => {
                 e.stopPropagation()
-                window.alert("Feature not avaliable")})}className="userName2">{user.username} </span>
+                window.alert("Feature not avaliable")})}className="userName2">{user?.username} </span>
              commented on {post.title} · <span onClick={((e) => {
                 e.stopPropagation()
                 history.push(`/communities/${post.Community.id}/:page`)})}>l/{post.Community.name}</span> · Posted by <span onClick={((e) => {
@@ -407,7 +407,7 @@ function OtherTopProfilePage() {
                             <div id="c-line2"></div>
                             </div>
                             <div className="commentB" id="right-csec4">
-                                <span><span id="username45">{user.username}</span> { user?.id === post.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.updatedAt)}</div></span>
+                                <span><span id="username45">{user?.username}</span> { user?.id === post.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.updatedAt)}</div></span>
                                 <p>{c.comment}</p>
                                 <div id="comment-extras90">
                                     <div>
@@ -455,7 +455,7 @@ function OtherTopProfilePage() {
 
     </div>
     <div className="sidebar">
-    <CommunitiesProfile community={profile} user={other} />
+    <CommunitiesProfile community={other.profile} user={other} />
         <div id="terms2">
             <div id="terms-9">
             <span>Moderator of these <br></br>
@@ -475,6 +475,7 @@ function OtherTopProfilePage() {
                 })}
                 id="mod-butt"></button> :
                 <button onClick={(() => {
+                    if (!user) return window.alert("Please login")
                   dispatch(communitiesActions.thunkJoinCommunities(c.id))
                   })}
                   id="mod-butt2"></button> }

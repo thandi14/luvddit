@@ -342,7 +342,7 @@ function OthersTopPosts() {
 
     </div>
     <div className="sidebar2">
-        <CommunitiesProfile community={profile} />
+        <CommunitiesProfile community={other.profile} />
         { moderating.length > 0 && <div id="terms2">
             <div id="terms-9">
             <span>Moderator of these <br></br>
@@ -361,6 +361,7 @@ function OthersTopPosts() {
                 })}
                 id="mod-butt"></button> :
                 <button onClick={(() => {
+                    if (!user) return window.alert("Please login")
                   dispatch(communitiesActions.thunkJoinCommunities(c.id))
                   })}
                   id="mod-butt2"></button> }

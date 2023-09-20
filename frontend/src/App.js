@@ -188,10 +188,10 @@ function App() {
           <OtherProfilePage />
           </Route>
           <Route exact path="/profile2/top/:id/:page">
-          {user ? <OtherTopProfilePage /> : <HomePage /> }
+          <OtherTopProfilePage /> 
           </Route>
           <Route exact path="/profile2/hot/:id/:page">
-          {user ? <OtherHotProfilePage /> : <HomePage /> }
+          <OtherHotProfilePage />
           </Route>
           <Route exact path="/profile2/:id/comments/:page">
            <Commented2Posts />

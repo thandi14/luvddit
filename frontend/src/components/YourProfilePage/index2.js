@@ -493,7 +493,7 @@ function OtherProfilePage() {
 
     </div>
     <div className="sidebar">
-        <CommunitiesProfile community={profile} user={other} />
+        <CommunitiesProfile community={other.profile} user={other} />
         { moderating.length > 0 && <div id="terms2">
             <div id="terms-9">
             <span>Moderator of these <br></br>
@@ -512,7 +512,9 @@ function OtherProfilePage() {
                 })}
                 id="mod-butt"></button> :
                 <button onClick={(() => {
-                  dispatch(communitiesActions.thunkJoinCommunities(c.id))
+                    if (!user) return window.alert("Please login")
+
+                    dispatch(communitiesActions.thunkJoinCommunities(c.id))
                   })}
                   id="mod-butt2"></button> }
             </div>

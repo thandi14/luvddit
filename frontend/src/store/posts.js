@@ -498,7 +498,7 @@ export const thunkCreatePost = (data, id, images) => async (dispatch) => {
 
 
     console.log("REDUCER", images)
-    if (images.length) {
+    if (images && images.length) {
       const response2 = await csrfFetch(`/api/posts/${postId}/images`, {
         method: 'POST',
         headers: {

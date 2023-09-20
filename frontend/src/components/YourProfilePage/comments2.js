@@ -349,7 +349,7 @@ function Commented2Posts() {
 
     </div>
     <div className="sidebar2">
-        <CommunitiesProfile community={profile} />
+        <CommunitiesProfile community={other.profile} />
         { moderating.length > 0 && <div id="terms2">
             <div id="terms-9">
             <span>Moderator of these <br></br>
@@ -364,6 +364,7 @@ function Commented2Posts() {
                </div>
                </div>
                { myMemberships.filter((m) => m.id === c.id).length ? <button onClick={(() => {
+                  if (!user) return window.alert("Please login")
                   dispatch(communitiesActions.thunkUnjoinCommunities(c.id))
                 })}
                 id="mod-butt"></button> :

@@ -261,6 +261,7 @@ function SearchPage() {
                     })}
                     id="mod-butt5">Join</button> :
                     <button onClick={(() => {
+                      if (!user) return window.alert("Please login")
                         dispatch(communitiesActions.thunkJoinCommunities(c.id))
                         })}
                         id="mod-butt5">Unjoin</button> }
