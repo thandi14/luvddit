@@ -5,18 +5,16 @@ if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;  // define your schema in options object
 }
 
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     await queryInterface.createTable('PostImages', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
-      },
-      imgURL: {
-        type: Sequelize.STRING
       },
       postId: {
         type: Sequelize.INTEGER,
@@ -25,6 +23,9 @@ module.exports = {
           key: 'id',
       },
       onDelete: 'cascade'
+      },
+      imgURL: {
+        type: Sequelize.TEXT
       },
       createdAt: {
         allowNull: false,
@@ -38,6 +39,6 @@ module.exports = {
   },
   async down(queryInterface, Sequelize) {
     options.tableName = "PostImages";
-    return queryInterface.dropTable(options);
+    await queryInterface.dropTable(options);
   }
 };

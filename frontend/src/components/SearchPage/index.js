@@ -217,10 +217,10 @@ function SearchPage() {
                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="content">
                     </div>
                     </div> }
-                     <div id="img4">
+                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))}id="img4">
                     {post.PostImages.length ? <img src={post.PostImages[0]?.imgURL} alt="meaningful-text"></img> : null}
                     </div>
-                    <div id="post-extras50" >
+                    <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))}id="post-extras50" >
                         <span>{post.Votes.length} upvotes</span>
                         <span>{post.Comments.length} comments</span>
                         <span>0 awards</span>

@@ -812,23 +812,24 @@ function PostPageModal({ postId, scroll }) {
                 <p>Moderators</p>
                 </div>
                 <div id="home-section7">
-                { !message && <button onMouseEnter={(() => setMessage(!message))} style={{ borderColor: `${singlePost.Community.CommunityStyle.highlight}`, color: `${singlePost.Community.CommunityStyle.highlight}`}} onClick={(() => window.alert("Feature not available"))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>}
-                { message && <button onMouseLeave={(() => setMessage(!message))} style={{backgroundColor: `${reduceOpacity(singlePost.Community.CommunityStyle.highlight, 0.1)}`, borderColor: `${singlePost.Community.CommunityStyle.highlight}`, color: `${singlePost.Community.CommunityStyle.highlight}`}} onClick={(() => window.alert("Feature not available"))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>}
+                { !message && <button onMouseEnter={(() => setMessage(!message))} style={{ borderColor: `${singlePost.Community.CommunityStyle?.highlight}`, color: `${singlePost.Community?.CommunityStyle?.highlight}`}} onClick={(() => window.alert("Feature not available"))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>}
+                { message && <button onMouseLeave={(() => setMessage(!message))} style={{backgroundColor: `${reduceOpacity(singlePost.Community.CommunityStyle.highlight, 0.1)}`, borderColor: `${singlePost.Community.CommunityStyle.highlight}`, color: `${singlePost.Community?.CommunityStyle?.highlight}`}} onClick={(() => window.alert("Feature not available"))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>}
                 <div id="cs-side7">
-                    {user.id !== singlePost.User.id ? <span style={{ color: `${singlePost.Community.CommunityStyle.highlight}`}} onClick={(() => {
-                        history.push(`/profile2/${singlePost.User.id}/:page`)
+                    {user?.id !== singlePost.User?.id ? <span style={{ color: `${singlePost.Community.CommunityStyle?.highlight}`}} onClick={(() => {
+                        history.push(`/profile2/${singlePost.User?.id}/:page`)
                         closeModal()
                         })}> {singlePost.User?.username}</span> : "" }
-                    {user.id === singlePost.User.id ? <span style={{ color: `${singlePost.Community.CommunityStyle.highlight}`}} onClick={(() => {
+                    {user?.id === singlePost.User?.id ? <span style={{ color: `${singlePost.Community?.CommunityStyle?.highlight}`}} onClick={(() => {
                         history.push(`/profile/:page`)
                         closeModal()
                         })}> {singlePost.User?.username}</span> : "" }
-                    <span style={{ color: `${singlePost.Community.CommunityStyle.highlight}`}} >VIEW ALL MODERATORS</span>
+                    <span style={{ color: `${singlePost.Community?.CommunityStyle?.highlight}`}} >VIEW ALL MODERATORS</span>
                 </div>
                 </div>
                 </div> }
                 { !scrollH && <button onMouseEnter={(() => setScrollH(true))} style={{ backgroundColor: `${singlePost.Community.CommunityStyle.base}`}} className="top2" onClick={scrollToTop}>Back to Top</button>}
-                { scrollH && <button onMouseLeave={(() => setScrollH(false))} style={{ backgroundColor: `${reduceOpacity(singlePost.Community.CommunityStyle.base, 0.5)}`}} className="top2" onClick={scrollToTop}>Back to Top</button>}            </div>
+                { scrollH && <button onMouseLeave={(() => setScrollH(false))} style={{ backgroundColor: `${reduceOpacity(singlePost.Community.CommunityStyle.base, 0.5)}`}} className="top2" onClick={scrollToTop}>Back to Top</button>}
+                </div>
                 </div>
                 </div>
         </div>

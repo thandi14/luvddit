@@ -66,6 +66,93 @@ router.get("/", async (req, res) => {
     return res.json(posts)
 })
 
+router.get("/best", async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+
+    const pageSize = 10; // Number of posts per page
+
+    let communityId = await Community.findAll({
+        attributes: ['id'],
+        where: {
+            type: 'Private'
+        },
+    })
+
+
+    // attributes: {
+    //     include: [[Sequelize.literal('(SELECT COUNT(*) FROM "Votes" WHERE "Votes"."postId" = "Post"."id")'), 'voteCount']]
+    //   },
+    let posts = await Post.findAll({
+        attributes: [
+            "id",
+            'title',         // Include title attribute
+            'description',
+            [Sequelize.literal('(SELECT COUNT(*) FROM Comments WHERE Comments.postId = Post.id)'), 'commentCount']
+        ],
+        where: {
+            communityId: {
+                [Op.notIn]: communityId
+            },
+
+        },
+        include: [
+            { model: Comments },
+            {
+                model: Community,
+                include: [
+                    { model: CommunityStyle }
+                ]
+            },
+            { model: User},
+            { model: PostImages},
+            {
+                model: Votes,
+            } ,
+            { model: PostSetting }
+        ],
+        order: [[Sequelize.literal('commentCount'), 'DESC']],
+        limit: pageSize, // Limit the number of results per page
+        offset: (page - 1) * pageSize
+
+    });
+
+    // let posts = await Votes.findAll({
+    //     order: [['upVote', 'DESC']],
+    //     include: [
+    //         { model: Post,
+    //             where: {
+    //                 communityId: {
+    //                     [Op.notIn]: communityId
+    //                 },
+
+    //             },
+    //             include: [
+    //                 { model: Comments },
+    //                 {
+    //                     model: Community,
+    //                     include: [
+    //                         { model: CommunityStyle }
+    //                     ]
+    //                 },
+    //                 { model: User},
+    //                 { model: PostImages},
+    //                 {
+    //                     model: Votes,
+
+    //                 } ,
+    //                 { model: PostSetting }
+    //             ],
+
+    //         }
+    //     ],
+    //     limit: pageSize, // Limit the number of results per page
+    //     offset: (page - 1) * pageSize
+    // })
+
+    return res.json(posts)
+})
+
+
 router.get("/hot", async (req, res) => {
     const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
 
@@ -80,15 +167,19 @@ router.get("/hot", async (req, res) => {
 
 
     let posts = await Post.findAll({
-        attributes: {
-            include: [[Sequelize.literal('(SELECT COUNT(*) FROM "Votes" WHERE "Votes"."postId" = "Post"."id")'), 'voteCount']]
-          },
+        attributes: [
+            "id",
+            'title',         // Include title attribute
+            'description',
+            [Sequelize.literal('(SELECT COUNT(*) FROM Votes WHERE Votes.postId = Post.id)'), 'voteCount']
+        ],
         where: {
             communityId: {
                 [Op.notIn]: communityId
             },
 
         },
+
         include: [
             { model: Comments },
             {
@@ -107,56 +198,6 @@ router.get("/hot", async (req, res) => {
             { model: PostSetting }
         ],
         order: [[Sequelize.literal('voteCount'), 'DESC']],
-        limit: pageSize, // Limit the number of results per page
-        offset: (page - 1) * pageSize
-
-    });
-
-    return res.json(posts)
-})
-
-
-router.get("/best", async (req, res) => {
-    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
-
-    const pageSize = 10; // Number of posts per page
-
-    let communityId = await Community.findAll({
-        attributes: ['id'],
-        where: {
-            type: 'Private'
-        },
-    })
-
-
-    let posts = await Post.findAll({
-        attributes: {
-            include: [[Sequelize.literal('(SELECT COUNT(*) FROM "Comments" WHERE "Comments"."postId" = "Post"."id")'), 'commentCount']]
-        },
-        where: {
-            communityId: {
-                [Op.notIn]: communityId
-            },
-
-        },
-        include: [
-            { model: Comments },
-            {
-                model: Community,
-                include: [
-                    { model: CommunityStyle }
-                ]
-            },
-            { model: User},
-            { model: PostImages},
-            {
-                model: Votes,
-               // order: [['upVote', 'DESC']],
-
-            } ,
-            { model: PostSetting }
-        ],
-        order: [[Sequelize.literal('commentCount'), 'DESC']],
         limit: pageSize, // Limit the number of results per page
         offset: (page - 1) * pageSize
 
@@ -185,7 +226,7 @@ router.get("/top", async (req, res) => {
             include: [
               [
                 Sequelize.literal(
-                  '(SELECT COUNT(*) FROM "Votes" WHERE "Votes"."postId" = "Post"."id" AND "Votes"."upVote" = 1)'
+                  '(SELECT COUNT(upVote) FROM "Votes" WHERE "Votes"."postId" = "Post"."id" AND "Votes"."upVote" = 1)'
                 ),
                 'upvoteCount'
               ]

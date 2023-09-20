@@ -101,16 +101,23 @@ function TopPage() {
 
     let recent = []
 
-    let cm = Object.values(memberships)
+    if (user && Object.values(memberships).length) {
+      let cm = Object.values(memberships)
 
-    for (let c of cm ) {
-      console.log(c)
-      for ( let p of c.Posts ) recent.push(p)
+      for (let c of cm ) {
+        console.log(c)
+        for ( let p of c.Posts ) recent.push(p)
+      }
+
+    }
+    else {
+      recent = Object.values(posts)
     }
 
    recent = recent.reverse().sort((a, b) => a.createdAt - b.createdAt)
 
    recent = recent.slice(0, 5)
+
 
 
     const getTimeDifferenceString = (createdAt) => {
