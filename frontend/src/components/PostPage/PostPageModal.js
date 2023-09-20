@@ -698,7 +698,7 @@ function PostPageModal({ postId, scroll }) {
                             <div id="right-csec">
                                 <span><span onClick={(() => {
                                     closeModal()
-                                    c.userId === user.id ? history.push('/profile/:page') : history.push(`profile2/${c.userId}/:page`)})} id="username45">{c.User?.username}</span> { c.User && c.User.id === singlePost.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.createdAt)}</div></span>
+                                    c.userId === user.id ? history.push('/profile/:page') : history.push(`/profile2/${c.userId}/:page`)})} id="username45">{c.User?.username}</span> { c.User && c.User.id === singlePost.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.createdAt)}</div></span>
                                 { !(commentM && commentId2 === i) ? <p>{c.comment}</p> :
                                 <div className="comment-input">
                                     <textarea onFocus={(() => setFocus3(true))} onBlur={(() => setFocus3(false))} defaultValue={c.comment} onChange={((e) => setComment2(e.target.value))}></textarea>
