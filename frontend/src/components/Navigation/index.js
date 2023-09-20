@@ -326,7 +326,7 @@ function Navigation({ isLoaded }){
                  {c.CommunityStyle?.icon ? <img style={{ width: "26px", height: "26px"}} id="pfp30" src={c.CommunityStyle?.icon}></img> : null}
                 {!c.CommunityStyle?.icon ? <img style={{ width: "26px", height: "26px"}} id="pfp30" src={pfp}></img> : null}
                 <span style={{ display: "flex", flexDirection: "column"}}>
-                <span style={{ fontSize: "14px", fontWeight: "900"}}>l/{c.name}</span>
+                <span style={{ fontSize: "14px", fontWeight: "900"}}>u/{c.name}</span>
                 <span style={{ gap: "2px", fontSize: "12px", color: "#7C7C7C", display: "flex", alignItems: "center"}}>
                   User<i style={{ fontSize: "8px", height: "8px"}}class="fi fi-ss-circle-small"></i>{c.User.karma} karma</span>
                 </span>
