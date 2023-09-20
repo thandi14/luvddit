@@ -733,11 +733,11 @@ function PostPageModal({ postId, scroll }) {
                                     <div>
                                         <CommentLikes comment={c} />
                                     </div>
-                                    <div>
+                                    <div onClick={(() => window.alert('Feature not available'))}>
                                         <i class="fa-regular fa-message"></i>
                                         <p>Reply</p>
                                     </div>
-                                    <div >
+                                    <div onClick={(() => window.alert('Feature not available'))}>
                                         <i class="fi fi-rs-heart-arrow"></i>
                                         <p>Share</p>
                                     </div>
