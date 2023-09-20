@@ -997,7 +997,7 @@ const postsReducer = (state = initialState, action) => {
       let votes20 = newState.postsFavorites[vote.postId]?.Votes;
       let votes21 = newState.hotPosts[vote.postId]?.Votes;
       if (votes21) {
-        newState.hotPosts[vote.postId].Votes = votes9.filter((v) => v.id !== vote.id);
+        newState.hotPosts[vote.postId].Votes = votes21.filter((v) => v.id !== vote.id);
         newState.hotPosts[vote.postId].Votes.push(vote);
         }
       if (votes9) {
