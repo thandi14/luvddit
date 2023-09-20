@@ -65,6 +65,7 @@ function BestPage() {
 
   useEffect(() => {
     async function fetchData() {
+      await dispatch(postsActions.thunkGetAllPosts(page))
       await dispatch(postsActions.thunkGetBestPosts(page))
       }
       fetchData()
@@ -107,7 +108,7 @@ function BestPage() {
 
       for (let c of cm ) {
         console.log(c)
-        for ( let p of c.Posts ) recent.push(p)
+        for ( let p of c?.Posts ) recent.push(p)
       }
 
     }

@@ -270,7 +270,7 @@ function PostForm() {
 
         async function fetchData() {
 
-            const postResponse = await dispatch(postActions.thunkCreatePost(data1, singleCommunity.id, selectedImage, moreImages));
+            const postResponse = await dispatch(postActions.thunkCreatePost(data1, singleCommunity.id, moreImages));
 
             if (!postResponse) {
                 return;
@@ -280,7 +280,7 @@ function PostForm() {
         }
 
         fetchData();
-        }, [dispatch, data1, numImages, history]);
+        }, [dispatch, data1, moreImages, history]);
 
        const [ load, setLoad ] = useState()
 
@@ -306,41 +306,66 @@ function PostForm() {
         if (spoiler) tags += ",spoiler"
         if (nsfw) tags += ",nsfw"
 
-        if (tags && description) {
-            tags = tags.slice(1, tags.length)
-            setData1({
-                title,
-                description,
-                tags,
-             })
+        if (tags) {
+
+            if (title) {
+                tags = tags.slice(1, tags.length)
+                setData1({
+                    title,
+                    tags,
+                 })
+
+            }
+            if (description) {
+                tags = tags.slice(1, tags.length)
+                setData1({
+                    title,
+                    description,
+                    tags,
+                 })
+
+            }
+            if (title) {
+                tags = tags.slice(1, tags.length)
+                setData1({
+                    title,
+                    tags,
+                 })
+
+            }
+            if (linkDescription) {
+                tags = tags.slice(1, tags.length)
+                setData1({
+                    title,
+                    description: linkDescription,
+                    tags,
+                 })
+            }
+            else if (!tags && description) {
+                setData1({
+                    title,
+                    description
+                })
+
+            }
+            else if (!tags && linkDescription) {
+                setData1({
+                    title,
+                    description: linkDescription
+                })
+
+            }
+
 
         }
-        if (tags && linkDescription) {
-            tags = tags.slice(1, tags.length)
+        else {
             setData1({
                 title,
-                description: linkDescription,
-                tags,
-             })
-        }
-        else if (!tags && description) {
-            setData1({
-                title,
-                description
             })
 
         }
-        else if (!tags && linkDescription) {
-            setData1({
-                title,
-                description: linkDescription
-            })
-
-        }
-
 
     }
-
     let idName = isVisible ? "search2" : "hidden";
     let idName2 = !isVisible ? "choose-comms3" : "choose-comms1";
 

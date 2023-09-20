@@ -45,7 +45,7 @@ function CommunitiesMenu({ value }) {
     console.log(id)
 
     let community = Object.values(communities).filter((c) => c.type === "Profile" && c.userId === user.id)[0]
-    let community2 = Object.values(memberships)
+    let community2 = Object.values(memberships).filter((c) => c.type !== "Profile")
     let community3
 
    if (comms2) community2 = Object.values(community2).filter((c) => c.name.toLowerCase().includes(comms2.toLowerCase()))

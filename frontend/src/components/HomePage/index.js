@@ -105,7 +105,7 @@ function HomePage() {
 
       for (let c of cm ) {
         console.log(c)
-        for ( let p of c.Posts ) recent.push(p)
+        for ( let p of c?.Posts ) recent.push(p)
       }
 
     }

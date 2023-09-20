@@ -542,13 +542,9 @@ console.log(selectedImage3)
     window.scrollTo(0, 0);
   }, []);
 
-  useEffect(() => {
-
-    const member = memberships.filter((m) => m.communityId === singleCommunity.id)
+    const member = Object.values(memberships).some((m) => m.id === singleCommunity.id)
     if (member) setJoined(true)
     if (!member) setJoined(false)
-
-  }, [dispatch])
 
   useEffect(() => {
 
@@ -1080,8 +1076,9 @@ console.log(selectedImage3)
                 {singleCommunity.id === 10 && "For all your questions about Luvddit!"}
                 <span>l/{singleCommunity.name}</span>
             </div>
-            {user && myMemberships.length && joined && button ? <button  onMouseEnter={(() => setButton(false))} style={{ color: `${highlight}`, border: `1px solid ${highlight}`}} id="joined">Joined</button> : null }
-            {user && myMemberships.length && joined && !button ? <button  onMouseLeave={(() => setButton(true))} style={{ backgroundColor: `${reduceOpacity(highlight, 0.1)}`, color: `${highlight}`, border: `1px solid ${highlight}`}} id="joined">Leave</button> : null }
+            {user && member && button ? <button  onMouseEnter={(() => setButton(false))} style={{ color: `${style?.highlight}`, border: `1px solid ${style?.highlight}`}} id="joined">Joined</button> : null }
+            {user && member && !button ? <button  onMouseLeave={(() => setButton(true))} style={{ backgroundColor: `${reduceOpacity(style?.highlight, 0.1)}`, color: `${style?.highlight}`, border: `1px solid ${style?.highlight}`}} onClick={handleUnjoinClick} id="joined">Leave</button> : null }
+            {user && !member ? <button style={{ backgroundColor: `${style?.highlight}`, border: `1px solid ${style?.highlight}`}} id="join">Join</button> : null }
             </div>
         </div>
         {user && singleCommunity.userId !== user.id ? <div id="comm-head11">

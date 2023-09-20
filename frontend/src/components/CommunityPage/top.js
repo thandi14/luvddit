@@ -96,7 +96,7 @@ function TopCommunityPage() {
 
 
   const myMemberships = Object.values(memberships).concat(Object.values(userCommunities))
-  const member = myMemberships.filter((m) => m.id === singleCommunity.id)
+  const member = Object.values(memberships).some((m) => m.id === singleCommunity.id)
 
 
 
@@ -385,9 +385,9 @@ const handleNsfw = (e) => {
                 {singleCommunity.id === 10 && "For all your questions about Luvddit!"}
                 <span>l/{singleCommunityName}</span>
             </div>
-            {user && myMemberships.length && joined && button ? <button  onMouseEnter={(() => setButton(false))} style={{ color: `${style?.highlight}`, border: `1px solid ${style?.highlight}`}} onClick={handleUnjoinClick} id="joined">Joined</button> : null }
-            {user && myMemberships.length && joined && !button ? <button  onMouseLeave={(() => setButton(true))} style={{ backgroundColor: `${reduceOpacity(style?.highlight, 0.1)}`, color: `${style?.highlight}`, border: `1px solid ${style?.highlight}`}} onClick={handleUnjoinClick} id="joined">Leave</button> : null }
-            {user && myMemberships.length && !joined ? <button style={{ backgroundColor: `${style?.highlight}`, border: `1px solid ${style?.highlight}`}} onClick={handleJoinClick} id="join">Join</button> : null }
+            {user && member && button ? <button  onMouseEnter={(() => setButton(false))} style={{ color: `${style?.highlight}`, border: `1px solid ${style?.highlight}`}} onClick={handleUnjoinClick} id="joined">Joined</button> : null }
+            {user && member && !button ? <button  onMouseLeave={(() => setButton(true))} style={{ backgroundColor: `${reduceOpacity(style?.highlight, 0.1)}`, color: `${style?.highlight}`, border: `1px solid ${style?.highlight}`}} onClick={handleUnjoinClick} id="joined">Leave</button> : null }
+            {user && !member ? <button style={{ backgroundColor: `${style?.highlight}`, border: `1px solid ${style?.highlight}`}} onClick={handleJoinClick} id="join">Join</button> : null }
             </div>
         </div>
         {user && singleCommunity.userId !== user.id ? <div id="comm-head11">

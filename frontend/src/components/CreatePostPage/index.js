@@ -105,7 +105,7 @@ function CreatePost() {
                 <h3>Create a post</h3>
                 <div onClick={(() => window.alert("Feature not available"))}>
                 {singleCommunity.name && singleCommunity.name !== user.username ? <div style={{width: "140px"}}>
-                <span style={{ color: `${singleCommunity.CommunityStyle?.highlight}`}} >COLLECETIONS</span>
+                <span style={{ color: `${singleCommunity.CommunityStyle?.highlight}`}} >COLLECTIONS</span>
                 <p>0</p>
                 </div> : null}
 

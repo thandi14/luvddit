@@ -789,8 +789,9 @@ input:focus {
 #your-comms5 > p > span{
     color: #0079D3;
     padding: 2%;
+    white-space: nowrap;
     border-radius: 20px;
-    width: 18%;
+    width: 24%;
     cursor: pointer;
     display: flex;
     align-items: center;

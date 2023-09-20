@@ -473,35 +473,35 @@ export const thunkGetDetailsById = (id) => async (dispatch) => {
 }
 
 
-export const thunkCreatePost = (data, id, image, images) => async (dispatch) => {
-
+export const thunkCreatePost = (data, id, images) => async (dispatch) => {
   if (Object.values(data).length) {
     const response = await csrfFetch(`/api/communities/${id}/posts`, {
       method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(data)
-            })
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
 
-        const data1 = await response.json()
-        const postId = data1.id
-
-
-          const formData = new FormData();
-          if (!images) formData.append("image", image);
-
-          if (images && images.length !== 0) {
-            for (var i = 0; i < images.length; i++) {
-              formData.append("image", images[i]);
-            }
-          }
+    const data1 = await response.json()
+    const postId = data1.id
 
 
-          if (image || images && images.length) {
-              const response2 = await csrfFetch(`/api/posts/${postId}/images`, {
-                method: 'POST',
-                headers: {
+    const formData = new FormData();
+    // if (!images) formData.append("image", image);
+
+    if (images && images.length !== 0) {
+      for (var i = 0; i < images.length; i++) {
+        formData.append("image", images[i]);
+      }
+    }
+
+
+    console.log("REDUCER", images)
+    if (images.length) {
+      const response2 = await csrfFetch(`/api/posts/${postId}/images`, {
+        method: 'POST',
+        headers: {
                 "Content-Type": "multipart/form-data",
               },
               body: formData
