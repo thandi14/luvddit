@@ -255,14 +255,14 @@ function SearchPage() {
                     <span style={{color: "#7C7C7C"}} >{c.CommunityMembers} { c.CommunityMembers === 1 ? "member" : "members" }</span>
                     </div>
                     </div>
-                    { myMemberships.filter((m) => m.id === c.id).length ? <button onClick={(() => {
-                        dispatch(communitiesActions.thunkUnjoinCommunities(c.id))
-                    //   setJoined(true)
+                    { !myMemberships.some((m) => m.userId === user?.id).length ? <button onClick={(() => {
+                      if (!user) return window.alert("Please login")
+                      dispatch(communitiesActions.thunkJoinCommunities(c.id))
+                      //   setJoined(true)
                     })}
                     id="mod-butt5">Join</button> :
                     <button onClick={(() => {
-                      if (!user) return window.alert("Please login")
-                        dispatch(communitiesActions.thunkJoinCommunities(c.id))
+                      dispatch(communitiesActions.thunkUnjoinCommunities(c.id))
                         })}
                         id="mod-butt5">Unjoin</button> }
                 </div>

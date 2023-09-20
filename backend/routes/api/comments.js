@@ -155,21 +155,33 @@ router.put("/:id", async (req, res) => {
         include: [
             {
                 model: User,
-                include: [
-                    {
-                        model: Community,
-                        where: {
-                            type: "Profile"
-                        },
-                        include: [
-                            { model: CommunityStyle }
-                        ]
-                    },
-                ]
+                // include: [
+                //     {
+                //         model: Community,
+                //         where: {
+                //             type: "Profile"
+                //         },
+                //         include: [
+                //             { model: CommunityStyle }
+                //         ]
+                //     },
+                // ]
              },
             { model: Votes }
         ]
     })
+
+    let profile = await Community.findOne({
+        where: {
+            userId: c.dataValues.userId,
+            type: "Profile"
+        },
+        include: [
+              { model: CommunityStyle }
+        ]
+    })
+
+    c.dataValues.Profile = profile
 
 
     return res.json(comment)

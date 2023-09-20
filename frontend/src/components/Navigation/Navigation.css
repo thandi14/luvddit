@@ -172,7 +172,7 @@ input:-webkit-autofill:hover {
 }
 
 #search > input {
-    width: 50%;
+    width: 100%;
     border-radius: 25px;
     background-color: #F6F7F8;
     border: 0px;

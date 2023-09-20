@@ -364,11 +364,11 @@ function Commented2Posts() {
                </div>
                </div>
                { myMemberships.filter((m) => m.id === c.id).length ? <button onClick={(() => {
-                  if (!user) return window.alert("Please login")
-                  dispatch(communitiesActions.thunkUnjoinCommunities(c.id))
+                 dispatch(communitiesActions.thunkUnjoinCommunities(c.id))
                 })}
                 id="mod-butt"></button> :
                 <button onClick={(() => {
+                  if (!user) return window.alert("Please login")
                   dispatch(communitiesActions.thunkJoinCommunities(c.id))
                   })}
                   id="mod-butt2"></button> }

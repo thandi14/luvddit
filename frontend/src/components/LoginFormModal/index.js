@@ -28,10 +28,13 @@ function LoginFormModal() {
     });
   };
 
-  const handleDemo = () => {
-    setCredential("Demo-lition")
-    setPassword("password")
-  }
+
+  const handleDemoSubmit = async (e) => {
+    e.preventDefault();
+    dispatch(sessionActions.login({ credential: "demo@user.io", password: "password" }));
+
+    closeModal();
+  };
 
   console.log(errors)
 
@@ -65,7 +68,7 @@ function LoginFormModal() {
         <button type="submit">Log In</button>
       </form>
       <p id="sign-up2">New to Luvddit? <span onClick={(() => setModalContent(<SignupFormModal />))} id="yes">Sign Up</span></p>
-      <p id="sign-up2">Sign In as <span onClick={handleDemo} id="yes">Demo-lition</span></p>
+      <p id="sign-up2">Sign In as <span onClick={handleDemoSubmit} id="yes">Demo-lition</span></p>
 
     </div>
   );

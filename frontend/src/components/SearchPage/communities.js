@@ -172,7 +172,7 @@ function SearchCommunities() {
                     </div>
                     { community.about && <p id="c-about"> {community.about} </p>}
                         </div>
-                    { !myMemberships.some((m) => m.id === community.id) ? <button onClick={((e) => {
+                    { !myMemberships.some((m) => m.userId === user?.id) ? <button onClick={((e) => {
                       e.stopPropagation()
                       if (!user) return window.alert("Please login")
                       dispatch(communitiesActions.thunkJoinCommunities(community.id))
