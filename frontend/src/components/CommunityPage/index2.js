@@ -1077,7 +1077,7 @@ console.log(selectedImage3)
                 <span>l/{singleCommunity.name}</span>
             </div>
             {user && member && button ? <button  onMouseEnter={(() => setButton(false))} style={{ color: `${style?.highlight}`, border: `1px solid ${style?.highlight}`}} id="joined">Joined</button> : null }
-            {user && member && !button ? <button  onMouseLeave={(() => setButton(true))} style={{ backgroundColor: `${reduceOpacity(style?.highlight, 0.1)}`, color: `${style?.highlight}`, border: `1px solid ${style?.highlight}`}} onClick={handleUnjoinClick} id="joined">Leave</button> : null }
+            {user && member && !button ? <button  onMouseLeave={(() => setButton(true))} style={{ backgroundColor: `${reduceOpacity(style?.highlight, 0.1)}`, color: `${style?.highlight}`, border: `1px solid ${style?.highlight}`}} id="joined">Leave</button> : null }
             {user && !member ? <button style={{ backgroundColor: `${style?.highlight}`, border: `1px solid ${style?.highlight}`}} id="join">Join</button> : null }
             </div>
         </div>
