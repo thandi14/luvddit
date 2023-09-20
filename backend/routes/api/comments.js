@@ -173,7 +173,7 @@ router.put("/:id", async (req, res) => {
 
     let profile = await Community.findOne({
         where: {
-            userId: c.dataValues.userId,
+            userId: comment.dataValues.userId,
             type: "Profile"
         },
         include: [
@@ -181,7 +181,7 @@ router.put("/:id", async (req, res) => {
         ]
     })
 
-    c.dataValues.Profile = profile
+    comment.dataValues.Profile = profile
 
 
     return res.json(comment)

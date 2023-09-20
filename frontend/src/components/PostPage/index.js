@@ -450,6 +450,7 @@ function PostPage() {
                 <p onClick={(() => {
                     setModalContent2(<DeletePost id={id} deleted={deleted}/>)
                     setIsVisible(false)
+                    history.push('/')
                 })}><i class="fi fi-rr-trash-xmark"></i>Delete</p>
                 <label onClick={handleOc}>
                 <input defaultChecked={tags?.includes("oc")} type="checkbox" />

@@ -496,8 +496,6 @@ export const thunkCreatePost = (data, id, images) => async (dispatch) => {
       }
     }
 
-
-    console.log("REDUCER", images)
     if (images && images.length) {
       const response2 = await csrfFetch(`/api/posts/${postId}/images`, {
         method: 'POST',
@@ -568,22 +566,6 @@ export const thunkUpdateHistory = (id) => async (dispatch) => {
   dispatch(updateHistory(data))
   return data
 }
-
-
-// export const thunkRemoveHistory = (historyId, postId) => async (dispatch) => {
-//   const response = await csrfFetch(`/api/posts/history/${historyId}`, {
-//       method: 'DELETE',
-//       headers: {
-//           'Content-Type': 'application/json'
-//         },
-//   })
-//   let data = await response.json()
-//   console.log("IS THIS WORKING?", data)
-//   dispatch(removeHistory(postId))
-//   return data
-// }
-
-
 
 export const thunkDeleteVote = (id, postId) => async (dispatch) => {
   const response = await csrfFetch(`/api/posts/votes/${id}`, {
@@ -927,6 +909,9 @@ const postsReducer = (state = initialState, action) => {
       if (newState.topPosts[vote.postId]) {
         newState.topPosts[vote.postId].Votes.push(vote);
       }
+      if (newState.topPosts[vote.postId]) {
+        newState.hotPosts[vote.postId].Votes.push(vote);
+      }
       if (newState.userHotPosts[vote.postId]) {
         newState.userHotPosts[vote.postId].Votes.push(vote);
       }
@@ -1010,6 +995,11 @@ const postsReducer = (state = initialState, action) => {
       let votes18 = newState.hotCommunityPosts[vote.postId]?.Votes;
       let votes19 = newState.topCommunityPosts[vote.postId]?.Votes;
       let votes20 = newState.postsFavorites[vote.postId]?.Votes;
+      let votes21 = newState.hotPosts[vote.postId]?.Votes;
+      if (votes21) {
+        newState.hotPosts[vote.postId].Votes = votes9.filter((v) => v.id !== vote.id);
+        newState.hotPosts[vote.postId].Votes.push(vote);
+        }
       if (votes9) {
       newState.bestPosts[vote.postId].Votes = votes9.filter((v) => v.id !== vote.id);
       newState.bestPosts[vote.postId].Votes.push(vote);
@@ -1100,6 +1090,7 @@ const postsReducer = (state = initialState, action) => {
       let votes18 = newState.hotCommunityPosts[action.postId]?.Votes;
       let votes19 = newState.topCommunityPosts[action.postId]?.Votes;
       let votes20 = newState.postsFavorites[action.postId]?.Votes;
+      let votes21 = newState.hotPosts[action.postId]?.Votes;
       if (votes9) newState.bestPosts[action.postId].Votes = votes9.filter((v) => v.id !== action.voteId);
       if (votes10) newState.topPosts[action.postId].Votes = votes10.filter((v) => v.id !== action.voteId);
       if (votes11) newState.userHotPosts[action.postId].Votes = votes11.filter((v) => v.id !== action.voteId);
@@ -1112,6 +1103,7 @@ const postsReducer = (state = initialState, action) => {
       if (votes18) newState.hotCommunityPosts[action.postId].Votes = votes18.filter((v) => v.id !== action.voteId);
       if (votes19) newState.topCommunityPosts[action.postId].Votes = votes19.filter((v) => v.id !== action.voteId);
       if (votes20) newState.postsFavorites[action.postId].Votes = votes20.filter((v) => v.id !== action.voteId);
+      if (votes21) newState.hotPosts[action.postId].Votes = votes20.filter((v) => v.id !== action.voteId);
       return newState;
     }
     case REMOVE_VOTE2: {
