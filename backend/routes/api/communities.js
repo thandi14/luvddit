@@ -543,7 +543,19 @@ router.put("/:id", async (req, res) => {
             { model: User },
             { model: CommunityStyle }
         ]
-    });    const { name, about } = req.body
+    });
+
+
+
+    let members = await CommunityMembers.findAll({
+        where: {
+        communityId: communityExist.id
+        }
+    });
+
+    communityExist.dataValues.CommunityMembers = members.length
+
+    const { name, about } = req.body
 
     if (!communityExist) {
 
@@ -555,6 +567,7 @@ router.put("/:id", async (req, res) => {
         name,
         about
     })
+
     await communityExist.save()
 
     return res.json(communityExist)
@@ -1132,7 +1145,7 @@ router.delete('/:id/memberships', async (req, res) => {
 
     if (!member) {
 
-        res.status(404).json({"message": "Member couldn't be found"});
+        return res.status(404).json({"message": "Member couldn't be found"});
 
     }
 
