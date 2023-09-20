@@ -259,9 +259,6 @@ router.get("/:id/hot", async (req, res) => {
     let communityId = req.params.id
 
     let posts = await Post.findAll({
-        attributes: {
-            include: [[Sequelize.literal('(SELECT COUNT(*) FROM "Votes" WHERE "Votes"."postId" = "Post"."id")'), 'voteCount']]
-          },
         where: {
             communityId
 
@@ -283,13 +280,16 @@ router.get("/:id/hot", async (req, res) => {
             } ,
             { model: PostSetting }
         ],
-        order: [[Sequelize.literal('voteCount'), 'DESC']],
-        limit: pageSize, // Limit the number of results per page
-        offset: (page - 1) * pageSize
+        // limit: pageSize, // Limit the number of results per page
+        // offset: (page - 1) * pageSize
 
     });
 
-    return res.json(posts)
+    posts = posts.sort((a, b) => b.dataValues.Votes.length - a.dataValues.Votes.length)
+
+    let paginatedPosts = posts.slice((page - 1) * pageSize, page * pageSize);
+
+    return res.json(paginatedPosts)
 })
 
 
@@ -302,16 +302,6 @@ router.get("/:id/top", async (req, res) => {
     let communityId = req.params.id
 
     let posts = await Post.findAll({
-        attributes: {
-            include: [
-              [
-                Sequelize.literal(
-                  '(SELECT COUNT(*) FROM "Votes" WHERE "Votes"."postId" = "Post"."id" AND "Votes"."upVote" = 1)'
-                ),
-                'upvoteCount'
-              ]
-            ]
-          },
         where: {
             communityId
 
@@ -333,13 +323,16 @@ router.get("/:id/top", async (req, res) => {
             } ,
             { model: PostSetting }
         ],
-        order: [[Sequelize.literal('upvoteCount'), 'DESC']],
-        limit: pageSize, // Limit the number of results per page
-        offset: (page - 1) * pageSize
+        // limit: pageSize, // Limit the number of results per page
+        // offset: (page - 1) * pageSize
 
     });
 
-    return res.json(posts)
+    posts = posts.sort((a, b) => b.dataValues.Votes.length - a.dataValues.Votes.length)
+
+    let paginatedPosts = posts.slice((page - 1) * pageSize, page * pageSize);
+
+    return res.json(paginatedPosts)
 })
 
 

@@ -223,6 +223,7 @@
 .create > img {
     width: 36px;
     height: 36px;
+    cursor: pointer;
     border-radius: 100%;
     border: 2px solid #f6f7f8;
 }

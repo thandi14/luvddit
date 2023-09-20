@@ -410,8 +410,8 @@ const handleNsfw = (e) => {
         <div className="community-page-content">
             <div className="posts">
                 {user ? <div className="create">
-                { !user.Community.CommunityStyle?.icon ? <img src={pfp} alt="pfp"></img> : null}
-                { user.Community.CommunityStyle?.icon ? <img src={user.Community.CommunityStyle?.icon} alt="pfp"></img> : null}                    <input onClick={(() => history.push('/posts/new'))} type="text" placeholder="Create Post"></input>
+                { !user.Community.CommunityStyle?.icon ? <img onClick={(() => history.push('/profile/:page'))} src={pfp} alt="pfp"></img> : null}
+                { user.Community.CommunityStyle?.icon ? <img onClick={(() => history.push('/profile/:page'))} src={user.Community.CommunityStyle?.icon} alt="pfp"></img> : null}                    <input onClick={(() => history.push('/posts/new'))} type="text" placeholder="Create Post"></input>
                     <div><i onClick={(() => history.push('/posts/new/image'))} class="fi fi-rr-picture"></i></div>
                     <div><i onClick={(() => history.push('/posts/new/link'))} class="fi fi-rr-link-alt"></i></div>
                 </div> :
