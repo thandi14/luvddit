@@ -454,6 +454,18 @@ function PostPageModal({ postId, scroll }) {
         return urlRegex.test(text);
     }
 
+
+  function openEmailClient() {
+    const emailAddress = 'thandimpofu2003@gmail.com';  // Replace with the desired recipient's email address
+    const subject = 'Subject of the Email';  // Replace with the desired subject
+    const body = 'Body of the Email';  // Replace with the desired body
+
+    const mailtoLink = `mailto:${emailAddress}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    window.location.href = mailtoLink;
+  }
+
+
     return (
         <div className="post-modal">
             <div id="one">
@@ -812,8 +824,10 @@ function PostPageModal({ postId, scroll }) {
                 <p>Moderators</p>
                 </div>
                 <div id="home-section7">
-                { !message && <button onMouseEnter={(() => setMessage(!message))} style={{ borderColor: `${singlePost.Community.CommunityStyle?.highlight}`, color: `${singlePost.Community?.CommunityStyle?.highlight}`}} onClick={(() => window.alert("Feature not available"))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>}
-                { message && <button onMouseLeave={(() => setMessage(!message))} style={{backgroundColor: `${reduceOpacity(singlePost.Community.CommunityStyle.highlight, 0.1)}`, borderColor: `${singlePost.Community.CommunityStyle.highlight}`, color: `${singlePost.Community?.CommunityStyle?.highlight}`}} onClick={(() => window.alert("Feature not available"))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>}
+                { singlePost.Community.id === 10 && !message && <button onClick={(() => openEmailClient())} onMouseEnter={(() => setMessage(!message))} style={{ borderColor: `${singlePost.Community?.CommunityStyle?.highlight}`, color: `${singlePost.Community?.CommunityStyle?.highlight}`}} id="but4"><i class="fi fi-rr-envelope"></i> Message the creator</button>}
+                { singlePost.Community.id === 10 && message && <button  onClick={(() => openEmailClient())} onMouseLeave={(() => setMessage(!message))} style={{backgroundColor: `${reduceOpacity(singlePost.Community?.CommunityStyle?.highlight, 0.1)}`, borderColor: `${singlePost.Community?.CommunityStyle?.highlight}`, color: `${singlePost.Community?.CommunityStyle?.highlight}`}} id="but4"><i class="fi fi-rr-envelope"></i> Message the creator</button>}
+                { singlePost.Community.id !== 10 && !message && <button onMouseEnter={(() => setMessage(!message))} style={{ borderColor: `${singlePost.Community?.CommunityStyle?.highlight}`, color: `${singlePost.Community.CommunityStyle?.highlight}`}} onClick={(() => window.alert("Feature not available"))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>}
+                { singlePost.Community.id !== 10 && message && <button onMouseLeave={(() => setMessage(!message))} style={{backgroundColor: `${reduceOpacity(singlePost.Community.CommunityStyle?.highlight, 0.1)}`, borderColor: `${singlePost.Community?.CommunityStyle?.highlight}`, color: `${singlePost.Community?.CommunityStyle?.highlight}`}} onClick={(() => window.alert("Feature not available"))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>}
                 <div id="cs-side7">
                     {user?.id !== singlePost.User?.id ? <span style={{ color: `${singlePost.Community.CommunityStyle?.highlight}`}} onClick={(() => {
                         history.push(`/profile2/${singlePost.User?.id}/:page`)
@@ -827,8 +841,8 @@ function PostPageModal({ postId, scroll }) {
                 </div>
                 </div>
                 </div> }
-                { !scrollH && <button onMouseEnter={(() => setScrollH(true))} style={{ backgroundColor: `${singlePost.Community.CommunityStyle.base}`}} className="top2" onClick={scrollToTop}>Back to Top</button>}
-                { scrollH && <button onMouseLeave={(() => setScrollH(false))} style={{ backgroundColor: `${reduceOpacity(singlePost.Community.CommunityStyle.base, 0.5)}`}} className="top2" onClick={scrollToTop}>Back to Top</button>}
+                { !scrollH && <button onMouseEnter={(() => setScrollH(true))} style={{ backgroundColor: `${singlePost.Community.CommunityStyle?.base}`}} className="top2" onClick={scrollToTop}>Back to Top</button>}
+                { scrollH && <button onMouseLeave={(() => setScrollH(false))} style={{ backgroundColor: `${reduceOpacity(singlePost.Community.CommunityStyle?.base, 0.5)}`}} className="top2" onClick={scrollToTop}>Back to Top</button>}
                 </div>
                 </div>
                 </div>
