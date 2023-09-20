@@ -3,6 +3,7 @@ import './CommunityPage.css'
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useLocation, useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import * as communityActions from '../../store/communities'
+import SignupFormModal from '../SignupFormPage';
 
 
 function YourCommunitesProfile({ base, highlight }) {
@@ -18,6 +19,7 @@ function YourCommunitesProfile({ base, highlight }) {
     const [singleCommunityName, setSingleCommunityName] = useState(singleCommunity.name)
     const [ color, setColor ] = useState(singleCommunity.CommunityStyle?.base)
     const location = useLocation()
+    const { setModalContent } = useModal()
 
     useEffect(() => {
         setSingleCommunityName(singleCommunity.name)
@@ -141,7 +143,7 @@ function YourCommunitesProfile({ base, highlight }) {
             </>
             }
             <div id="line"></div>
-            { user ? <button style={{ backgroundColor: `${style?.highlight}`}} onClick={(() => history.push(`/posts/new/${singleCommunity.id}`))} id="but3">{ singleCommunity.type !== "Public" && singleCommunity.userId !== user.id && !approved ? "Draft Post" : "Create Post"}</button> : <button style={{ backgroundColor: `${style?.highlight}`}} onClick={(() => window.alert('Please login'))} id="but3">Create Post</button>}
+            { user ? <button style={{ backgroundColor: `${style?.highlight}`}} onClick={(() => history.push(`/posts/new/${singleCommunity.id}`))} id="but3">{ singleCommunity.type !== "Public" && singleCommunity.userId !== user.id && !approved ? "Draft Post" : "Create Post"}</button> : <button style={{ backgroundColor: `${style?.highlight}`}} onClick={(() => setModalContent(<SignupFormModal />))} id="but3">Create Post</button>}
             <div id="line"></div>
             <div id="cs-side5">
                 <span onClick={(() => window.alert("Feature not available"))}>COMMUNITY OPTIONS</span>
@@ -179,7 +181,7 @@ function YourCommunitesProfile({ base, highlight }) {
                 <span style={{ color: `${highlight}`}}>Add a Primary Topic<i class="fa-solid fa-chevron-down"></i></span>
             </div>
             <div id="line"></div>
-            { user ? <button style={{ backgroundColor: `${highlight}`}} onClick={(() => history.push(`/posts/new/${singleCommunity.id}`))} id="but3">{ singleCommunity && singleCommunity.type !== "Public" || !approved || singleCommunity.userId !== user.id? "Draft Post" : "Create Post"}</button> : <button style={{ backgroundColor: `${style.highlight}`}} onClick={(() => window.alert('Please login'))} id="but3">Create Post</button>}
+            { user ? <button style={{ backgroundColor: `${highlight}`}} onClick={(() => history.push(`/posts/new/${singleCommunity.id}`))} id="but3">{ singleCommunity && singleCommunity.type !== "Public" || !approved || singleCommunity.userId !== user.id? "Draft Post" : "Create Post"}</button> : <button style={{ backgroundColor: `${style.highlight}`}} onClick={(() => setModalContent(<SignupFormModal />))} id="but3">Create Post</button>}
             <div id="line"></div>
             <div id="cs-side5">
                 <span onClick={(() => window.alert("Feature not available"))}>COMMUNITY OPTIONS</span>
