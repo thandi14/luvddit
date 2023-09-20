@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useLocation, useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import * as communityActions from '../../store/communities'
 import SignupFormModal from '../SignupFormPage';
+import { useModal } from '../../context/Modal';
 
 
 function YourCommunitesProfile({ base, highlight }) {
