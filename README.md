@@ -50,3 +50,6 @@ Users should be able to view the results of their search.
 Profie – Bonus  
 Users should be able to view their posts/communities. 
 Users should be able to view their personal information.
+
+db schema design
+![drawSQL-luvddit-export-2023-09-20](https://github.com/thandi14/luvddit/assets/123023088/a0724828-d522-4746-8bb2-25772c6c40ae)
