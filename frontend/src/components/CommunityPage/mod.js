@@ -59,8 +59,6 @@ function ModTools() {
     let members = []
     if (communityMemberships) members = Object.values(communityMemberships)
 
-    console.log(members, user)
-
     return(
         <div>
             <div id="name-head">

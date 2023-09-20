@@ -140,10 +140,7 @@ function SearchCommunities() {
 
    recent = recent.slice(0, 5)
 
-    const myMemberships = Object.values(memberships)
-
-    console.log(myMemberships.some((m) => m.id === 4))
-
+   const myMemberships = Object.values(memberships)
 
     return (
         <div className="splashPage">

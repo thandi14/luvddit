@@ -49,8 +49,6 @@ function Navigation({ isLoaded }){
   const [ isUsing, setIsUsing ] = useState(false)
   const [ open, setOpen ] = useState(false)
   const [ searchingC, setSearchingC ] = useState(false)
-  console.log(filter)
-
 
   const openMenu = () => {
     if (show) setShow(false);
@@ -123,8 +121,6 @@ function Navigation({ isLoaded }){
   if (menuS) myMemberships = Object.values(memberships).filter((c) => c.name.toLowerCase().includes(menuS.toLowerCase()))
   if (menuS) myCommunities = Object.values(userCommunities).filter((c) => c.name.toLowerCase().includes(menuS.toLowerCase() && c.type !== "Profile"))
 
-  console.log(user)
-
   let sessionLinks;
   if (sessionUser) {
     sessionLinks = (
@@ -176,8 +172,6 @@ function Navigation({ isLoaded }){
   if ( results ) sCommunities = allCommunities.filter((c) => c.name.toLowerCase().includes(results.toLowerCase())).slice(0, 5)
   if ( results ) sProfiles = myProfiles.filter((c) => c.name.toLowerCase().includes(results.toLowerCase())).slice(0, 5)
 
-
-  console.log(search)
 
   return (
     <div className="navigation">

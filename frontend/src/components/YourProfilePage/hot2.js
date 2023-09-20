@@ -230,9 +230,6 @@ function OtherHotProfilePage() {
 
       // const memberships = Object.values(communityMemberships)
       // const member = memberships.filter((m) => moderating.some((c) => m.communityId === c.id))
-
-
-      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", other.profile)
     return (
         <>
 

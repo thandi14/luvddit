@@ -410,8 +410,6 @@ function PostPageModal({ postId, scroll }) {
 
     const dateObject = new Date(createdAt);
 
-    console.log(isVisible2, isVisible2, isVisible3)
-
     const months = [
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"

@@ -77,7 +77,6 @@ function CommunityPageEdit() {
   const [imagePreview3, setImagePreview3] = useState(null);
   const [ numI, setNumI ] = useState(null)
   const [ numImages, setNumImages ] = useState()
-  console.log(cancel)
   const { filter, setFilter } = useFilter()
 
   function isURLOrFile(str) {
@@ -531,12 +530,6 @@ function cancelImageChange3() {
 const [isHovered, setIsHovered] = useState(false);
 const [isHovered2, setIsHovered2] = useState(false);
 const [isHovered3, setIsHovered3] = useState(false);
-
-console.log(selectedImage)
-console.log(selectedImage2)
-console.log(selectedImage3)
-
-
 
   useEffect(() => {
     window.scrollTo(0, 0);

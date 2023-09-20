@@ -105,7 +105,6 @@ function TopPage() {
       let cm = Object.values(memberships)
 
       for (let c of cm ) {
-        console.log(c)
         for ( let p of c?.Posts ) recent.push(p)
       }
 

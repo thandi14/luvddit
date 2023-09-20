@@ -28,7 +28,6 @@ function YourCommunitesProfile({ base, highlight }) {
     let members
     if (communityMemberships) members = Object.values(communityMemberships)
 
-    console.log(members)
     let approved = members.some((m) => m.status === "Approved" && m.userId === user.id) && singleCommunity.id
 
     approved = !approved && singleCommunity.id ? false : true
@@ -92,17 +91,6 @@ function YourCommunitesProfile({ base, highlight }) {
     if (Object.values(singleCommunity).length) createdAt = new Date(singleCommunity.createdAt)
 
     const dateObject = new Date(createdAt);
-
-    function lightenColor(color, percent) {
-        console.log(color)
-        const num = parseInt(color.slice(1), 16);
-        const amt = Math.round(2.55 * percent);
-        const r = Math.min((num >> 16) + amt, 255);
-        const b = Math.min(((num >> 8) & 0x00FF) + amt, 255);
-        const g = Math.min((num & 0x0000FF) + amt, 255);
-        setColor(`#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`)
-        return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
-    }
 
     const months = [
     "January", "February", "March", "April", "May", "June",

@@ -35,13 +35,10 @@ function CreateCommunity() {
 
     }
 
-    console.log(type)
-
     useEffect( () => {
 
         async function fetchData() {
             const response = await dispatch(communityActions.thunkCreateCommunity(data1))
-            console.log(response)
             if (response) {
                 history.push(`/communities/${response.id}/:page`)
                 closeModal()

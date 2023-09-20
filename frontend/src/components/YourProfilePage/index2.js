@@ -133,7 +133,6 @@ function OtherProfilePage() {
     }, []);
 
     let filterdPosts = Object.values(postsOverview).filter((p) => p.userId === other.id || p.Comments.some((c) => c.userId === other.id))
-    console.log(filterdPosts)
 
     filterdPosts.forEach((p) => {
         let postDate = new Date(p.updatedAt)

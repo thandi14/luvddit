@@ -92,8 +92,6 @@ function UsersHotPosts() {
 
     }, []);
 
-    console.log(userPosts)
-
     let filterdPosts = Object.values(userHotPosts).filter((p) => p.userId === user?.id).reverse()
 
     filterdPosts = filterdPosts.sort((a, b) => {

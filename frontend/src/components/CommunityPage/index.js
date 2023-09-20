@@ -348,9 +348,6 @@ const handleNsfw = (e) => {
     }
   }
 
-  console.log(member)
-
-
   function isURLOrFile(str) {
     const urlRegex = /^(https?:\/\/)?([\w.-]+)\.([a-z]{2,})(\/\S*)?$/i;
     if (urlRegex) return urlRegex.test(str);

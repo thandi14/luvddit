@@ -33,8 +33,6 @@ function CommunitiesProfile({ page, community }) {
 
     approved = !approved && singleCommunity.id ? false : true
 
-    console.log(members)
-
     const myMemberships = Object.values(memberships)
     const member = myMemberships.filter((m) => m.id === singleCommunity.id)
 
@@ -127,7 +125,6 @@ function CommunitiesProfile({ page, community }) {
 
     const formattedDate = `${months[dateObject.getMonth()]}, ${dateObject.getDate()}, ${dateObject.getFullYear()}`;
 
-    console.log(community)
     let style
     if (community.CommunityStyle) style = community.CommunityStyle
 
@@ -176,8 +173,6 @@ function CommunitiesProfile({ page, community }) {
         setImagePreview2(null);
     }
     };
-
-    console.log(imageData)
 
     const handleImageChange = async (e) => {
         //setSelectedImage(e.target.files[0]);
@@ -249,8 +244,6 @@ function CommunitiesProfile({ page, community }) {
         }
       }
 
-
-      console.log(community)
 
     return (
         <>

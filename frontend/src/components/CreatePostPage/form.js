@@ -221,10 +221,6 @@ function PostForm() {
       };
 
 
-
-
-
-    console.log(imagePreview)
     const [ key, setKey ] = useState(Date.now()); // Create a unique key
     const [ key2, setKey2 ] = useState(Date.now()); // Create a unique key
     const [ key3, setKey3 ] = useState(Date.now()); // Create a unique key

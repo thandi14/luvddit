@@ -111,9 +111,6 @@ function SearchCommunityPage() {
 
     }, [])
 
-    console.log(searchPosts)
-
-
     let ePost = Object.values(searchPosts).reverse().sort((a, b) => a.createdAt - b.createdAt)
     if (search) ePost = ePost.filter((p) => p.title.toLowerCase().includes(search.toLowerCase()))
     if (ePost.length === 0 && search) ePost = []

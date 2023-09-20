@@ -26,10 +26,6 @@ function CreatePost() {
   const history = useHistory()
   const { menuOpen, toggleMenu } = useContext(MenuContext);
 
-
-  console.log(menuOpen)
-
-
   let members = Object.values(communityMemberships)
 
 
@@ -41,8 +37,6 @@ function CreatePost() {
 
         setComms2(singleCommunity.name)
         }, [singleCommunity]);
-
-        console.log(comms2)
 
     const handleClick = () => {
       setIsVisible(!isVisible);

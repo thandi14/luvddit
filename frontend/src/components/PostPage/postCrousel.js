@@ -35,8 +35,6 @@ const MyCarousel = ({ images }) => {
       transform: `translateX(-${currentIndex * 100}%)`,
     };
 
-    console.log(currentImage)
-
     return (
       <div style={{ position: "relative", width: "100%", justifyContent: "center", display: "flex" }} className="custom-slider">
         <div id="numImages">{currentIndex + 1}/{images?.length}</div>

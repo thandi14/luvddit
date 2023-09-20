@@ -166,8 +166,6 @@ function Commented2Posts() {
 
   }, [dispatch, posts])
 
-    console.log(isLiked)
-
     useEffect(() => {
       const handleScroll = () => {
         if (window.scrollY < 350) {

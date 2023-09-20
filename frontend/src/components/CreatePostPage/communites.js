@@ -42,7 +42,6 @@ function CommunitiesMenu({ value }) {
 
     }, [dispatch, id])
 
-    console.log(id)
 
     let community = Object.values(communities).filter((c) => c.type === "Profile" && c.userId === user.id)[0]
     let community2 = Object.values(memberships).filter((c) => c.type !== "Profile")
@@ -54,7 +53,6 @@ function CommunitiesMenu({ value }) {
 
 
     const handleClick = () => {
-        console.log("helo")
         setIsVisible(!isVisible);
         setIsVisible2(!isVisible2);
 
@@ -80,7 +78,6 @@ function CommunitiesMenu({ value }) {
       }, []);
 
 
-    console.log(isVisible)
     let style
     if (singleCommunity.CommunityStyle) style = singleCommunity.CommunityStyle
 

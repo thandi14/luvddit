@@ -19,10 +19,6 @@ function UndoChanges({ id, undo }){
     let communities = Object.values(userCommunities)
     const { filter, setFilter } = useFilter()
 
-    console.log(filter)
-    console.log(undo)
-
-
     const handleClick = () => {
         if (!undo) history.push(`/communities/${id}/:page`)
         if (undo) setFilter("undo")

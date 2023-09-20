@@ -122,9 +122,6 @@ function SearchPage() {
     let otherProfiles = Object.values(communities).filter((c) => c.type === "Profile").slice(0, 5)
     if (search) otherProfiles = otherProfiles.filter((c) => c.name.toLowerCase().includes(search.toLowerCase()))
 
-    console.log(otherCommunity)
-    console.log(otherProfiles)
-
     let ePost = Object.values(searchs).reverse().sort((a, b) => a.createdAt - b.createdAt)
     if (!search) ePost = []
     if (search) ePost = ePost.filter((p) => p.title.toLowerCase().includes(search.toLowerCase()))

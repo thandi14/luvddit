@@ -112,10 +112,6 @@ function SearchProfiles() {
 
     let cm = Object.values(memberships)
 
-    // for (let c of cm ) {
-    //   for ( let p of c.Posts ) recent.push(p)
-    // }
-
    recent = recent.reverse().sort((a, b) => a.createdAt - b.createdAt)
 
    recent = recent.slice(0, 5)

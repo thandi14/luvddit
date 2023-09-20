@@ -36,8 +36,6 @@ function LoginFormModal() {
     closeModal();
   };
 
-  console.log(errors)
-
   return (
     <div id="login-form">
       <h1>Log In</h1>
