@@ -251,7 +251,7 @@ function OthersTopPosts() {
                   dispatch(communitiesActions.thunkJoinCommunities(post.communityId))
                   })} id="miniJoin2">Join</button> : null }
             <p>·</p>
-            <p >Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
+            <p >Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user?.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
             </div>
             {/* <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="content">
             <div id="finishing4">

@@ -151,6 +151,7 @@ function TopCommunityPage() {
 
 
   const handleJoinClick = async () => {
+    if (!user) return window.alert("Please login")
     let response
     joined = true
     if (singleCommunity.id) {
@@ -387,10 +388,10 @@ const handleNsfw = (e) => {
             </div>
             {user && member && button ? <button  onMouseEnter={(() => setButton(false))} style={{ color: `${style?.highlight}`, border: `1px solid ${style?.highlight}`}} onClick={handleUnjoinClick} id="joined">Joined</button> : null }
             {user && member && !button ? <button  onMouseLeave={(() => setButton(true))} style={{ backgroundColor: `${reduceOpacity(style?.highlight, 0.1)}`, color: `${style?.highlight}`, border: `1px solid ${style?.highlight}`}} onClick={handleUnjoinClick} id="joined">Leave</button> : null }
-            {user && !member ? <button style={{ backgroundColor: `${style?.highlight}`, border: `1px solid ${style?.highlight}`}} onClick={handleJoinClick} id="join">Join</button> : null }
+            {!member || !user ? <button style={{ backgroundColor: `${style?.highlight}`, border: `1px solid ${style?.highlight}`}} onClick={handleJoinClick} id="join">Join</button> : null }
             </div>
         </div>
-        {user && singleCommunity.userId !== user.id ? <div id="comm-head11">
+        {user && singleCommunity.userId !== user?.id ? <div id="comm-head11">
         <p>Posts</p>
         { singleCommunity.id === 10 && <p style={{ border: "0px"}} onClick={(() => window.open(`${singleCommunity.tabOne}`, "_blank"))}>My Github</p>}
         { singleCommunity.id === 10 && <p style={{ border: "0px"}} onClick={(() => window.open(`${singleCommunity.tabTwo}`, "_blank"))}>My Linkedin</p>}
@@ -447,17 +448,17 @@ const handleNsfw = (e) => {
                     {/* <img src={pfp}></img> */}
                     <p id="cp">Posted by <span onClick={((e) => {
                         e.stopPropagation()
-                        post.userId !== user.id ? history.push(`/profile2/${post.userId}/:page`) : history.push('/profile/:page')})} className="userName">u/{post.User?.username}</span> {getTimeDifferenceString(post.createdAt)}</p>                    </div>
-                    <h3  id="p-tit" onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title"><h3 id={post.userId === user.id ? "title-content2" : "title-content"}>{post.title}<span>{ post.tags && post.tags.includes("oc") ? <div id="oc5">OC</div> : null} {post.tags && post.tags.includes("spoiler") ? <span id="spoiler5">Spoiler</span> : null } { post.tags && post.tags.includes("nsfw") ? <span id="nsfw5">NSFW</span> : null}</span></h3></h3>                    <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={scrolling} />))} id="content">
+                        post.userId !== user?.id ? history.push(`/profile2/${post.userId}/:page`) : history.push('/profile/:page')})} className="userName">u/{post.User?.username}</span> {getTimeDifferenceString(post.createdAt)}</p>                    </div>
+                    <h3  id="p-tit" onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title"><h3 id={post.userId === user?.id ? "title-content2" : "title-content"}>{post.title}<span>{ post.tags && post.tags.includes("oc") ? <div id="oc5">OC</div> : null} {post.tags && post.tags.includes("spoiler") ? <span id="spoiler5">Spoiler</span> : null } { post.tags && post.tags.includes("nsfw") ? <span id="nsfw5">NSFW</span> : null}</span></h3></h3>                    <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={scrolling} />))} id="content">
                     {post.PostImages.length !== 0 && <div id="img2">
                     {post.PostImages.length === 1 ? <img style={{ maxWidth: "100%", maxHeight: "511px", alignSelf: "flex-end" }} src={post.PostImages[0]?.imgURL} alt="meaningful-text"></img> : <MyCarousel images={post.PostImages}/>}
                     </div>}
-                    { post.description && <div style={{position: "relative"}} id={post.userId === user.id ? "finishing60" : "finishing2"}>
+                    { post.description && <div style={{position: "relative"}} id={post.userId === user?.id ? "finishing60" : "finishing2"}>
                       <span id="post-des">{post.description}</span>
                       { post.description.length > 140 && <div id="faded"></div>}
                       </div>}
                     </div>
-                    {user && post.User?.id !== user.id ?<div id="post-extras9">
+                    {user && post.User?.id !== user?.id ?<div id="post-extras9">
                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="comment">
                     <i class="fa-regular fa-message"></i>
                     <p >{post.Comments?.length} Comments</p>
@@ -500,8 +501,8 @@ const handleNsfw = (e) => {
                     <div onClick={(() => window.alert('Feature not available'))} id="comment">
                     <i class="fi fi-rs-shield"></i>
                     </div>
-                { post.userId !== user.id && <i onClick={(() => window.alert('Feature not available'))} class="fi fi-rr-menu-dots"></i>}
-                { post.userId === user.id && <i onClick={((e) => {
+                { post.userId !== user?.id && <i onClick={(() => window.alert('Feature not available'))} class="fi fi-rr-menu-dots"></i>}
+                { post.userId === user?.id && <i onClick={((e) => {
                   e.stopPropagation()
                   handleClick()
                   setIndx(i)
@@ -557,7 +558,7 @@ const handleNsfw = (e) => {
                 { singleCommunity.id !== 10 && !message && <button onMouseEnter={(() => setMessage(!message))} style={{ borderColor: `${style?.highlight}`, color: `${style?.highlight}`}} onClick={(() => window.alert("Feature not available"))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>}
                 { singleCommunity.id !== 10 && message && <button onMouseLeave={(() => setMessage(!message))} style={{backgroundColor: `${reduceOpacity(style?.highlight, 0.1)}`, borderColor: `${style?.highlight}`, color: `${style?.highlight}`}} onClick={(() => window.alert("Feature not available"))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>}
                 <div id="cs-side6">
-                    {user?.id !== singleCommunity.User?.id ? <span style={{ color: `${style?.highlight}` }} onClick={(() => history.push(`/profile2/${singleCommunity.User.id}/:page`))}> {singleCommunity.User?.username}</span> : "" }
+                    {user?.id !== singleCommunity.User?.id ? <span style={{ color: `${style?.highlight}` }} onClick={(() => history.push(`/profile2/${singleCommunity.User?.id}/:page`))}> {singleCommunity.User?.username}</span> : "" }
                     {user?.id === singleCommunity.User?.id ? <span style={{ color: `${style?.highlight}` }} onClick={(() => history.push(`/profile/:page`))}> {singleCommunity.User?.username}</span> : "" }
                     <span onClick={(() => window.alert("Feature not available"))} style={{ color: `${style?.highlight}` }}>VIEW ALL MODERATORS</span>
                 </div>

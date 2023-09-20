@@ -318,7 +318,7 @@ function Navigation({ isLoaded }){
             <span id="nav-name">People</span>
             { sProfiles.map((c) =>
               <div onClick={(() => {
-                if (c.userId === user.id) history.push(`/profile/:page`)
+                if (c.userId === user?.id) history.push(`/profile/:page`)
                 else history.push( `/profile2/${c.userId}/:page`)
                 setSearching(false)
                 })}

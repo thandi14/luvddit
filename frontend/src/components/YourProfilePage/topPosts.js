@@ -68,7 +68,7 @@ function UsersTopPosts() {
 
           setCurrentPage(currentPage + 1);
           setThreshold(threshold + 200);
-          dispatch(postsActions.thunkGetUserTopPosts(user.id, currentPage)); // Fetch posts for the specified page
+          dispatch(postsActions.thunkGetUserTopPosts(user?.id, currentPage)); // Fetch posts for the specified page
         }
       }
 
@@ -93,7 +93,7 @@ function UsersTopPosts() {
     }, []);
 
 
-    let filterdPosts = Object.values(userTopPosts).filter((p) => p.userId === user.id).reverse()
+    let filterdPosts = Object.values(userTopPosts).filter((p) => p.userId === user?.id).reverse()
 
     filterdPosts = filterdPosts.sort((a, b) => {
       return b.createdAt - a.createdAt
@@ -110,7 +110,7 @@ function UsersTopPosts() {
     if (user) profile = Object.values(userCommunities).filter((m) => m.type === "Profile")[0]
 
     useEffect(() => {
-        dispatch(postsActions.thunkGetUserTopPosts(user.id, page)); // Fetch posts for the specified page
+        dispatch(postsActions.thunkGetUserTopPosts(user?.id, page)); // Fetch posts for the specified page
     }, [dispatch, page]);
 
 
@@ -264,7 +264,7 @@ function UsersTopPosts() {
                   dispatch(communitiesActions.thunkJoinCommunities(post.communityId))
                   })} id="miniJoin2">Join</button> : null }
             <p>·</p>
-            <p >Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
+            <p >Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user?.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
             </div>
             {/* <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="content">
             <div id="finishing4">

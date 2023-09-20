@@ -200,7 +200,7 @@ function SearchPage() {
                     <p>·</p>
                     <p >Posted by <span onClick={((e) => {
                         e.stopPropagation()
-                        post.userId !== user.id ? history.push(`/profile2/${post.userId}/:page`) : history.push('/profile/:page')})} className="userName">u/{post.User.username}</span> {getTimeDifferenceString(post.createdAt)}</p>
+                        post.userId !== user?.id ? history.push(`/profile2/${post.userId}/:page`) : history.push('/profile/:page')})} className="userName">u/{post.User.username}</span> {getTimeDifferenceString(post.createdAt)}</p>
                     </div>
                     <h3  style={{ padding: "0px", margin: "0px" , marginBottom: "1%", marginLeft: "0%"}} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title"><h3 style={{ fontSize: "16px" }} id="title-content">{post.title}{ post.tags && post.tags.includes("oc") ? <div id="oc5">OC</div> : null} {post.tags && post.tags.includes("spoiler") ? <span id="spoiler5">Spoiler</span> : null } { post.tags && post.tags.includes("nsfw") ? <span id="nsfw5">NSFW</span> : null}</h3></h3>
                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="content">
@@ -313,7 +313,7 @@ function SearchPage() {
                 </>
                 :
                 <>
-                <button onClick={(() => window.alert("Please login"))} id="but2">Create Community</button>
+                <button style={{ width: "90%" }} onClick={(() => window.alert("Please login"))} id="but2">Create Community</button>
                 </> }
                 </div>
                 </div>

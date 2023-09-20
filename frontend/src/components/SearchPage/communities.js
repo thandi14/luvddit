@@ -174,6 +174,7 @@ function SearchCommunities() {
                         </div>
                     { !myMemberships.some((m) => m.id === community.id) ? <button onClick={((e) => {
                       e.stopPropagation()
+                      if (!user) return window.alert("Please login")
                       dispatch(communitiesActions.thunkJoinCommunities(community.id))
                       })} id="follow3">
                       Join

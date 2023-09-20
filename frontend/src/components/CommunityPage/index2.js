@@ -17,7 +17,7 @@ import { useFilter } from "../../context/filter";
 
 function CommunityPageEdit() {
   const { id, cancel } = useParams();
-  const { communities, singleCommunity, communityMemberships, userCommunities } = useSelector((state) => state.communities);
+  const { memberships, communities, singleCommunity, communityMemberships, userCommunities } = useSelector((state) => state.communities);
   const { posts } = useSelector((state) => state.posts);
   const { user } = useSelector((state) => state.session);
   const { setModalContent2 } = useModal2()
@@ -542,9 +542,6 @@ console.log(selectedImage3)
     window.scrollTo(0, 0);
   }, []);
 
-    const member = Object.values(memberships).some((m) => m.id === singleCommunity.id)
-    if (member) setJoined(true)
-    if (!member) setJoined(false)
 
   useEffect(() => {
 
@@ -571,6 +568,9 @@ console.log(selectedImage3)
   const [ reset, setReset ] = useState(false)
 
   let style
+  const member = Object.values(memberships).some((m) => m.id === singleCommunity.id)
+
+
   if (singleCommunity.CommunityStyle) style = singleCommunity.CommunityStyle
 
 
@@ -578,9 +578,9 @@ console.log(selectedImage3)
     setChanged(false)
     if (!noBan && isURLOrFile((style?.icon))) {
       dispatch(communityActions.thunkUpdateCommunityStyle(singleCommunity.id, {
-       base: style.base,
-       highlight: style.base,
-       icon: null,
+        base: style.base,
+        highlight: style.base,
+        icon: null,
       }))
     }
     if (imagePreview2 && selectedImage2) {
@@ -660,13 +660,6 @@ console.log(selectedImage3)
 
 
   let top = isVisible ? "top" : "down"
-
-  let memberships = []
-
-  console.log(change, noI, noBan)
-
-  // const memberships = Object.values(userCommunities)
-  // const member = memberships.filter((m) => m.communityId === singleCommunity.id)
 
 
   useEffect(() => {
@@ -1081,7 +1074,7 @@ console.log(selectedImage3)
             {user && !member ? <button style={{ backgroundColor: `${style?.highlight}`, border: `1px solid ${style?.highlight}`}} id="join">Join</button> : null }
             </div>
         </div>
-        {user && singleCommunity.userId !== user.id ? <div id="comm-head11">
+        {user && singleCommunity.userId !== user?.id ? <div id="comm-head11">
         <p>Posts</p>
         { singleCommunity.id === 10 && <p style={{ border: "0px"}} onClick={(() => window.open(`${singleCommunity.tabOne}`, "_blank"))}>Github</p>}
         { singleCommunity.id === 10 && <p style={{ border: "0px"}} onClick={(() => window.open(`${singleCommunity.tabTwo}`, "_blank"))}>Linkedin</p>}
@@ -1137,7 +1130,7 @@ console.log(selectedImage3)
                     {post.PostImages?.length ? <img src={post.PostImages[0]?.imgURL} alt="meaningful-text"></img> : null}
                     </div>
                     </div>
-                    {post.User.id !== user.id ?<div id="post-extras3">
+                    {post.User.id !== user?.id ?<div id="post-extras3">
                     <div id="comment">
                     <i class="fa-regular fa-message"></i>
                     <p >{post.Comments?.length} Comments</p>

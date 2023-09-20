@@ -70,13 +70,13 @@ function YourProfilePage() {
 
           setCurrentPage(currentPage + 1);
           setThreshold(threshold + 200);
-          dispatch(postsActions.thunkGetOverview(user.id, currentPage)); // Fetch posts for the specified page
+          dispatch(postsActions.thunkGetOverview(user?.id, currentPage)); // Fetch posts for the specified page
       }
       }
 
 
     useEffect(() => {
-        dispatch(postsActions.thunkGetOverview(user.id, page)); // Fetch posts for the specified page
+        dispatch(postsActions.thunkGetOverview(user?.id, page)); // Fetch posts for the specified page
     }, [dispatch, page]);
 
 
@@ -101,7 +101,7 @@ function YourProfilePage() {
 
    // let ePosts = Object.values(posts).reverse()
 
-    let filterdPosts = Object.values(postsOverview).filter((p) => p.userId === user.id || p.Comments.some((c) => c.userId === user.id))
+    let filterdPosts = Object.values(postsOverview).filter((p) => p.userId === user?.id || p.Comments.some((c) => c.userId === user?.id))
 
     filterdPosts.forEach((p) => {
         let postDate = new Date(p.updatedAt)
@@ -285,12 +285,12 @@ function YourProfilePage() {
             // <div id={`${post.id}`} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={scrolling} />))} className="post-content">
             <div id="omg">
             <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id={`${post.id}`} className="post-content2">
-            {post.userId !== user.id ? <div id="pc-side104"><i id="posted-c" class="fa-regular fa-message"></i></div> : <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side8">
+            {post.userId !== user?.id ? <div id="pc-side104"><i id="posted-c" class="fa-regular fa-message"></i></div> : <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side8">
             <PostLikes post={post}
             />
             </div> }
             <div id="pc-side2">
-            { post.userId !== user.id ? <div id="nameOf2">
+            { post.userId !== user?.id ? <div id="nameOf2">
             <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))}  id="almostd">
             <span onClick={((e) => {
                 e.stopPropagation()
@@ -299,7 +299,7 @@ function YourProfilePage() {
                 e.stopPropagation()
                 history.push(`/communities/${post.Community.id}/:page`)})}>l/{post.Community.name}</span> · Posted by <span onClick={((e) => {
                   e.stopPropagation()
-                  post.userId !== user.id ? history.push(`/profile2/${post.userId}/:page`) : history.push('/profile/:page')})} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
+                  post.userId !== user?.id ? history.push(`/profile2/${post.userId}/:page`) : history.push('/profile/:page')})} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user?.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
             {/* <p >Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user.id ? null : getTimeDifferenceString(post.createdAt)}</p> */}
             </div> : <div id="nameOf">
             {post.Community.CommunityStyle.icon ? <img onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} src={post.Community.CommunityStyle.icon}></img> : <div style={{ backgroundColor: `${post.Community.CommunityStyle.base}`, color: "white" }} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pfp30">l/</div>}
@@ -308,24 +308,24 @@ function YourProfilePage() {
                 history.push(`/communities/${post.communityId}/:page`)
                 })} className="userName" id="community">l/{post.Community.name}</span>
             <p>·</p>
-            <p>Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
+            <p>Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user?.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
             { !myMemberships.filter((m) => m.id === post.communityId).length && post.Communiy && post.Community.type !== "Profile" ? <button onClick={((e) => {
                   e.stopPropagation()
                   dispatch(communitiesActions.thunkJoinCommunities(post.communityId))
                   })} id="miniJoin">Join</button> : null }
             </div> }
-            { post.userId !== user.id ? null : <h3  id="p-tit2" onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title"><h3 id="title-content2">{post.title}<span>{ post.tags && post.tags.includes("oc") ? <div id="oc5">OC</div> : null} {post.tags && post.tags.includes("spoiler") ? <span id="spoiler5">Spoiler</span> : null } { post.tags && post.tags.includes("nsfw") ? <span id="nsfw5">NSFW</span> : null}</span></h3></h3>}
+            { post.userId !== user?.id ? null : <h3  id="p-tit2" onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title"><h3 id="title-content2">{post.title}<span>{ post.tags && post.tags.includes("oc") ? <div id="oc5">OC</div> : null} {post.tags && post.tags.includes("spoiler") ? <span id="spoiler5">Spoiler</span> : null } { post.tags && post.tags.includes("nsfw") ? <span id="nsfw5">NSFW</span> : null}</span></h3></h3>}
             <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="content">
-            {post.PostImages.length !== 0 && post.userId === user.id && <div id="img2">
-            {post.PostImages.length === 1 && post.userId === user.id ? <img style={{ maxWidth: "100%", maxHeight: "511px", alignSelf: "flex-end" }}src={post.PostImages[0]?.imgURL} alt="meaningful-text"></img> : <MyCarousel images={post.PostImages}/>}
+            {post.PostImages.length !== 0 && post.userId === user?.id && <div id="img2">
+            {post.PostImages.length === 1 && post.userId === user?.id ? <img style={{ maxWidth: "100%", maxHeight: "511px", alignSelf: "flex-end" }}src={post.PostImages[0]?.imgURL} alt="meaningful-text"></img> : <MyCarousel images={post.PostImages}/>}
             </div>}
-            { post.userId === user.id && post.description && <div style={{position: "relative"}} id="finishing2">
+            { post.userId === user?.id && post.description && <div style={{position: "relative"}} id="finishing2">
                 <span id="post-des">{post.description}</span>
                 { post.description.length > 140 && <div id="faded"></div>}
                 </div>}
             </div>
 
-            {post.userId !== user.id ? null
+            {post.userId !== user?.id ? null
 
 
             : <div id="post-extras2">
@@ -409,7 +409,7 @@ function YourProfilePage() {
             { post.Comments && post.Comments.length ?
             <div id="if-comments2">
                     {post.Comments.map((c, i) =>
-                    c.userId === user.id &&
+                    c.userId === user?.id &&
                     <div id="comm-border9">
                         {post.Comments && post.Comments.length ? <div id="p-border"></div> : null }
                         <div onClick={((e) => {
@@ -420,7 +420,7 @@ function YourProfilePage() {
                             <div id="c-line2"></div>
                             </div>
                             <div className="commentB" id="right-csec4">
-                                <span><span id="username45">{user.username}</span> { user.id === post.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.updatedAt)}</div></span>
+                                <span><span id="username45">{user.username}</span> { user?.id === post.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.updatedAt)}</div></span>
                                 <p>{c.comment}</p>
                                 <div id="comment-extras90">
                                     <div>

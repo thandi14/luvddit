@@ -185,7 +185,7 @@ function App() {
            {user ? <CreatePost /> : <HomePage />}
            </Route>
           <Route exact path="/profile2/:id/:page">
-          {user ? <OtherProfilePage /> : <HomePage /> }
+          <OtherProfilePage />
           </Route>
           <Route exact path="/profile2/top/:id/:page">
           {user ? <OtherTopProfilePage /> : <HomePage /> }
@@ -194,22 +194,22 @@ function App() {
           {user ? <OtherHotProfilePage /> : <HomePage /> }
           </Route>
           <Route exact path="/profile2/:id/comments/:page">
-          {user ? <Commented2Posts /> : <HomePage /> }
+           <Commented2Posts />
           </Route>
           <Route exact path="/profile2/:id/posts/:page">
-          {user ? <OthersPosts /> : <HomePage /> }
+          <OthersPosts />
           </Route>
           <Route exact path="/profile2/:id/comments/hot/:page">
-          {user ? <Commented2HotPosts /> : <HomePage /> }
+          <Commented2HotPosts />
           </Route>
           <Route exact path="/profile2/:id/posts/hot/:page">
-          {user ? <OthersHotPosts /> : <HomePage /> }
+          <OthersHotPosts />
           </Route>
           <Route exact path="/profile2/:id/comments/top/:page">
-          {user ? <Commented2TopPosts /> : <HomePage /> }
+           <Commented2TopPosts />
           </Route>
           <Route exact path="/profile2/:id/posts/top/:page">
-          {user ? <OthersTopPosts /> : <HomePage /> }
+          <OthersTopPosts />
           </Route>
           <Route exact path="/posts/:id/">
             <PostPage />

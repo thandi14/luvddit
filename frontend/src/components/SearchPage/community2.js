@@ -194,8 +194,8 @@ function SearchCommunityComments() {
                     <span style={{ fontWeight: "500"}} onClick={(() => history.push(`/communities/${comment.Post?.communityId}/:page`))} className="userName" id="community">l/{comment?.Post?.Community?.name}</span>
                     <p>·</p>
                     <p >Posted by <span onClick={(() => {
-                     if (comment.Post.userId === user.id) history.push(`/profile/${comment.Post.userId}/:page`)
-                     if (comment.Post.userId !== user.id) history.push(`/profile2/${comment.Post.userId}/:page`)
+                     if (comment.Post.userId === user?.id) history.push(`/profile/${comment.Post.userId}/:page`)
+                     if (comment.Post.userId !== user?.id) history.push(`/profile2/${comment.Post.userId}/:page`)
                     })} className="userName">u/{comment.Post?.User?.username}</span> {getTimeDifferenceString(comment.Post?.createdAt)}</p>
                     </div>
                     <h3  style={{ padding: "0px", margin: "0px" , marginBottom: "1%", marginLeft: "0%"}} onClick={(() => setModalContent(<PostPageModal postId={comment.Post.id} scroll={false} />))} id="title"><h3 style={{ fontSize: "12px", color: "#979798" }} id="title-content">{comment.Post?.title}</h3></h3>
@@ -205,8 +205,8 @@ function SearchCommunityComments() {
                     <div style={{ display: "flex", gap: "10px", flexDirection: "column"}}>
                     <span style={{ height: "10px", padding: "0px", gap: "3px", fontSize: "12px", fontWeight: "900", display: "flex", alignItems: "center"}} ><span id="underl-name" onClick={((e) => {
                       e.stopPropagation()
-                     if (comment.userId === user.id) history.push(`/profile/${comment.userId}/:page`)
-                     if (comment.userId !== user.id) history.push(`/profile2/${comment.userId}/:page`)
+                     if (comment.userId === user?.id) history.push(`/profile/${comment.userId}/:page`)
+                     if (comment.userId !== user?.id) history.push(`/profile2/${comment.userId}/:page`)
                     })}>{comment.User?.username}</span><p style={{textDecoration: "none"}} >·</p><span style={{ textDecoration: "none", color: "rgb(151, 151, 152)"}}>{getTimeDifferenceString(comment.createdAt)}</span></span>
                     {comment.comment}
                     <span style={{ margin: "0px"}} id="c-votes">{comment.Votes?.length} upvotes</span>

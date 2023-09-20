@@ -67,13 +67,13 @@ function CommentedPosts() {
 
         setCurrentPage(currentPage + 1);
         setThreshold(threshold + 200);
-        dispatch(postsActions.thunkGetComments(user.id, currentPage)); // Fetch posts for the specified page
+        dispatch(postsActions.thunkGetComments(user?.id, currentPage)); // Fetch posts for the specified page
       }
     }
 
 
     useEffect(() => {
-        dispatch(postsActions.thunkGetComments(user.id, page)); // Fetch posts for the specified page
+        dispatch(postsActions.thunkGetComments(user?.id, page)); // Fetch posts for the specified page
     }, [dispatch, page]);
 
     useEffect(() => {
@@ -97,7 +97,7 @@ function CommentedPosts() {
 
     let filterdPosts = Object.values(postsComments)
 
-    filterdPosts = filterdPosts.filter((p) => p.Comments.some((c) => c.userId === user.id))
+    filterdPosts = filterdPosts.filter((p) => p.Comments.some((c) => c.userId === user?.id))
 
     filterdPosts.forEach((p) => {
       p.Comments.forEach((c) => {
@@ -279,7 +279,7 @@ function CommentedPosts() {
                 e.stopPropagation()
                 history.push(`/communities/${post.Community.id}/:page`)})}>l/{post.Community.name}</span> · Posted by <span onClick={((e) => {
                   e.stopPropagation()
-                  post.userId !== user.id ? history.push(`/profile2/${post.userId}/:page`) : history.push('/profile/:page')})} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
+                  post.userId !== user?.id ? history.push(`/profile2/${post.userId}/:page`) : history.push('/profile/:page')})} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user?.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
             {/* <p >Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user.id ? null : getTimeDifferenceString(post.createdAt)}</p> */}
             </div>
             <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="content">
@@ -289,7 +289,7 @@ function CommentedPosts() {
             { post.Comments && post.Comments.length ?
             <div id="if-comments2">
                     {post.Comments.map((c, i) =>
-                     c.userId === user.id &&
+                     c.userId === user?.id &&
                     <div id="comm-border9">
                         {post.Comments && post.Comments.length ? <div id="p-border2"></div> : null }
                         <div onClick={((e) => {
@@ -300,7 +300,7 @@ function CommentedPosts() {
                             <div id="c-line2"></div>
                             </div>
                             <div className="white" id="right-csec4">
-                                <span><span id="username45">{user.username}</span> { user.id === post.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.updatedAt)}</div></span>
+                                <span><span id="username45">{user.username}</span> { user?.id === post.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.updatedAt)}</div></span>
                                 <p>{c.comment}</p>
                                 <div id="comment-extras90">
                                     <div>

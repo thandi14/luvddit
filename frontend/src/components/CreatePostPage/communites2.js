@@ -29,7 +29,7 @@ function CommunitiesProfile({ page, community }) {
     let members
     if (communityMemberships) members = Object.values(communityMemberships)
 
-    let approved = members.some((m) => m.status === "Approved" && m.userId === user.id) && singleCommunity.id
+    let approved = members.some((m) => m.status === "Approved" && m.userId === user?.id) && singleCommunity.id
 
     approved = !approved && singleCommunity.id ? false : true
 
@@ -41,12 +41,13 @@ function CommunitiesProfile({ page, community }) {
     if (member) joined = true
     if (!member.length) joined = false
 
+
     useEffect(() => {
 
         async function fetchData() {
             if (location.pathname.includes("/profile/")) {
                 if (community && community?.id) await dispatch(communityActions.thunkUpdateCommunityImages(community.id, [selectedImage || "", selectedImage2 || ""]))
-               // if (id) await dispatch(communityActions.thunkGetDetailsById(id))
+              //  if (id) await dispatch(communityActions.thunkGetDetailsById(id))
                 if (community && community?.id) await dispatch(communityActions.thunkGetDetailsById(community?.id))
             }
         }
@@ -54,9 +55,6 @@ function CommunitiesProfile({ page, community }) {
         fetchData()
 
     }, [dispatch, id, selectedImage, selectedImage2])
-
-    console.log(selectedImage)
-
 
     const [randomNum, setRandomNum] = useState(Math.floor(Math.random() * 101));
 
@@ -144,24 +142,6 @@ function CommunitiesProfile({ page, community }) {
         setNumI(numI - 1)
         // Assuming that you need to trigger a re-render
     }
-
-    // const handleProfile = async () => {
-    //     if (selectedImage) {
-    //    // setImageData([ selectedImage, selectedImage2])
-    //     console.log('THIS SHOULD BE FUCKING icon')
-
-    //     await dispatch(communityActions.thunkUpdateCommunityImages(community.id, [selectedImage || "", selectedImage2 || ""]))
-
-    //     }
-    //     else if (selectedImage2) {
-    //        // setImageData([selectedImage, ""])
-    //     await dispatch(communityActions.thunkUpdateCommunityImages(community.id, [selectedImage || "", selectedImage2 || ""]))
-
-    //         console.log('THIS SHOULD BE FUCKING banner')
-    //     }
-
-
-    // }
 
  const handleImageChange2 = async (e) => {
         //setSelectedImage(e.target.files[0]);
@@ -270,7 +250,7 @@ function CommunitiesProfile({ page, community }) {
       }
 
 
-      console.log(imagePreview2)
+      console.log(community)
 
     return (
         <>
@@ -291,45 +271,45 @@ function CommunitiesProfile({ page, community }) {
         style={{ position: "absolute", zIndex: "-3", width: "0px"}}></input>
         {community.type === "Profile" ? <div onClick={(() => closeModal())} className="your-community">
        { isURLOrFile(community.CommunityStyle?.banner) || imagePreview2 ? <div onClick={((e) => {
-                    if (community.User?.id === user.id || singleCommunity.User?.id === user.id ) history.push('/profile/:page')
+                    if (community.User?.id === user?.id || singleCommunity.User?.id === user?.id ) history.push('/profile/:page')
                     return
                     })}style={{ position: "relative", backgroundSize: "100% 100%", backgroundImage: imagePreview2 ? `url(${imagePreview2})` : `url(${community.CommunityStyle.banner})`}} id="profile-header">
-        {community.User?.id === user.id || singleCommunity.User?.id === user.id ? <span onClick={triggerFileInput2}id="a-img2"><i class="fi fi-rr-camera"></i></span> : null }
+        {community.User?.id === user?.id || singleCommunity.User?.id === user?.id ? <span onClick={triggerFileInput2}id="a-img2"><i class="fi fi-rr-camera"></i></span> : null }
         </div>
         :
         <div onClick={((e) => {
-            if (community.User?.id === user.id || singleCommunity.User?.id === user.id ) history.push('/profile/:page')
+            if (community.User?.id === user?.id || singleCommunity.User?.id === user?.id ) history.push('/profile/:page')
             return
             })}style={{ position: "relative" }} id="profile-header">
-        {community.User?.id === user.id || singleCommunity.User?.id === user.id  ? <span onClick={triggerFileInput2}id="a-img2"><i class="fi fi-rr-camera"></i></span> : null }
+        {community.User?.id === user?.id || singleCommunity.User?.id === user?.id  ? <span onClick={triggerFileInput2}id="a-img2"><i class="fi fi-rr-camera"></i></span> : null }
         </div>}
         <div id="your-community">
         <div style={{ position: "relative" }} id="yc-avatar">
         { !imagePreview && !community.CommunityStyle?.icon && <img src={avatar}></img>}
         { imagePreview && <img src={imagePreview}></img>}
         { !imagePreview && community.CommunityStyle?.icon && <img src={community.CommunityStyle?.icon}></img>}
-        { community.User?.id === user.id || singleCommunity.User?.id === user.id  ?<span onClick={triggerFileInput} id="a-img"><i class="fi fi-rr-camera"></i></span> : null }
+        { community.User?.id === user?.id || singleCommunity.User?.id === user?.id  ?<span onClick={triggerFileInput} id="a-img"><i class="fi fi-rr-camera"></i></span> : null }
         </div>
         <div id="user-community2">
         <span onClick={((e) => {
-                    if (community.User?.id === user.id || singleCommunity.User?.id === user.id ) history.push('/profile/:page')
+                    if (community.User?.id === user?.id || singleCommunity.User?.id === user?.id ) history.push('/profile/:page')
                     return
                     })}>u/{userCommunity[2]}</span>
-        { community.User?.id === user.id && <i onClick={(() => window.alert("Feature not available"))} class="fi fi-rr-settings"></i> }
+        { community.User?.id === user?.id && <i onClick={(() => window.alert("Feature not available"))} class="fi fi-rr-settings"></i> }
         </div>
-        {community.User?.id === user.id ? <button onClick={(() => window.alert("Feature not available"))} id="user-button"><p>Create Avatar</p><i class="fi fi-rr-angle-small-right"></i></button> : null}
+        {community.User?.id === user?.id ? <button onClick={(() => window.alert("Feature not available"))} id="user-button"><p>Create Avatar</p><i class="fi fi-rr-angle-small-right"></i></button> : null}
         <div id="community-info">
             <div>
             <span id="ci-name">Karma</span>
-            <span id="ci-icon"><i class="fi fi-rr-star-christmas"></i>{user.karma}</span>
+            <span id="ci-icon"><i class="fi fi-rr-star-christmas"></i>{user?.karma}</span>
             </div>
             <div>
             <span id="ci-name">Cake day</span>
             <span id="ci-icon"><i class="fi fi-rr-cake-birthday"></i>{formattedDate}</span>
             </div>
         </div>
-        { community.User?.id === user.id ? <button onClick={(() => window.alert("Feature not available"))} id="social-button"><i class="fi fi-rr-plus"></i>Add social link</button> : null }
-        { community.User?.id !== user.id ? <button onClick={((e) => {
+        { community.User?.id === user?.id ? <button onClick={(() => window.alert("Feature not available"))} id="social-button"><i class="fi fi-rr-plus"></i>Add social link</button> : null }
+        { community.User?.id !== user?.id ? <button onClick={((e) => {
             e.stopPropagation()
             window.alert('Feature not avaliable')
             })} id="follow">Follow</button> : null }

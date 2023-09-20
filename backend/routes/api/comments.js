@@ -79,7 +79,7 @@ router.get("/search/comments", async (req, res) => {
     const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
     const search = req.query.search
     const { user } = req
-    const userId = user.dataValues.id
+    // const userId = user.dataValues.id
 
     const pageSize = 10; // Number of posts per page
 

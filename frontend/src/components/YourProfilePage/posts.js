@@ -67,7 +67,7 @@ function UsersPosts() {
 
           setCurrentPage(currentPage + 1);
           setThreshold(threshold + 200);
-          dispatch(postsActions.thunkGetUserPosts(user.id, currentPage)); // Fetch posts for the specified page
+          dispatch(postsActions.thunkGetUserPosts(user?.id, currentPage)); // Fetch posts for the specified page
         }
       }
 
@@ -91,7 +91,7 @@ function UsersPosts() {
 
     }, []);
 
-    let filterdPosts = Object.values(userPosts).filter((p) => p.userId === user.id).reverse()
+    let filterdPosts = Object.values(userPosts).filter((p) => p.userId === user?.id).reverse()
 
     filterdPosts = filterdPosts.sort((a, b) => {
       return b.createdAt - a.createdAt
@@ -107,7 +107,7 @@ function UsersPosts() {
     if (user) profile = Object.values(userCommunities).filter((m) => m.type === "Profile")[0]
 
     useEffect(() => {
-        dispatch(postsActions.thunkGetUserPosts(user.id, page)); // Fetch posts for the specified page
+        dispatch(postsActions.thunkGetUserPosts(user?.id, page)); // Fetch posts for the specified page
     }, [dispatch, page]);
 
 

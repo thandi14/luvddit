@@ -143,7 +143,7 @@ function YourCommunitesProfile({ base, highlight }) {
                 <span><div id="online">{singleCommunity.CommunityMembers}</div>{ singleCommunity.id === 10 ? "Lovers" : "Members"}</span>
                 <span><div id="online"><i class="fi fi-ss-bullet"></i>{randomNum}</div>{ singleCommunity.id === 10 ? "Online Lovers" : "Online"}</span>
             </div>
-            { singleCommunity.userId === user.id &&
+            { singleCommunity.userId === user?.id &&
             <>
             <div id="line"></div>
             <div onClick={(() => window.alert("Feature not available"))} id="cs-side3">
@@ -153,7 +153,7 @@ function YourCommunitesProfile({ base, highlight }) {
             </>
             }
             <div id="line"></div>
-            { user ? <button style={{ backgroundColor: `${style?.highlight}`}} onClick={(() => history.push(`/posts/new/${singleCommunity.id}`))} id="but3">{ singleCommunity.type !== "Public" && singleCommunity.userId !== user.id && !approved ? "Draft Post" : "Create Post"}</button> : <button style={{ backgroundColor: `${style.highlight}`}} onClick={(() => window.alert('Please login'))} id="but3">Create Post</button>}
+            { user ? <button style={{ backgroundColor: `${style?.highlight}`}} onClick={(() => history.push(`/posts/new/${singleCommunity.id}`))} id="but3">{ singleCommunity.type !== "Public" && singleCommunity.userId !== user.id && !approved ? "Draft Post" : "Create Post"}</button> : <button style={{ backgroundColor: `${style?.highlight}`}} onClick={(() => window.alert('Please login'))} id="but3">Create Post</button>}
             <div id="line"></div>
             <div id="cs-side5">
                 <span onClick={(() => window.alert("Feature not available"))}>COMMUNITY OPTIONS</span>
