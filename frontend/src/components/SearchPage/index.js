@@ -180,7 +180,7 @@ function SearchPage() {
                     <button onClick={(() => history.push(`/search/communities/:page/${search}`))}>Communities</button>
                     <button onClick={(() => history.push(`/search/profiles/:page/${search}`))}>People</button>
                 </div>
-                <div onClick={(() => window.alert("Feature not available"))} id="pick-sort">
+                <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="pick-sort">
                     <button>Sort<i style={{ fontSize: "12px"}} class="fa-solid fa-chevron-down"></i></button>
                     <button>Time<i style={{ fontSize: "12px"}}class="fa-solid fa-chevron-down"></i></button>
                 </div>

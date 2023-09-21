@@ -433,9 +433,9 @@ const handleNsfw = (e) => {
                 <i class="fi fi-ts-signal-bars-good"></i>
                 <p>Top</p>
                 </div>
-                <i onClick={(() => window.alert("Feature not available"))} class="fi fi-rr-menu-dots"></i>
+                <i onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} class="fi fi-rr-menu-dots"></i>
                 </div>
-                <div onClick={(() => window.alert("Feature not available"))} id="filter-side2">
+                <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="filter-side2">
                 <i class="fi fi-rr-horizontal-rule"></i>
                 <i class="fa-regular fa-square"></i>
                 <i class="fa-solid fa-chevron-down"></i>
@@ -468,45 +468,45 @@ const handleNsfw = (e) => {
                     <i class="fa-regular fa-message"></i>
                     <p >{post.Comments?.length} Comments</p>
                     </div>
-                    <div onClick={(() => window.alert('Feature not available'))}id="comment">
+                    <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))}id="comment">
                     <i class="fi fi-rr-box-heart"></i>
                     <p>Awards</p>
                     </div>
-                    <div onClick={(() => window.alert('Feature not available'))}id="comment">
+                    <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))}id="comment">
                     <i class="fi fi-rs-heart-arrow"></i>
                     <p>Share</p>
                     </div>
-                    <div onClick={(() => window.alert('Feature not available'))}id="comment">
-                    <i onClick={(() => window.alert('Feature not available'))}class="fi fi-rr-bookmark"></i>
+                    <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))}id="comment">
+                    <i onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))}class="fi fi-rr-bookmark"></i>
                     <p>Save</p>
                     </div>
-                    <i onClick={(() => window.alert('Feature not available'))}class="fi fi-rr-menu-dots"></i>
+                    <i onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))}class="fi fi-rr-menu-dots"></i>
                     </div> :
                     <div id="post-extras9">
                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="comment">
                     <i class="fa-regular fa-message"></i>
                     <p>{post.Comments.length}</p>
                     </div>
-                    <div onClick={(() => window.alert('Feature not available'))}id="comment">
+                    <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))}id="comment">
                     <i class="fi fi-rs-heart-arrow"></i>
                     <p>Share</p>
                     </div>
-                    <div onClick={(() => window.alert('Feature not available'))}id="comment">
+                    <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))}id="comment">
                     <i class="fi fi-rs-check-circle"></i>
                     <p>Approved</p>
                     </div>
-                    <div onClick={(() => window.alert('Feature not available'))}id="comment">
+                    <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))}id="comment">
                     <i class="fi fi-rs-circle-cross"></i>
                     <p>Removed</p>
                     </div>
-                    <div onClick={(() => window.alert('Feature not available'))}id="comment">
+                    <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))}id="comment">
                     <i class="fi fi-rr-box"></i>
                     <p>Spam</p>
                     </div>
-                    <div onClick={(() => window.alert('Feature not available'))} id="comment">
+                    <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="comment">
                     <i class="fi fi-rs-shield"></i>
                     </div>
-                { post.userId !== user?.id && <i onClick={(() => window.alert('Feature not available'))} class="fi fi-rr-menu-dots"></i>}
+                { post.userId !== user?.id && <i onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} class="fi fi-rr-menu-dots"></i>}
                 { post.userId === user?.id && <i onClick={((e) => {
                   e.stopPropagation()
                   handleClick()
@@ -518,8 +518,8 @@ const handleNsfw = (e) => {
                 <div ref={targetRef} id={editMenu}>
                    {post?.PostImages.length && post?.PostImages[0].imgURL ? null :
                    <p onClick={(() => setModalContent2(<PostPageModal postId={post.id} scroll={false} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                    <p onClick={(() => window.alert("Feature not available"))} ><i class="fi fi-rr-bookmark"></i>Save</p>
-                    <p onClick={(() => window.alert("Feature not available"))} ><i class="fi fi-rr-eye-crossed"></i>Hide</p>
+                    <p onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} ><i class="fi fi-rr-bookmark"></i>Save</p>
+                    <p onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} ><i class="fi fi-rr-eye-crossed"></i>Hide</p>
                     <p onClick={(() => {
                         setModalContent2(<div> <DeletePost id={post.id} /></div>)
                         setIsVisible5(false)
@@ -560,12 +560,12 @@ const handleNsfw = (e) => {
                 <div id="home-section">
                 { singleCommunity.id === 10 && !message && <button onClick={(() => openEmailClient())} onMouseEnter={(() => setMessage(!message))} style={{ borderColor: `${style?.highlight}`, color: `${style?.highlight}`}} id="but4"><i class="fi fi-rr-envelope"></i> Message the creator</button>}
                 { singleCommunity.id === 10 && message && <button  onClick={(() => openEmailClient())} onMouseLeave={(() => setMessage(!message))} style={{backgroundColor: `${reduceOpacity(style?.highlight, 0.1)}`, borderColor: `${style?.highlight}`, color: `${style?.highlight}`}} id="but4"><i class="fi fi-rr-envelope"></i> Message the creator</button>}
-                { singleCommunity.id !== 10 && !message && <button onMouseEnter={(() => setMessage(!message))} style={{ borderColor: `${style?.highlight}`, color: `${style?.highlight}`}} onClick={(() => window.alert("Feature not available"))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>}
-                { singleCommunity.id !== 10 && message && <button onMouseLeave={(() => setMessage(!message))} style={{backgroundColor: `${reduceOpacity(style?.highlight, 0.1)}`, borderColor: `${style?.highlight}`, color: `${style?.highlight}`}} onClick={(() => window.alert("Feature not available"))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>}
+                { singleCommunity.id !== 10 && !message && <button onMouseEnter={(() => setMessage(!message))} style={{ borderColor: `${style?.highlight}`, color: `${style?.highlight}`}} onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>}
+                { singleCommunity.id !== 10 && message && <button onMouseLeave={(() => setMessage(!message))} style={{backgroundColor: `${reduceOpacity(style?.highlight, 0.1)}`, borderColor: `${style?.highlight}`, color: `${style?.highlight}`}} onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>}
                 <div id="cs-side6">
                     {user?.id !== singleCommunity.User?.id ? <span style={{ color: `${style?.highlight}` }} onClick={(() => history.push(`/profile2/${singleCommunity.User?.id}/:page`))}> {singleCommunity.User?.username}</span> : "" }
                     {user?.id === singleCommunity.User?.id ? <span style={{ color: `${style?.highlight}` }} onClick={(() => history.push(`/profile/:page`))}> {singleCommunity.User?.username}</span> : "" }
-                    <span onClick={(() => window.alert("Feature not available"))} style={{ color: `${style?.highlight}` }}>VIEW ALL MODERATORS</span>
+                    <span onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} style={{ color: `${style?.highlight}` }}>VIEW ALL MODERATORS</span>
                 </div>
                 </div>
 

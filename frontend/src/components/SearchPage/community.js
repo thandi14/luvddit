@@ -171,7 +171,7 @@ function SearchCommunityPage() {
                     <button onClick={(() => history.push(`/search2/comments/${singleCommunity.id}/:page/${search}`))}>Comments</button>
                     <span style={{ cursor: "pointer", display: "flex", gap: "5px", }}>Show results from <span onClick={(() => history.push(`/search/:page/${search}`))} style={{ fontWeight: "900", color: "#0079D3" }}>all of luvddit</span><i onClick={(() => history.push(`/search/:page/${search}`))} style={{ height: "20px", fontSize: "20px", color: "#0079D3"}} class="fi fi-rr-arrow-right"></i></span>
                 </div>
-                <div onClick={(() => window.alert("Feature not available"))} id="pick-sort">
+                <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="pick-sort">
                     <button>Sort<i style={{ fontSize: "12px"}} class="fa-solid fa-chevron-down"></i></button>
                     <button>Time<i style={{ fontSize: "12px"}}class="fa-solid fa-chevron-down"></i></button>
                 </div>
@@ -198,7 +198,7 @@ function SearchCommunityPage() {
                     {post.Community.CommunityStyle?.icon ? <img style={{ margin: "0%" }} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} src={post.Community.CommunityStyle.icon}></img> : <div style={{ backgroundColor: `${post.Community.CommunityStyle.base}`, color: "white" }} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pfp30">l/</div>}
                     <span style={{ fontWeight: "500"}} onClick={(() => history.push(`/communities/${post.communityId}/:page`))} className="userName" id="community">l/{post.Community.name}</span>
                     <p>·</p>
-                    <p >Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User.username}</span> {getTimeDifferenceString(post.createdAt)}</p>
+                    <p >Posted by <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} className="userName">u/{post.User.username}</span> {getTimeDifferenceString(post.createdAt)}</p>
                     </div>
                     <h3  style={{ padding: "0px", margin: "0px" , marginBottom: "1%", marginLeft: "0%"}} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title"><h3 style={{ fontSize: "16px" }} id="title-content">{post.title}{ post.tags && post.tags.includes("oc") ? <div id="oc5">OC</div> : null} {post.tags && post.tags.includes("spoiler") ? <span id="spoiler5">Spoiler</span> : null } { post.tags && post.tags.includes("nsfw") ? <span id="nsfw5">NSFW</span> : null}</h3></h3>
                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="content">

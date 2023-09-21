@@ -106,9 +106,10 @@ function TopPage() {
       let cm = Object.values(memberships)
 
       for (let c of cm ) {
-        for ( let p of c?.Posts ) recent.push(p)
+        if (c.lenth) {
+            for ( let p of c?.Posts ) recent.push(p)
+        }
       }
-
     }
     else {
       recent = Object.values(posts)
@@ -223,9 +224,9 @@ function TopPage() {
                 >
                   Top</p>
                 </div>
-                <i onClick={(() => window.alert("Feature not avaliable"))} class="fi fi-rr-menu-dots"></i>
+                <i onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} class="fi fi-rr-menu-dots"></i>
                 </div>
-                <div onClick={(() => window.alert("Feature not avaliable"))} id="filter-side2">
+                <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="filter-side2">
                 <i class="fi fi-rr-horizontal-rule"></i>
                 <i class="fa-regular fa-square"></i>
                 <i class="fa-solid fa-chevron-down"></i>
@@ -261,19 +262,19 @@ function TopPage() {
                     <i class="fa-regular fa-message"></i>
                     <p id={`${post.id}`} >{post.Comments ? Object.values(post.Comments)?.length : 0} Comments</p>
                     </div>
-                    <div onClick={(() => window.alert('Feature coming soon'))} id="comment">
+                    <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="comment">
                     <i class="fi fi-rr-box-heart"></i>
                     <p>Awards</p>
                     </div>
-                    <div onClick={(() => window.alert('Feature coming soon'))} id="comment">
+                    <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="comment">
                     <i class="fi fi-rs-heart-arrow"></i>
                     <p>Share</p>
                     </div>
-                    <div onClick={(() => window.alert('Feature coming soon'))} id="comment">
+                    <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="comment">
                     <i class="fi fi-rr-bookmark"></i>
                     <p>Save</p>
                     </div>
-                    <i onClick={(() => window.alert('Feature coming soon'))} class="fi fi-rr-menu-dots"></i>
+                    <i onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} class="fi fi-rr-menu-dots"></i>
                     </div>
                     </div>
                     </div>

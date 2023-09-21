@@ -46,6 +46,8 @@ function PostForm() {
     const [ boxThree, setBoxThree ] = useState(false)
     const [ boxFour, setBoxFour ] = useState(false)
     const [ restrict, setRestrict ] = useState(false)
+    const [ restrict1, setRestrict1 ] = useState(false)
+    const [ restrict2, setRestrict2 ] = useState(false)
 
 
 
@@ -295,6 +297,11 @@ function PostForm() {
                 selectedImage, selectedImage2
             ])
         }
+        else if (selectedImage) {
+            setMoreImages([
+                selectedImage
+            ])
+        }
 
         let tags = ""
 
@@ -519,7 +526,7 @@ function PostForm() {
                     <div id="submit-buttons">
                         {singleCommunity.type !== "Profile" ? <i onClick={(() => window.alert("Feature not available"))} class="fi fi-rr-followcollection"></i> : null}
                         <button onClick={(() => window.alert("Feature not avaliable"))} id="draft">Save Draft</button>
-                    { singleCommunity.userId === user.id && isDisabled && <button className={singleCommunity.type !== "Profile" ? "marg" : ""} disabled={isDisabled} id={"post"}>Post{singleCommunity.type !== "Profile" ? <i style={{ backgroundColor: `${singleCommunity.CommunityStyle?.highlight}`}} class="fi fi-sr-tool-box"></i> : null }</button> }
+                    { singleCommunity.userId === user.id && isDisabled && <button onClick={(() => setRestrict1(true))} className={singleCommunity.type !== "Profile" ? "marg" : ""} id={"post"}>Post{singleCommunity.type !== "Profile" ? <i style={{ backgroundColor: `${singleCommunity.CommunityStyle?.highlight}`}} class="fi fi-sr-tool-box"></i> : null }</button> }
                     { !load && singleCommunity.userId === user.id && !isDisabled && <button style={{ backgroundColor: `${singleCommunity.CommunityStyle?.highlight}`}} className={singleCommunity.type !== "Profile" ? "marg" : ""} disabled={isDisabled} id={"post2"} onClick={handleSubmit}>Post{singleCommunity.type !== "Profile" ? <i style={{ backgroundColor: `${singleCommunity.CommunityStyle?.highlight}`}} class="fi fi-sr-tool-box"></i> : null }</button> }
                     { load && singleCommunity.userId === user.id && !isDisabled ? <button id="post"><i id="load" style={{ fontSize: "20px", height: "20px"}} class="fi fi-rr-spinner"></i></button> : null}
 
@@ -528,6 +535,7 @@ function PostForm() {
                     { load && singleCommunity.userId !== user.id && !isDisabled2 ? <button id="post"><i id="load" style={{ fontSize: "20px", height: "20px"}} class="fi fi-rr-spinner"></i></button> : null}
                     </div>
                     { restrict ? <p style={{ textAlign: "right", color: "red", fontSize: "12px"}}>This community only allows trusted members to post here</p> : null}
+                    { restrict1 ? <p style={{ textAlign: "right", color: "red", fontSize: "12px"}}>You need a title and a community before posting</p> : null}
                     </div>
                     <div id="notify-me">
                     <label>

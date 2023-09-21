@@ -277,7 +277,7 @@ function Commented2TopPosts() {
             <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))}  id="almostd">
             <span onClick={((e) => {
                 e.stopPropagation()
-                window.alert("Feature not avaliable")})}className="userName2">{other.username} </span>
+                window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")})}className="userName2">{other.username} </span>
              commented on {post.title} · <span onClick={((e) => {
                 e.stopPropagation()
                 history.push(`/communities/${post.Community.id}/:page`)})}>l/{post.Community.name}</span> · Posted by <span onClick={((e) => {

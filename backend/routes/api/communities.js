@@ -509,11 +509,6 @@ router.post('/', async (req, res) => {
         type
     })
 
-    let member = await CommunityMembers.create({
-        userId,
-        communityId: community.dataValues.id
-    })
-
     let style = await CommunityStyle.create({
         communityId: community.dataValues.id
     })
@@ -524,7 +519,32 @@ router.post('/', async (req, res) => {
         ]
     })
 
-    return res.json(community2)
+    let member = await CommunityMembers.create({
+        userId,
+        communityId: community2.dataValues.id
+    })
+
+
+    // let member2 = await CommunityMembers.findByPk( member.dataValues.id, {
+    //     include: [
+    //         {
+    //             model: Community,
+    //             include: [
+    //                 { model: Post },
+    //                 { model: CommunityStyle }
+    //             ]
+    //          }
+    //     ]
+    // })
+
+    member.dataValues.Community = community2
+
+    console.log(community2)
+
+    return res.json({
+        community2,
+        member
+    })
 })
 
 router.put("/:id", async (req, res) => {

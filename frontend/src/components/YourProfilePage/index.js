@@ -255,12 +255,12 @@ function YourProfilePage() {
         <span onClick={(() => history.push("/profile/posts/:page"))} id="aH2">POSTS</span>
         <span onClick={(() => history.push("/profile/comments/:page"))} id="aH3">COMMENTS</span>
         <span onClick={(() => history.push("/profile/history/:page"))}id="aH4">HISTORY</span>
-        <span onClick={(() => window.alert("Feature not avaliable"))}id="aH5">SAVED</span>
-        <span onClick={(() => window.alert("Feature not avaliable"))}id="aH6">HIDDEN</span>
+        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}id="aH5">SAVED</span>
+        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}id="aH6">HIDDEN</span>
         <span onClick={(() => history.push("/profile/upvoted/:page"))}id="aH7">UPVOTED</span>
         <span onClick={(() => history.push("/profile/downvoted/:page"))}id="aH8">DOWNVOTED</span>
-        <span onClick={(() => window.alert("Feature not avaliable"))}id="aH9">AWARDS RECIEVED</span>
-        <span onClick={(() => window.alert("Feature not avaliable"))}id="aH10">AWARDS GIVEN</span>
+        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}id="aH9">AWARDS RECIEVED</span>
+        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}id="aH10">AWARDS GIVEN</span>
         </div>
     </div>
     <div className="splashPage">
@@ -294,7 +294,7 @@ function YourProfilePage() {
             <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))}  id="almostd">
             <span onClick={((e) => {
                 e.stopPropagation()
-                window.alert("Feature not avaliable")})}className="userName2">{user.username} </span>
+                window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")})}className="userName2">{user.username} </span>
              commented on {post.title} · <span onClick={((e) => {
                 e.stopPropagation()
                 history.push(`/communities/${post.Community.id}/:page`)})}>l/{post.Community.name}</span> · Posted by <span onClick={((e) => {
@@ -308,7 +308,7 @@ function YourProfilePage() {
                 history.push(`/communities/${post.communityId}/:page`)
                 })} className="userName" id="community">l/{post.Community.name}</span>
             <p>·</p>
-            <p>Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user?.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
+            <p>Posted by <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user?.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
             { !myMemberships.filter((m) => m.id === post.communityId).length && post.Communiy && post.Community.type !== "Profile" ? <button onClick={((e) => {
                   e.stopPropagation()
                   dispatch(communitiesActions.thunkJoinCommunities(post.communityId))
@@ -338,28 +338,28 @@ function YourProfilePage() {
                 </div>
                 <div onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature not avaliable")
+                    window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
                     })} id="comment4">
                     <i class="fi fi-rs-heart-arrow"></i>
                     <p>Share</p>
                 </div>
                 <div onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature not avaliable")
+                    window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
                     })} id="comment4">
                     <i class="fi fi-rs-check-circle"></i>
                     <p>Approved</p>
                 </div>
                 <div onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature not avaliable")
+                    window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
                     })} id="comment4">
                     <i class="fi fi-rs-circle-cross"></i>
                     <p>Removed</p>
                 </div>
                 <div onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature not avaliable")
+                    window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
                     })} id="comment4">
                     <i class="fi fi-rr-box"></i>
                     <p>Spam</p>

@@ -19,7 +19,7 @@ function CommunitiesMenu({ value }) {
     const targetRef = useRef(null);
     const location = useLocation()
     const targetRef2 = useRef(null);
-    const [ comms, setComms ] = useState(singleCommunity.name)
+    const [ comms, setComms ] = useState(null)
     const [ comms2, setComms2 ] = useState(null)
     const history = useHistory()
     const { menuOpen, toggleMenu } = useContext(MenuContext);
@@ -35,12 +35,12 @@ function CommunitiesMenu({ value }) {
 
             let data
             if (id) data = await dispatch(communityActions.thunkGetDetailsById(id))
-          // }
-        }
-        fetchData();
-        setComms(singleCommunity.name)
+            // }
+          }
+          fetchData();
+          setComms(singleCommunity.name)
 
-    }, [dispatch, id])
+    }, [dispatch, id, singleCommunity.name])
 
 
     let community = Object.values(communities).filter((c) => c.type === "Profile" && c.userId === user.id)[0]
@@ -81,6 +81,7 @@ function CommunitiesMenu({ value }) {
     let style
     if (singleCommunity.CommunityStyle) style = singleCommunity.CommunityStyle
 
+    console.log(comms)
     return (
         <>
         {/* {isVisible ? */}
@@ -102,7 +103,7 @@ function CommunitiesMenu({ value }) {
         {singleCommunity.name && !singleCommunity.CommunityStyle && singleCommunity.type === "Profile" ? <img src={avatar}></img> : null }
         {singleCommunity.name && singleCommunity.CommunityStyle && singleCommunity.CommunityStyle.icon ? <img id="pfp30" src={singleCommunity.CommunityStyle.icon}></img> : null }
         {singleCommunity.name && singleCommunity.CommunityStyle && singleCommunity.CommunityStyle.base && !singleCommunity.CommunityStyle.icon ? <div style={{ backgroundColor: `${singleCommunity.CommunityStyle.base}`}} id="nav-comms90">l/</div> : null}
-        <input onChange={((e) => setComms(e.target.value))} defaultValue={comms ? `l/${comms}` : ""} placeholder="Choose your community"></input>
+        <input onChange={((e) => setComms(e.target.value))} defaultValue={comms ? `l/${comms}` : null} placeholder="Choose your community"></input>
         <i onClick={handleClick} class="fa-solid fa-chevron-down"></i>
         <div id="div2"></div>
         </div>
@@ -126,8 +127,8 @@ function CommunitiesMenu({ value }) {
                 setIsVisible(true)
                 })} id="user-community">
             <div id='uc-img'>
-            { !user.Community.CommunityStyle?.icon ? <img src={avatar}></img> : null }
-            { user.Community.CommunityStyle?.icon ? <img src={user.Community.CommunityStyle?.icon}></img> : null }
+            { !user.Community?.CommunityStyle?.icon ? <img src={avatar}></img> : null }
+            { user.Community?.CommunityStyle?.icon ? <img src={user.Community.CommunityStyle?.icon}></img> : null }
 
             </div>
             <div id="uc-name">

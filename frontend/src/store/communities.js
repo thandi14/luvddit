@@ -178,7 +178,6 @@ export const thunkGetSearchedCommunitiyComments = (id, page, search) => async (d
 
 
 export const thunkGetAllSearched3Communitites = (page, search) => async (dispatch) => {
-    console.log("THIS SHOULD BE HITTING")
     const response1 = await csrfFetch(`/api/communities/search/community2?page=${page}&search=${search}`);
     let data1 = await response1.json();
     dispatch(searchProfiles(data1));
@@ -206,7 +205,6 @@ export const thunkRefreshSearch = (id) => async (dispatch) => {
 export const thunkGetDetailsById = (id) => async (dispatch) => {
     const response1 = await csrfFetch(`/api/communities/${id}`)
     const data1 = await response1.json();
-     console.log("WTF IS THIS ERROR", response1)
     if (data1) dispatch(getDetails(data1));
     return data1;
 }
@@ -275,6 +273,7 @@ export const thunkCreateCommunity = (data) => async (dispatch) => {
             body: JSON.stringify(data)
         })
         const data1 = await response.json()
+        console.log("REDUCER", data1)
         dispatch(getDetails(data1))
        // console.log("WTF IS HAPPENING???", data1)
         return data1
@@ -299,10 +298,8 @@ export const thunkUpdateCommunities = (id, data) => async (dispatch) => {
 }
 
 export const thunkUpdateCommunityStyle = (id, icon, banner, background) => async (dispatch) => {
-    console.log("REDUCER", id, banner)
     let response
     if (icon && Object.values(icon).length) {
-        console.log("PLEASE HITTIN WITH NO icon")
          response = await csrfFetch(`/api/communities/${id}/style?i=${true}`, {
                 method: 'PUT',
                 headers: {
@@ -312,7 +309,6 @@ export const thunkUpdateCommunityStyle = (id, icon, banner, background) => async
             })
     }
     if (banner && Object.values(banner).length) {
-        console.log("PLEASE HITTIN WITH NO banner")
          response = await csrfFetch(`/api/communities/${id}/style?ban=${true}`, {
                 method: 'PUT',
                 headers: {
@@ -322,7 +318,6 @@ export const thunkUpdateCommunityStyle = (id, icon, banner, background) => async
             })
     }
     if (background && Object.values(background).length) {
-        console.log("PLEASE HITTIN WITH NO background")
          response = await csrfFetch(`/api/communities/${id}/style?bg=${true}`, {
                 method: 'PUT',
                 headers: {
@@ -352,7 +347,6 @@ export const thunkUpdateCommunityImages = (id, images) => async (dispatch) => {
     let response
 
     if (images && images.length) {
-            console.log("PLEASE HITTIN WITH  IMGSS")
             if (images[0]) {
             response = await csrfFetch(`/api/communities/${id}/style/images?icon=${true}`, {
                 method: 'PUT',
@@ -537,10 +531,12 @@ const communitiesReducer = (state = initialState, action) => {
       return newState;
     case GET_DETAILS: {
         newState = { ...state };
-        console.log("reducer:", action.detailS)
-        const community = action.details;
-        newState.singleCommunity = { ...community };
-        // newState.memberships[community.id] = { ...community }
+        const community = action.details?.community2;
+        const community2 = action.details
+        const member = action.details?.member
+        if (community) newState.singleCommunity = { ...community };
+        if (community2) newState.singleCommunity = { ...community2 };
+        if (member) newState.memberships[member.communityId] = { ...member.Community }
         return newState;
     }
     case REMOVE_COMMUNITIES: {
@@ -571,7 +567,7 @@ const communitiesReducer = (state = initialState, action) => {
     case GET_MEMBERSHIPS: {
         newState = { ...state };
         newState.memberships = {};
-        action.memberships.forEach(
+        action.memberships?.forEach(
           (memberships) => (newState.memberships[memberships.Community.id] = memberships.Community)
         );
         return newState;

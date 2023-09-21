@@ -68,17 +68,17 @@ function ProfileButton({ user, menu, r }) {
         </div>
         <div id="thirtythree">
           <span onClick={(() => setModalContent(<CreateCommunity />))}><div id="luvvI">l/</div>Create a community</span>
-          <span onClick={(() => window.alert("Feature not avilable"))}><i class="fi fi-rr-bullhorn"></i>Advertise on luddit</span>
-          <span onClick={(() => window.alert("Feature not avilable"))}><i class="fi fi-rr-coins"></i>Coins</span>
-          <span onClick={(() => window.alert("Feature not avilable"))}><i class="fa-solid fa-shield-halved"></i>Premium</span>
-          <span onClick={(() => window.alert("Feature not avilable"))}><i class="fi fi-rr-telescope"></i>Explore</span>
-          <span onClick={(() => window.alert("Feature not avilable"))}><i class="fi fi-rr-interrogation"></i>Help Center</span>
-          <span onClick={(() => window.alert("Feature not avilable"))}><i class="fi fi-rr-circle-i"></i>More</span>
-          <span onClick={(() => window.alert("Feature not avilable"))}><i class="fa-solid fa-scroll"></i>Terms and Policies</span>
-          <span id="menu33">User Agreement</span>
+          <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-bullhorn"></i>Advertise on luddit</span>
+          <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-coins"></i>Coins</span>
+          <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fa-solid fa-shield-halved"></i>Premium</span>
+          <span onClick={(() => history.push("/search/:page/:search"))}><i class="fi fi-rr-telescope"></i>Explore</span>
+          <span onClick={(() => history.push("/communities/10/:page"))}><i class="fi fi-rr-interrogation"></i>Help Center</span>
+          <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-circle-i"></i>More</span>
+          <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fa-solid fa-scroll"></i>Terms and Policies</span>
+          {/* <span id="menu33">User Agreement</span>
           <span id="menu33">Privacy Policy</span>
           <span id="menu33">Content Policy</span>
-          <span id="menu33">Moderator Code of Conduct</span>
+          <span id="menu33">Moderator Code of Conduct</span> */}
         </div>
         {/* <span>{user.username}</span>
         <span>{user.firstName} {user.lastName}</span>

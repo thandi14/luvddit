@@ -83,7 +83,6 @@ export const thunkGetUserComments = () => async (dispatch) => {
 // }
 
 export const thunkCreateComment = (data, id) => async (dispatch) => {
-    console.log(id)
     if (Object.values(data).length) {
         const response = await csrfFetch(`/api/posts/${id}/comment`, {
             method: 'POST',

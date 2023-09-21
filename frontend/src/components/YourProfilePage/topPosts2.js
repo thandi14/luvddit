@@ -252,7 +252,7 @@ function OthersTopPosts() {
                   dispatch(communitiesActions.thunkJoinCommunities(post.communityId))
                   })} id="miniJoin2">Join</button> : null }
             <p>·</p>
-            <p >Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user?.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
+            <p >Posted by <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user?.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
             </div>
             {/* <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="content">
             <div id="finishing4">
@@ -269,28 +269,28 @@ function OthersTopPosts() {
                 </div>
                 <div onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature not avaliable")
+                    window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
                     })} id="comment4">
                     <i class="fi fi-rs-heart-arrow"></i>
                     <p>Share</p>
                 </div>
                 <div onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature not avaliable")
+                    window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
                     })} id="comment4">
                     <i class="fi fi-rs-check-circle"></i>
                     <p>Approved</p>
                 </div>
                 <div onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature not avaliable")
+                    window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
                     })} id="comment4">
                     <i class="fi fi-rs-circle-cross"></i>
                     <p>Removed</p>
                 </div>
                 <div onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature not avaliable")
+                    window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
                     })} id="comment4">
                     <i class="fi fi-rr-box"></i>
                     <p>Spam</p>

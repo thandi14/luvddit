@@ -189,13 +189,13 @@ function Navigation({ isLoaded }){
           {homeButton === "home" ?  <div>Home</div> : null }
           {homeButton === "create" ?  <i class="fa-solid fa-plus"></i> : null}
           {homeButton === "create" ?  <div>Create Post</div> : null }
-          {homeButton === "search2" ?  singleCommunity.CommunityStyle?.icon ? <img id="pfp30" src={singleCommunity.CommunityStyle.icon}></img> : <div style={{ backgroundColor: `${singleCommunity.CommunityStyle?.base}`}} id="nav-comms">l/</div> : null}
+          {homeButton === "search2" ?  singleCommunity.CommunityStyle?.icon ? <img id="pfp30" src={singleCommunity.CommunityStyle?.icon}></img> : <div style={{ backgroundColor: `${singleCommunity.CommunityStyle?.base}`}} id="nav-comms">l/</div> : null}
           {homeButton === "search2" ?  <div>Subluvddit results</div> : null }
-          {homeButton === "communities" ?  singleCommunity.CommunityStyle?.icon ? <img id="pfp30" src={singleCommunity.CommunityStyle.icon}></img> : <div style={{ backgroundColor: `${singleCommunity.CommunityStyle?.base}`}} id="nav-comms">l/</div> : null}
+          {homeButton === "communities" ?  singleCommunity.CommunityStyle?.icon ? <img id="pfp30" src={singleCommunity.CommunityStyle?.icon}></img> : <div style={{ backgroundColor: `${singleCommunity.CommunityStyle?.base}`}} id="nav-comms">l/</div> : null}
           {homeButton === "communities" ?  <div>l/{singleCommunity.name}</div> : null }
           {homeButton === "search" ?  <i class="fi fi-rs-search-heart"></i> : null}
           {homeButton === "search" ?  <div>Search Results</div> : null }
-          {homeButton === "profile2" ? !other.profile?.CommunityStyle?.icon ? <img id="pfpButton" src={pfp} alt="pfp"></img> : <img id="pfpButton" src={other.profile?.CommunityStyle.icon} alt="pfp"></img> : null}
+          {homeButton === "profile2" ? !other.profile?.CommunityStyle?.icon ? <img id="pfpButton" src={pfp} alt="pfp"></img> : <img id="pfpButton" src={other.profile?.CommunityStyle?.icon} alt="pfp"></img> : null}
           {homeButton === "profile2" ?  <div>u/{other.username}</div> : null }
           {homeButton === "profile" ? !singleCommunity.CommunityStyle?.icon ? <img id="pfpButton" src={pfp} alt="pfp"></img> : <img id="pfpButton" src={singleCommunity.CommunityStyle?.icon} alt="pfp"></img> : null}
           {homeButton === "profile" ?  <div>u/{user?.username}</div> : null }
@@ -208,15 +208,15 @@ function Navigation({ isLoaded }){
             <input onChange={((e) => setMenuS(e.target.value))} placeHolder="Filter"></input>
             <div id="mod-ms">
             { myCommunities.length || "mod queue mod mail l/mod".toLowerCase().includes(menuS.toLowerCase()) || menuS.length === 0 ? <span id="menu-tit"><div></div>MODERATING</span> : null}
-            { "mod queue".toLowerCase().includes(menuS.toLowerCase()) || menuS.length === 0 ? <span onClick={(() => window.alert("Feature not available"))}><div></div><i class="fi fi-rr-envelopes"></i>Mod Queue</span> : null}
-            { "mod mail".toLowerCase().includes(menuS.toLowerCase()) || menuS.length === 0 ? <span onClick={(() => window.alert("Feature not available"))}><div></div><i class="fi fi-rr-envelope"></i>Modmail</span> : null}
-            { "l/mod".toLowerCase().includes(menuS.toLowerCase()) || menuS.length === 0 ? <span onClick={(() => window.alert("Feature not available"))}><div></div><i class="fi fi-rr-envelopes"></i>l/Mod</span> : null}
+            { "mod queue".toLowerCase().includes(menuS.toLowerCase()) || menuS.length === 0 ? <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Profile and Notifications"))}><div></div><i class="fi fi-rr-envelopes"></i>Mod Queue</span> : null}
+            { "mod mail".toLowerCase().includes(menuS.toLowerCase()) || menuS.length === 0 ? <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Profile, and Notifications"))}><div></div><i class="fi fi-rr-envelope"></i>Modmail</span> : null}
+            { "l/mod".toLowerCase().includes(menuS.toLowerCase()) || menuS.length === 0 ? <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><div></div><i class="fi fi-rr-envelopes"></i>l/Mod</span> : null}
             {myCommunities.map((c) =>
             <>
             <span onClick={(() => {
               history.push(`/communities/${c.id}/:page`)
               setIsVisible(false)
-              })}><div></div>{ c.CommunityStyle.icon ? <img id="pfp30" src={c.CommunityStyle.icon}></img> : <span style={{ backgroundColor: `${c.CommunityStyle.base}`}} id="no-pfp">l/</span>}l/{c.name}</span>
+              })}><div></div>{ c.CommunityStyle?.icon ? <img id="pfp30" src={c.CommunityStyle?.icon}></img> : <span style={{ backgroundColor: `${c.CommunityStyle?.base}`}} id="no-pfp">l/</span>}l/{c.name}</span>
             </>
             )}
             </div>
@@ -230,7 +230,7 @@ function Navigation({ isLoaded }){
             <span onClick={(() => {
               history.push(`/communities/${c.id}/:page`)
               setIsVisible(false)
-            })}><div></div>{c.type === "Profile" && !c.CommunityStyle?.icon ? <img id="pfp30" src={avatar}></img> : c.CommunityStyle.icon ? <img id="pfp30" src={c.CommunityStyle.icon}></img> : <span style={{ backgroundColor: `${c.CommunityStyle?.base}`}} id="no-pfp">l/</span>}l/{c.name}</span>
+            })}><div></div>{c.type === "Profile" && !c.CommunityStyle?.icon ? <img id="pfp30" src={avatar}></img> : c.CommunityStyle?.icon ? <img id="pfp30" src={c.CommunityStyle?.icon}></img> : <span style={{ backgroundColor: `${c.CommunityStyle?.base}`}} id="no-pfp">l/</span>}l/{c.name}</span>
             )}
             </div>
             <div id="feeds-ms">
@@ -241,19 +241,19 @@ function Navigation({ isLoaded }){
             })
             }><div></div><i class="fi fi-sr-home-heart"></i>Home</span> : null}
             {  "popular".toLowerCase().includes(menuS.toLowerCase()) || menuS.length === 0 ? <span onClick={(() => history.push("/hot"))}><div></div><i class="fi fi-rr-grin-hearts"></i>Popular</span> : null}
-            {  "all".toLowerCase().includes(menuS.toLowerCase()) || menuS.length === 0 ? <span onClick={(() => window.alert("Feature not available"))}><div></div><i class="fi fi-rr-circle-heart"></i>All</span> : null}
+            {  "all".toLowerCase().includes(menuS.toLowerCase()) || menuS.length === 0 ? <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><div></div><i class="fi fi-rr-circle-heart"></i>All</span> : null}
             </div>
             <div id="other-ms">
             { "user settings messages create post queue premium avavtar, notifications".toLowerCase().includes(menuS.toLowerCase()) || menuS.length === 0 ? <span id="menu-tit"><div></div>OTHER</span> : null}
-            {  "user settings".toLowerCase().includes(menuS.toLowerCase()) || menuS.length === 0 ? <span onClick={(() => window.alert("Feature not available"))}><div></div><img id="pfp-ms" src={!user.Community?.CommunityStyle?.icon ? avatar : user.Community?.CommunityStyle?.icon }></img>User Settings</span> : null}
-            {  "messages".toLowerCase().includes(menuS.toLowerCase()) || menuS.length === 0 ? <span onClick={(() => window.alert("Feature not available"))}><div></div><img id="pfp-ms" src={!user.Community?.CommunityStyle?.icon ? avatar : user.Community?.CommunityStyle?.icon }></img>Messages</span> : null}
+            {  "user settings".toLowerCase().includes(menuS.toLowerCase()) || menuS.length === 0 ? <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><div></div><img id="pfp-ms" src={!user.Community?.CommunityStyle?.icon ? avatar : user.Community?.CommunityStyle?.icon }></img>User Settings</span> : null}
+            {  "messages".toLowerCase().includes(menuS.toLowerCase()) || menuS.length === 0 ? <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><div></div><img id="pfp-ms" src={!user.Community?.CommunityStyle?.icon ? avatar : user.Community?.CommunityStyle?.icon }></img>Messages</span> : null}
             {  "create post".toLowerCase().includes(menuS.toLowerCase()) || menuS.length === 0 ? <span onClick={(() => {
               history.push('/posts/new')
               setIsVisible(false)
               })}><div></div><i class="fi fi-rr-plus"></i>Create Post</span> : null}
-            {  "notifications".toLowerCase().includes(menuS.toLowerCase()) || menuS.length === 0 ? <span onClick={(() => window.alert("Feature not available"))}><div></div><i class="fi fi-rs-cowbell"></i>Notifications</span> : null}
-            {  "premium".toLowerCase().includes(menuS.toLowerCase()) || menuS.length === 0 ? <span onClick={(() => window.alert("Feature not available"))}><div></div><i class="fa-solid fa-shield-halved"></i>Premium</span> : null}
-            {  "avatar".toLowerCase().includes(menuS.toLowerCase()) || menuS.length === 0 ? <span onClick={(() => window.alert("Feature not available"))}><div></div><i class="fi fi-rr-vest"></i>Avatar</span> : null}
+            {  "notifications".toLowerCase().includes(menuS.toLowerCase()) || menuS.length === 0 ? <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><div></div><i class="fi fi-rs-cowbell"></i>Notifications</span> : null}
+            {  "premium".toLowerCase().includes(menuS.toLowerCase()) || menuS.length === 0 ? <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><div></div><i class="fa-solid fa-shield-halved"></i>Premium</span> : null}
+            {  "avatar".toLowerCase().includes(menuS.toLowerCase()) || menuS.length === 0 ? <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><div></div><i class="fi fi-rr-vest"></i>Avatar</span> : null}
             </div>
           </div> : null}
       </div>
@@ -346,19 +346,19 @@ function Navigation({ isLoaded }){
       <div id="img1">
       <i onClick={(() => history.push("/hot"))} class="fi fi-rr-grin-hearts"></i>
       </div>
-      <div onClick={(() => window.alert("Feature not available"))} id="img1">
+      <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="img1">
       <i class="fi fi-rs-shield"></i>
       </div>
-      <div onClick={(() => window.alert("Feature not available"))} id="img1">
+      <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="img1">
       <i class="fi fi-rr-comment-heart"></i>
       </div>
-      <div onClick={(() => window.alert("Feature not available"))} id="img1">
+      <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="img1">
       <i class="fi fi-rs-cowbell"></i>
       </div>
       <div onClick={(() => history.push('/posts/new'))} id="img1">
       <i class="fi fi-rr-plus"></i>
       </div>
-      <span onClick={(() => window.alert("Feature not available"))} id="advertise"><i class="fi fi-rr-bullhorn"></i>Advertise</span>
+      <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="advertise"><i class="fi fi-rr-bullhorn"></i>Advertise</span>
       </div>
       <div ref={ulRef} className='profile'>
       {isLoaded && sessionLinks}

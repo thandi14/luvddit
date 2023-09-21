@@ -39,8 +39,9 @@ function CreateCommunity() {
 
         async function fetchData() {
             const response = await dispatch(communityActions.thunkCreateCommunity(data1))
+            console.log("NEW COMMUNITY", response)
             if (response) {
-                history.push(`/communities/${response.id}/:page`)
+                history.push(`/communities/${response.community2.id}/:page/`)
                 closeModal()
             }
 
