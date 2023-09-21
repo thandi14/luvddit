@@ -370,7 +370,7 @@ function PostPage() {
         <div id="details-side">
         <p>Posted by l/{singlePost?.User?.username} just now<i onClick={((e) => {
                                         e.stopPropagation()
-                                        window.alert("Feature not available")
+                                        window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))
                                     })}class="fi fi-rs-cowbell"></i></p>
         <h1>{singlePost?.title}</h1>
         <span id="tags">{ tags && tags.includes("oc") ? <div id="oc6">OC</div> : null} {tags && tags.includes("spoiler") ? <div id="spoiler6">Spoiler</div> : null } { tags && tags.includes("nsfw") ? <div id="nsfw6">NSFW</div> : null}</span>
@@ -419,23 +419,23 @@ function PostPage() {
             <i class="fa-regular fa-message"></i>
             <p>{comments && comments.length}</p>
             </div>
-            <div onClick={(() => window.alert("Feature not avaliable"))} id="comment4">
+            <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="comment4">
                 <i class="fi fi-rs-heart-arrow"></i>
                 <p>Share</p>
             </div>
-            <div onClick={(() => window.alert("Feature not avaliable"))} id="comment4">
+            <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="comment4">
                 <i class="fi fi-rs-check-circle"></i>
                 <p>Approved</p>
             </div>
-            <div onClick={(() => window.alert("Feature not avaliable"))} id="comment4">
+            <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="comment4">
                 <i class="fi fi-rs-circle-cross"></i>
                 <p>Removed</p>
             </div>
-            <div onClick={(() => window.alert("Feature not avaliable"))} id="comment4">
+            <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="comment4">
                 <i class="fi fi-rr-box"></i>
                 <p>Spam</p>
             </div>
-            <div onClick={(() => window.alert("Feature not avaliable"))} id="comment4">
+            <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="comment4">
                 <i class="fi fi-rs-shield"></i>
             </div>
             <div id="comment4">
@@ -448,8 +448,8 @@ function PostPage() {
                     setIsVisible2(true)
                     setIsVisible(false)
                     })}><i class="fi fi-rr-magic-wand"></i>Edit</p> : null}
-                <p onClick={(() => window.alert('Feature not available'))} ><i class="fi fi-rr-bookmark"></i>Save</p>
-                <p onClick={(() => window.alert('Feature not available'))}><i class="fi fi-rr-eye-crossed"></i>Hide</p>
+                <p onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} ><i class="fi fi-rr-bookmark"></i>Save</p>
+                <p onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))}><i class="fi fi-rr-eye-crossed"></i>Hide</p>
                 <p onClick={(() => {
                     setModalContent2(<DeletePost id={id} deleted={deleted}/>)
                     setIsVisible(false)
@@ -507,7 +507,7 @@ function PostPage() {
         </div>
         </div>
         <div className="comments-for-post">
-            <div style={{ color: `${singlePost.Community.CommunityStyle.base}`}}  onClick={(() => window.alert("Feature not avaliable"))} id="sort-comments">
+            <div style={{ color: `${singlePost.Community.CommunityStyle.base}`}}  onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="sort-comments">
                 <div>
                 <p>Sort By: Q&A (Suggested)<i class="fi fi-rr-caret-down"></i></p>
                 </div>
@@ -573,11 +573,11 @@ function PostPage() {
                                    <div>
                                         <CommentLikes comment={c} />
                                     </div>
-                                    <div onClick={(() => window.alert('Feature not available'))}>
+                                    <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))}>
                                         <i class="fa-regular fa-message"></i>
                                         <p>Reply</p>
                                     </div>
-                                    <div onClick={(() => window.alert('Feature not available'))} >
+                                    <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} >
                                         <i class="fi fi-rs-heart-arrow"></i>
                                         <p>Share</p>
                                     </div>
@@ -629,8 +629,8 @@ function PostPage() {
             <p>Moderators</p>
             </div>
             <div id="home-section7">
-                { !message && <button onMouseEnter={(() => setMessage(!message))} style={{ borderColor: `${singlePost.Community.CommunityStyle.highlight}`, color: `${singlePost.Community.CommunityStyle.highlight}`}} onClick={(() => window.alert("Feature not available"))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>}
-                { message && <button onMouseLeave={(() => setMessage(!message))} style={{backgroundColor: `${reduceOpacity(singlePost.Community.CommunityStyle.highlight, 0.1)}`, borderColor: `${singlePost.Community.CommunityStyle.highlight}`, color: `${singlePost.Community.CommunityStyle.highlight}`}} onClick={(() => window.alert("Feature not available"))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>}            <div id="cs-side7">
+                { !message && <button onMouseEnter={(() => setMessage(!message))} style={{ borderColor: `${singlePost.Community.CommunityStyle.highlight}`, color: `${singlePost.Community.CommunityStyle.highlight}`}} onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>}
+                { message && <button onMouseLeave={(() => setMessage(!message))} style={{backgroundColor: `${reduceOpacity(singlePost.Community.CommunityStyle.highlight, 0.1)}`, borderColor: `${singlePost.Community.CommunityStyle.highlight}`, color: `${singlePost.Community.CommunityStyle.highlight}`}} onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>}            <div id="cs-side7">
                 {user ? <span style={{ color: `${singlePost.Community.CommunityStyle.highlight}`}}>{singlePost.User.username}</span> : "" }
                 <span style={{ color: `${singlePost.Community.CommunityStyle.highlight}`}}>VIEW ALL MODERATORS</span>
             </div>

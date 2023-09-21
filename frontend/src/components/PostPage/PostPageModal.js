@@ -496,7 +496,7 @@ function PostPageModal({ postId, scroll }) {
                     <p>·</p>
                     <p style={{ display: "flex", width: "100%", alignItems: "center"}} >Posted by l/{singlePost?.User?.username} {getTimeDifferenceString(singlePost.createdAt)}<i style={{ fontSize: "20px", marginRight: "1%", marginTop: "0.6%", position: "absolute", right: "0" }} onClick={((e) => {
                                         e.stopPropagation()
-                                        window.alert("Feature not available")
+                                        window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))
                                     })}class="fi fi-rs-cowbell"></i></p>
 
                     {/* <p>Posted by u/{singlePost.User?.username} {getTimeDifferenceString(singlePost.createdAt)}</p> */}
@@ -551,15 +551,15 @@ function PostPageModal({ postId, scroll }) {
                     <i class="fa-regular fa-message"></i>
                     <p>{comments && comments.length} Comments</p>
                     </div>
-                    <div onClick={(() => window.alert("Feature not available"))} id="comment">
+                    <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="comment">
                     <i class="fi fi-rr-box-heart"></i>
                     <p>Awards</p>
                     </div>
-                    <div onClick={(() => window.alert("Feature not available"))}id="comment">
+                    <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))}id="comment">
                     <i class="fi fi-rs-heart-arrow"></i>
                     <p>Share</p>
                     </div>
-                    <div onClick={(() => window.alert("Feature not available"))} id="comment">
+                    <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="comment">
                     <i class="fi fi-rr-bookmark"></i>
                     <p>Save</p>
                     </div>
@@ -600,11 +600,11 @@ function PostPageModal({ postId, scroll }) {
                    {singlePost.PostImages.length && singlePost.PostImages[0].imgURL ? null : <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
                     <p onClick={((e) => {
                         e.stopPropagation()
-                        window.alert("Feature not available")
+                        window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))
                     })}><i class="fi fi-rr-bookmark"></i>Save</p>
                     <p onClick={((e) => {
                         e.stopPropagation()
-                        window.alert("Feature not available")
+                        window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))
                     })}><i class="fi fi-rr-eye-crossed"></i>Hide</p>
                     <p onClick={(() => {
                         setModalContent2(<div> <DeletePost id={singlePost.id} /></div>)
@@ -633,7 +633,7 @@ function PostPageModal({ postId, scroll }) {
             </div> }
             <div id="insights">
                 <p>Post Insights</p>
-                <p>Check back later to see views, shares, and more. <span onClick={(() => window.alert("Feature not available"))} style={{ color: `${singlePost.Community.CommunityStyle.highlight}`}}>Share your post</span> to spread the word!</p>
+                <p>Check back later to see views, shares, and more. <span onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} style={{ color: `${singlePost.Community.CommunityStyle.highlight}`}}>Share your post</span> to spread the word!</p>
             </div>
             <div className="comment-input">
                {user ? <p>Comment as <span style={{ color: `${singlePost.Community.CommunityStyle.highlight}`}} >{user.username}</span></p> : "Please login"}
@@ -665,7 +665,7 @@ function PostPageModal({ postId, scroll }) {
             </div>
             </div>
             <div className="comments-for-post">
-                <div onClick={(() => window.alert("Feature not available"))} style={{ color: `${singlePost.Community.CommunityStyle.highlight}`}} id="sort-comments">
+                <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} style={{ color: `${singlePost.Community.CommunityStyle.highlight}`}} id="sort-comments">
                     <div>
                     <p >Sort By: Q&A (Suggested)<i class="fi fi-rr-caret-down"></i></p>
                     </div>
@@ -734,11 +734,11 @@ function PostPageModal({ postId, scroll }) {
                                     <div>
                                         <CommentLikes comment={c} />
                                     </div>
-                                    <div onClick={(() => window.alert('Feature not available'))}>
+                                    <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))}>
                                         <i class="fa-regular fa-message"></i>
                                         <p>Reply</p>
                                     </div>
-                                    <div onClick={(() => window.alert('Feature not available'))}>
+                                    <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))}>
                                         <i class="fi fi-rs-heart-arrow"></i>
                                         <p>Share</p>
                                     </div>
@@ -758,16 +758,16 @@ function PostPageModal({ postId, scroll }) {
                                         })}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
                                      {c.userId === user.id ? null : <p onClick={((e) => {
                                             e.stopPropagation()
-                                            window.alert("Feature not available")
+                                            window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))
                                         })}><i class="fi fi-rr-flag"></i>Report</p>}
                                      <p onClick={((e) => {
                                         e.stopPropagation()
-                                        window.alert("Feature not available")
+                                        window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))
                                     })}><i class="fi fi-rr-bookmark"></i>Save</p>
                                      {c.userId === user.id ? null : <p><i class="fi fi-rs-cowbell"></i>Follow</p>}
                                      {c.userId !== user.id ? null : <p onClick={((e) => {
                                             e.stopPropagation()
-                                            window.alert("Feature not available")
+                                            window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))
                                         })}><i class="fi fi-rr-eye-crossed"></i>Hide</p>}
                                      {c.userId !== user.id ? null : <p onClick={(() => {
                                      setModalContent2(<div> <DeleteComment id={c.id} /></div>)
@@ -827,8 +827,8 @@ function PostPageModal({ postId, scroll }) {
                 <div id="home-section7">
                 { singlePost.Community.id === 10 && !message && <button onClick={(() => openEmailClient())} onMouseEnter={(() => setMessage(!message))} style={{ borderColor: `${singlePost.Community?.CommunityStyle?.highlight}`, color: `${singlePost.Community?.CommunityStyle?.highlight}`}} id="but4"><i class="fi fi-rr-envelope"></i> Message the creator</button>}
                 { singlePost.Community.id === 10 && message && <button  onClick={(() => openEmailClient())} onMouseLeave={(() => setMessage(!message))} style={{backgroundColor: `${reduceOpacity(singlePost.Community?.CommunityStyle?.highlight, 0.1)}`, borderColor: `${singlePost.Community?.CommunityStyle?.highlight}`, color: `${singlePost.Community?.CommunityStyle?.highlight}`}} id="but4"><i class="fi fi-rr-envelope"></i> Message the creator</button>}
-                { singlePost.Community.id !== 10 && !message && <button onMouseEnter={(() => setMessage(!message))} style={{ borderColor: `${singlePost.Community?.CommunityStyle?.highlight}`, color: `${singlePost.Community.CommunityStyle?.highlight}`}} onClick={(() => window.alert("Feature not available"))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>}
-                { singlePost.Community.id !== 10 && message && <button onMouseLeave={(() => setMessage(!message))} style={{backgroundColor: `${reduceOpacity(singlePost.Community.CommunityStyle?.highlight, 0.1)}`, borderColor: `${singlePost.Community?.CommunityStyle?.highlight}`, color: `${singlePost.Community?.CommunityStyle?.highlight}`}} onClick={(() => window.alert("Feature not available"))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>}
+                { singlePost.Community.id !== 10 && !message && <button onMouseEnter={(() => setMessage(!message))} style={{ borderColor: `${singlePost.Community?.CommunityStyle?.highlight}`, color: `${singlePost.Community.CommunityStyle?.highlight}`}} onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>}
+                { singlePost.Community.id !== 10 && message && <button onMouseLeave={(() => setMessage(!message))} style={{backgroundColor: `${reduceOpacity(singlePost.Community.CommunityStyle?.highlight, 0.1)}`, borderColor: `${singlePost.Community?.CommunityStyle?.highlight}`, color: `${singlePost.Community?.CommunityStyle?.highlight}`}} onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="but4"><i class="fi fi-rr-envelope"></i> Message the mods</button>}
                 <div id="cs-side7">
                     {user?.id !== singlePost.User?.id ? <span style={{ color: `${singlePost.Community.CommunityStyle?.highlight}`}} onClick={(() => {
                         history.push(`/profile2/${singlePost.User?.id}/:page`)
