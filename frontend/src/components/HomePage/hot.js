@@ -106,7 +106,7 @@ function HotPage() {
       let cm = Object.values(memberships)
 
       for (let c of cm ) {
-        if (c.lenth) {
+        if (c.Posts.length) {
             for ( let p of c?.Posts ) recent.push(p)
         }
       }
@@ -115,6 +115,8 @@ function HotPage() {
     else {
       recent = Object.values(posts)
     }
+
+    if (!recent.length) recent = Object.values(posts)
 
    recent = recent.reverse().sort((a, b) => a.createdAt - b.createdAt)
 

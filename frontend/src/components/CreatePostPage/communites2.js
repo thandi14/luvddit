@@ -267,21 +267,21 @@ function CommunitiesProfile({ page, community }) {
                     if (community.User?.id === user?.id || singleCommunity.User?.id === user?.id ) history.push('/profile/:page')
                     return
                     })}style={{ position: "relative", backgroundSize: "100% 100%", backgroundImage: imagePreview2 ? `url(${imagePreview2})` : `url(${community.CommunityStyle.banner})`}} id="profile-header">
-        {community.User?.id === user?.id || singleCommunity.User?.id === user?.id ? <span onClick={triggerFileInput2}id="a-img2"><i class="fi fi-rr-camera"></i></span> : null }
+        {community.userId === user?.id || singleCommunity.User?.id === user?.id ? <span onClick={triggerFileInput2}id="a-img2"><i class="fi fi-rr-camera"></i></span> : null }
         </div>
         :
         <div onClick={((e) => {
-            if (community.User?.id === user?.id || singleCommunity.User?.id === user?.id ) history.push('/profile/:page')
+            if (community.userId === user?.id || singleCommunity.User?.id === user?.id ) history.push('/profile/:page')
             return
             })}style={{ position: "relative" }} id="profile-header">
-        {community.User?.id === user?.id || singleCommunity.User?.id === user?.id  ? <span onClick={triggerFileInput2}id="a-img2"><i class="fi fi-rr-camera"></i></span> : null }
+        {community.userId === user?.id || singleCommunity.User?.id === user?.id  ? <span onClick={triggerFileInput2}id="a-img2"><i class="fi fi-rr-camera"></i></span> : null }
         </div>}
         <div id="your-community">
         <div style={{ position: "relative" }} id="yc-avatar">
         { !imagePreview && !community.CommunityStyle?.icon && <img src={avatar}></img>}
         { imagePreview && <img src={imagePreview}></img>}
         { !imagePreview && community.CommunityStyle?.icon && <img src={community.CommunityStyle?.icon}></img>}
-        { community.User?.id === user?.id || singleCommunity.User?.id === user?.id  ?<span onClick={triggerFileInput} id="a-img"><i class="fi fi-rr-camera"></i></span> : null }
+        { community.userId === user?.id || singleCommunity.User?.id === user?.id  ?<span onClick={triggerFileInput} id="a-img"><i class="fi fi-rr-camera"></i></span> : null }
         </div>
         <div id="user-community2">
         <span onClick={((e) => {

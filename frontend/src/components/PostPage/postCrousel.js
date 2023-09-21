@@ -36,7 +36,7 @@ const MyCarousel = ({ images }) => {
     };
 
     return (
-      <div style={{ position: "relative", width: "100%", justifyContent: "center", display: "flex" }} className="custom-slider">
+      <div style={{ overflow: "hidden", position: "relative", width: "100%", justifyContent: "center", display: "flex" }} className="custom-slider">
         <div id="numImages">{currentIndex + 1}/{images?.length}</div>
         { currentIndex >= 1 && <i id="gotobutt" style={{ left: "0"}} onClick={goToPrev} class="fi fi-sr-angle-circle-left"></i>}
         <div style={sliderStyle} className="slider">

@@ -1695,6 +1695,7 @@
     box-shadow: 1px 1px 5px 1px #ccc;
     display: flex;
     border-radius: 100%;
+    margin: 0% 1%;
     align-self: center;
     align-items: center;
     cursor: pointer;
