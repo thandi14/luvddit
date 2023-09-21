@@ -769,7 +769,8 @@ function PostPageModal({ postId, scroll }) {
                                             e.stopPropagation()
                                             window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))
                                         })}><i class="fi fi-rr-eye-crossed"></i>Hide</p>}
-                                     {c.userId !== user.id ? null : <p onClick={(() => {
+                                     {c.userId !== user.id ? null : <p onClick={((e) => {
+                                        e.stopPropagation()
                                      setModalContent2(<div> <DeleteComment id={c.id} /></div>)
                                      setIsVisible(false)
                                      setIsVisible3(false)
