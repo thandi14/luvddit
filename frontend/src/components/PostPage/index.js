@@ -100,8 +100,6 @@ function PostPage() {
 
     }, [dispatch, data2, singlePost.id])
 
-    console.log(comment2)
-
 
     const handleClick = () => {
         setIsVisible(!isVisible);
@@ -214,7 +212,6 @@ function PostPage() {
             setDeleted(data)
             if (data)  await dispatch(communityActions.thunkGetDetailsById(data?.communityId))
 
-            console.log("TAGS", data1)
         }
         fetchData()
 
