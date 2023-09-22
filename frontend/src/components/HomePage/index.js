@@ -105,7 +105,7 @@ function HomePage() {
       let cm = Object.values(memberships)
 
       for (let c of cm ) {
-        if (c.Posts.length) {
+        if (c.Posts?.length) {
             for ( let p of c?.Posts ) recent.push(p)
         }
       }

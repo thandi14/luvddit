@@ -64,7 +64,6 @@ function App() {
   const { search }= useSearch()
   const { filter } = useFilter()
 
-  console.log(search)
 
   useEffect(() => {
     localStorage.setItem("currentPage", currentPage.toString());
@@ -188,7 +187,7 @@ function App() {
           <OtherProfilePage />
           </Route>
           <Route exact path="/profile2/top/:id/:page">
-          <OtherTopProfilePage /> 
+          <OtherTopProfilePage />
           </Route>
           <Route exact path="/profile2/hot/:id/:page">
           <OtherHotProfilePage />

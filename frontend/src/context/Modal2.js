@@ -39,7 +39,6 @@ export function ModalProvider2({ children }) {
 export function Modal2() {
   const { modalRef2, modalContent2, closeModal2 } = useContext(ModalContext2);
   const targetRef = useRef()
-  console.log(modalRef2)
   // If there is no div referenced by the modalRef or modalContent is not a
   // truthy value, render nothing:
   if (!modalRef2 || !modalRef2.current || !modalContent2) return null;
