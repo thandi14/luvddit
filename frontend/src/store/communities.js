@@ -391,7 +391,7 @@ export const thunkJoinCommunities = (id, type) => async (dispatch) => {
 
     let status
 
-    if (!type) {
+    if (type !== "Public") {
         status = { status: "Unapproved" }
     }
 

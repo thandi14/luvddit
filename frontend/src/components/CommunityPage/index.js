@@ -158,7 +158,7 @@ function CommunityPage() {
     joined = true
     if (singleCommunity.id) {
 
-      if (singleCommunity.type === "Public") await dispatch(communityActions.thunkJoinCommunities(singleCommunity.id))
+      if (singleCommunity.type === "Public") await dispatch(communityActions.thunkJoinCommunities(singleCommunity.id, singleCommunity.type))
       if (singleCommunity.type === "Private" || singleCommunity.type === "Restricted") await dispatch(communityActions.thunkJoinCommunities(singleCommunity.id, singleCommunity.type))
     }
   }
