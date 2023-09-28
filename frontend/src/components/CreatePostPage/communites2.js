@@ -267,30 +267,30 @@ function CommunitiesProfile({ page, community }) {
                     if (community.User?.id === user?.id || singleCommunity.User?.id === user?.id ) history.push('/profile/:page')
                     return
                     })}style={{ position: "relative", backgroundSize: "100% 100%", backgroundImage: imagePreview2 ? `url(${imagePreview2})` : `url(${community.CommunityStyle.banner})`}} id="profile-header">
-        {community.userId === user?.id || singleCommunity.User?.id === user?.id ? <span onClick={triggerFileInput2}id="a-img2"><i class="fi fi-rr-camera"></i></span> : null }
+        {community.userId === user?.id ? <span onClick={triggerFileInput2}id="a-img2"><i class="fi fi-rr-camera"></i></span> : null }
         </div>
         :
         <div onClick={((e) => {
             if (community.userId === user?.id || singleCommunity.User?.id === user?.id ) history.push('/profile/:page')
             return
             })}style={{ position: "relative" }} id="profile-header">
-        {community.userId === user?.id || singleCommunity.User?.id === user?.id  ? <span onClick={triggerFileInput2}id="a-img2"><i class="fi fi-rr-camera"></i></span> : null }
+        {community.userId === user?.id ? <span onClick={triggerFileInput2}id="a-img2"><i class="fi fi-rr-camera"></i></span> : null }
         </div>}
         <div id="your-community">
         <div style={{ position: "relative" }} id="yc-avatar">
         { !imagePreview && !community.CommunityStyle?.icon && <img src={avatar}></img>}
         { imagePreview && <img src={imagePreview}></img>}
         { !imagePreview && community.CommunityStyle?.icon && <img src={community.CommunityStyle?.icon}></img>}
-        { community.userId === user?.id || singleCommunity.User?.id === user?.id  ?<span onClick={triggerFileInput} id="a-img"><i class="fi fi-rr-camera"></i></span> : null }
+        { community.userId === user?.id ? <span onClick={triggerFileInput} id="a-img"><i class="fi fi-rr-camera"></i></span> : null }
         </div>
         <div id="user-community2">
         <span onClick={((e) => {
-                    if (community.User?.id === user?.id || singleCommunity.User?.id === user?.id ) history.push('/profile/:page')
+                    if (community.userId === user?.id ) history.push('/profile/:page')
                     return
                     })}>u/{userCommunity[2]}</span>
-        { community.User?.id === user?.id && <i onClick={(() => window.alert("Feature not available"))} class="fi fi-rr-settings"></i> }
+        { community.userId === user?.id && <i onClick={(() => window.alert("Feature not available"))} class="fi fi-rr-settings"></i> }
         </div>
-        {community.User?.id === user?.id ? <button onClick={(() => window.alert("Feature not available"))} id="user-button"><p>Create Avatar</p><i class="fi fi-rr-angle-small-right"></i></button> : null}
+        {community.userId === user?.id ? <button onClick={(() => window.alert("Feature not available"))} id="user-button"><p>Create Avatar</p><i class="fi fi-rr-angle-small-right"></i></button> : null}
         <div id="community-info">
             <div>
             <span id="ci-name">Karma</span>
@@ -301,8 +301,8 @@ function CommunitiesProfile({ page, community }) {
             <span id="ci-icon"><i class="fi fi-rr-cake-birthday"></i>{formattedDate}</span>
             </div>
         </div>
-        { community.User?.id === user?.id ? <button onClick={(() => window.alert("Feature not available"))} id="social-button"><i class="fi fi-rr-plus"></i>Add social link</button> : null }
-        { community.User?.id !== user?.id ? <button onClick={((e) => {
+        { community.userId === user?.id ? <button onClick={(() => window.alert("Feature not available"))} id="social-button"><i class="fi fi-rr-plus"></i>Add social link</button> : null }
+        { community.userId !== user?.id ? <button onClick={((e) => {
             e.stopPropagation()
             window.alert('Feature not avaliable')
             })} id="follow">Follow</button> : null }

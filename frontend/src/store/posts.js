@@ -304,7 +304,7 @@ export const thunkGetAllSearchedPosts = (page, search) => async (dispatch) => {
 }
 
 export const thunkGetHotPosts = (page) => async (dispatch) => {
-  console.log("HELLO!!!!!!!")
+  // console.log("HELLO!!!!!!!")
   const response1 = await csrfFetch(`/api/posts/hot?page=${page}`);
   let data1 = await response1.json();
   dispatch(getHotPosts(data1));
@@ -329,7 +329,7 @@ export const thunkGetBestPosts = (page) => async (dispatch) => {
 }
 
 export const thunkGetHotCommunityPosts = (id, page) => async (dispatch) => {
-  console.log("HELLO!!!!!!!")
+  // console.log("HELLO!!!!!!!")
   const response1 = await csrfFetch(`/api/communities/${id}/hot?page=${page}`);
   let data1 = await response1.json();
   dispatch(getHotCommunityPosts(data1));
@@ -352,7 +352,7 @@ export const thunkRefreshCommunities = () => async (dispatch) => {
 }
 
 export const thunkRefreshPosts = () => async (dispatch) => {
-  console.log("HELLLOKJQENVJ")
+  // console.log("HELLLOKJQENVJ")
   let data = null
   dispatch(getSearch(data))
 
@@ -390,7 +390,7 @@ export const thunkGetHistory = (page) => async (dispatch) => {
 }
 
 export const thunkGetFavorites = (page) => async (dispatch) => {
-  console.log("HELLO????:", page)
+  // console.log("HELLO????:", page)
   const response1 = await csrfFetch(`/api/posts/votes?page=${page}`)
   let data1 = await response1.json();
   dispatch(getFavorites(data1));
@@ -426,7 +426,7 @@ export const thunkGetOverview = (id, page) => async (dispatch) => {
 }
 
 export const thunkGetHotOverview = (id, page) => async (dispatch) => {
-  console.log(id, page)
+  // console.log(id, page)
   const response1 = await csrfFetch(`/api/posts/${id}/overview/hot?page=${page}`)
   let data1 = await response1.json();
   dispatch(getHotOverview(data1));
@@ -555,7 +555,7 @@ export const thunkCreateHistory = (id) => async (dispatch) => {
 }
 
 export const thunkUpdateHistory = (id) => async (dispatch) => {
-  console.log("REDUCER", id)
+  // console.log("REDUCER", id)
   const response = await csrfFetch(`/api/posts/${id}/history`, {
       method: 'PUT',
       headers: {
@@ -817,7 +817,7 @@ const postsReducer = (state = initialState, action) => {
     }
     case GET_FAVORITES: {
       newState = { ...state };
-      console.log(action.posts)
+      // console.log(action.posts)
       action.posts.forEach(
         (favorite) => (newState.postsFavorites[favorite.Post.id] = { ...favorite.Post })
       );
@@ -1049,7 +1049,7 @@ const postsReducer = (state = initialState, action) => {
       newState.postsFavorites[vote.postId].Votes.push(vote);
       }
 
-      console.log("REDUCER", newState.posts)
+      // console.log("REDUCER", newState.posts)
       return newState;
     }
     case GET_VOTE_DETAILS2: {

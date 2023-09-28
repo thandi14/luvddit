@@ -810,7 +810,7 @@ function PostPageModal({ postId, scroll }) {
                         <span><div>{singlePost.Community?.CommunityMembers}</div>Members</span>
                          <span><div id="online"><i class="fi fi-ss-bullet"></i>{randomNum}</div>Online</span>
                         </div>
-                        <div id="line"></div>
+                        {user && <div id="line"></div> }
                         {user && myMemberships.length && joined && !button ? <button  onMouseEnter={(() => setButton(true))} style={{ color: `${singlePost.Community.CommunityStyle.highlight}`, border: `1px solid ${singlePost.Community.CommunityStyle.highlight}`, width: "100%"}} onClick={handleUnjoinClick} id="joined">Joined</button> : null }
                         {user && myMemberships.length && joined && button ? <button  onMouseLeave={(() => setButton(false))} style={{ backgroundColor: `${reduceOpacity(singlePost.Community.CommunityStyle.highlight, 0.1)}`, color: `${singlePost.Community.CommunityStyle.highlight}`, border: `1px solid ${singlePost.Community.CommunityStyle.highlight}`, width: "100%"}} onClick={handleUnjoinClick} id="joined">Leave</button> : null }
                         {user && !myMemberships.length && !joined ? <button style={{ backgroundColor: `${singlePost.Community.CommunityStyle.highlight}`, border: `1px solid ${singlePost.Community.CommunityStyle.highlight}`, width: "100%"}} onClick={handleJoinClick} id="join">Join</button> : null }

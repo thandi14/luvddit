@@ -273,7 +273,7 @@ export const thunkCreateCommunity = (data) => async (dispatch) => {
             body: JSON.stringify(data)
         })
         const data1 = await response.json()
-        console.log("REDUCER", data1)
+        // console.log("REDUCER", data1)
         dispatch(getDetails(data1))
        // console.log("WTF IS HAPPENING???", data1)
         return data1
@@ -435,7 +435,7 @@ export const thunkAddMember = (communityId, userId) => async (dispatch) => {
 }
 
 export const thunkUpdateMember = (communityId, userId, status) => async (dispatch) => {
-    console.log("REDUCER, STATUS:", status)
+    // console.log("REDUCER, STATUS:", status)
     const response = await csrfFetch(`/api/communities/${communityId}/member/${userId}`, {
             method: 'PUT',
             headers: {
