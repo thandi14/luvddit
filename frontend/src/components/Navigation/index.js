@@ -355,7 +355,7 @@ function Navigation({ isLoaded }){
       <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="img1">
       <i class="fi fi-rs-cowbell"></i>
       </div>
-      <div onClick={(() => history.push('/posts/new'))} id="img1">
+      <div onClick={(() => user ? history.push('/posts/new') : setModalContent(<LoginFormModal />))} id="img1">
       <i class="fi fi-rr-plus"></i>
       </div>
       <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="advertise"><i class="fi fi-rr-bullhorn"></i>Advertise</span>
