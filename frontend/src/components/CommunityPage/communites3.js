@@ -31,7 +31,7 @@ function YourCommunitesProfile({ base, highlight }) {
     let members
     if (communityMemberships) members = Object.values(communityMemberships)
 
-    let approved = members.some((m) => m.status === "Approved" && m.userId === user.id) && singleCommunity.id
+    let approved = members.some((m) => m.status === "Approved" && m.userId === user?.id) && singleCommunity.id
 
     approved = !approved && singleCommunity.id ? false : true
 
@@ -117,7 +117,7 @@ function YourCommunitesProfile({ base, highlight }) {
             <div id="cs-side1">
                 { location.pathname.includes("/posts/") && !singleCommunity.CommunityStyle?.icon ? <div onClick={(() => history.push( `/communities/${singleCommunity.id}/:page`))} style={{ padding: "4% 0%", alignItems: "center", display: "flex", gap: "5px"}} ><div style={{ fontSize: "30px", color: "white", backgroundColor: `${style?.base}`}} id="pfp100">/l</div><span style={{ fontWeight: "900"}}>/l {singleCommunity.name}</span></div> : null}
                 { location.pathname.includes("/posts/") && singleCommunity.CommunityStyle?.icon ? <div onClick={(() => history.push( `/communities/${singleCommunity.id}/:page`))} style={{ padding: "4% 0%", alignItems: "center", display: "flex", gap: "5px"}} ><img src={singleCommunity.CommunityStyle?.icon} id="pfp100"></img><span style={{ fontWeight: "900"}}>/l {singleCommunity.name}</span></div> : null}
-                {!singleCommunity.about && !isVisible ? <button onClick={(() => setIsVisible(!isVisible))} id="add-about">Add description</button> : null}
+                {user?.id === singleCommunity.userId && !singleCommunity.about && !isVisible ? <button onClick={(() => setIsVisible(!isVisible))} id="add-about">Add description</button> : null}
                 {isVisible ? <div style={{ borderColor: `${style?.highlight}`}} className="about-edit">
                 <input maxLength={500} defaultValue={singleCommunity?.about} onChange={((e) => setAbout(e.target.value))} placeholder="Tell us about your community" id="input-about" type="text"></input>
                 <div id="edit-about"><span>{500 - about.length} Characters remaining</span><div><span onClick={(() => setIsVisible(!isVisible))}>Cancel</span><span style={{ color: `${style?.highlight}`}} onClick={handleSubmit}>Save</span></div></div>
