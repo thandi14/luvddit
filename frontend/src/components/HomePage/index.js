@@ -13,6 +13,7 @@ import PostLikes from './likes'
 import MyCarousel from '../PostPage/postCrousel'
 import { useFilter } from '../../context/filter'
 import SignupFormModal from '../SignupFormPage'
+import Cookies from 'js-cookie';
 
 
 function HomePage() {
@@ -39,10 +40,6 @@ function HomePage() {
     const [threshold, setThreshold] = useState(450);
 
     let top = isVisible ? "top" : "down"
-
-    // useEffect(() => {
-    //   dispatch(postsActions.thunkGetHistory(page)); // Fetch posts for the specified page
-    // }, [dispatch, page]);
 
     useEffect(() => {
       window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
@@ -99,6 +96,7 @@ function HomePage() {
 
     // if (!ePost.length) return <h1 className="data-not-here"></h1>
 
+
     let recent = []
 
     if (user && Object.values(memberships).length) {
@@ -112,14 +110,14 @@ function HomePage() {
 
     }
     else {
-      recent = Object.values(posts)
+      recent = []
     }
 
-    if (!recent.length) recent = Object.values(posts)
+    if (!recent.length) recent = []
 
-   recent = recent.reverse().sort((a, b) => a.createdAt - b.createdAt)
+    if (recent.length) recent = recent.reverse().sort((a, b) => a.createdAt - b.createdAt)
 
-   recent = recent.slice(0, 5)
+    if (recent.length) recent = recent.slice(0, 5)
 
 
     const getTimeDifferenceString = (createdAt) => {
@@ -312,7 +310,7 @@ function HomePage() {
                 </> }
                 </div>
                 </div>
-                <div className='recent-posts'>
+              { recent.length > 0 &&  <div className='recent-posts'>
                     <span>RECENT POSTS</span>
                     {recent.map((r, i) =>
                     <>
@@ -325,11 +323,11 @@ function HomePage() {
                         <span>{r.User.karma} points · {r.Comments.length} Comments · {getTimeDifferenceString2(r.createdAt)}</span>
                         </div>
                     </div>
-                        { i !== 4 ? <div id="line"></div> : null}
+                    { i !== (recent.length - 1) ? <div id="line"></div> : null}
                     </>
                     )}
-                    <span id="span2">Clear</span>
-                </div>
+                    <span style={{ cursor: "pointer" }} id="span2">Clear</span>
+                </div>}
                 <div id="terms">
                     <div id="terms-1">
                     <div>

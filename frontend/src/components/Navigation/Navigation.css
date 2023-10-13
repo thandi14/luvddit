@@ -268,7 +268,7 @@ input:focus {
 .profile {
     width: 14%;
     margin: 5px;
-    justify-content: flex-end;
+    justify-content: center;
     display: flex;
     position: relative;
 }

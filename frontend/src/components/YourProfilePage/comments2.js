@@ -18,6 +18,7 @@ import '../PostPage/PostPage.css'
 import * as sessionActions from "../../store/session"
 import { useFilter } from '../../context/filter'
 import SignupFormModal from '../SignupFormPage'
+import NoPosts from './none'
 
 
 function Commented2Posts() {
@@ -264,7 +265,7 @@ function Commented2Posts() {
         </div>
         </div>
         </div>
-        {filterdPosts?.map((post, i) =>
+        {filterdPosts && !filterdPosts.length ? <NoPosts name={"posted"} /> : filterdPosts?.map((post, i) =>
             // <div id={`${post.id}`} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={scrolling} />))} className="post-content">
             <div id="omg">
             <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id={`${post.id}`} className="post-content2">

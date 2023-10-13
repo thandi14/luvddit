@@ -17,6 +17,7 @@ import DeleteComment from '../PostPage/deleteC'
 import '../PostPage/PostPage.css'
 import MyCarousel from '../PostPage/postCrousel'
 import { useFilter } from '../../context/filter'
+import NoPosts from './none'
 
 function YourProfilePage() {
     const { posts, singlePost, postsOverview } = useSelector((state) => state.posts);
@@ -281,7 +282,7 @@ function YourProfilePage() {
         </div>
         </div>
         </div>
-        {filterdPosts?.map((post, i) =>
+        {filterdPosts && !filterdPosts.length ? <NoPosts name={"posted"} /> : filterdPosts?.map((post, i) =>
             // <div id={`${post.id}`} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={scrolling} />))} className="post-content">
             <div id="omg">
             <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id={`${post.id}`} className="post-content2">
