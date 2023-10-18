@@ -169,6 +169,8 @@ function SearchPage() {
 
       const myMemberships = Object.values(memberships)
 
+      console.log(myMemberships)
+
 
     return (
         <div className="splashPage">
@@ -253,7 +255,7 @@ function SearchPage() {
                     <span style={{color: "#7C7C7C"}} >{c.CommunityMembers} { c.CommunityMembers === 1 ? "member" : "members" }</span>
                     </div>
                     </div>
-                    { !myMemberships.some((m) => m.userId === user?.id).length ? <button onClick={(() => {
+                    { !myMemberships.some((m) => m.id === c.id) ? <button onClick={(() => {
                       if (!user) return setModalContent(<SignupFormModal />)
                       dispatch(communitiesActions.thunkJoinCommunities(c.id))
                       //   setJoined(true)
