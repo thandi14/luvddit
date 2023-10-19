@@ -52,7 +52,7 @@ function PostPageModal({ postId, scroll }) {
     const [ focus, setFocus ] = useState(false)
     const [ focus2, setFocus2 ] = useState(false)
     const [ focus3, setFocus3 ] = useState(false)
-    const [ newComment, setNewComment ] = useState("")
+    const [ sortComment, setSortComment ] = useState(false)
     const [ commentM, setCommentM ] = useState(false)
     const [ commentId2, setCommentId2 ] = useState(null);
     const [ p, setP ] = useState(null)
@@ -62,6 +62,8 @@ function PostPageModal({ postId, scroll }) {
     const [ scrollH, setScrollH ] = useState(false)
     const [ saveH, setSaveH ] = useState(false)
     const { setModalContent } = useModal()
+    const [ sComments, setSComments ] = useState("")
+    const [ sComments2, setSComments2 ] = useState("Best")
 
     let joined = null
 
@@ -466,6 +468,25 @@ function PostPageModal({ postId, scroll }) {
     window.location.href = mailtoLink;
   }
 
+    if (sComments2.length && comments?.length) {
+        if (sComments2 === "Best") {
+            comments = comments.sort((a, b) => b.Votes?.length - a.Votes?.length)
+        }
+        if (sComments2 === "Top") {
+            comments = comments.sort((a, b) => b.Votes?.filter((v) => v.upVote == 1).length - a.Votes?.filter((v) => v.upVote == 1).length)
+        }
+        if (sComments2 === "New") {
+            comments = comments.sort((a, b) => b.createdAt - a.createdAt)
+        }
+        if (sComments2 === "Old") {
+            comments = comments.sort((a, b) => b.createdAt - a.createdAt).reverse()
+        }
+        if (sComments2 === "Controversial") {
+            comments = comments.sort((a, b) => b.Votes?.filter((v) => v.downVote == 1).length - a.Votes?.filter((v) => v.downVote == 1).length)
+        }
+    }
+
+    if (sComments.length) comments = comments.filter((c) => c.comment.includes(sComments))
 
     return (
         <div className="post-modal">
@@ -665,21 +686,51 @@ function PostPageModal({ postId, scroll }) {
             </div>
             </div>
             <div className="comments-for-post">
-                <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} style={{ color: `${singlePost.Community.CommunityStyle.highlight}`}} id="sort-comments">
-                    <div>
-                    <p >Sort By: Q&A (Suggested)<i class="fi fi-rr-caret-down"></i></p>
+                <div style={{ color: `${singlePost.Community.CommunityStyle.highlight}`}} id="sort-comments">
+                    <div style={{ position: "relative", display: "flex", flexDirection: "column"}}>
+                    <p onClick={(() => setSortComment(!sortComment))} id="sorting-comms">Sort By: {sComments2}
+                    <i class="fi fi-rr-caret-down"></i>
+                    </p>
+                    { sortComment && <div id="comment-m">
+                        <span style={{ color: sComments2 === "Best" ? "#0079D3" : ""}} onClick={((e) => {
+                            e.stopPropagation()
+                            setSComments2("Best")
+                            setSortComment(false)
+                            })}>Best</span>
+                        <span style={{ color: sComments2 === "Top" ? "#0079D3" : ""}} onClick={((e) => {
+                            e.stopPropagation()
+                            setSComments2("Top")
+                            setSortComment(false)
+                            })}>Top</span>
+                        <span style={{ color: sComments2 === "New" ? "#0079D3" : ""}} onClick={((e) => {
+                            e.stopPropagation()
+                            setSComments2("New")
+                            setSortComment(false)
+                            })}>New</span>
+                        <span style={{ color: sComments2 === "Controversial" ? "#0079D3" : ""}} onClick={((e) => {
+                            e.stopPropagation()
+                            setSComments2("Controversial")
+                            setSortComment(false)
+                            })}>Controversial</span>
+                        <span style={{ color: sComments2 === "Old" ? "#0079D3" : ""}} onClick={((e) => {
+                            e.stopPropagation()
+                            setSComments2("Old")
+                            setSortComment(false)
+                            })}>Old</span>
+                    </div>}
+
                     </div>
-                    <div>
+                    {/* <div>
                     <p>Clear suggested sort</p>
                     </div>
                     <div>
                     <p>Contest</p>
                     <img src="https://vizzendata.files.wordpress.com/2020/01/switch-left.png"></img>
-                    </div>
+                    </div> */}
                     <div id="divider16"></div>
                     <div>
                     <i id="searchI" class="fi fi-rs-search-heart"></i>
-                    <input type="text" placeholder='Search comments'></input>
+                    <input onChange={((e) => setSComments(e.target.value))} type="text" placeholder='Search comments'></input>
                     </div>
                 </div>
                     <div id="go-to-c"></div>

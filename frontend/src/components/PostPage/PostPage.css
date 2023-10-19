@@ -382,7 +382,7 @@
 #sort-comments > div > input {
     padding: 7.5px;
     border: 1px solid #EDEFF1;
-    padding-left: 23px;
+    padding-left: 32px;
     padding-right: 10px;
     border-radius: 4px;
     font-weight: lighter;
@@ -392,7 +392,7 @@
 #searchI {
     align-self: center;
     position: absolute;
-    margin-left: 0.4%;
+    margin-left: 0.8%;
     color: #acacac;
     font-size: 14px;
     margin-top: 0.2%;
@@ -1701,4 +1701,41 @@
     cursor: pointer;
     position: absolute;
     z-index: 2;
+}
+
+#sorting-comms {
+    align-items: center;
+    display: flex;
+    position: relative;
+}
+
+#sorting-comms > i {
+    font-size: 12px;
+    height: 12px;
+}
+
+#comment-m {
+    border: 1.5px solid #EDEFF1;
+    position: absolute;
+    flex-direction: column;
+    border-radius: 5px;
+    display: flex;
+    top: 30px;
+    background-color: white;
+    font-size: xx-large;
+    left: 0;
+    width: 100px;
+    box-shadow: 1px 1px 3px 1px #EDEFF1;
+}
+
+#comment-m > span {
+    padding: 8% 6.5%;
+    font-size: 14px;
+    color: #878A8C;
+}
+
+#comment-m > span:hover {
+    color: black;
+    background-color: #0078d313;
+    /* opacity: 0.2; */
 }

@@ -236,6 +236,12 @@
 
 }
 
+#restrict {
+    margin-right: 5px;
+    font-size: 18px;
+    height: 18px;
+}
+
 .sidebar > div {
     background-color: white;
     width: 100%;

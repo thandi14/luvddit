@@ -60,6 +60,9 @@ function PostPage() {
     const [ scrollH, setScrollH ] = useState(false)
     const [ saveH, setSaveH ] = useState(false)
     const { setModalContent } = useModal()
+    const [ sortComment, setSortComment ] = useState(false)
+    const [ sComments, setSComments ] = useState("")
+    const [ sComments2, setSComments2 ] = useState("Best")
 
     useEffect(() => {
         const handleScroll = () => {
@@ -343,7 +346,25 @@ function PostPage() {
         return urlRegex.test(text);
       }
 
+      if (sComments2.length && comments?.length) {
+        if (sComments2 === "Best") {
+            comments = comments.sort((a, b) => b.Votes?.length - a.Votes?.length)
+        }
+        if (sComments2 === "Top") {
+            comments = comments.sort((a, b) => b.Votes?.filter((v) => v.upVote == 1).length - a.Votes?.filter((v) => v.upVote == 1).length)
+        }
+        if (sComments2 === "New") {
+            comments = comments.sort((a, b) => b.createdAt - a.createdAt)
+        }
+        if (sComments2 === "Old") {
+            comments = comments.sort((a, b) => b.createdAt - a.createdAt).reverse()
+        }
+        if (sComments2 === "Controversial") {
+            comments = comments.sort((a, b) => b.Votes?.filter((v) => v.downVote == 1).length - a.Votes?.filter((v) => v.downVote == 1).length)
+        }
+    }
 
+    if (sComments.length) comments = comments.filter((c) => c.comment.includes(sComments))
 
     return (
 
@@ -371,7 +392,7 @@ function PostPage() {
                                     })}class="fi fi-rs-cowbell"></i></p>
         <h1>{singlePost?.title}</h1>
         <span id="tags">{ tags && tags.includes("oc") ? <div id="oc6">OC</div> : null} {tags && tags.includes("spoiler") ? <div id="spoiler6">Spoiler</div> : null } { tags && tags.includes("nsfw") ? <div id="nsfw6">NSFW</div> : null}</span>
-        <div id="post-info1">
+        {singlePost.description && <div id="post-info1">
         { isVisible2 ? null : !isLink(singlePost.description) ? <p>{singlePost?.description}</p> : null}
         { isVisible2 ? null : isLink(singlePost.description) ? <a href={`${singlePost?.description}`}>{singlePost?.description}</a> : null}
         { isVisible2 ? <div className="post-input7">
@@ -397,7 +418,7 @@ function PostPage() {
                    <textarea onFocus={(() => setFocus2(true))} onBlur={(() => setFocus2(false))} defaultValue={singlePost.description} onChange={((e) => setDescription(e.target.value) )} placeholder="Text(optional)"></textarea>
         </div> : null}
         {singlePost.PostImages?.length ? singlePost.PostImages?.length === 1 ? <div><img id="post-image1" src={singlePost.PostImages[0].imgURL} alt="postimg"></img></div> : <MyCarousel images={singlePost.PostImages}/> : null}
-        </div>
+        </div> }
         { isVisible2 ? <div id="save"><button style={{ color: `${singlePost.Community.CommunityStyle.highlight}`}} onClick={handleClick2} >Cancel</button>
         { !description && <button id={"save-submit"} onClick={((e) => {
                     e.stopPropagation()
@@ -504,23 +525,53 @@ function PostPage() {
         </div>
         </div>
         <div className="comments-for-post">
-            <div style={{ color: `${singlePost.Community.CommunityStyle.base}`}}  onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="sort-comments">
-                <div>
-                <p>Sort By: Q&A (Suggested)<i class="fi fi-rr-caret-down"></i></p>
+        <div style={{ color: `${singlePost.Community.CommunityStyle.highlight}`}} id="sort-comments">
+                    <div style={{ position: "relative", display: "flex", flexDirection: "column"}}>
+                    <p onClick={(() => setSortComment(!sortComment))} id="sorting-comms">Sort By: {sComments2}
+                    <i class="fi fi-rr-caret-down"></i>
+                    </p>
+                    { sortComment && <div id="comment-m">
+                        <span style={{ color: sComments2 === "Best" ? "#0079D3" : ""}} onClick={((e) => {
+                            e.stopPropagation()
+                            setSComments2("Best")
+                            setSortComment(false)
+                            })}>Best</span>
+                        <span style={{ color: sComments2 === "Top" ? "#0079D3" : ""}} onClick={((e) => {
+                            e.stopPropagation()
+                            setSComments2("Top")
+                            setSortComment(false)
+                            })}>Top</span>
+                        <span style={{ color: sComments2 === "New" ? "#0079D3" : ""}} onClick={((e) => {
+                            e.stopPropagation()
+                            setSComments2("New")
+                            setSortComment(false)
+                            })}>New</span>
+                        <span style={{ color: sComments2 === "Controversial" ? "#0079D3" : ""}} onClick={((e) => {
+                            e.stopPropagation()
+                            setSComments2("Controversial")
+                            setSortComment(false)
+                            })}>Controversial</span>
+                        <span style={{ color: sComments2 === "Old" ? "#0079D3" : ""}} onClick={((e) => {
+                            e.stopPropagation()
+                            setSComments2("Old")
+                            setSortComment(false)
+                            })}>Old</span>
+                    </div>}
+
+                    </div>
+                    {/* <div>
+                    <p>Clear suggested sort</p>
+                    </div>
+                    <div>
+                    <p>Contest</p>
+                    <img src="https://vizzendata.files.wordpress.com/2020/01/switch-left.png"></img>
+                    </div> */}
+                    <div id="divider16"></div>
+                    <div>
+                    <i id="searchI" class="fi fi-rs-search-heart"></i>
+                    <input onChange={((e) => setSComments(e.target.value))} type="text" placeholder='Search comments'></input>
+                    </div>
                 </div>
-                <div>
-                <p>Clear suggested sort</p>
-                </div>
-                <div>
-                <p>Contest</p>
-                <img src="https://vizzendata.files.wordpress.com/2020/01/switch-left.png"></img>
-                </div>
-                <div id="divider16"></div>
-                <div>
-                <i id="searchI" class="fi fi-rs-search-heart"></i>
-                <input type="text" placeholder='Search comments'></input>
-                </div>
-            </div>
             { !comments || !comments.length ? <div id="any-comments">
                     <i style={{ color: `${singlePost.Community.CommunityStyle.base}`}} class="fi fi-rr-comment-heart"></i>
                     <p>No Comments Yet</p>
