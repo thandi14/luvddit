@@ -486,7 +486,7 @@ function PostPageModal({ postId, scroll }) {
         }
     }
 
-    if (sComments.length) comments = comments.filter((c) => c.comment.includes(sComments))
+    if (sComments.length) comments = comments.filter((c) => c.comment.toLowerCase().includes(sComments.toLowerCase()))
 
     return (
         <div className="post-modal">
