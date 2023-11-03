@@ -2,18 +2,27 @@ import "./CreateCommunityModel.css"
 import { useModal } from "../../context/Modal"
 import { useState, useEffect } from "react";
 import * as communityActions from "../../store/communities"
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 
 function CreateCommunity() {
+    const { communities } = useSelector((state) => state.communities)
     const { closeModal } = useModal();
     const [ name, setName ] = useState("");
     const [ data1, setData1 ] = useState("");
     const dispatch = useDispatch()
     const history = useHistory()
     const [ type, setType ] = useState("Public")
-    const [ errors, setErrors ] = useState(false)
+    const [ errors, setErrors ] = useState({})
+
+    useEffect(() => {
+        async function fetchData() {
+          let data = await dispatch(communityActions.thunkGetAllCommunities())
+          }
+          fetchData()
+
+    }, [dispatch, data1])
 
     function isNotAllSpaces(inputString) {
         return !/^[\s]+$/.test(inputString);
@@ -22,15 +31,19 @@ function CreateCommunity() {
     const handleSubmit = async () => {
 
 
-        if (name.length >= 3 && isNotAllSpaces(name)) {
-            setData1({
-                name,
-                type
-             })
+        if (name.length <= 3 || !isNotAllSpaces(name)) {
+            setErrors({ length: "Community names must be between 3–21 characters, and can only contain letters, numbers, or underscores."})
+
+        }
+        else if (Object.values(communities).filter((c) => c.name === name).length > 0) {
+            setErrors({ name: `Sorry, r/${name} is taken. Try another.`})
 
         }
         else {
-            setErrors(true)
+            setData1({
+                name,
+                type
+            })
         }
 
     }
@@ -64,7 +77,8 @@ function CreateCommunity() {
             <input maxLength={21} onChange={((e) => setName(e.target.value))} type="text"></input>
             </div>
             <span className={name.length === 21 ? "red" : "grey"}> { 21 - name.length} Characters remaining</span>
-            { errors ? <span style={{ fontSize: "12px", color: "red"}}>Community names must be between 3–21 characters, and can only contain letters, numbers, or underscores.</span> : null}
+            { errors["length"] ? <span style={{ fontSize: "12px", color: "red"}}>{errors["length"]}</span> : null}
+            { errors["name"] ? <span style={{ fontSize: "12px", color: "red"}}>{errors["name"]}</span> : null}
             </div>
             <div id="cc-type">
                 <span>Community type</span>
@@ -98,7 +112,7 @@ function CreateCommunity() {
             </div>
             <div id="cc-submit">
                 <button onClick={(() => closeModal())}>Cancel</button>
-                <button id={name.length >= 3 && isNotAllSpaces(name) ? "eleven" : "eleven2"} onClick={handleSubmit}>Create Community</button>
+                <button id={ name.length >= 3 && isNotAllSpaces(name) ? "eleven" : "eleven2"} onClick={handleSubmit}>Create Community</button>
             </div>
         </div>
     )

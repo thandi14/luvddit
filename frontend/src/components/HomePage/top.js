@@ -13,39 +13,32 @@ import PostLikes from './likes'
 import MyCarousel from '../PostPage/postCrousel'
 import { useFilter } from '../../context/filter'
 import SignupFormModal from '../SignupFormPage'
-
+import Cookies from 'js-cookie'
 
 function TopPage() {
-    const { posts, singlePost, topPosts } = useSelector((state) => state.posts);
-    const { memberships } = useSelector((state) => state.communities);
+  const { posts, singlePost, topPosts } = useSelector((state) => state.posts);
+  const { memberships } = useSelector((state) => state.communities);
+  const { user } = useSelector((state) => state.session);
+  const dispatch = useDispatch()
+  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible2, setIsVisible2] = useState(false);
+  const [ isLiked, setIsLiked ] = useState([]);
+  const history = useHistory()
+  const { setModalContent } = useModal()
+  const { page } = useParams(); // Retrieve the page parameter from the URL
 
-    const { user } = useSelector((state) => state.session);
-    const dispatch = useDispatch()
-    const [isVisible, setIsVisible] = useState(false);
-    const [isVisible2, setIsVisible2] = useState(false);
-    const [isVisible3, setIsVisible3] = useState(true);
-    const [ votePost, setVotePost ] = useState(null);
-    const [ isLiked, setIsLiked ] = useState([]);
-    const history = useHistory()
-    const { setModalContent } = useModal()
-    const [ scrolling, setScrolling ] = useState(null)
-    const targetRef = useRef()
-    const { page } = useParams(); // Retrieve the page parameter from the URL
-    const [ bestP, setBestP ] = useState(true)
-    const [ hotP, setHotP ] = useState(false)
-    const [ topP, setTopP ] = useState(false)
-    const [ newP, setNewP ] = useState(false)
-    const { filter, setFilter } = useFilter()
-    const [currentPage, setCurrentPage] = useState(1);
-    const [threshold, setThreshold] = useState(450);
+  let top = isVisible ? "top" : "down"
 
-    let top = isVisible ? "top" : "down"
+  useEffect(() => {
+    window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
+  }, []);
 
-    useEffect(() => {
-      window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
-    }, []);
+  const clearButton = () => {
+    const clearTime = new Date().toISOString(); // Get the current timestamp
+    Cookies.set(`${user.id}`, clearTime, { expires: 365 }); // Set a cookie that expires in 365 days
+};
 
-
+const userClearTime = Cookies.get(user?.id)
 
   useEffect(() => {
     async function fetchData() {
@@ -66,105 +59,103 @@ function TopPage() {
       fetchData()
   }, [singlePost.Comments, page])
 
-    useEffect(() => {
-      const handleScroll = () => {
-        if (window.scrollY < 450) {
-            setIsVisible2(false)
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY < 450) {
+          setIsVisible2(false)
 
-        }
-        else if (window.scrollY > 460) {
-          setIsVisible(true);
-          setIsVisible2(true);
+      }
+      else if (window.scrollY > 460) {
+        setIsVisible(true);
+        setIsVisible2(true);
 
-        } else {
-          setIsVisible(false);
+      } else {
+        setIsVisible(false);
 
-        }
-      };
-
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
+      }
     };
 
+  window.addEventListener('scroll', handleScroll);
 
-    }, [])
+  return () => {
+    window.removeEventListener('scroll', handleScroll);
+  };
 
 
-    let ePost = Object.values(topPosts).sort((a, b) => b.Votes.filter((v) => v.upVote == 1).length - a.Votes.filter((v) => v.upVote == 1).length)
+  }, [])
 
-    // if (!ePost.length) return <h1 className="data-not-here"></h1>
 
-    let recent = []
+  let ePost = Object.values(topPosts).sort((a, b) => b.Votes.filter((v) => v.upVote == 1).length - a.Votes.filter((v) => v.upVote == 1).length)
 
-    if (user && Object.values(memberships).length) {
-      let cm = Object.values(memberships)
+  let recent = []
 
-      for (let c of cm ) {
-        if (c.Posts?.length) {
-            for ( let p of c?.Posts ) recent.push(p)
-        }
+  if (user && Object.values(memberships).length) {
+    let cm = Object.values(memberships)
+
+    for (let c of cm ) {
+      if (c.Posts?.length) {
+          for ( let p of c?.Posts ) recent.push(p)
       }
-
-    }
-    else {
-      recent = []
     }
 
-    if (!recent.length) recent = []
+  }
+  else {
+    recent = []
+  }
 
-    if (recent.length) recent = recent.reverse().sort((a, b) => a.createdAt - b.createdAt)
+  if (!recent.length) recent = []
 
-    if (recent.length) recent = recent.slice(0, 5)
+  if (recent.length) recent = recent.reverse().sort((a, b) => a.createdAt - b.createdAt)
+  if (userClearTime) recent = recent.filter((r) => r.createdAt > userClearTime)
+  if (recent.length) recent = recent.slice(0, 5)
 
 
 
-    const getTimeDifferenceString = (createdAt) => {
-        const currentTime = new Date();
-        const createdAtDate = new Date(createdAt);
+  const getTimeDifferenceString = (createdAt) => {
+      const currentTime = new Date();
+      const createdAtDate = new Date(createdAt);
 
-        const timeDifferenceInSeconds = Math.floor((currentTime - createdAtDate) / 1000);
+      const timeDifferenceInSeconds = Math.floor((currentTime - createdAtDate) / 1000);
 
-        if (timeDifferenceInSeconds < 60) {
-          return timeDifferenceInSeconds === 1 ? `${timeDifferenceInSeconds} sec ago` : `${timeDifferenceInSeconds} secs ago`;
-        } else if (timeDifferenceInSeconds < 3600) {
-          const minutes = Math.floor(timeDifferenceInSeconds / 60);
-          return minutes === 1 ? `${minutes} minute ago` : `${minutes} minutes ago`;
-        } else if (timeDifferenceInSeconds < 86400) {
-          const hours = Math.floor(timeDifferenceInSeconds / 3600);
-          return hours === 1 ? `${hours} hour ago` : `${hours} hours ago`;
-        } else if (timeDifferenceInSeconds < 2592000) {
-          const days = Math.floor(timeDifferenceInSeconds / 86400);
-          return days === 1 ? `${days} day ago` : `${days} days ago`;
-        } else if (timeDifferenceInSeconds < 31536000) {
-          const months = Math.floor(timeDifferenceInSeconds / 2592000);
-          return months === 1 ? `${months} month ago` : `${months} months ago`;
-        } else {
-          const years = Math.floor(timeDifferenceInSeconds / 31536000);
-          return years === 1 ? `${years} year ago` : `${years} years ago`;
-        }
-      };
+      if (timeDifferenceInSeconds < 60) {
+        return timeDifferenceInSeconds === 1 ? `${timeDifferenceInSeconds} sec ago` : `${timeDifferenceInSeconds} secs ago`;
+      } else if (timeDifferenceInSeconds < 3600) {
+        const minutes = Math.floor(timeDifferenceInSeconds / 60);
+        return minutes === 1 ? `${minutes} minute ago` : `${minutes} minutes ago`;
+      } else if (timeDifferenceInSeconds < 86400) {
+        const hours = Math.floor(timeDifferenceInSeconds / 3600);
+        return hours === 1 ? `${hours} hour ago` : `${hours} hours ago`;
+      } else if (timeDifferenceInSeconds < 2592000) {
+        const days = Math.floor(timeDifferenceInSeconds / 86400);
+        return days === 1 ? `${days} day ago` : `${days} days ago`;
+      } else if (timeDifferenceInSeconds < 31536000) {
+        const months = Math.floor(timeDifferenceInSeconds / 2592000);
+        return months === 1 ? `${months} month ago` : `${months} months ago`;
+      } else {
+        const years = Math.floor(timeDifferenceInSeconds / 31536000);
+        return years === 1 ? `${years} year ago` : `${years} years ago`;
+      }
+    };
 
-      const getTimeDifferenceString2 = (createdAt) => {
-        const currentTime = new Date();
-        const createdAtDate = new Date(createdAt);
+    const getTimeDifferenceString2 = (createdAt) => {
+      const currentTime = new Date();
+      const createdAtDate = new Date(createdAt);
 
-        const timeDifferenceInSeconds = Math.floor((currentTime - createdAtDate) / 1000);
+      const timeDifferenceInSeconds = Math.floor((currentTime - createdAtDate) / 1000);
 
-        if (timeDifferenceInSeconds < 60) {
-          return timeDifferenceInSeconds === 1 ? `${timeDifferenceInSeconds} sec` : `${timeDifferenceInSeconds} secs`;
-        } else if (timeDifferenceInSeconds < 3600) {
-          const minutes = Math.floor(timeDifferenceInSeconds / 60);
-          return `${minutes} mins`
-        } else if (timeDifferenceInSeconds < 86400) {
-          const hours = Math.floor(timeDifferenceInSeconds / 3600);
-          return hours === 1 ? `${hours} hr` : `${hours} hrs`;
-        } else {
-          const days = Math.floor(timeDifferenceInSeconds / 86400);
-          return `${days} d`;
-        }
-      };
+      if (timeDifferenceInSeconds < 60) {
+        return timeDifferenceInSeconds === 1 ? `${timeDifferenceInSeconds} sec` : `${timeDifferenceInSeconds} secs`;
+      } else if (timeDifferenceInSeconds < 3600) {
+        const minutes = Math.floor(timeDifferenceInSeconds / 60);
+        return `${minutes} mins`
+      } else if (timeDifferenceInSeconds < 86400) {
+        const hours = Math.floor(timeDifferenceInSeconds / 3600);
+        return hours === 1 ? `${hours} hr` : `${hours} hrs`;
+      } else {
+        const days = Math.floor(timeDifferenceInSeconds / 86400);
+        return `${days} d`;
+      }
+    };
 
 
 
@@ -327,7 +318,7 @@ function TopPage() {
                     { i !== (recent.length - 1) ? <div id="line"></div> : null}
                     </>
                     )}
-                    <span style={{ cursor: "pointer" }} id="span2">Clear</span>
+                    <span onClick={clearButton} style={{ cursor: "pointer" }} id="span2">Clear</span>
                 </div>}
                 <div id="terms">
                     <div id="terms-1">

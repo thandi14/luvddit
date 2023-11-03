@@ -417,8 +417,8 @@ function PostPage() {
                     </div>
                    <textarea onFocus={(() => setFocus2(true))} onBlur={(() => setFocus2(false))} defaultValue={singlePost.description} onChange={((e) => setDescription(e.target.value) )} placeholder="Text(optional)"></textarea>
         </div> : null}
-        {singlePost.PostImages?.length ? singlePost.PostImages?.length === 1 ? <div><img id="post-image1" src={singlePost.PostImages[0].imgURL} alt="postimg"></img></div> : <MyCarousel images={singlePost.PostImages}/> : null}
         </div> }
+        {singlePost.PostImages?.length ? singlePost.PostImages?.length === 1 ? <div><img id="post-image1" src={singlePost.PostImages[0].imgURL} alt="postimg"></img></div> : <MyCarousel images={singlePost.PostImages}/> : null}
         { isVisible2 ? <div id="save"><button style={{ color: `${singlePost.Community.CommunityStyle.highlight}`}} onClick={handleClick2} >Cancel</button>
         { !description && <button id={"save-submit"} onClick={((e) => {
                     e.stopPropagation()

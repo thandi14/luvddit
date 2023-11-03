@@ -17,36 +17,32 @@ import Cookies from 'js-cookie';
 
 
 function BestPage() {
-    const { posts, singlePost, bestPosts } = useSelector((state) => state.posts);
-    const { memberships } = useSelector((state) => state.communities);
-    const { user } = useSelector((state) => state.session);
-    const dispatch = useDispatch()
-    const [isVisible, setIsVisible] = useState(false);
-    const [isVisible2, setIsVisible2] = useState(false);
-    const [isVisible3, setIsVisible3] = useState(true);
-    const [ votePost, setVotePost ] = useState(null);
-    const [ isLiked, setIsLiked ] = useState([]);
-    const history = useHistory()
-    const { setModalContent } = useModal()
-    const [ scrolling, setScrolling ] = useState(null)
-    const targetRef = useRef()
-    const { page } = useParams(); // Retrieve the page parameter from the URL
-    const [ bestP, setBestP ] = useState(true)
-    const [ hotP, setHotP ] = useState(false)
-    const [ topP, setTopP ] = useState(false)
-    const [ newP, setNewP ] = useState(false)
-    const { filter, setFilter } = useFilter()
-    const [currentPage, setCurrentPage] = useState(1);
-    const [threshold, setThreshold] = useState(450);
-
-    let top = isVisible ? "top" : "down"
-
-    useEffect(() => {
-        setFilter(false)
-      window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
-    }, []);
+  const { posts, singlePost, bestPosts } = useSelector((state) => state.posts);
+  const { memberships } = useSelector((state) => state.communities);
+  const { user } = useSelector((state) => state.session);
+  const dispatch = useDispatch()
+  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible2, setIsVisible2] = useState(false);
+  const [ isLiked, setIsLiked ] = useState([]);
+  const history = useHistory()
+  const { setModalContent } = useModal()
+  const { page } = useParams(); // Retrieve the page parameter from the URL
+  const { filter, setFilter } = useFilter()
 
 
+  let top = isVisible ? "top" : "down"
+
+  useEffect(() => {
+      setFilter(false)
+    window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
+  }, []);
+
+  const clearButton = () => {
+      const clearTime = new Date().toISOString(); // Get the current timestamp
+      Cookies.set(`${user.id}`, clearTime, { expires: 365 }); // Set a cookie that expires in 365 days
+  };
+
+  const userClearTime = Cookies.get(user?.id)
 
   useEffect(() => {
     async function fetchData() {
@@ -114,10 +110,11 @@ function BestPage() {
       recent = []
     }
 
+
     if (!recent.length) recent = []
 
     if (recent.length) recent = recent.reverse().sort((a, b) => a.createdAt - b.createdAt)
-
+    if (userClearTime) recent = recent.filter((r) => r.createdAt > userClearTime)
     if (recent.length) recent = recent.slice(0, 5)
 
 
@@ -328,7 +325,7 @@ function BestPage() {
                         { i !== (recent.length - 1) ? <div id="line"></div> : null}
                     </>
                     )}
-                    <span style={{ cursor: "pointer" }} id="span2">Clear</span>
+                    <span onClick={clearButton} style={{ cursor: "pointer" }} id="span2">Clear</span>
                 </div>}
                 <div id="terms">
                     <div id="terms-1">

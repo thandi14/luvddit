@@ -472,17 +472,20 @@ function PostPageModal({ postId, scroll }) {
         if (sComments2 === "Best") {
             comments = comments.sort((a, b) => b.Votes?.length - a.Votes?.length)
         }
-        if (sComments2 === "Top") {
+        else if (sComments2 === "Top") {
             comments = comments.sort((a, b) => b.Votes?.filter((v) => v.upVote == 1).length - a.Votes?.filter((v) => v.upVote == 1).length)
         }
-        if (sComments2 === "New") {
+        else if (sComments2 === "New") {
             comments = comments.sort((a, b) => b.createdAt - a.createdAt)
         }
-        if (sComments2 === "Old") {
+        else if (sComments2 === "Old") {
             comments = comments.sort((a, b) => b.createdAt - a.createdAt).reverse()
         }
-        if (sComments2 === "Controversial") {
+        else if (sComments2 === "Controversial") {
             comments = comments.sort((a, b) => b.Votes?.filter((v) => v.downVote == 1).length - a.Votes?.filter((v) => v.downVote == 1).length)
+        }
+        else {
+            comments = comments.sort((a, b) => b.Votes?.length - a.Votes?.length)
         }
     }
 
