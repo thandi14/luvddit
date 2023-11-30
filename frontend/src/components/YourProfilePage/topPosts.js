@@ -71,7 +71,14 @@ function UsersTopPosts() {
           dispatch(postsActions.thunkGetUserTopPosts(user?.id, currentPage)); // Fetch posts for the specified page
         }
       }
+      const handleSaved = async (id) => {
+        if (singlePost.PostSetting && !singlePost.PostSetting.saved) await dispatch(postsActions.thunkUpdateSaved(id))
+        else if (!singlePost.PostSetting) await dispatch(postsActions.thunkCreateSaved(id))
+      }
 
+      const handleUnsaved = async (id) => {
+        await dispatch(postsActions.thunkUpdateSaved2(id))
+      }
 
     useEffect(() => {
       window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
@@ -215,7 +222,7 @@ function UsersTopPosts() {
         <span onClick={(() => history.push("/profile/posts/:page"))} id="aHl">POSTS</span>
         <span onClick={(() => history.push("/profile/comments/:page"))} id="aH3">COMMENTS</span>
         <span onClick={(() => history.push("/profile/history/:page"))}id="aH4">HISTORY</span>
-        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}id="aH5">SAVED</span>
+        <span onClick={(() => history.push("/profile/saved/:page"))}id="aH5">SAVED</span>
         <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}id="aH6">HIDDEN</span>
         <span onClick={(() => history.push("/profile/upvoted/:page"))} id="aH7">UPVOTED</span>
         <span onClick={(() => history.push("/profile/downvoted/:page"))} id="aH8">DOWNVOTED</span>
@@ -320,7 +327,14 @@ function UsersTopPosts() {
                 <div className="menu">
                 <div id={editMenu}>
                    {singlePost.PostImages && singlePost.PostImages.length && singlePost.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                    <p><i class="fi fi-rr-bookmark"></i>Save</p>
+                   { !post.PostSetting || !post.PostSetting.saved ? <p onClick={(() => {
+                      handleSaved(post.id)
+                    })}>
+                    <i class="fi fi-rr-bookmark"></i>Save</p> :
+                    <p onClick={(() => {
+                      handleUnsaved(post.id)
+                    })}>
+                    <i class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
                     <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
                     <p onClick={(() => {
                         setModalContent2(<div> <DeletePost id={singlePost.id} /></div>)

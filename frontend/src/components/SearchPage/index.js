@@ -211,7 +211,13 @@ function SearchPage() {
                     {post.Community.CommunityStyle?.icon ? <img style={{ margin: "0%" }} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} src={post.Community.CommunityStyle.icon}></img> : <div style={{ backgroundColor: `${post.Community.CommunityStyle.base}`, color: "white" }} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pfp30">l/</div>}
                     <span style={{ fontWeight: "500"}} onClick={(() => history.push(`/communities/${post.communityId}/:page`))} className="userName" id="community">l/{post.Community.name}</span>
                     <p>·</p>
-                    <p >Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User.username}</span> {getTimeDifferenceString(post.createdAt)}</p>
+                    { user.id !== post.userId ? <p >Posted by <span onClick={((e) => {
+              e.stopPropagation()
+              history.push(`/profile2/${post.userId}/:page`)
+            })}  className="userName">u/{post.User && post.User.username}</span> {getTimeDifferenceString(post.createdAt)}</p> :
+            <p >Posted by <span onClick={((e) => {
+              e.stopPropagation()
+              history.push(`/profile/:page`)})}  className="userName">u/{post.User && post.User.username}</span> {getTimeDifferenceString(post.createdAt)}</p>}
                     </div>
                     <h3  style={{ padding: "0px", margin: "0px" , marginBottom: "1%", marginLeft: "0%"}} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title"><h3 style={{ fontSize: "16px" }} id="title-content">{post.title}{ post.tags && post.tags.includes("oc") ? <div id="oc5">OC</div> : null} {post.tags && post.tags.includes("spoiler") ? <span id="spoiler5">Spoiler</span> : null } { post.tags && post.tags.includes("nsfw") ? <span id="nsfw5">NSFW</span> : null}</h3></h3>
                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="content">

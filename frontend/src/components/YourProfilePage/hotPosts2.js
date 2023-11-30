@@ -61,6 +61,16 @@ function OthersHotPosts() {
 
       }, [currentPage]);
 
+      const handleSaved = async (id) => {
+        if (!user) return setModalContent(<SignupFormModal />)
+        if (singlePost.PostSetting && !singlePost.PostSetting.saved) await dispatch(postsActions.thunkUpdateSaved(id))
+        else if (!singlePost.PostSetting) await dispatch(postsActions.thunkCreateSaved(id))
+      }
+
+      const handleUnsaved = async (id) => {
+        await dispatch(postsActions.thunkUpdateSaved2(id))
+      }
+
       const handleScroll = () => {
         const windowHeight = window.innerHeight;
         const documentHeight = document.documentElement.scrollHeight;
@@ -304,7 +314,14 @@ function OthersHotPosts() {
                 <div className="menu">
                 <div id={editMenu}>
                    {singlePost.PostImages && singlePost.PostImages.length && singlePost.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                    <p><i class="fi fi-rr-bookmark"></i>Save</p>
+                   { !post.PostSetting || !post.PostSetting.saved ? <p onClick={(() => {
+                      handleSaved(post.id)
+                    })}>
+                    <i class="fi fi-rr-bookmark"></i>Save</p> :
+                    <p onClick={(() => {
+                      handleUnsaved(post.id)
+                    })}>
+                    <i class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
                     <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
                     <p onClick={(() => {
                         setModalContent2(<div> <DeletePost id={singlePost.id} /></div>)

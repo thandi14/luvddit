@@ -28,6 +28,7 @@ function BestPage() {
   const { setModalContent } = useModal()
   const { page } = useParams(); // Retrieve the page parameter from the URL
   const { filter, setFilter } = useFilter()
+  const [ saved, setSaved ] = useState(null);
 
 
   let top = isVisible ? "top" : "down"
@@ -54,7 +55,15 @@ function BestPage() {
 
   }, [dispatch, posts, user])
 
+  const handleSaved = async (id) => {
+    if (!user) return setModalContent(<SignupFormModal />)
+    if (singlePost.PostSetting && !singlePost.PostSetting.saved) await dispatch(postsActions.thunkUpdateSaved(id))
+    else if (!singlePost.PostSetting) await dispatch(postsActions.thunkCreateSaved(id))
+  }
 
+  const handleUnsaved = async (id) => {
+    await dispatch(postsActions.thunkUpdateSaved2(id))
+  }
 
   useEffect(() => {
     async function fetchData() {
@@ -90,7 +99,7 @@ function BestPage() {
     }, [])
 
 
-    let ePost = Object.values(bestPosts).sort((a, b) => b.Comments.length - a.Comments.length)
+    let ePost = Object.values(bestPosts).sort((a, b) => b.Comments?.length - a.Comments?.length)
 
     // if (!ePost.length) return <h1 className="data-not-here"></h1>
 
@@ -267,10 +276,20 @@ function BestPage() {
                     <i class="fi fi-rs-heart-arrow"></i>
                     <p>Share</p>
                     </div>
-                    <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="comment">
+                    { !post.PostSetting || !post.PostSetting.saved ? <div onClick={(() => {
+                      // setSaved(post.id)
+                      handleSaved(post.id)
+                    })} id="comment">
                     <i class="fi fi-rr-bookmark"></i>
                     <p>Save</p>
+                    </div> :
+                    <div onClick={(() => {
+                      handleUnsaved(post.id)
+                    })} id="comment">
+                    <i class="fi fi-rr-bookmark-slash"></i>
+                    <p>Unsave</p>
                     </div>
+                    }
                     <i onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} class="fi fi-rr-menu-dots"></i>
                     </div>
                     </div>

@@ -61,6 +61,15 @@ function YourHotProfilePage() {
 
       }, [currentPage]);
 
+      const handleSaved = async (id) => {
+        if (singlePost.PostSetting && !singlePost.PostSetting.saved) await dispatch(postsActions.thunkUpdateSaved(id))
+        else if (!singlePost.PostSetting) await dispatch(postsActions.thunkCreateSaved(id))
+      }
+
+      const handleUnsaved = async (id) => {
+        await dispatch(postsActions.thunkUpdateSaved2(id))
+      }
+
       const handleScroll = () => {
         const windowHeight = window.innerHeight;
         const documentHeight = document.documentElement.scrollHeight;
@@ -231,7 +240,7 @@ function YourHotProfilePage() {
         <span onClick={(() => history.push("/profile/posts/:page"))} id="aH2">POSTS</span>
         <span onClick={(() => history.push("/profile/comments/:page"))} id="aH3">COMMENTS</span>
         <span onClick={(() => history.push("/profile/history/:page"))}id="aH4">HISTORY</span>
-        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}id="aH5">SAVED</span>
+        <span onClick={(() => history.push("/profile/saved/:page"))}id="aH5">SAVED</span>
         <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}id="aH6">HIDDEN</span>
         <span onClick={(() => history.push("/profile/upvoted/:page"))}id="aH7">UPVOTED</span>
         <span onClick={(() => history.push("/profile/downvoted/:page"))}id="aH8">DOWNVOTED</span>
@@ -299,7 +308,34 @@ function YourHotProfilePage() {
                 </div>}
             </div>
 
-            {post.userId !== user?.id ? null
+            {post.userId !== user?.id ? <div id="post-extras9">
+            <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="comment">
+            <i class="fa-regular fa-message"></i>
+            <p id={`${post.id}`} >{post.Comments ? Object.values(post.Comments)?.length : 0} Comments</p>
+            </div>
+            <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="comment">
+            <i class="fi fi-rr-box-heart"></i>
+            <p>Awards</p>
+            </div>
+            <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="comment">
+            <i class="fi fi-rs-heart-arrow"></i>
+            <p>Share</p>
+            </div>
+            { !post.PostSetting || !post.PostSetting.saved ? <div onClick={(() => {
+                      handleSaved(post.id)
+                    })} id="comment">
+                    <i class="fi fi-rr-bookmark"></i>
+                    <p>Save</p>
+                    </div> :
+                    <div onClick={(() => {
+                      handleUnsaved(post.id)
+                    })} id="comment">
+                    <i class="fi fi-rr-bookmark-slash"></i>
+                    <p>Unsave</p>
+                    </div>
+                    }
+            <i onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} class="fi fi-rr-menu-dots"></i>
+            </div>
 
 
             : <div id="post-extras2">
@@ -351,7 +387,14 @@ function YourHotProfilePage() {
                 <div className="menu">
                 <div id={editMenu}>
                    {post.PostImages && post.PostImages.length && post.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                    <p><i class="fi fi-rr-bookmark"></i>Save</p>
+                   { !post.PostSetting || !post.PostSetting.saved ? <p onClick={(() => {
+                      handleSaved(post.id)
+                    })}>
+                    <i class="fi fi-rr-bookmark"></i>Save</p> :
+                    <p onClick={(() => {
+                      handleUnsaved(post.id)
+                    })}>
+                    <i class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
                     <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
                     <p onClick={(() => {
                         setModalContent2(<div> <DeletePost id={singlePost.id} /></div>)

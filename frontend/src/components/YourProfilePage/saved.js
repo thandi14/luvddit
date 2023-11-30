@@ -18,11 +18,12 @@ import '../PostPage/PostPage.css'
 import NoPosts from './none'
 import { useFilter } from '../../context/filter'
 
-function UsersPosts() {
-    const { posts, singlePost, userPosts } = useSelector((state) => state.posts);
+function SavedPosts() {
+    const { posts, singlePost, userPosts, postsSaved } = useSelector((state) => state.posts);
     const { userCommunities, communityMemberships, memberships } = useSelector((state) => state.communities);
     const { user } = useSelector((state) => state.session);
     const dispatch = useDispatch()
+    const { page } = useParams(); // Retrieve the page parameter from the URL
     const [isVisible, setIsVisible] = useState(false);
     const [isVisible2, setIsVisible2] = useState(false);
     const [isVisible3, setIsVisible3] = useState(true);
@@ -35,7 +36,6 @@ function UsersPosts() {
     const  { setModalContent2, modalRef2 } = useModal2()
     const [ postId, setPostId ] = useState(null)
     const [ commentId, setCommentId ] = useState(null)
-    const { page } = useParams(); // Retrieve the page parameter from the URL
     const targetRef2 = useRef()
     const [currentPage, setCurrentPage] = useState(1);
     const [currentPage2, setCurrentPage2] = useState(1);
@@ -43,72 +43,76 @@ function UsersPosts() {
     const { filter, setFilter } = useFilter()
     const [ seeMore, setSeeMore ] = useState(false)
 
-  useEffect(() => {
-    setFilter(false)
-      localStorage.setItem("currentPage", currentPage.toString());
-    }, [currentPage]);
-
-    useEffect(() => {
-
-      window.addEventListener('scroll', handleScroll);
-      return () => {
-        window.removeEventListener('scroll', handleScroll);
-      };
-
-    }, [currentPage]);
-
-    const handleScroll = () => {
-      const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-      const scrollTop = window.scrollY;
-
-      if (windowHeight + scrollTop >= documentHeight - threshold) {
-        const storedCurrentPage = localStorage.getItem("currentPage");
-
-        setCurrentPage(currentPage + 1);
-        setThreshold(threshold + 200);
-        dispatch(postsActions.thunkGetUserPosts(user?.id, currentPage)); // Fetch posts for the specified page
-      }
-    }
-
     const handleSaved = async (id) => {
-      if (singlePost.PostSetting && !singlePost.PostSetting.saved) await dispatch(postsActions.thunkUpdateSaved(id))
-      else if (!singlePost.PostSetting) await dispatch(postsActions.thunkCreateSaved(id))
-    }
+        if (singlePost.PostSetting && !singlePost.PostSetting.saved) await dispatch(postsActions.thunkUpdateSaved(id))
+        else if (!singlePost.PostSetting) await dispatch(postsActions.thunkCreateSaved(id))
+      }
 
-    const handleUnsaved = async (id) => {
-      await dispatch(postsActions.thunkUpdateSaved2(id))
-    }
-
-
-    useEffect(() => {
-      window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
-    }, []);
+      const handleUnsaved = async (id) => {
+        await dispatch(postsActions.thunkUpdateSaved2(id))
+      }
 
     useEffect(() => {
-      // if (!showMenu) return;
+      setFilter(false)
+        localStorage.setItem("currentPage", currentPage.toString());
+      }, [currentPage]);
 
-      const closeMenu = (e) => {
-        if (targetRef2 && !targetRef2.current?.contains(e.target)) {
-          setIsVisible2(false);
+      useEffect(() => {
+
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+          window.removeEventListener('scroll', handleScroll);
+        };
+
+    }, [currentPage]);
+
+      const handleScroll = () => {
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        const scrollTop = window.scrollY;
+
+        if (windowHeight + scrollTop >= documentHeight - threshold) {
+          const storedCurrentPage = localStorage.getItem("currentPage");
+
+          setCurrentPage(currentPage + 1);
+          setThreshold(threshold + 200);
+          dispatch(postsActions.thunkGetHistory(currentPage)); // Fetch posts for the specified page
         }
-      };
+      }
 
-      document.addEventListener('click', closeMenu);
 
-      return () => document.removeEventListener("click", closeMenu);
+    useEffect(() => {
+      dispatch(postsActions.thunkGetSaved(page)); // Fetch posts for the specified page
+    }, [dispatch, page]);
 
+    useEffect(() => {
+        window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
     }, []);
 
-    let filterdPosts = Object.values(userPosts).filter((p) => p.userId === user?.id).reverse()
+    useEffect(() => {
+        // if (!showMenu) return;
 
-    filterdPosts = filterdPosts.sort((a, b) => {
-      return b.createdAt - a.createdAt
-    })
+         const closeMenu = (e) => {
+           if (targetRef2 && !targetRef2.current?.contains(e.target)) {
+             setIsVisible2(false);
+           }
+         };
+
+         document.addEventListener('click', closeMenu);
+
+         return () => document.removeEventListener("click", closeMenu);
+
+        }, []);
+
+    let filterdPosts = Object.values(postsSaved)
+    // .filter((p) => {
+    //     return p.PostSetting?.userId === user.id
+    // })
+
+    let top = isVisible ? "top" : "down";
 
     let profile
 
-    let top = isVisible ? "top" : "down";
     let moderating = Object.values(userCommunities).filter((c) => c.type !== "Profile").slice(0, 3)
     if (seeMore) moderating = Object.values(userCommunities).filter((c) => c.type !== "Profile")
     if (!seeMore) moderating = Object.values(userCommunities).filter((c) => c.type !== "Profile").slice(0, 3)
@@ -116,18 +120,10 @@ function UsersPosts() {
     if (user) profile = Object.values(userCommunities).filter((m) => m.type === "Profile")[0]
 
     useEffect(() => {
-        dispatch(postsActions.thunkGetUserPosts(user?.id, page)); // Fetch posts for the specified page
-    }, [dispatch, page]);
 
-
-
-
-
-    useEffect(() => {
-
-      async function fetchData() {
-          let data = await dispatch(communitiesActions.thunkGetUserCommunities())
-          if (profile) await dispatch(communitiesActions.thunkGetDetailsById(profile.id))
+        async function fetchData() {
+           await dispatch(communitiesActions.thunkGetUserCommunities())
+           if (profile) await dispatch(communitiesActions.thunkGetDetailsById(profile.id))
         }
           fetchData()
 
@@ -168,21 +164,27 @@ function UsersPosts() {
 
     }, [])
 
-    moderating.shift()
+    filterdPosts.forEach((p) => {
+          let setting = p.PostSetting;
+          if (setting) {
+            let historyDate = new Date(p.PostSetting.history)
+            p.PostSetting.history = Date.parse(historyDate)
+          }
+    })
 
-    //let member = memberships?.filter((m) => moderating.some((c) => m.communityId === c.id))
+    filterdPosts.sort((a, b) => {
+       if (b.PostSetting && a.PostSetting) {
+         return b.PostSetting.history - a.PostSetting.history
+       }
+    })
 
-
-
-   // if (!ePost.length) return <h1 className="data-not-here"></h1>
+   //if (!ePost.length) return <h1 className="data-not-here"></h1>
 
     let recent = Object.values(posts)
     recent = recent.reverse()
     recent = recent.slice(0, 5)
 
-    const myMemberships = Object.values(memberships)
-
-
+    moderating.shift()
 
 
     const getTimeDifferenceString = (createdAt) => {
@@ -214,44 +216,30 @@ function UsersPosts() {
       let editMenu = isVisible2 ? "edit-menu" : "hidden";
       let editMenu2 = isVisible4 ? "edit-menu" : "hidden";
 
+      const myMemberships = Object.values(memberships)
+
 
     return (
         <>
 
     <div id="aHeader3">
         <div id="aH50">
-        <span onClick={(() => history.push("/profile/:page"))} id="aH2">OVERVIEW</span>
-        <span onClick={(() => history.push("/profile/posts/:page"))} id="aHl">POSTS</span>
+        <span onClick={(() => history.push("/profile/:page"))} id="aH4">OVERVIEW</span>
+        <span onClick={(() => history.push("/profile/posts/:page"))} id="aH2">POSTS</span>
         <span onClick={(() => history.push("/profile/comments/:page"))} id="aH3">COMMENTS</span>
-        <span onClick={(() => history.push("/profile/history/:page"))}id="aH4">HISTORY</span>
-        <span onClick={(() => history.push("/profile/saved/:page"))}id="aH5">SAVED</span>
+        <span onClick={(() => history.push("/profile/history/:page"))}id="aH5">HISTORY</span>
+        <span onClick={(() => history.push("/profile/saved/:page"))}id="aHl">SAVED</span>
         <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}id="aH6">HIDDEN</span>
         <span onClick={(() => history.push("/profile/upvoted/:page"))} id="aH7">UPVOTED</span>
-        <span onClick={(() => history.push("/profile/downvoted/:page"))} id="aH8">DOWNVOTED</span>
+        <span onClick={(() => history.push("/profile/downvoted/:page"))}id="aH8">DOWNVOTED</span>
         <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}id="aH9">AWARDS RECIEVED</span>
         <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}id="aH10">AWARDS GIVEN</span>
         </div>
     </div>
     <div className="splashPage2">
-    <div className="posts3">
-        <div className="filter">
-        <div id="filter-side1">
-        <div style={{ backgroundColor: "#EDEFF1"}} onClick={(() => history.push("/profile/posts/:page"))} id="best">
-        <i style={{ color: '#0079D3'}} class="fi fi-sr-bahai"></i>
-        <p style={{ color: '#0079D3'}}>New</p>
-        </div>
-        <div onClick={(() => history.push("/profile/posts/hot/:page"))}id="best">
-        <i class="fi fi-rs-flame"></i>
-        <p>Hot</p>
-        </div>
-        <div onClick={(() => history.push("/profile/posts/top/:page"))} id="best">
-        <i class="fi fi-ts-signal-bars-good"></i>
-        <p>Top</p>
-        </div>
-        </div>
-        </div>
-        {!filterdPosts.length ? <NoPosts name="posted anything"/> : filterdPosts?.map((post, i) =>
-            // <div id={`${post.id}`} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={scrolling} />))} className="post-content">
+    <div className="posts5">
+        <div></div>
+        {!filterdPosts.length ? <NoPosts name="seen anything" /> : filterdPosts?.map((post, i) =>
             <div id="omg2">
             <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id={`${post.id}`} className="post-content3">
             <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side9">
@@ -259,19 +247,18 @@ function UsersPosts() {
             />
             </div>
             <div id="what-cont">
-            {post.PostImages.length ? <img src={post.PostImages[0].imgURL}></img> : < i class="fi fi-rr-notebook"></i>}
+            {post.PostImages?.length ? <img src={post.PostImages[0].imgURL}></img> : < i class="fi fi-rr-notebook"></i>}
             </div>
             <div id="pc-side2">
-            <h3  id="p-tit2" onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title0"><h3 id="title-content10">{post.title}<span>{ post.tags && post.tags.includes("oc") ? <div id="oc5">OC</div> : null} {post.tags && post.tags.includes("spoiler") ? <span id="spoiler5">Spoiler</span> : null } { post.tags && post.tags.includes("nsfw") ? <span id="nsfw5">NSFW</span> : null}</span></h3></h3>
-            <div id="nameOf5">
+            <h3  id="p-tit2" onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title0"><h3 id="title-content10">{post.title}<span>{ post.tags && post.tags.includes("oc") ? <div id="oc5">OC</div> : null} {post.tags && post.tags.includes("spoiler") ? <span id="spoiler5">Spoiler</span> : null } { post.tags && post.tags.includes("nsfw") ? <span id="nsfw5">NSFW</span> : null}</span></h3></h3>            <div id="nameOf5">
             <span onClick={((e) => {
                 e.stopPropagation()
                 history.push(`/communities/${post.communityId}`)
-                })} className="userName" id="community">l/{post.Community.name}</span>
+                })} className="userName" id="community">l/{post.Community?.name}</span>
             { !myMemberships.filter((m) => m.id === post.communityId).length && post.Communiy && post.Community.type !== "Profile" ? <button onClick={((e) => {
                   e.stopPropagation()
                   dispatch(communitiesActions.thunkJoinCommunities(post.communityId))
-                  })} id="miniJoin2">Join</button> : null }
+                })} id="miniJoin2">Join</button> : null }
             <p>·</p>
             { user.id !== post.userId ? <p >Posted by <span onClick={((e) => {
               e.stopPropagation()
@@ -281,11 +268,6 @@ function UsersPosts() {
               e.stopPropagation()
               history.push(`/profile/:page`)})}  className="userName">u/{post.User && post.User.username}</span> {getTimeDifferenceString(post.createdAt)}</p>}
             </div>
-            {/* <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="content">
-            <div id="finishing4">
-              {post.description}
-              </div>
-            </div> */}
             <div className="move" id="post-extras2">
             <div id="comment5">
                 <i onClick={((e) => {
@@ -296,28 +278,28 @@ function UsersPosts() {
                 </div>
                 <div onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
+                    window.alert("Feature not avaliable")
                     })} id="comment4">
                     <i class="fi fi-rs-heart-arrow"></i>
                     <p>Share</p>
                 </div>
                 <div onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
+                    window.alert("Feature not avaliable")
                     })} id="comment4">
                     <i class="fi fi-rs-check-circle"></i>
                     <p>Approved</p>
                 </div>
                 <div onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
+                    window.alert("Feature not avaliable")
                     })} id="comment4">
                     <i class="fi fi-rs-circle-cross"></i>
                     <p>Removed</p>
                 </div>
                 <div onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
+                    window.alert("Feature not avaliable")
                     })} id="comment4">
                     <i class="fi fi-rr-box"></i>
                     <p>Spam</p>
@@ -377,7 +359,7 @@ function UsersPosts() {
 
     </div>
     <div className="sidebar2">
-        <CommunitiesProfile community={profile} page="/profile" />
+    <CommunitiesProfile community={profile} page="/profile" />
         <div id="terms2">
             <div id="terms-9">
             <span>You're a moderator of these <br></br>
@@ -400,8 +382,6 @@ function UsersPosts() {
                   })}
                   id="mod-butt2"></button> }
             </div>
-
-
             )}
             </div>
             { Object.values(userCommunities).filter((c) => c.type !== "Profile").length > 3 && <p onClick={((e) => {
@@ -417,4 +397,4 @@ function UsersPosts() {
 }
 
 
-export default UsersPosts
+export default SavedPosts

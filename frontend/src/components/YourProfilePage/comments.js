@@ -236,7 +236,7 @@ function CommentedPosts() {
         <span onClick={(() => history.push("/profile/posts/:page"))} id="aH2">POSTS</span>
         <span onClick={(() => history.push("/profile/comments/:page"))} id="aHl">COMMENTS</span>
         <span onClick={(() => history.push("/profile/history/:page"))}id="aH4">HISTORY</span>
-        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}id="aH5">SAVED</span>
+        <span onClick={(() => history.push("/profile/saved/:page"))}id="aH5">SAVED</span>
         <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}id="aH6">HIDDEN</span>
         <span onClick={(() => history.push("/profile/upvoted/:page"))}id="aH7">UPVOTED</span>
         <span onClick={(() => history.push("/profile/downvoted/:page"))}id="aH8">DOWNVOTED</span>

@@ -79,6 +79,16 @@ function OtherProfilePage() {
       }
       }
 
+      const handleSaved = async (id) => {
+        if (!user) return setModalContent(<SignupFormModal />)
+        if (singlePost.PostSetting && !singlePost.PostSetting.saved) await dispatch(postsActions.thunkUpdateSaved(id))
+        else if (!singlePost.PostSetting) await dispatch(postsActions.thunkCreateSaved(id))
+      }
+
+      const handleUnsaved = async (id) => {
+        await dispatch(postsActions.thunkUpdateSaved2(id))
+      }
+
 
     useEffect(() => {
         window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
@@ -347,13 +357,21 @@ function OtherProfilePage() {
             <i class="fi fi-rs-heart-arrow"></i>
             <p>Share</p>
             </div>
-            <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="comment">
-            <i class="fi fi-rr-bookmark"></i>
-            <p>Save</p>
-            </div>
+            { !post.PostSetting || !post.PostSetting.saved ? <div onClick={(() => {
+                      handleSaved(post.id)
+                    })} id="comment">
+                    <i class="fi fi-rr-bookmark"></i>
+                    <p>Save</p>
+                    </div> :
+                    <div onClick={(() => {
+                      handleUnsaved(post.id)
+                    })} id="comment">
+                    <i class="fi fi-rr-bookmark-slash"></i>
+                    <p>Unsave</p>
+                    </div>
+                    }
             <i onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} class="fi fi-rr-menu-dots"></i>
             </div>
-
             : <div id="post-extras2">
             <div id="comment5">
                 <i onClick={((e) => {
@@ -403,7 +421,14 @@ function OtherProfilePage() {
                 <div className="menu">
                 <div id={editMenu}>
                    {post.PostImages && post.PostImages.length && post.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                    <p><i class="fi fi-rr-bookmark"></i>Save</p>
+                   { !post.PostSetting || !post.PostSetting.saved ? <p onClick={(() => {
+                      handleSaved(post.id)
+                    })}>
+                    <i class="fi fi-rr-bookmark"></i>Save</p> :
+                    <p onClick={(() => {
+                      handleUnsaved(post.id)
+                    })}>
+                    <i class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
                     <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
                     <p onClick={(() => {
                         setModalContent2(<div> <DeletePost id={singlePost.id} /></div>)

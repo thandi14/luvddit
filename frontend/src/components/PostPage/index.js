@@ -92,6 +92,15 @@ function PostPage() {
 
     const myCommunity = Object.values(userCommunities)
 
+    const handleSaved = async (id) => {
+        if (singlePost.PostSetting && !singlePost.PostSetting.saved) await dispatch(postActions.thunkUpdateSaved(id))
+        else if (!singlePost.PostSetting) await dispatch(postActions.thunkCreateSaved(id))
+    }
+
+      const handleUnsaved = async (id) => {
+        await dispatch(postActions.thunkUpdateSaved2(id))
+    }
+
 
     useEffect( () => {
 
@@ -418,7 +427,7 @@ function PostPage() {
                    <textarea onFocus={(() => setFocus2(true))} onBlur={(() => setFocus2(false))} defaultValue={singlePost.description} onChange={((e) => setDescription(e.target.value) )} placeholder="Text(optional)"></textarea>
         </div> : null}
         </div> }
-        {singlePost.PostImages?.length ? singlePost.PostImages?.length === 1 ? <div><img id="post-image1" src={singlePost.PostImages[0].imgURL} alt="postimg"></img></div> : <MyCarousel images={singlePost.PostImages}/> : null}
+        {singlePost.PostImages?.length ? singlePost.PostImages?.length === 1 ? <div style={{ justifyContent: "center", display: "flex"}}><img id="post-image1" src={singlePost.PostImages[0].imgURL} alt="postimg"></img></div> : <MyCarousel images={singlePost.PostImages}/> : null}
         { isVisible2 ? <div id="save"><button style={{ color: `${singlePost.Community.CommunityStyle.highlight}`}} onClick={handleClick2} >Cancel</button>
         { !description && <button id={"save-submit"} onClick={((e) => {
                     e.stopPropagation()
@@ -466,7 +475,14 @@ function PostPage() {
                     setIsVisible2(true)
                     setIsVisible(false)
                     })}><i class="fi fi-rr-magic-wand"></i>Edit</p> : null}
-                <p onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} ><i class="fi fi-rr-bookmark"></i>Save</p>
+                        { !singlePost.PostSetting || !singlePost.PostSetting.saved ? <p onClick={(() => {
+                      handleSaved(singlePost.id)
+                    })}>
+                    <i class="fi fi-rr-bookmark"></i>Save</p> :
+                    <p onClick={(() => {
+                      handleUnsaved(singlePost.id)
+                    })}>
+                    <i class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
                 <p onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))}><i class="fi fi-rr-eye-crossed"></i>Hide</p>
                 <p onClick={(() => {
                     setModalContent2(<DeletePost id={id} deleted={deleted}/>)

@@ -8,6 +8,7 @@ const GET_BEST_POSTS = 'posts/getBestPosts';
 const GET_SEARCH = 'posts/getSearch';
 const GET_COMMUNITY_POSTS = 'posts/getCommunityPosts';
 const GET_HISTORY = 'posts/getHistory';
+const GET_SAVED = 'posts/getSaved';
 const GET_OVERVIEW = 'posts/getOverview';
 const GET_HOT_OVERVIEW = 'posts/getHotOverview';
 const GET_TOP_OVERVIEW = 'posts/getTopOverview';
@@ -16,7 +17,9 @@ const GET_COMMENTS = 'posts/getComments';
 const GET_HOT_COMMENTS = 'posts/getHotComments';
 const GET_TOP_COMMENTS = 'posts/getTopComments';
 const ADD_HISTORY = 'posts/addHistory';
+const ADD_SAVED = 'posts/addSaved';
 const UPDATE_HISTORY = 'posts/addHistory';
+const UPDATE_SAVED = 'posts/addSaved';
 const GET_DETAILS = 'posts/getDetails';
 const ADD_DETAILS = 'posts/addDetails';
 const GET_UPDATES = 'posts/getUpdates';
@@ -105,6 +108,13 @@ const getHistory = (posts) => {
   }
 }
 
+const getSaved = (posts) => {
+  return {
+      type: GET_SAVED,
+      posts
+  }
+}
+
 const getOverview = (posts) => {
   return {
       type: GET_OVERVIEW,
@@ -163,6 +173,13 @@ const addHistory = (history) => {
   }
 }
 
+const addSaved = (saved) => {
+  return {
+      type: ADD_SAVED,
+      saved
+  }
+}
+
 const updateHistory = (history) => {
   return {
       type: UPDATE_HISTORY,
@@ -170,6 +187,12 @@ const updateHistory = (history) => {
   }
 }
 
+const updateSaved = (saved) => {
+  return {
+      type: UPDATE_SAVED,
+      saved
+  }
+}
 
 const getDetails = (details) => {
     return {
@@ -389,6 +412,13 @@ export const thunkGetHistory = (page) => async (dispatch) => {
   return response1;
 }
 
+export const thunkGetSaved = (page) => async (dispatch) => {
+  const response1 = await csrfFetch(`/api/posts/saved?page=${page}`)
+  let data1 = await response1.json();
+  dispatch(getSaved(data1));
+  return response1;
+}
+
 export const thunkGetFavorites = (page) => async (dispatch) => {
   // console.log("HELLO????:", page)
   const response1 = await csrfFetch(`/api/posts/votes?page=${page}`)
@@ -554,6 +584,18 @@ export const thunkCreateHistory = (id) => async (dispatch) => {
   return data
 }
 
+export const thunkCreateSaved = (id) => async (dispatch) => {
+  const response = await csrfFetch(`/api/posts/${id}/saved`, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+        },
+  })
+  let data = await response.json()
+  dispatch(addSaved(data))
+  return data
+}
+
 export const thunkUpdateHistory = (id) => async (dispatch) => {
   // console.log("REDUCER", id)
   const response = await csrfFetch(`/api/posts/${id}/history`, {
@@ -564,6 +606,32 @@ export const thunkUpdateHistory = (id) => async (dispatch) => {
   })
   let data = await response.json()
   dispatch(updateHistory(data))
+  return data
+}
+
+export const thunkUpdateSaved = (id) => async (dispatch) => {
+  // console.log("REDUCER", id)
+  const response = await csrfFetch(`/api/posts/${id}/saved`, {
+      method: 'PUT',
+      headers: {
+          'Content-Type': 'application/json'
+        },
+  })
+  let data = await response.json()
+  dispatch(updateSaved(data))
+  return data
+}
+
+export const thunkUpdateSaved2 = (id) => async (dispatch) => {
+  // console.log("REDUCER", id)
+  const response = await csrfFetch(`/api/posts/saved/${id}`, {
+      method: 'PUT',
+      headers: {
+          'Content-Type': 'application/json'
+        },
+  })
+  let data = await response.json()
+  dispatch(updateSaved(data))
   return data
 }
 
@@ -694,6 +762,7 @@ let initialState = {
     communityPosts: {},
     removedPost: {},
     postsHistory: {},
+    postsSaved: {},
     postsFavorites: {},
     postsComments: {},
     postsHotComments: {},
@@ -815,9 +884,15 @@ const postsReducer = (state = initialState, action) => {
       );
       return newState;
     }
+    case GET_SAVED: {
+      newState = { ...state };
+      action.posts.forEach(
+        (saved) => (newState.postsSaved[saved.Post.id] = { ...saved.Post })
+      );
+      return newState;
+    }
     case GET_FAVORITES: {
       newState = { ...state };
-      // console.log(action.posts)
       action.posts.forEach(
         (favorite) => (newState.postsFavorites[favorite.Post.id] = { ...favorite.Post })
       );
@@ -862,6 +937,33 @@ const postsReducer = (state = initialState, action) => {
       ///newState.posts = { ...post };
       return newState;
     }
+    case ADD_SAVED: {
+      newState = { ...state };
+      const saved = action.saved;
+      newState.postsSaved[saved.Post?.id] = { ...saved.Post };
+      newState.posts[saved.Post?.id] = { ...saved.Post };
+      newState.hotPosts[saved.Post?.id] = { ...saved.Post };
+      newState.topPosts[saved.Post?.id] = { ...saved.Post };
+      newState.bestPosts[saved.Post?.id] = { ...saved.Post };
+      newState.userPosts[saved.Post?.id] = { ...saved.Post };
+      newState.bestPosts[saved.Post?.id] = { ...saved.Post };
+      newState.userHotPosts[saved.Post?.id] = { ...saved.Post };
+      newState.userTopPosts[saved.Post?.id] = { ...saved.Post };
+      newState.singlePost = { ...saved.Post };
+      newState.communityPosts[saved.Post?.id] = { ...saved.Post };
+      newState.removedPost[saved.Post?.id] = { ...saved.Post };
+      newState.postsHistory[saved.Post?.id] = { ...saved.Post };
+      newState.postsFavorites[saved.Post?.id] = { ...saved.Post };
+      newState.postsComments[saved.Post?.id] = { ...saved.Post };
+      newState.postsHotComments[saved.Post?.id] = { ...saved.Post };
+      newState.postsTopComments[saved.Post?.id] = { ...saved.Post };
+      newState.postsOverview[saved.Post?.id] = { ...saved.Post };
+      newState.postsHotOverview[saved.Post?.id] = { ...saved.Post };
+      newState.postsTopOverview[saved.Post?.id] = { ...saved.Post };
+      newState.hotCommunityPosts[saved.Post?.id] = { ...saved.Post };
+      newState.topCommunityPosts[saved.Post?.id] = { ...saved.Post };
+      return newState;
+    }
     case UPDATE_HISTORY: {
       newState = { ...state };
       const history = action.history;
@@ -869,6 +971,35 @@ const postsReducer = (state = initialState, action) => {
       newState.postsHistory = newState.postsHistory.filter((h) => h.Post.id !== history.Post.id)
       newState.postsHistory[history.Post?.id] = { ...history.Post };
       ///newState.posts = { ...post };
+      return newState;
+    }
+    case UPDATE_SAVED: {
+      newState = { ...state };
+      const saved = action.saved;
+      if (newState.singlePost) newState.singlePost.PostSetting = { ...saved }
+      newState.postsSaved = newState.postsSaved.filter((s) => s.Post.id !== saved.Post.id)
+      newState.postsSaved[saved.Post?.id] = { ...saved.Post };
+      newState.posts[saved.Post?.id] = { ...saved.Post };
+      newState.hotPosts[saved.Post?.id] = { ...saved.Post };
+      newState.topPosts[saved.Post?.id] = { ...saved.Post };
+      newState.bestPosts[saved.Post?.id] = { ...saved.Post };
+      newState.userPosts[saved.Post?.id] = { ...saved.Post };
+      newState.bestPosts[saved.Post?.id] = { ...saved.Post };
+      newState.userHotPosts[saved.Post?.id] = { ...saved.Post };
+      newState.userTopPosts[saved.Post?.id] = { ...saved.Post };
+      newState.singlePost = { ...saved.Post };
+      newState.communityPosts[saved.Post?.id] = { ...saved.Post };
+      newState.removedPost[saved.Post?.id] = { ...saved.Post };
+      newState.postsHistory[saved.Post?.id] = { ...saved.Post };
+      newState.postsFavorites[saved.Post?.id] = { ...saved.Post };
+      newState.postsComments[saved.Post?.id] = { ...saved.Post };
+      newState.postsHotComments[saved.Post?.id] = { ...saved.Post };
+      newState.postsTopComments[saved.Post?.id] = { ...saved.Post };
+      newState.postsOverview[saved.Post?.id] = { ...saved.Post };
+      newState.postsHotOverview[saved.Post?.id] = { ...saved.Post };
+      newState.postsTopOverview[saved.Post?.id] = { ...saved.Post };
+      newState.hotCommunityPosts[saved.Post?.id] = { ...saved.Post };
+      newState.topCommunityPosts[saved.Post?.id] = { ...saved.Post };
       return newState;
     }
     case GET_DETAILS: {
@@ -942,6 +1073,9 @@ const postsReducer = (state = initialState, action) => {
       if (newState.postsFavorites[vote.postId]) {
         newState.postsFavorites[vote.postId].Votes.push(vote);
       }
+      if (newState.postsSaved[vote.postId]) {
+        newState.postsSaved[vote.postId].Votes.push(vote);
+      }
       return newState;
     }
     case GET_VOTE_UPDATES: {
@@ -996,6 +1130,7 @@ const postsReducer = (state = initialState, action) => {
       let votes19 = newState.topCommunityPosts[vote.postId]?.Votes;
       let votes20 = newState.postsFavorites[vote.postId]?.Votes;
       let votes21 = newState.hotPosts[vote.postId]?.Votes;
+      let votes22 = newState.postsSaved[vote.postId]?.Votes;
       if (votes21) {
         newState.hotPosts[vote.postId].Votes = votes21.filter((v) => v.id !== vote.id);
         newState.hotPosts[vote.postId].Votes.push(vote);
@@ -1048,7 +1183,14 @@ const postsReducer = (state = initialState, action) => {
       newState.postsFavorites[vote.postId].Votes = votes20.filter((v) => v.id !== vote.id);
       newState.postsFavorites[vote.postId].Votes.push(vote);
       }
-
+      if (votes21) {
+        newState.hotPosts[vote.postId].Votes = votes21.filter((v) => v.id !== vote.id);
+        newState.hotPosts[vote.postId].Votes.push(vote);
+        }
+      if (votes22) {
+        newState.postsSaved[vote.postId].Votes = votes22.filter((v) => v.id !== vote.id);
+        newState.postsSaved[vote.postId].Votes.push(vote);
+      }
       // console.log("REDUCER", newState.posts)
       return newState;
     }
@@ -1091,6 +1233,8 @@ const postsReducer = (state = initialState, action) => {
       let votes19 = newState.topCommunityPosts[action.postId]?.Votes;
       let votes20 = newState.postsFavorites[action.postId]?.Votes;
       let votes21 = newState.hotPosts[action.postId]?.Votes;
+      let votes22 = newState.postsSaved[action.postId]?.Votes;
+
       if (votes9) newState.bestPosts[action.postId].Votes = votes9.filter((v) => v.id !== action.voteId);
       if (votes10) newState.topPosts[action.postId].Votes = votes10.filter((v) => v.id !== action.voteId);
       if (votes11) newState.userHotPosts[action.postId].Votes = votes11.filter((v) => v.id !== action.voteId);
@@ -1103,7 +1247,8 @@ const postsReducer = (state = initialState, action) => {
       if (votes18) newState.hotCommunityPosts[action.postId].Votes = votes18.filter((v) => v.id !== action.voteId);
       if (votes19) newState.topCommunityPosts[action.postId].Votes = votes19.filter((v) => v.id !== action.voteId);
       if (votes20) newState.postsFavorites[action.postId].Votes = votes20.filter((v) => v.id !== action.voteId);
-      if (votes21) newState.hotPosts[action.postId].Votes = votes20.filter((v) => v.id !== action.voteId);
+      if (votes21) newState.hotPosts[action.postId].Votes = votes21.filter((v) => v.id !== action.voteId);
+      if (votes22) newState.postsSaved[action.postId].Votes = votes22.filter((v) => v.id !== action.voteId);
       return newState;
     }
     case REMOVE_VOTE2: {

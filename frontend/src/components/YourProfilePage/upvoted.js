@@ -57,6 +57,15 @@ function UpvotedPosts() {
 
     }, [currentPage]);
 
+    const handleSaved = async (id) => {
+      if (singlePost.PostSetting && !singlePost.PostSetting.saved) await dispatch(postsActions.thunkUpdateSaved(id))
+      else if (!singlePost.PostSetting) await dispatch(postsActions.thunkCreateSaved(id))
+    }
+
+    const handleUnsaved = async (id) => {
+      await dispatch(postsActions.thunkUpdateSaved2(id))
+    }
+
     const handleScroll = () => {
       const windowHeight = window.innerHeight;
       const documentHeight = document.documentElement.scrollHeight;
@@ -225,7 +234,7 @@ function UpvotedPosts() {
         <span onClick={(() => history.push("/profile/posts/:page"))} id="aH7">POSTS</span>
         <span onClick={(() => history.push("/profile/comments/:page"))} id="aH3">COMMENTS</span>
         <span onClick={(() => history.push("/profile/history/:page"))} id="aH4">HISTORY</span>
-        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}id="aH5">SAVED</span>
+        <span onClick={(() => history.push("/profile/saved/:page"))}id="aH5">SAVED</span>
         <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}id="aH6">HIDDEN</span>
         <span onClick={(() => history.push("/profile/upvoted/:page"))} id="aHl">UPVOTED</span>
         <span onClick={(() => history.push("/profile/downvoted/:page"))}id="aH8">DOWNVOTED</span>
@@ -258,7 +267,13 @@ function UpvotedPosts() {
                   dispatch(communitiesActions.thunkJoinCommunities(post.communityId))
                   })} id="miniJoin2">Join</button> : null }
             <p>·</p>
-            <p >Posted by <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user?.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
+            { user.id !== post.userId ? <p >Posted by <span onClick={((e) => {
+              e.stopPropagation()
+              history.push(`/profile2/${post.userId}/:page`)
+            })}  className="userName">u/{post.User && post.User.username}</span> {getTimeDifferenceString(post.createdAt)}</p> :
+            <p >Posted by <span onClick={((e) => {
+              e.stopPropagation()
+              history.push(`/profile/:page`)})}  className="userName">u/{post.User && post.User.username}</span> {getTimeDifferenceString(post.createdAt)}</p>}
             </div>
             {/* <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="content">
             <div id="finishing4">
@@ -314,7 +329,14 @@ function UpvotedPosts() {
                 <div className="menu">
                 <div id={editMenu}>
                    {singlePost.PostImages && singlePost.PostImages.length && singlePost.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                    <p><i class="fi fi-rr-bookmark"></i>Save</p>
+                   { !post.PostSetting || !post.PostSetting.saved ? <p onClick={(() => {
+                      handleSaved(post.id)
+                    })}>
+                    <i class="fi fi-rr-bookmark"></i>Save</p> :
+                    <p onClick={(() => {
+                      handleUnsaved(post.id)
+                    })}>
+                    <i class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
                     <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
                     <p onClick={(() => {
                         setModalContent2(<div> <DeletePost id={singlePost.id} /></div>)

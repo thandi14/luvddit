@@ -40,6 +40,17 @@ function TopPage() {
 
 const userClearTime = Cookies.get(user?.id)
 
+const handleSaved = async (id) => {
+  if (!user) return setModalContent(<SignupFormModal />)
+  if (singlePost.PostSetting && !singlePost.PostSetting.saved) await dispatch(postsActions.thunkUpdateSaved(id))
+  else if (!singlePost.PostSetting) await dispatch(postsActions.thunkCreateSaved(id))
+}
+
+const handleUnsaved = async (id) => {
+  await dispatch(postsActions.thunkUpdateSaved2(id))
+}
+
+
   useEffect(() => {
     async function fetchData() {
       let data
@@ -85,7 +96,7 @@ const userClearTime = Cookies.get(user?.id)
   }, [])
 
 
-  let ePost = Object.values(topPosts).sort((a, b) => b.Votes.filter((v) => v.upVote == 1).length - a.Votes.filter((v) => v.upVote == 1).length)
+  let ePost = Object.values(topPosts).sort((a, b) => b.Votes?.filter((v) => v.upVote == 1).length - a.Votes?.filter((v) => v.upVote == 1).length)
 
   let recent = []
 
@@ -260,10 +271,19 @@ const userClearTime = Cookies.get(user?.id)
                     <i class="fi fi-rs-heart-arrow"></i>
                     <p>Share</p>
                     </div>
-                    <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="comment">
+                    { !post.PostSetting || !post.PostSetting.saved ? <div onClick={(() => {
+                      handleSaved(post.id)
+                    })} id="comment">
                     <i class="fi fi-rr-bookmark"></i>
                     <p>Save</p>
+                    </div> :
+                    <div onClick={(() => {
+                      handleUnsaved(post.id)
+                    })} id="comment">
+                    <i class="fi fi-rr-bookmark-slash"></i>
+                    <p>Unsave</p>
                     </div>
+                    }
                     <i onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} class="fi fi-rr-menu-dots"></i>
                     </div>
                     </div>

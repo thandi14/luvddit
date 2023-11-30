@@ -55,6 +55,8 @@
     max-height: 700px;
     margin-bottom: 5%;
     margin-top: 1%;
+    display: flex;
+    justify-content: center;
 }
 
 #post-info1 {

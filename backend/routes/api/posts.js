@@ -261,6 +261,55 @@ router.get("/history", async (req, res) => {
     let posts = await PostSetting.findAll({
         order: [['history', 'DESC']],
         where: {
+            userId,
+
+        },
+        include: [
+            {
+                model: Post,
+                include: [
+                    { model: Comments },
+                    {
+                        model: Community,
+                        include: [
+                            { model: CommunityStyle }
+                        ]
+                    },
+                    { model: User},
+                    { model: PostImages},
+                    {
+                        model: Votes,
+                    },
+                    {
+                        model: PostSetting,
+                     }
+                ]
+            }
+         ],
+        //  limit: pageSize, // Limit the number of results per page
+        //  offset: (page - 1) * pageSize
+    });
+
+
+    posts = posts.filter((p) => p.dataValues.history)
+
+    let paginatedPosts = posts.slice((page - 1) * pageSize, page * pageSize);
+
+
+
+    return res.json(paginatedPosts)
+})
+
+router.get("/saved", async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+    const pageSize = 10; // Number of posts per page
+
+    const { user } = req
+    const userId = user.dataValues.id
+
+    let posts = await PostSetting.findAll({
+        order: [['saved', 'DESC']],
+        where: {
             userId
         },
         include: [
@@ -285,14 +334,18 @@ router.get("/history", async (req, res) => {
                 ]
             }
          ],
-         limit: pageSize, // Limit the number of results per page
-         offset: (page - 1) * pageSize
+        //  limit: pageSize, // Limit the number of results per page
+        //  offset: (page - 1) * pageSize
     });
 
+    posts = posts.filter((p) => p.dataValues.saved)
+
+    let paginatedPosts = posts.slice((page - 1) * pageSize, page * pageSize);
 
 
-    return res.json(posts)
+    return res.json(paginatedPosts)
 })
+
 
 router.get("/votes", async (req, res) => {
     const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
@@ -1298,10 +1351,10 @@ router.post('/:id/history', async (req, res) => {
     }
 
     let setting = await PostSetting.create({
-        postId,
-        userId,
-        history: new Date()
-    })
+            postId,
+            userId,
+            history: new Date()
+        })
 
     let history2 = await PostSetting.findByPk(setting.dataValues.id, {
         include: [
@@ -1332,6 +1385,59 @@ router.post('/:id/history', async (req, res) => {
 
     return res.json(
         history2
+    )
+
+})
+
+router.post('/:id/saved', async (req, res) => {
+    let postId = req.params.id;
+    let postExist = await Post.findByPk(postId);
+    const { user } = req
+    const userId = user.dataValues.id
+
+
+    if (!postExist) {
+
+    res.status(404).json({"message": "Post couldn't be found"});
+
+    }
+
+        setting = await PostSetting.create({
+            postId,
+            userId,
+            saved: new Date()
+        })
+
+
+    let saved2 = await PostSetting.findByPk(setting.dataValues.id, {
+        include: [
+            {
+                model: Post,
+                include: [
+                    {
+                        model: Comments,
+                        include: [
+                            { model: User },
+                            { model: Votes }
+                        ]
+                    },
+                    {
+                        model: Community,
+                        include: [
+                            { model: CommunityStyle }
+                        ]
+                    },
+                    { model: User },
+                    { model: PostImages },
+                    { model: Votes },
+                    { model: PostSetting}
+                 ]
+            }
+        ]
+    })
+
+    return res.json(
+        saved2
     )
 
 })
@@ -1391,22 +1497,109 @@ router.put('/:id/history', async (req, res) => {
 
 })
 
+router.put('/:id/saved', async (req, res) => {
+    let postId = req.params.id;
+    const { user } = req
+    const userId = user.dataValues.id
 
-router.delete('/history/:id', async (req, res) => {
-    let historyId = req.params.id;
-    let historyExsist = await postsHistories.findByPk(historyId);
+    let setting = await PostSetting.findOne({
+        where: {
+            postId,
+            userId
+        }
+    });
 
-    if (!historyExsist) {
+    if (!setting) {
 
-    return res.json({"message": "History couldn't be found"});
+    return res.json({"message": "Setting couldn't be found"});
 
     }
 
-    await historyExsist.destroy()
-
-    return res.json({
-        message: "Successfully deleted"
+    setting.set({
+        saved: new Date()
     })
+
+    await setting.save()
+
+    let saved2 = await PostSetting.findByPk(setting.dataValues.id, {
+        include: [
+            {
+                model: Post,
+                include: [
+                    {
+                        model: Comments,
+                        include: [
+                            { model: User },
+                            { model: Votes }
+                        ]
+                    },
+                    {
+                        model: Community,
+                        include: [
+                            { model: CommunityStyle }
+                        ]
+                    },
+                    { model: User },
+                    { model: PostImages },
+                    { model: Votes },
+                    { model: PostSetting }
+                 ]
+            }
+        ]
+    })
+
+    return res.json(saved2)
+
+})
+
+
+
+router.put('/saved/:id', async (req, res) => {
+    let savedId = req.params.id;
+    let setting = await PostSetting.findByPk(savedId);
+
+    if (!setting) {
+
+    return res.json({"message": "Setting couldn't be found"});
+
+    }
+
+    setting.set({
+        saved: null
+    })
+
+    await setting.save()
+
+    //await historyExsist.destroy()
+
+    let saved2 = await PostSetting.findByPk(setting.dataValues.id, {
+        include: [
+            {
+                model: Post,
+                include: [
+                    {
+                        model: Comments,
+                        include: [
+                            { model: User },
+                            { model: Votes }
+                        ]
+                    },
+                    {
+                        model: Community,
+                        include: [
+                            { model: CommunityStyle }
+                        ]
+                    },
+                    { model: User },
+                    { model: PostImages },
+                    { model: Votes },
+                    { model: PostSetting }
+                 ]
+            }
+        ]
+    })
+
+    return res.json(saved2)
 
 
 })

@@ -75,6 +75,16 @@ function PostPageModal({ postId, scroll }) {
 
     }, [scroll])
 
+    const handleSaved = async (id) => {
+        if (!user) return setModalContent(<SignupFormModal />)
+        if (singlePost.PostSetting && !singlePost.PostSetting.saved) await dispatch(postActions.thunkUpdateSaved(id))
+        else if (!singlePost.PostSetting) await dispatch(postActions.thunkCreateSaved(id))
+      }
+
+      const handleUnsaved = async (id) => {
+        await dispatch(postActions.thunkUpdateSaved2(id))
+      }
+
 
     let members
     if (communityMemberships) members = Object.values(communityMemberships)
@@ -583,10 +593,20 @@ function PostPageModal({ postId, scroll }) {
                     <i class="fi fi-rs-heart-arrow"></i>
                     <p>Share</p>
                     </div>
-                    <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="comment">
+                    { !singlePost.PostSetting || !singlePost.PostSetting.saved ? <div onClick={(() => {
+                      // setSaved(post.id)
+                      handleSaved(singlePost.id)
+                    })} id="comment">
                     <i class="fi fi-rr-bookmark"></i>
                     <p>Save</p>
+                    </div> :
+                    <div onClick={(() => {
+                      handleUnsaved(singlePost.id)
+                    })} id="comment">
+                    <i class="fi fi-rr-bookmark-slash"></i>
+                    <p>Unsave</p>
                     </div>
+                    }
                     <i class="fi fi-rr-menu-dots"></i>
             </div>
              :

@@ -168,7 +168,15 @@ function CommunityPage() {
     if (singleCommunity.id) response = await dispatch(communityActions.thunkUnjoinCommunities(singleCommunity.id))
   }
 
+  const handleSaved = async (id) => {
+    if (!user) return setModalContent(<SignupFormModal />)
+    if (singlePost.PostSetting && !singlePost.PostSetting.saved) await dispatch(postsActions.thunkUpdateSaved(id))
+    else if (!singlePost.PostSetting) await dispatch(postsActions.thunkCreateSaved(id))
+  }
 
+  const handleUnsaved = async (id) => {
+    await dispatch(postsActions.thunkUpdateSaved2(id))
+  }
 
 
   useEffect(() => {
@@ -470,10 +478,20 @@ const handleNsfw = (e) => {
                     <i class="fi fi-rs-heart-arrow"></i>
                     <p>Share</p>
                     </div>
-                    <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))}id="comment">
-                    <i onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))}class="fi fi-rr-bookmark"></i>
+                    { !post.PostSetting || !post.PostSetting.saved ? <div onClick={(() => {
+                      // setSaved(post.id)
+                      handleSaved(post.id)
+                    })} id="comment">
+                    <i class="fi fi-rr-bookmark"></i>
                     <p>Save</p>
+                    </div> :
+                    <div onClick={(() => {
+                      handleUnsaved(post.id)
+                    })} id="comment">
+                    <i class="fi fi-rr-bookmark-slash"></i>
+                    <p>Unsave</p>
                     </div>
+                    }
                     <i onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}class="fi fi-rr-menu-dots"></i>
                     </div> :
                     <div id="post-extras9">
