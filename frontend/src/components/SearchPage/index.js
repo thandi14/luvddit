@@ -35,6 +35,8 @@ function SearchPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [currentPage2, setCurrentPage2] = useState(1);
     const [threshold, setThreshold] = useState(450);
+    const [timebox, setTimebox] = useState(false)
+    const [atime, setAtime] = useState("All")
 
     useEffect(() => {
       localStorage.setItem("currentPage", currentPage.toString());
@@ -53,6 +55,22 @@ function SearchPage() {
       document.getElementById('nfo').focus(); // Assuming your input has an id of 'myInput'
     };
 
+    useEffect(() => {
+
+      const handleDocumentClick = (event) => {
+          if ((targetRef.current && !targetRef.current.contains(event.target))) {
+              setTimebox(false);
+
+            }
+
+        };
+
+        document.addEventListener('click', handleDocumentClick);
+        return () => {
+            document.removeEventListener('click', handleDocumentClick);
+        };
+
+    }, []);
 
 
     const handleScroll = () => {
@@ -70,6 +88,7 @@ function SearchPage() {
 
       }
     }
+
 
     let top = isVisible ? "top" : "down"
 
@@ -169,22 +188,31 @@ function SearchPage() {
 
       const myMemberships = Object.values(memberships)
 
-      console.log(myMemberships)
-
-
     return (
         <div className="splashPage">
             <div style={{ gap: "0px"}} className="posts">
-                <div style={{ height: "92px"}} >
+                <div style={{ height: "95px"}} >
                 <div id="pick-search">
                     <button onClick={(() => history.push(`/search/:page/${search}`))} id="picked-S">Posts</button>
                     <button onClick={(() => history.push(`/search/comments/:page/${search}`))}>Comments</button>
                     <button onClick={(() => history.push(`/search/communities/:page/${search}`))}>Communities</button>
                     <button onClick={(() => history.push(`/search/profiles/:page/${search}`))}>People</button>
                 </div>
-                <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="pick-sort">
-                    <button>Sort<i style={{ fontSize: "12px"}} class="fa-solid fa-chevron-down"></i></button>
-                    <button>Time<i style={{ fontSize: "12px"}}class="fa-solid fa-chevron-down"></i></button>
+                <div id="pick-sort">
+                    <div>
+                    <button onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} >Sort<i style={{ fontSize: "12px"}} class="fa-solid fa-chevron-down"></i></button>
+                    </div>
+                    <div ref={targetRef}>
+                    <button style={{ background: timebox ? "white" : "transparent"}} onClick={(() => setTimebox(!timebox))}>Time<i style={{ fontSize: "12px"}}class={ timebox ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down"}></i></button>
+                    { timebox ? <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="time-box">
+                      <span onClick={(() => setAtime("All"))} id={atime == "All" ? "timed" : "nottimed"}>All Time</span>
+                      <span onClick={(() => setAtime("Year"))} id={atime == "Year" ? "timed" : "nottimed"}>Past Year</span>
+                      <span onClick={(() => setAtime("Month"))} id={atime == "Month" ? "timed" : "nottimed"}>Past Month</span>
+                      <span onClick={(() => setAtime("Week"))} id={atime == "Week" ? "timed" : "nottimed"}>Past Week</span>
+                      <span onClick={(() => setAtime("Hours"))} id={atime == "Hours" ? "timed" : "nottimed"}>Past 24 Hours</span>
+                      <span onClick={(() => setAtime("Hour"))} id={atime == "Hour" ? "timed" : "nottimed"}>Past Hour</span>
+                    </div> : null}
+                    </div>
                 </div>
                 </div>
                 { ePost.length > 0 && ePost?.map((post, i) =>
@@ -211,7 +239,7 @@ function SearchPage() {
                     {post.Community.CommunityStyle?.icon ? <img style={{ margin: "0%" }} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} src={post.Community.CommunityStyle.icon}></img> : <div style={{ backgroundColor: `${post.Community.CommunityStyle.base}`, color: "white" }} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pfp30">l/</div>}
                     <span style={{ fontWeight: "500"}} onClick={(() => history.push(`/communities/${post.communityId}/:page`))} className="userName" id="community">l/{post.Community.name}</span>
                     <p>·</p>
-                    { user.id !== post.userId ? <p >Posted by <span onClick={((e) => {
+                    { user?.id !== post.userId ? <p >Posted by <span onClick={((e) => {
               e.stopPropagation()
               history.push(`/profile2/${post.userId}/:page`)
             })}  className="userName">u/{post.User && post.User.username}</span> {getTimeDifferenceString(post.createdAt)}</p> :

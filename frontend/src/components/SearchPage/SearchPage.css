@@ -33,13 +33,13 @@
 
 }
 
-#pick-sort > button {
-    padding: 0.5% 2%;
+#pick-sort > div > button {
     background-color: transparent;
     border: 0px;
     font-size: 13px;
     font-weight: 100;
-    margin-bottom: 15px;
+    padding: 4px;
+    margin-bottom: 5px;
     cursor: pointer;
     border-radius: 20px;
     display: flex;
@@ -49,7 +49,7 @@
 
 #nsfw-on {
     background-color: transparent;
-    height: 92px;
+    height: 95px;
     display: flex;
     justify-content: flex-end;
     width: 100%;
@@ -69,6 +69,37 @@
     border: 1px solid #ccc;
 }
 
+#time-box {
+    display: flex;
+    box-shadow: 0.5px 0.5px 8px #ccc;
+    color: #7c7c7c;
+    position: absolute;
+    font-weight: 400;
+    background-color: white;
+    width: 125px;
+    flex-direction: column;
+    border-radius: 4px;
+    z-index: 10;
+    font-size: 12.5px;
+}
+
+#time-box > span {
+    padding: 10px 12px;
+
+}
+
+#timed {
+    color: #0079D3;
+}
+
+#time-box > span:hover {
+    background-color: #d1e9fb;
+    cursor: pointer;
+}
+
+#nottimed:hover {
+    color: black;
+}
 
 #follow3 {
     position: absolute;
@@ -139,6 +170,7 @@
 #pick-sort {
     display: flex;
     gap: 5px;
+    margin-bottom: 15px;
 }
 
 #picked-S {
