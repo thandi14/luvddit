@@ -34,11 +34,30 @@ function SearchComments() {
     const [currentPage, setCurrentPage] = useState(1);
     const [threshold, setThreshold] = useState(450);
     const { search } = useParams()
+    const [sortbox, setSortbox] = useState(false)
+    const [asort, setAsort] = useState("Relevance")
 
     const handleButtonClick = () => {
       document.getElementById('nfo').focus(); // Assuming your input has an id of 'myInput'
     };
 
+
+    useEffect(() => {
+
+      const handleDocumentClick = (event) => {
+          if ((targetRef.current && !targetRef.current.contains(event.target))) {
+              setSortbox(false);
+
+            }
+
+        };
+
+        document.addEventListener('click', handleDocumentClick);
+        return () => {
+            document.removeEventListener('click', handleDocumentClick);
+        };
+
+    }, []);
 
 
     let top = isVisible ? "top" : "down";
@@ -181,9 +200,14 @@ function SearchComments() {
                     <button onClick={(() => history.push(`/search/communities/:page/${search}`))}>Communities</button>
                     <button onClick={(() => history.push(`/search/profiles/:page/${search}`))}>People</button>
                 </div>
-                <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="pick-sort">
-                    <button>Sort<i style={{ fontSize: "12px"}} class="fa-solid fa-chevron-down"></i></button>
-                </div>
+                <div id="searchsortC" ref={targetRef}>
+                    <button style={{ background: sortbox ? "white" : "transparent"}} onClick={(() => setSortbox(!sortbox))}>Sort<i style={{ fontSize: "12px"}}class={ sortbox ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down"}></i></button>
+                    { sortbox ? <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="time-box">
+                      <span onClick={(() => setAsort("Relevance"))} id={asort == "Relevance" ? "timed" : "nottimed"}>Relevance</span>
+                      <span onClick={(() => setAsort("Top"))} id={asort == "Top" ? "timed" : "nottimed"}>Top</span>
+                      <span onClick={(() => setAsort("New"))} id={asort == "New" ? "timed" : "nottimed"}>New</span>
+                    </div> : null }
+                    </div>
                 </div>
                 { eComment.length > 0 && eComment?.map((comment, i) =>
                     <div style={{ borderRadius: "0%"}} id={`${comment.id}`} className="post-content">

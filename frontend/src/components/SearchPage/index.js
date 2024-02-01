@@ -18,25 +18,24 @@ import SignupFormModal from '../SignupFormPage'
 function SearchPage() {
     const { posts, singlePost, postsHistory, searchs } = useSelector((state) => state.posts);
     const { communities, memberships } = useSelector((state) => state.communities);
-    // const [ search, setSearch ] = useState(null)
     const { user } = useSelector((state) => state.session);
     const dispatch = useDispatch()
     const [isVisible, setIsVisible] = useState(false);
     const [isVisible2, setIsVisible2] = useState(false);
-    const [isVisible3, setIsVisible3] = useState(true);
-    const [ votePost, setVotePost ] = useState(null);
     const [ isLiked, setIsLiked ] = useState([]);
     const history = useHistory()
     const { setModalContent } = useModal()
     const [ scrolling, setScrolling ] = useState(null)
     const targetRef = useRef()
+    const targetRef2 = useRef()
     const { page } = useParams(); // Retrieve the page parameter from the URL
     const { search } = useParams()
     const [currentPage, setCurrentPage] = useState(1);
-    const [currentPage2, setCurrentPage2] = useState(1);
     const [threshold, setThreshold] = useState(450);
     const [timebox, setTimebox] = useState(false)
     const [atime, setAtime] = useState("All")
+    const [sortbox, setSortbox] = useState(false)
+    const [asort, setAsort] = useState("Relevance")
 
     useEffect(() => {
       localStorage.setItem("currentPage", currentPage.toString());
@@ -60,6 +59,10 @@ function SearchPage() {
       const handleDocumentClick = (event) => {
           if ((targetRef.current && !targetRef.current.contains(event.target))) {
               setTimebox(false);
+
+            }
+            if ((targetRef2.current && !targetRef2.current.contains(event.target))) {
+              setSortbox(false);
 
             }
 
@@ -199,8 +202,15 @@ function SearchPage() {
                     <button onClick={(() => history.push(`/search/profiles/:page/${search}`))}>People</button>
                 </div>
                 <div id="pick-sort">
-                    <div>
-                    <button onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} >Sort<i style={{ fontSize: "12px"}} class="fa-solid fa-chevron-down"></i></button>
+                    <div ref={targetRef2}>
+                    <button  style={{ background: sortbox ? "white" : "transparent"}} onClick={(() => setSortbox(!sortbox))}>Sort<i style={{ fontSize: "12px"}}class={ sortbox ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down"}></i></button>
+                    { sortbox ? <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="time-box">
+                      <span onClick={(() => setAsort("Relevance"))} id={asort == "Relevance" ? "timed" : "nottimed"}>Relevance</span>
+                      <span onClick={(() => setAsort("Hot"))} id={asort == "Hot" ? "timed" : "nottimed"}>Hot</span>
+                      <span onClick={(() => setAsort("Top"))} id={asort == "Top" ? "timed" : "nottimed"}>Top</span>
+                      <span onClick={(() => setAsort("New"))} id={asort == "New" ? "timed" : "nottimed"}>New</span>
+                      <span onClick={(() => setAsort("Most Comments"))} id={asort == "Most Comments" ? "timed" : "nottimed"}>Most Comments</span>
+                    </div> : null }
                     </div>
                     <div ref={targetRef}>
                     <button style={{ background: timebox ? "white" : "transparent"}} onClick={(() => setTimebox(!timebox))}>Time<i style={{ fontSize: "12px"}}class={ timebox ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down"}></i></button>
@@ -211,7 +221,7 @@ function SearchPage() {
                       <span onClick={(() => setAtime("Week"))} id={atime == "Week" ? "timed" : "nottimed"}>Past Week</span>
                       <span onClick={(() => setAtime("Hours"))} id={atime == "Hours" ? "timed" : "nottimed"}>Past 24 Hours</span>
                       <span onClick={(() => setAtime("Hour"))} id={atime == "Hour" ? "timed" : "nottimed"}>Past Hour</span>
-                    </div> : null}
+                    </div> : null }
                     </div>
                 </div>
                 </div>
