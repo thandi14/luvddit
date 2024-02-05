@@ -36,6 +36,7 @@ function SearchPage() {
     const [atime, setAtime] = useState("All")
     const [sortbox, setSortbox] = useState(false)
     const [asort, setAsort] = useState("Relevance")
+    const { setTimeSearch, timeSearch, setSortSearch, sortSearch } = useSearch()
 
     useEffect(() => {
       localStorage.setItem("currentPage", currentPage.toString());
@@ -57,21 +58,21 @@ function SearchPage() {
     useEffect(() => {
 
       const handleDocumentClick = (event) => {
-          if ((targetRef.current && !targetRef.current.contains(event.target))) {
-              setTimebox(false);
+        if ((targetRef.current && !targetRef.current.contains(event.target))) {
+            setTimebox(false);
 
-            }
-            if ((targetRef2.current && !targetRef2.current.contains(event.target))) {
-              setSortbox(false);
+          }
+          if ((targetRef2.current && !targetRef2.current.contains(event.target))) {
+            setSortbox(false);
 
-            }
+          }
 
-        };
+      };
 
-        document.addEventListener('click', handleDocumentClick);
-        return () => {
-            document.removeEventListener('click', handleDocumentClick);
-        };
+      document.addEventListener('click', handleDocumentClick);
+      return () => {
+          document.removeEventListener('click', handleDocumentClick);
+      };
 
     }, []);
 
@@ -138,58 +139,122 @@ function SearchPage() {
   };
 
 
-    }, [])
+  }, [])
 
-    let otherCommunity = Object.values(communities).filter((c) => c.type !== "Profile").slice(0, 5)
-    if (search) otherCommunity = otherCommunity.filter((c) => c.name.toLowerCase().includes(search.toLowerCase()))
-    let otherProfiles = Object.values(communities).filter((c) => c.type === "Profile").slice(0, 5)
-    if (search) otherProfiles = otherProfiles.filter((c) => c.name.toLowerCase().includes(search.toLowerCase()))
+  let otherCommunity = Object.values(communities).filter((c) => c.type !== "Profile").slice(0, 5)
+  if (search) otherCommunity = otherCommunity.filter((c) => c.name.toLowerCase().includes(search.toLowerCase()))
+  let otherProfiles = Object.values(communities).filter((c) => c.type === "Profile").slice(0, 5)
+  if (search) otherProfiles = otherProfiles.filter((c) => c.name.toLowerCase().includes(search.toLowerCase()))
 
-    let ePost = Object.values(searchs).reverse().sort((a, b) => a.createdAt - b.createdAt)
-    if (!search) ePost = []
-    if (search) ePost = ePost.filter((p) => p.title.toLowerCase().includes(search.toLowerCase()))
-    if (ePost.length === 0 && search) ePost = []
+  let ePost  = Object.values(searchs)
+  let sPost = ePost
 
-    let recent = []
+  if (sortSearch == "Relevance" || "Sort") {
+    ePost = sPost
 
-    let cm = Object.values(memberships)
+  }
+  if (sortSearch == "New") {
+    ePost = sPost
+    ePost = Object.values(searchs).reverse().sort((a, b) => a.createdAt - b.createdAt)
 
-    // for (let c of cm ) {
-    //   for ( let p of c.Posts ) recent.push(p)
-    // }
+  }
+  else if (sortSearch == "Hot") {
+    ePost = sPost
+    ePost = ePost.sort((a, b) => b.Votes.length - a.Votes.length)
 
-   recent = recent.reverse().sort((a, b) => a.createdAt - b.createdAt)
+  }
+  else if (sortSearch == "Top") {
+    ePost = sPost
+    ePost = ePost.sort((a, b) => b.Votes.filter((v) => v.upVotes == 1).length - a.Votes.filter((v) => v.upVotes == 1).length)
 
-   recent = recent.slice(0, 5)
+  }
+  else if (sortSearch == "Most Comments") {
+    ePost = sPost
+    ePost = ePost.sort((a, b) => b.Comments.length - a.Comments.length)
+  }
+
+  if (!search) ePost = []
+  if (search) ePost = ePost.filter((p) => p.title.toLowerCase().includes(search.toLowerCase()))
+  if (ePost.length === 0 && search) ePost = []
+
+  const currentDate = new Date();
+  const oneYearAgo = new Date(currentDate);
+  oneYearAgo.setFullYear(currentDate.getFullYear() - 1)
+  const oneMonthAgo = new Date(currentDate);
+  oneMonthAgo.setMonth(currentDate.getMonth() - 1)
+  const oneWeekAgo = new Date(currentDate);
+  oneWeekAgo.setDate(currentDate.getDate() - 7);
+  const oneDayAgo = new Date(currentDate);
+  oneDayAgo.setHours(currentDate.getHours() - 24)
+  const oneHourAgo = new Date(currentDate);
+  oneHourAgo.setHours(currentDate.getHours() - 1)
+
+  let dPost = ePost
+
+  if (timeSearch == "All Time" || "Time") {
+    ePost = dPost
+  }
+  if (timeSearch == "Past Year") {
+    ePost = dPost
+    ePost = ePost.filter((p) => new Date(p.createdAt) >= oneYearAgo)
+
+  }
+  else if (timeSearch == "Past Month") {
+    ePost = dPost
+    ePost = ePost.filter((p) => new Date(p.createdAt) >= oneMonthAgo)
+
+  }
+  else if (timeSearch == "Past Week") {
+    ePost = dPost
+    ePost = ePost.filter((p) => new Date(p.createdAt) >= oneWeekAgo)
+
+  }
+  else if (timeSearch == "Past 24 Hours") {
+    ePost = dPost
+    ePost = ePost.filter((p) => new Date(p.createdAt) >= oneDayAgo)
+  }
+  else if (timeSearch == "Past Hour") {
+    ePost = dPost
+    ePost = ePost.filter((p) => new Date(p.createdAt) >= oneHourAgo)
+  }
+
+  let recent = []
+
+  let cm = Object.values(memberships)
+
+  recent = recent.reverse().sort((a, b) => a.createdAt - b.createdAt)
+
+  recent = recent.slice(0, 5)
 
 
-    const getTimeDifferenceString = (createdAt) => {
-        const currentTime = new Date();
-        const createdAtDate = new Date(createdAt);
 
-        const timeDifferenceInSeconds = Math.floor((currentTime - createdAtDate) / 1000);
+  const getTimeDifferenceString = (createdAt) => {
+      const currentTime = new Date();
+      const createdAtDate = new Date(createdAt);
 
-        if (timeDifferenceInSeconds < 60) {
-          return timeDifferenceInSeconds === 1 ? `${timeDifferenceInSeconds} sec ago` : `${timeDifferenceInSeconds} secs ago`;
-        } else if (timeDifferenceInSeconds < 3600) {
-          const minutes = Math.floor(timeDifferenceInSeconds / 60);
-          return minutes === 1 ? `${minutes} minute ago` : `${minutes} minutes ago`;
-        } else if (timeDifferenceInSeconds < 86400) {
-          const hours = Math.floor(timeDifferenceInSeconds / 3600);
-          return hours === 1 ? `${hours} hour ago` : `${hours} hours ago`;
-        } else if (timeDifferenceInSeconds < 2592000) {
-          const days = Math.floor(timeDifferenceInSeconds / 86400);
-          return days === 1 ? `${days} day ago` : `${days} days ago`;
-        } else if (timeDifferenceInSeconds < 31536000) {
-          const months = Math.floor(timeDifferenceInSeconds / 2592000);
-          return months === 1 ? `${months} month ago` : `${months} months ago`;
-        } else {
-          const years = Math.floor(timeDifferenceInSeconds / 31536000);
-          return years === 1 ? `${years} year ago` : `${years} years ago`;
-        }
-      };
+      const timeDifferenceInSeconds = Math.floor((currentTime - createdAtDate) / 1000);
 
-      const myMemberships = Object.values(memberships)
+      if (timeDifferenceInSeconds < 60) {
+        return timeDifferenceInSeconds === 1 ? `${timeDifferenceInSeconds} sec ago` : `${timeDifferenceInSeconds} secs ago`;
+      } else if (timeDifferenceInSeconds < 3600) {
+        const minutes = Math.floor(timeDifferenceInSeconds / 60);
+        return minutes === 1 ? `${minutes} minute ago` : `${minutes} minutes ago`;
+      } else if (timeDifferenceInSeconds < 86400) {
+        const hours = Math.floor(timeDifferenceInSeconds / 3600);
+        return hours === 1 ? `${hours} hour ago` : `${hours} hours ago`;
+      } else if (timeDifferenceInSeconds < 2592000) {
+        const days = Math.floor(timeDifferenceInSeconds / 86400);
+        return days === 1 ? `${days} day ago` : `${days} days ago`;
+      } else if (timeDifferenceInSeconds < 31536000) {
+        const months = Math.floor(timeDifferenceInSeconds / 2592000);
+        return months === 1 ? `${months} month ago` : `${months} months ago`;
+      } else {
+        const years = Math.floor(timeDifferenceInSeconds / 31536000);
+        return years === 1 ? `${years} year ago` : `${years} years ago`;
+      }
+    };
+
+    const myMemberships = Object.values(memberships)
 
     return (
         <div className="splashPage">
@@ -203,24 +268,24 @@ function SearchPage() {
                 </div>
                 <div id="pick-sort">
                     <div ref={targetRef2}>
-                    <button  style={{ background: sortbox ? "white" : "transparent"}} onClick={(() => setSortbox(!sortbox))}>Sort<i style={{ fontSize: "12px"}}class={ sortbox ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down"}></i></button>
-                    { sortbox ? <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="time-box">
-                      <span onClick={(() => setAsort("Relevance"))} id={asort == "Relevance" ? "timed" : "nottimed"}>Relevance</span>
-                      <span onClick={(() => setAsort("Hot"))} id={asort == "Hot" ? "timed" : "nottimed"}>Hot</span>
-                      <span onClick={(() => setAsort("Top"))} id={asort == "Top" ? "timed" : "nottimed"}>Top</span>
-                      <span onClick={(() => setAsort("New"))} id={asort == "New" ? "timed" : "nottimed"}>New</span>
-                      <span onClick={(() => setAsort("Most Comments"))} id={asort == "Most Comments" ? "timed" : "nottimed"}>Most Comments</span>
+                    <button  style={{ background: sortbox ? "white" : "transparent"}} onClick={(() => setSortbox(!sortbox))}>{sortSearch}<i style={{ fontSize: "12px"}}class={ sortbox ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down"}></i></button>
+                    { sortbox ? <div id="time-box">
+                      <span onClick={(() => setSortSearch("Relevance"))} id={sortSearch == "Relevance" ? "timed" : "nottimed"}>Relevance</span>
+                      <span onClick={(() => setSortSearch("Hot"))} id={sortSearch == "Hot" ? "timed" : "nottimed"}>Hot</span>
+                      <span onClick={(() => setSortSearch("Top"))} id={sortSearch == "Top" ? "timed" : "nottimed"}>Top</span>
+                      <span onClick={(() => setSortSearch("New"))} id={sortSearch == "New" ? "timed" : "nottimed"}>New</span>
+                      <span onClick={(() => setSortSearch("Most Comments"))} id={sortSearch == "Most Comments" ? "timed" : "nottimed"}>Most Comments</span>
                     </div> : null }
                     </div>
                     <div ref={targetRef}>
-                    <button style={{ background: timebox ? "white" : "transparent"}} onClick={(() => setTimebox(!timebox))}>Time<i style={{ fontSize: "12px"}}class={ timebox ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down"}></i></button>
-                    { timebox ? <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="time-box">
-                      <span onClick={(() => setAtime("All"))} id={atime == "All" ? "timed" : "nottimed"}>All Time</span>
-                      <span onClick={(() => setAtime("Year"))} id={atime == "Year" ? "timed" : "nottimed"}>Past Year</span>
-                      <span onClick={(() => setAtime("Month"))} id={atime == "Month" ? "timed" : "nottimed"}>Past Month</span>
-                      <span onClick={(() => setAtime("Week"))} id={atime == "Week" ? "timed" : "nottimed"}>Past Week</span>
-                      <span onClick={(() => setAtime("Hours"))} id={atime == "Hours" ? "timed" : "nottimed"}>Past 24 Hours</span>
-                      <span onClick={(() => setAtime("Hour"))} id={atime == "Hour" ? "timed" : "nottimed"}>Past Hour</span>
+                    <button style={{ background: timebox ? "white" : "transparent"}} onClick={(() => setTimebox(!timebox))}>{timeSearch}<i style={{ fontSize: "12px"}}class={ timebox ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down"}></i></button>
+                    { timebox ? <div id="time-box">
+                      <span onClick={(() => setTimeSearch("All Time"))} id={timeSearch == "All Time" ? "timed" : "nottimed"}>All Time</span>
+                      <span onClick={(() => setTimeSearch("Past Year"))} id={timeSearch == "Past Year" ? "timed" : "nottimed"}>Past Year</span>
+                      <span onClick={(() => setTimeSearch("Past Month"))} id={timeSearch == "Past Month" ? "timed" : "nottimed"}>Past Month</span>
+                      <span onClick={(() => setTimeSearch("Past Week"))} id={timeSearch == "Past Week" ? "timed" : "nottimed"}>Past Week</span>
+                      <span onClick={(() => setTimeSearch("Past 24 Hours"))} id={timeSearch == "Past 24 Hours" ? "timed" : "nottimed"}>Past 24 Hours</span>
+                      <span onClick={(() => setTimeSearch("Past Hour"))} id={timeSearch == "Past Hour" ? "timed" : "nottimed"}>Past Hour</span>
                     </div> : null }
                     </div>
                 </div>
