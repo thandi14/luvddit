@@ -40,6 +40,7 @@ function SearchPage() {
 
     useEffect(() => {
       localStorage.setItem("currentPage", currentPage.toString());
+      setSortSearch("Sort")
     }, [currentPage, search]);
 
     useEffect(() => {

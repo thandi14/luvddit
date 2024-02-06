@@ -36,6 +36,7 @@ function SearchComments() {
     const { search } = useParams()
     const [sortbox, setSortbox] = useState(false)
     const [asort, setAsort] = useState("Relevance")
+    const { setSortSearch, sortSearch } = useSearch()
 
     const handleButtonClick = () => {
       document.getElementById('nfo').focus(); // Assuming your input has an id of 'myInput'
@@ -64,6 +65,7 @@ function SearchComments() {
 
     useEffect(() => {
       localStorage.setItem("currentPage", currentPage.toString());
+      setSortSearch("Sort")
     }, [currentPage, search]);
 
     useEffect(() => {
@@ -144,9 +146,27 @@ function SearchComments() {
 
 
     if (!search ) eComment = []
-    let eComment = Object.values(searchComments).reverse().sort((a, b) => a.createdAt - b.createdAt)
+    let eComment = Object.values(searchComments)
     if (search) eComment = eComment.filter((c) => c.comment.toLowerCase().includes(search.toLowerCase()))
     if (!eComment.length && search ) eComment = []
+
+    let sComment = eComment
+
+    if (sortSearch == "Relevance" || "Sort") {
+      eComment = sComment
+
+    }
+    if (sortSearch == "New") {
+      eComment = sComment
+      eComment = Object.values(searchComments).reverse().sort((a, b) => a.createdAt - b.createdAt)
+
+    }
+    else if (sortSearch == "Top") {
+      eComment = sComment
+      eComment = eComment.sort((a, b) => b.Post.Votes.filter((v) => v.upVotes == 1).length - a.Post.Votes.filter((v) => v.upVotes == 1).length)
+
+    }
+
 
     let recent = []
 
@@ -201,11 +221,11 @@ function SearchComments() {
                     <button onClick={(() => history.push(`/search/profiles/:page/${search}`))}>People</button>
                 </div>
                 <div id="searchsortC" ref={targetRef}>
-                    <button style={{ background: sortbox ? "white" : "transparent"}} onClick={(() => setSortbox(!sortbox))}>Sort<i style={{ fontSize: "12px"}}class={ sortbox ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down"}></i></button>
-                    { sortbox ? <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="time-box">
-                      <span onClick={(() => setAsort("Relevance"))} id={asort == "Relevance" ? "timed" : "nottimed"}>Relevance</span>
-                      <span onClick={(() => setAsort("Top"))} id={asort == "Top" ? "timed" : "nottimed"}>Top</span>
-                      <span onClick={(() => setAsort("New"))} id={asort == "New" ? "timed" : "nottimed"}>New</span>
+                    <button style={{ background: sortbox ? "white" : "transparent"}} onClick={(() => setSortbox(!sortbox))}>{sortSearch}<i style={{ fontSize: "12px"}}class={ sortbox ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down"}></i></button>
+                    { sortbox ? <div id="time-box">
+                      <span onClick={(() => setSortSearch("Relevance"))} id={sortSearch == "Relevance" ? "timed" : "nottimed"}>Relevance</span>
+                      <span onClick={(() => setSortSearch("Top"))} id={sortSearch == "Top" ? "timed" : "nottimed"}>Top</span>
+                      <span onClick={(() => setSortSearch("New"))} id={sortSearch == "New" ? "timed" : "nottimed"}>New</span>
                     </div> : null }
                     </div>
                 </div>

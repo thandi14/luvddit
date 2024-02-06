@@ -17,6 +17,7 @@ const GET_MEMBERSHIPS = 'communities/getMemberships';
 const SEARCHED_COMMUNITIES = 'communities/searchedCommunities'
 const SEARCHED_PROFILES = 'communities/searchedProfiles'
 
+
 const getCommunities = (communities) => {
     return {
         type: GET_COMMUNITIES,
@@ -90,7 +91,6 @@ const getCommunityMemberships = (memberships) => {
         memberships,
     }
 };
-
 
 const addCommunityMemberships = (memberships) => {
     return {
