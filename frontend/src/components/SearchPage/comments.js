@@ -35,7 +35,6 @@ function SearchComments() {
     const [threshold, setThreshold] = useState(450);
     const { search } = useParams()
     const [sortbox, setSortbox] = useState(false)
-    const [asort, setAsort] = useState("Relevance")
     const { setSortSearch, sortSearch } = useSearch()
 
     const handleButtonClick = () => {
@@ -220,14 +219,14 @@ function SearchComments() {
                     <button onClick={(() => history.push(`/search/communities/:page/${search}`))}>Communities</button>
                     <button onClick={(() => history.push(`/search/profiles/:page/${search}`))}>People</button>
                 </div>
-                <div id="searchsortC" ref={targetRef}>
-                    <button style={{ background: sortbox ? "white" : "transparent"}} onClick={(() => setSortbox(!sortbox))}>{sortSearch}<i style={{ fontSize: "12px"}}class={ sortbox ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down"}></i></button>
-                    { sortbox ? <div id="time-box">
-                      <span onClick={(() => setSortSearch("Relevance"))} id={sortSearch == "Relevance" ? "timed" : "nottimed"}>Relevance</span>
-                      <span onClick={(() => setSortSearch("Top"))} id={sortSearch == "Top" ? "timed" : "nottimed"}>Top</span>
-                      <span onClick={(() => setSortSearch("New"))} id={sortSearch == "New" ? "timed" : "nottimed"}>New</span>
-                    </div> : null }
-                    </div>
+            <div id="searchsortC" ref={targetRef}>
+                <button style={{ background: sortbox ? "white" : "transparent"}} onClick={(() => setSortbox(!sortbox))}>{sortSearch}<i style={{ fontSize: "12px"}}class={ sortbox ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down"}></i></button>
+                { sortbox ? <div id="time-box">
+                  <span onClick={(() => setSortSearch("Relevance"))} id={sortSearch == "Relevance" ? "timed" : "nottimed"}>Relevance</span>
+                  <span onClick={(() => setSortSearch("Top"))} id={sortSearch == "Top" ? "timed" : "nottimed"}>Top</span>
+                  <span onClick={(() => setSortSearch("New"))} id={sortSearch == "New" ? "timed" : "nottimed"}>New</span>
+                </div> : null }
+                </div>
                 </div>
                 { eComment.length > 0 && eComment?.map((comment, i) =>
                     <div style={{ borderRadius: "0%"}} id={`${comment.id}`} className="post-content">

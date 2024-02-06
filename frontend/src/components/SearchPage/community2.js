@@ -36,7 +36,8 @@ function SearchCommunityComments() {
     const [currentPage, setCurrentPage] = useState(1);
     const [threshold, setThreshold] = useState(450);
     const { search } = useParams()
-
+    const [sortbox, setSortbox] = useState(false)
+    const { setSortSearch, sortSearch } = useSearch()
 
     let top = isVisible ? "top" : "down";
 
@@ -119,24 +120,38 @@ function SearchCommunityComments() {
     }, [])
 
 
-    if (!search ) eComment = []
-    let eComment = Object.values(searchComments).reverse().sort((a, b) => a.createdAt - b.createdAt)
-    if (search) eComment = eComment.filter((c) => c.comment.toLowerCase().includes(search.toLowerCase()))
-    if (!eComment.length && search ) eComment = []
+  if (!search ) eComment = []
+  let eComment = Object.values(searchComments).reverse().sort((a, b) => a.createdAt - b.createdAt)
+  if (search) eComment = eComment.filter((c) => c.comment.toLowerCase().includes(search.toLowerCase()))
+  if (!eComment.length && search ) eComment = []
 
-    let recent = []
+  let sComment = eComment
 
-    let cm = Object.values(memberships)
+  if (sortSearch == "Relevance" || "Sort") {
+    eComment = sComment
 
-    // for (let c of cm ) {
-    //   for ( let p of c.Posts ) recent.push(p)
-    // }
+  }
+  if (sortSearch == "New") {
+    eComment = sComment
+    eComment = Object.values(searchComments).reverse().sort((a, b) => a.createdAt - b.createdAt)
 
-   recent = recent.reverse().sort((a, b) => a.createdAt - b.createdAt)
+  }
+  else if (sortSearch == "Top") {
+    eComment = sComment
+    eComment = eComment.sort((a, b) => b.Post.Votes.filter((v) => v.upVotes == 1).length - a.Post.Votes.filter((v) => v.upVotes == 1).length)
 
-   recent = recent.slice(0, 5)
+  }
 
-   const handleButtonClick = () => {
+
+  let recent = []
+
+  let cm = Object.values(memberships)
+
+  recent = recent.reverse().sort((a, b) => a.createdAt - b.createdAt)
+
+  recent = recent.slice(0, 5)
+
+  const handleButtonClick = () => {
     document.getElementById('nfo').focus(); // Assuming your input has an id of 'myInput'
   };
 
@@ -173,15 +188,20 @@ function SearchCommunityComments() {
 
     return (
         <div className="splashPage">
-            <div className="posts">
+            <div className="postsC">
                 <div style={{ height: "92px", width: "100%" }} >
                 <div id="pick-search">
                 <button onClick={(() => history.push(`/search2/community/${singleCommunity.id}/:page/${search}`))} >Posts</button>
                     <button id="picked-S" onClick={(() => history.push(`/search2/comments/${singleCommunity.id}/:page/${search}`))}>Comments</button>
                     <span style={{ cursor: "pointer", display: "flex", gap: "5px", }}>Show results from <span onClick={(() => history.push(`/search/:page/${search}`))} style={{ fontWeight: "900", color: "#0079D3" }}>all of luvddit</span><i onClick={(() => history.push(`/search/:page/${search}`))} style={{ height: "20px", fontSize: "20px", color: "#0079D3"}} class="fi fi-rr-arrow-right"></i></span>
                 </div>
-                <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="pick-sort">
-                    <button>Sort<i style={{ fontSize: "12px"}} class="fa-solid fa-chevron-down"></i></button>
+                <div id="searchsortC" ref={targetRef}>
+                <button style={{ background: sortbox ? "white" : "transparent"}} onClick={(() => setSortbox(!sortbox))}>{sortSearch}<i style={{ fontSize: "12px"}}class={ sortbox ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down"}></i></button>
+                { sortbox ? <div id="time-box">
+                  <span onClick={(() => setSortSearch("Relevance"))} id={sortSearch == "Relevance" ? "timed" : "nottimed"}>Relevance</span>
+                  <span onClick={(() => setSortSearch("Top"))} id={sortSearch == "Top" ? "timed" : "nottimed"}>Top</span>
+                  <span onClick={(() => setSortSearch("New"))} id={sortSearch == "New" ? "timed" : "nottimed"}>New</span>
+                </div> : null }
                 </div>
                 </div>
                 { eComment.length > 0 && eComment?.map((comment, i) =>

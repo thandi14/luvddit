@@ -33,9 +33,7 @@ function SearchPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [threshold, setThreshold] = useState(450);
     const [timebox, setTimebox] = useState(false)
-    const [atime, setAtime] = useState("All")
     const [sortbox, setSortbox] = useState(false)
-    const [asort, setAsort] = useState("Relevance")
     const { setTimeSearch, timeSearch, setSortSearch, sortSearch } = useSearch()
 
     useEffect(() => {
