@@ -47,6 +47,13 @@ const getPosts = (posts) => {
     }
 }
 
+// const getPosts = (posts) => {
+//   return {
+//       type: GET_POSTS,
+//       posts
+//   }
+// }
+
 const getHotPosts = (posts) => {
   return {
       type: GET_HOT_POSTS,
@@ -317,6 +324,14 @@ export const thunkGetAllPosts = (page) => async (dispatch) => {
   return response1;
 
 }
+
+// export const thunkGetRecentPosts = (page) => async (dispatch) => {
+//   const response1 = await csrfFetch(`/api/posts?page=${page}`);
+//   let data1 = await response1.json();
+//   dispatch(getPosts(data1));
+//   return response1;
+
+// }
 
 export const thunkGetAllSearchedPosts = (page, search) => async (dispatch) => {
   const response1 = await csrfFetch(`/api/posts/search?page=${page}&search=${search}`);

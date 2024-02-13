@@ -107,18 +107,19 @@ function HotPage() {
 
     if (user && Object.values(memberships).length) {
       let cm = Object.values(memberships)
+      let rp = Object.values(posts).sort((a, b) => b.createdAt - a.createdAt)
 
-      for (let c of cm ) {
-        if (c.Posts?.length) {
-            for ( let p of c?.Posts ) recent.push(p)
-        }
+      for ( let p of rp )
+        for (let c of cm ) {
+          if (c.name == p.Community.name) {
+              recent.push(p)
+          }
       }
 
     }
     else {
       recent = []
     }
-
     if (!recent.length) recent = []
 
     if (recent.length) recent = recent.reverse().sort((a, b) => a.createdAt - b.createdAt)
