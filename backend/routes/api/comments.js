@@ -207,6 +207,57 @@ router.delete("/:id", async (req, res) => {
     })
 })
 
+router.post('/:id/saved', async (req, res) => {
+    let commentId = req.params.id;
+    let commentExist = await Comments.findByPk(commentId);
+    const { user } = req
+    const userId = user.dataValues.id
 
+
+    if (!commentExist) {
+
+    res.status(404).json({"message": "Comment couldn't be found"});
+
+    }
+
+        setting = await CommentSetting.create({
+            commentId,
+            userId,
+            saved: new Date()
+        })
+
+
+    let saved2 = await CommentSetting.findByPk(setting.dataValues.id, {
+        include: [
+            {
+                model: Post,
+                include: [
+                    {
+                        model: Comments,
+                        include: [
+                            { model: User },
+                            { model: Votes }
+                        ]
+                    },
+                    {
+                        model: Community,
+                        include: [
+                            { model: CommunityStyle }
+                        ]
+                    },
+                    { model: User },
+                    { model: PostImages },
+                    { model: Votes },
+                    { model: PostSetting}
+                 ]
+            }
+        ]
+    })
+
+    return res.json(
+        saved2
+    )
+
+})
 
 module.exports = router;
