@@ -230,6 +230,10 @@ router.post('/:id/saved', async (req, res) => {
     let saved2 = await CommentSetting.findByPk(setting.dataValues.id, {
         include: [
             {
+            model: Comments,
+            include:[
+
+            {
                 model: Post,
                 include: [
                     {
@@ -251,6 +255,8 @@ router.post('/:id/saved', async (req, res) => {
                     { model: PostSetting}
                  ]
             }
+            ]
+            }
         ]
     })
 
@@ -259,5 +265,177 @@ router.post('/:id/saved', async (req, res) => {
     )
 
 })
+
+router.get("/saved", async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+    const pageSize = 10; // Number of posts per page
+
+    const { user } = req
+    const userId = user.dataValues.id
+
+    let comments = await CommentSetting.findAll({
+        order: [['saved', 'DESC']],
+        where: {
+            userId
+        },
+        include: [
+            {
+            model: Comments,
+            include:[
+
+            {
+                model: Post,
+                include: [
+                    {
+                        model: Comments,
+                        include: [
+                            { model: User },
+                            { model: Votes }
+                        ]
+                    },
+                    {
+                        model: Community,
+                        include: [
+                            { model: CommunityStyle }
+                        ]
+                    },
+                    { model: User },
+                    { model: PostImages },
+                    { model: Votes },
+                    { model: PostSetting}
+                 ]
+            }
+            ]
+            }
+        ]
+        //  limit: pageSize, // Limit the number of results per page
+        //  offset: (page - 1) * pageSize
+    });
+
+    comments = comments.filter((p) => p.dataValues.saved)
+
+    let paginatedComments = comments.slice((page - 1) * pageSize, page * pageSize);
+
+
+    return res.json(paginatedComments)
+})
+
+router.put('/:id/saved', async (req, res) => {
+    let commentId = req.params.id;
+    const { user } = req
+    const userId = user.dataValues.id
+
+    let setting = await CommentSetting.findOne({
+        where: {
+            commentId,
+            userId
+        }
+    });
+
+    if (!setting) {
+
+    return res.json({"message": "Setting couldn't be found"});
+
+    }
+
+    setting.set({
+        saved: new Date()
+    })
+
+    await setting.save()
+
+    let saved2 = await CommentSetting.findByPk(setting.dataValues.id, {
+        include: [
+            {
+            model: Comments,
+            include:[
+
+            {
+                model: Post,
+                include: [
+                    {
+                        model: Comments,
+                        include: [
+                            { model: User },
+                            { model: Votes }
+                        ]
+                    },
+                    {
+                        model: Community,
+                        include: [
+                            { model: CommunityStyle }
+                        ]
+                    },
+                    { model: User },
+                    { model: PostImages },
+                    { model: Votes },
+                    { model: PostSetting}
+                 ]
+            }
+            ]
+            }
+        ]
+    })
+
+    return res.json(saved2)
+
+})
+
+router.put('/saved/:id', async (req, res) => {
+    let savedId = req.params.id;
+    let setting = await PostSetting.findByPk(savedId);
+
+    if (!setting) {
+
+    return res.json({"message": "Setting couldn't be found"});
+
+    }
+
+    setting.set({
+        saved: null
+    })
+
+    await setting.save()
+
+    //await historyExsist.destroy()
+
+    let saved2 = await PostSetting.findByPk(setting.dataValues.id, {
+        include: [
+            {
+            model: Comments,
+            include:[
+
+            {
+                model: Post,
+                include: [
+                    {
+                        model: Comments,
+                        include: [
+                            { model: User },
+                            { model: Votes }
+                        ]
+                    },
+                    {
+                        model: Community,
+                        include: [
+                            { model: CommunityStyle }
+                        ]
+                    },
+                    { model: User },
+                    { model: PostImages },
+                    { model: Votes },
+                    { model: PostSetting}
+                 ]
+            }
+            ]
+            }
+        ]
+    })
+
+    return res.json(saved2)
+
+
+})
+
 
 module.exports = router;

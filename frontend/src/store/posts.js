@@ -9,6 +9,7 @@ const GET_SEARCH = 'posts/getSearch';
 const GET_COMMUNITY_POSTS = 'posts/getCommunityPosts';
 const GET_HISTORY = 'posts/getHistory';
 const GET_SAVED = 'posts/getSaved';
+const GET_SAVED2 = 'posts/getSaved2';
 const GET_OVERVIEW = 'posts/getOverview';
 const GET_HOT_OVERVIEW = 'posts/getHotOverview';
 const GET_TOP_OVERVIEW = 'posts/getTopOverview';
@@ -18,6 +19,7 @@ const GET_HOT_COMMENTS = 'posts/getHotComments';
 const GET_TOP_COMMENTS = 'posts/getTopComments';
 const ADD_HISTORY = 'posts/addHistory';
 const ADD_SAVED = 'posts/addSaved';
+const ADD_SAVED2 = 'posts/addSaved2';
 const UPDATE_HISTORY = 'posts/addHistory';
 const UPDATE_SAVED = 'posts/addSaved';
 const GET_DETAILS = 'posts/getDetails';
@@ -122,6 +124,13 @@ const getSaved = (posts) => {
   }
 }
 
+const getSaved2 = (posts) => {
+  return {
+      type: GET_SAVED2,
+      posts
+  }
+}
+
 const getOverview = (posts) => {
   return {
       type: GET_OVERVIEW,
@@ -183,6 +192,13 @@ const addHistory = (history) => {
 const addSaved = (saved) => {
   return {
       type: ADD_SAVED,
+      saved
+  }
+}
+
+const addSaved2 = (saved) => {
+  return {
+      type: ADD_SAVED2,
       saved
   }
 }
@@ -434,6 +450,13 @@ export const thunkGetSaved = (page) => async (dispatch) => {
   return response1;
 }
 
+export const thunkGetSavedComments = (page) => async (dispatch) => {
+  const response1 = await csrfFetch(`/api/comments/saved?page=${page}`)
+  let data1 = await response1.json();
+  dispatch(getSaved2(data1));
+  return response1;
+}
+
 export const thunkGetFavorites = (page) => async (dispatch) => {
   // console.log("HELLO????:", page)
   const response1 = await csrfFetch(`/api/posts/votes?page=${page}`)
@@ -611,6 +634,18 @@ export const thunkCreateSaved = (id) => async (dispatch) => {
   return data
 }
 
+export const thunkCreateSaved2 = (id) => async (dispatch) => {
+  const response = await csrfFetch(`/api/comments/${id}/saved`, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+        },
+  })
+  let data = await response.json()
+  dispatch(addSaved2(data))
+  return data
+}
+
 export const thunkUpdateHistory = (id) => async (dispatch) => {
   // console.log("REDUCER", id)
   const response = await csrfFetch(`/api/posts/${id}/history`, {
@@ -778,6 +813,7 @@ let initialState = {
     removedPost: {},
     postsHistory: {},
     postsSaved: {},
+    postsSaved2: {},
     postsFavorites: {},
     postsComments: {},
     postsHotComments: {},
@@ -906,6 +942,13 @@ const postsReducer = (state = initialState, action) => {
       );
       return newState;
     }
+    case GET_SAVED2: {
+      newState = { ...state };
+      action.posts.forEach(
+        (saved) => (newState.postsSaved2[saved.Post.id] = { ...saved.Post })
+      );
+      return newState;
+    }
     case GET_FAVORITES: {
       newState = { ...state };
       action.posts.forEach(
@@ -978,6 +1021,12 @@ const postsReducer = (state = initialState, action) => {
       newState.hotCommunityPosts[saved.Post?.id] = { ...saved.Post };
       newState.topCommunityPosts[saved.Post?.id] = { ...saved.Post };
       return newState;
+    }
+    case ADD_SAVED2: {
+      newState = { ...state };
+      const saved = action.saved;
+      newState.postsSaved2[saved.Post?.id] = { ...saved.Post };
+      newState.singlePost.Comments[saved.Post.id] = {...saved.Post }
     }
     case UPDATE_HISTORY: {
       newState = { ...state };
