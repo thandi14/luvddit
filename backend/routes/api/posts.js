@@ -346,6 +346,52 @@ router.get("/saved", async (req, res) => {
     return res.json(paginatedPosts)
 })
 
+router.get("/hidden", async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+    const pageSize = 10; // Number of posts per page
+
+    const { user } = req
+    const userId = user.dataValues.id
+
+    let posts = await PostSetting.findAll({
+        order: [['hidden', 'DESC']],
+        where: {
+            userId
+        },
+        include: [
+            {
+                model: Post,
+                include: [
+                    { model: Comments },
+                    {
+                        model: Community,
+                        include: [
+                            { model: CommunityStyle }
+                        ]
+                    },
+                    { model: User},
+                    { model: PostImages},
+                    {
+                        model: Votes,
+                    },
+                    {
+                        model: PostSetting,
+                     }
+                ]
+            }
+         ],
+        //  limit: pageSize, // Limit the number of results per page
+        //  offset: (page - 1) * pageSize
+    });
+
+    posts = posts.filter((p) => p.dataValues.saved)
+
+    let paginatedPosts = posts.slice((page - 1) * pageSize, page * pageSize);
+
+
+    return res.json(paginatedPosts)
+})
+
 
 router.get("/votes", async (req, res) => {
     const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
@@ -1442,6 +1488,60 @@ router.post('/:id/saved', async (req, res) => {
 
 })
 
+router.post('/:id/hidden', async (req, res) => {
+    let postId = req.params.id;
+    let postExist = await Post.findByPk(postId);
+    const { user } = req
+    const userId = user.dataValues.id
+
+
+    if (!postExist) {
+
+    res.status(404).json({"message": "Post couldn't be found"});
+
+    }
+
+        setting = await PostSetting.create({
+            postId,
+            userId,
+            hidden: new Date()
+        })
+
+
+    let hidden2 = await PostSetting.findByPk(setting.dataValues.id, {
+        include: [
+            {
+                model: Post,
+                include: [
+                    {
+                        model: Comments,
+                        include: [
+                            { model: User },
+                            { model: Votes }
+                        ]
+                    },
+                    {
+                        model: Community,
+                        include: [
+                            { model: CommunityStyle }
+                        ]
+                    },
+                    { model: User },
+                    { model: PostImages },
+                    { model: Votes },
+                    { model: PostSetting}
+                 ]
+            }
+        ]
+    })
+
+    return res.json(
+        hidden2
+    )
+
+})
+
+
 router.put('/:id/history', async (req, res) => {
     let postId = req.params.id;
     const { user } = req
@@ -1604,6 +1704,112 @@ router.put('/saved/:id', async (req, res) => {
 
 })
 
+router.put('/:id/hidden', async (req, res) => {
+    let postId = req.params.id;
+    const { user } = req
+    const userId = user.dataValues.id
+
+    let setting = await PostSetting.findOne({
+        where: {
+            postId,
+            userId
+        }
+    });
+
+    if (!setting) {
+
+    return res.json({"message": "Setting couldn't be found"});
+
+    }
+
+    setting.set({
+        hidden: new Date()
+    })
+
+    await setting.save()
+
+    let hidden2 = await PostSetting.findByPk(setting.dataValues.id, {
+        include: [
+            {
+                model: Post,
+                include: [
+                    {
+                        model: Comments,
+                        include: [
+                            { model: User },
+                            { model: Votes }
+                        ]
+                    },
+                    {
+                        model: Community,
+                        include: [
+                            { model: CommunityStyle }
+                        ]
+                    },
+                    { model: User },
+                    { model: PostImages },
+                    { model: Votes },
+                    { model: PostSetting }
+                 ]
+            }
+        ]
+    })
+
+    return res.json(hidden2)
+
+})
+
+
+
+router.put('/hidden/:id', async (req, res) => {
+    let hiddenId = req.params.id;
+    let setting = await PostSetting.findByPk(hiddenId);
+
+    if (!setting) {
+
+    return res.json({"message": "Setting couldn't be found"});
+
+    }
+
+    setting.set({
+        hidden: null
+    })
+
+    await setting.save()
+
+    //await historyExsist.destroy()
+
+    let hidden2 = await PostSetting.findByPk(setting.dataValues.id, {
+        include: [
+            {
+                model: Post,
+                include: [
+                    {
+                        model: Comments,
+                        include: [
+                            { model: User },
+                            { model: Votes }
+                        ]
+                    },
+                    {
+                        model: Community,
+                        include: [
+                            { model: CommunityStyle }
+                        ]
+                    },
+                    { model: User },
+                    { model: PostImages },
+                    { model: Votes },
+                    { model: PostSetting }
+                 ]
+            }
+        ]
+    })
+
+    return res.json(hidden2)
+
+
+})
 
 
 router.post('/:id/votes', async (req, res) => {
