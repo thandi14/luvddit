@@ -10,6 +10,7 @@ const GET_COMMUNITY_POSTS = 'posts/getCommunityPosts';
 const GET_HISTORY = 'posts/getHistory';
 const GET_SAVED = 'posts/getSaved';
 const GET_SAVED2 = 'posts/getSaved2';
+const GET_HIDDEN = 'posts/getHidden';
 const GET_OVERVIEW = 'posts/getOverview';
 const GET_HOT_OVERVIEW = 'posts/getHotOverview';
 const GET_TOP_OVERVIEW = 'posts/getTopOverview';
@@ -20,8 +21,10 @@ const GET_TOP_COMMENTS = 'posts/getTopComments';
 const ADD_HISTORY = 'posts/addHistory';
 const ADD_SAVED = 'posts/addSaved';
 const ADD_SAVED2 = 'posts/addSaved2';
+const ADD_HIDDEN = 'posts/addHidden';
 const UPDATE_HISTORY = 'posts/addHistory';
 const UPDATE_SAVED = 'posts/addSaved';
+const UPDATE_HIDDEN = 'posts/addHidden';
 const GET_DETAILS = 'posts/getDetails';
 const ADD_DETAILS = 'posts/addDetails';
 const GET_UPDATES = 'posts/getUpdates';
@@ -131,6 +134,13 @@ const getSaved2 = (posts) => {
   }
 }
 
+const getHidden = (posts) => {
+  return {
+      type: GET_HIDDEN,
+      posts
+  }
+}
+
 const getOverview = (posts) => {
   return {
       type: GET_OVERVIEW,
@@ -203,6 +213,13 @@ const addSaved2 = (saved) => {
   }
 }
 
+const addHidden = (hidden) => {
+  return {
+      type: ADD_HIDDEN,
+      hidden
+  }
+}
+
 const updateHistory = (history) => {
   return {
       type: UPDATE_HISTORY,
@@ -214,6 +231,13 @@ const updateSaved = (saved) => {
   return {
       type: UPDATE_SAVED,
       saved
+  }
+}
+
+const updateHidden = (hidden) => {
+  return {
+      type: UPDATE_HIDDEN,
+      hidden
   }
 }
 
@@ -450,6 +474,13 @@ export const thunkGetSaved = (page) => async (dispatch) => {
   return response1;
 }
 
+export const thunkGetHidden = (page) => async (dispatch) => {
+  const response1 = await csrfFetch(`/api/posts/hidden?page=${page}`)
+  let data1 = await response1.json();
+  dispatch(getHidden(data1));
+  return response1;
+}
+
 export const thunkGetSavedComments = (page) => async (dispatch) => {
   const response1 = await csrfFetch(`/api/comments/saved?page=${page}`)
   let data1 = await response1.json();
@@ -634,6 +665,18 @@ export const thunkCreateSaved = (id) => async (dispatch) => {
   return data
 }
 
+export const thunkCreateHidden = (id) => async (dispatch) => {
+  const response = await csrfFetch(`/api/posts/${id}/hidden`, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+        },
+  })
+  let data = await response.json()
+  dispatch(addHidden(data))
+  return data
+}
+
 export const thunkCreateSaved2 = (id) => async (dispatch) => {
   const response = await csrfFetch(`/api/comments/${id}/saved`, {
       method: 'POST',
@@ -669,6 +712,19 @@ export const thunkUpdateSaved = (id) => async (dispatch) => {
   })
   let data = await response.json()
   dispatch(updateSaved(data))
+  return data
+}
+
+export const thunkUpdateHidden = (id) => async (dispatch) => {
+  // console.log("REDUCER", id)
+  const response = await csrfFetch(`/api/posts/${id}/hidden`, {
+      method: 'PUT',
+      headers: {
+          'Content-Type': 'application/json'
+        },
+  })
+  let data = await response.json()
+  dispatch(updateHidden(data))
   return data
 }
 
@@ -814,6 +870,7 @@ let initialState = {
     postsHistory: {},
     postsSaved: {},
     postsSaved2: {},
+    postsHidden: {},
     postsFavorites: {},
     postsComments: {},
     postsHotComments: {},
@@ -942,6 +999,13 @@ const postsReducer = (state = initialState, action) => {
       );
       return newState;
     }
+    case GET_SAVED: {
+      newState = { ...state };
+      action.posts.forEach(
+        (hidden) => (newState.postsHidden[hidden.Post.id] = { ...hidden.Post })
+      );
+      return newState;
+    }
     case GET_SAVED2: {
       newState = { ...state };
       action.posts.forEach(
@@ -1022,6 +1086,34 @@ const postsReducer = (state = initialState, action) => {
       newState.topCommunityPosts[saved.Post?.id] = { ...saved.Post };
       return newState;
     }
+    case ADD_HIDDEN: {
+      newState = { ...state };
+      const hidden = action.hidden;
+      newState.postsHidden[hidden.Post?.id] = { ...hidden.Post };
+      newState.posts[hidden.Post?.id] = { ...hidden.Post };
+      newState.hotPosts[hidden.Post?.id] = { ...hidden.Post };
+      newState.topPosts[hidden.Post?.id] = { ...hidden.Post };
+      newState.bestPosts[hidden.Post?.id] = { ...hidden.Post };
+      newState.userPosts[hidden.Post?.id] = { ...hidden.Post };
+      newState.bestPosts[hidden.Post?.id] = { ...hidden.Post };
+      newState.userHotPosts[hidden.Post?.id] = { ...hidden.Post };
+      newState.userTopPosts[hidden.Post?.id] = { ...hidden.Post };
+      newState.singlePost = { ...hidden.Post };
+      newState.communityPosts[hidden.Post?.id] = { ...hidden.Post };
+      newState.removedPost[hidden.Post?.id] = { ...hidden.Post };
+      newState.postsHistory[hidden.Post?.id] = { ...hidden.Post };
+      newState.postsFavorites[hidden.Post?.id] = { ...hidden.Post };
+      newState.postsComments[hidden.Post?.id] = { ...hidden.Post };
+      newState.postsHotComments[hidden.Post?.id] = { ...hidden.Post };
+      newState.postsTopComments[hidden.Post?.id] = { ...hidden.Post };
+      newState.postsOverview[hidden.Post?.id] = { ...hidden.Post };
+      newState.postsHotOverview[hidden.Post?.id] = { ...hidden.Post };
+      newState.postsTopOverview[hidden.Post?.id] = { ...hidden.Post };
+      newState.hotCommunityPosts[hidden.Post?.id] = { ...hidden.Post };
+      newState.topCommunityPosts[hidden.Post?.id] = { ...hidden.Post };
+      return newState;
+    }
+
     case ADD_SAVED2: {
       newState = { ...state };
       const saved = action.saved;
@@ -1064,6 +1156,35 @@ const postsReducer = (state = initialState, action) => {
       newState.postsTopOverview[saved.Post?.id] = { ...saved.Post };
       newState.hotCommunityPosts[saved.Post?.id] = { ...saved.Post };
       newState.topCommunityPosts[saved.Post?.id] = { ...saved.Post };
+      return newState;
+    }
+    case UPDATE_HIDDEN: {
+      newState = { ...state };
+      const hidden = action.hidden;
+      if (newState.singlePost) newState.singlePost.PostSetting = { ...hidden }
+      newState.postsHidden = newState.postsHidden.filter((s) => s.Post.id !== hidden.Post.id)
+      newState.postsHidden[hidden.Post?.id] = { ...hidden.Post };
+      newState.posts[hidden.Post?.id] = { ...hidden.Post };
+      newState.hotPosts[hidden.Post?.id] = { ...hidden.Post };
+      newState.topPosts[hidden.Post?.id] = { ...hidden.Post };
+      newState.bestPosts[hidden.Post?.id] = { ...hidden.Post };
+      newState.userPosts[hidden.Post?.id] = { ...hidden.Post };
+      newState.bestPosts[hidden.Post?.id] = { ...hidden.Post };
+      newState.userHotPosts[hidden.Post?.id] = { ...hidden.Post };
+      newState.userTopPosts[hidden.Post?.id] = { ...hidden.Post };
+      newState.singlePost = { ...hidden.Post };
+      newState.communityPosts[hidden.Post?.id] = { ...hidden.Post };
+      newState.removedPost[hidden.Post?.id] = { ...hidden.Post };
+      newState.postsHistory[hidden.Post?.id] = { ...hidden.Post };
+      newState.postsFavorites[hidden.Post?.id] = { ...hidden.Post };
+      newState.postsComments[hidden.Post?.id] = { ...hidden.Post };
+      newState.postsHotComments[hidden.Post?.id] = { ...hidden.Post };
+      newState.postsTopComments[hidden.Post?.id] = { ...hidden.Post };
+      newState.postsOverview[hidden.Post?.id] = { ...hidden.Post };
+      newState.postsHotOverview[hidden.Post?.id] = { ...hidden.Post };
+      newState.postsTopOverview[hidden.Post?.id] = { ...hidden.Post };
+      newState.hotCommunityPosts[hidden.Post?.id] = { ...hidden.Post };
+      newState.topCommunityPosts[hidden.Post?.id] = { ...hidden.Post };
       return newState;
     }
     case GET_DETAILS: {
@@ -1140,6 +1261,9 @@ const postsReducer = (state = initialState, action) => {
       if (newState.postsSaved[vote.postId]) {
         newState.postsSaved[vote.postId].Votes.push(vote);
       }
+      if (newState.postsHidden[vote.postId]) {
+        newState.postsHidden[vote.postId].Votes.push(vote);
+      }
       return newState;
     }
     case GET_VOTE_UPDATES: {
@@ -1195,6 +1319,7 @@ const postsReducer = (state = initialState, action) => {
       let votes20 = newState.postsFavorites[vote.postId]?.Votes;
       let votes21 = newState.hotPosts[vote.postId]?.Votes;
       let votes22 = newState.postsSaved[vote.postId]?.Votes;
+      let votes23 = newState.postsHidden[vote.postId]?.Votes;
       if (votes21) {
         newState.hotPosts[vote.postId].Votes = votes21.filter((v) => v.id !== vote.id);
         newState.hotPosts[vote.postId].Votes.push(vote);
@@ -1255,7 +1380,10 @@ const postsReducer = (state = initialState, action) => {
         newState.postsSaved[vote.postId].Votes = votes22.filter((v) => v.id !== vote.id);
         newState.postsSaved[vote.postId].Votes.push(vote);
       }
-      // console.log("REDUCER", newState.posts)
+      if (votes23) {
+        newState.postsHidden[vote.postId].Votes = votes23.filter((v) => v.id !== vote.id);
+        newState.postsHidden[vote.postId].Votes.push(vote);
+      }
       return newState;
     }
     case GET_VOTE_DETAILS2: {
@@ -1298,6 +1426,7 @@ const postsReducer = (state = initialState, action) => {
       let votes20 = newState.postsFavorites[action.postId]?.Votes;
       let votes21 = newState.hotPosts[action.postId]?.Votes;
       let votes22 = newState.postsSaved[action.postId]?.Votes;
+      let votes23 = newState.postsHidden[action.postId]?.Votes;
 
       if (votes9) newState.bestPosts[action.postId].Votes = votes9.filter((v) => v.id !== action.voteId);
       if (votes10) newState.topPosts[action.postId].Votes = votes10.filter((v) => v.id !== action.voteId);
@@ -1313,6 +1442,7 @@ const postsReducer = (state = initialState, action) => {
       if (votes20) newState.postsFavorites[action.postId].Votes = votes20.filter((v) => v.id !== action.voteId);
       if (votes21) newState.hotPosts[action.postId].Votes = votes21.filter((v) => v.id !== action.voteId);
       if (votes22) newState.postsSaved[action.postId].Votes = votes22.filter((v) => v.id !== action.voteId);
+      if (votes23) newState.postsHidden[action.postId].Votes = votes23.filter((v) => v.id !== action.voteId);
       return newState;
     }
     case REMOVE_VOTE2: {
