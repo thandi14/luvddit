@@ -47,7 +47,8 @@ function HotCommunityPage() {
   const [currentPage2, setCurrentPage2] = useState(1);
   const [threshold, setThreshold] = useState(450);
   const { filter, setFilter } = useFilter()
-
+  const [ hiddenBox, setHiddenbox ] = useState(false)
+  const [ hiddenPost, setHiddenPost ] = useState(null)
 
   useEffect(() => {
       setFilter(true)
@@ -79,14 +80,31 @@ function HotCommunityPage() {
 
     const handleSaved = async (id) => {
       if (!user) return setModalContent(<SignupFormModal />)
-      if (singlePost.PostSetting && !singlePost.PostSetting.saved) await dispatch(postsActions.thunkUpdateSaved(id))
-      else if (!singlePost.PostSetting) await dispatch(postsActions.thunkCreateSaved(id))
+      await dispatch(postsActions.thunkCreateSaved(id))
+    }
+
+    const handleSaved2 = async (id) => {
+      if (!user) return setModalContent(<SignupFormModal />)
+      await dispatch(postsActions.thunkUpdateSaved(id))
     }
 
     const handleUnsaved = async (id) => {
       await dispatch(postsActions.thunkUpdateSaved2(id))
     }
 
+    const handleHide = async (id) => {
+      if (!user) return setModalContent(<SignupFormModal />)
+      await dispatch(postsActions.thunkCreateHidden(id))
+    }
+
+    const handleHide2 = async (id) => {
+      if (!user) return setModalContent(<SignupFormModal />)
+      await dispatch(postsActions.thunkUpdateHidden(id))
+    }
+
+    const handleUnhide = async (id) => {
+      await dispatch(postsActions.thunkUpdateHidden2(id))
+    }
 
 
   useEffect(() => {
@@ -120,7 +138,7 @@ function HotCommunityPage() {
 
   let ePost = []
 
-  ePost = Object.values(hotCommunityPosts).sort((a, b) => b.Votes.length - a.Votes.length).filter((p) => p.communityId === singleCommunity.id)
+  ePost = Object.values(hotCommunityPosts).sort((a, b) => b.Votes?.length - a.Votes?.length).filter((p) => p.communityId === singleCommunity.id)
 
   useEffect( () => {
     if (singlePost.tags) setTags(singlePost.tags.split(','))
@@ -453,11 +471,15 @@ const handleNsfw = (e) => {
                 </div>
                 {ePost && !ePost.length ? <NoPosts name={"posted"} /> : ePost.map((post, i) =>
                     <div className="post-content">
-                    <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="pc-side1">
-                    <PostLikes post={post}
-                   />
-                    </div>
-                    <div id="pc-side2">
+                       {post.PostSetting?.hidden && <div id="hidePs">
+                      <h2>Post hidden</h2>
+                      <button onClick={(() => handleUnhide(post.PostSetting.id))} id="undoH">Undo</button>
+                      </div>}
+                      { !post.PostSetting?.hidden && <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="pc-side1">
+                      <PostLikes post={post}
+                      />
+                      </div>}
+                      { !post.PostSetting?.hidden && <div id="pc-side2">
                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={scrolling} />))} id="nameOf">
                     {/* <img src={pfp}></img> */}
                     <p id="cp">Posted by <span onClick={((e) => {
@@ -465,8 +487,8 @@ const handleNsfw = (e) => {
                         post.userId !== user?.id ? history.push(`/profile2/${post.userId}/:page`) : history.push('/profile/:page')})} className="userName">u/{post.User?.username}</span> {getTimeDifferenceString(post.createdAt)}</p>
                     </div>
                     <h3  id="p-tit" onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title"><h3 id={post.userId === user?.id ? "title-content2" : "title-content"}>{post.title}<span>{ post.tags && post.tags.includes("oc") ? <div id="oc5">OC</div> : null} {post.tags && post.tags.includes("spoiler") ? <span id="spoiler5">Spoiler</span> : null } { post.tags && post.tags.includes("nsfw") ? <span id="nsfw5">NSFW</span> : null}</span></h3></h3>                    <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={scrolling} />))} id="content">
-                    {post.PostImages.length !== 0 && <div id="img2">
-                    {post.PostImages.length === 1 ? <img style={{ maxWidth: "100%", maxHeight: "511px", alignSelf: "flex-end" }} src={post.PostImages[0]?.imgURL} alt="meaningful-text"></img> : <MyCarousel images={post.PostImages}/>}
+                    {post.PostImages?.length !== 0 && <div id="img2">
+                    {post.PostImages?.length === 1 ? <img style={{ maxWidth: "100%", maxHeight: "511px", alignSelf: "flex-end" }} src={post.PostImages[0]?.imgURL} alt="meaningful-text"></img> : <MyCarousel images={post.PostImages}/>}
                     </div>}
                     { post.description && <div style={{position: "relative"}} id={post.userId === user?.id ? "finishing60" : "finishing2"}>
                       <span id="post-des">{post.description}</span>
@@ -487,8 +509,7 @@ const handleNsfw = (e) => {
                     <p>Share</p>
                     </div>
                     { !post.PostSetting || !post.PostSetting.saved ? <div onClick={(() => {
-                      // setSaved(post.id)
-                      handleSaved(post.id)
+                      post.PostSetting ? handleSaved2(post.id) : handleSaved(post.id)
                     })} id="comment">
                     <i class="fi fi-rr-bookmark"></i>
                     <p>Save</p>
@@ -500,7 +521,16 @@ const handleNsfw = (e) => {
                     <p>Unsave</p>
                     </div>
                     }
-                    <i onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))}class="fi fi-rr-menu-dots"></i>
+                    <i id="hideP" onClick={(() => {
+                      setHiddenPost(post.id)
+                      setHiddenbox(!hiddenBox)}
+                      )} class="fi fi-rr-menu-dots">
+                      {hiddenBox && hiddenPost == post.id && <div style={{top: "15px"}} id="hp">
+                        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-volume-mute"></i>Mute l/help</span>
+                        <span onClick={(() => post.PostSetting ? handleHide2(post.id) : handleHide(post.id))} ><i class="fi fi-rr-eye-crossed"></i>Hide</span>
+                        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-flag"></i>Report</span>
+                      </div>}
+                    </i>
                     </div> :
                     <div id="post-extras9">
                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="comment">
@@ -538,8 +568,12 @@ const handleNsfw = (e) => {
                 <div ref={targetRef} id={editMenu}>
                    {post?.PostImages.length && post?.PostImages[0].imgURL ? null :
                    <p onClick={(() => setModalContent2(<PostPageModal postId={post.id} scroll={false} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                    <p onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} ><i class="fi fi-rr-bookmark"></i>Save</p>
-                    <p onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} ><i class="fi fi-rr-eye-crossed"></i>Hide</p>
+                   { !post.PostSetting || !post.PostSetting.saved ? <p onClick={(() => {
+                      post.PostSetting ? handleSaved2(post.id) : handleSaved(post.id)
+                    })} ><i class="fi fi-rr-bookmark"></i>Save</p> : <p onClick={(() => {
+                      handleUnsaved(post.id)
+                    })} ><i class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
+                    <p onClick={(() => post.PostSetting ? handleHide2(post.id) : handleHide(post.id))} ><i class="fi fi-rr-eye-crossed"></i>Hide</p>
                     <p onClick={(() => {
                         setModalContent2(<div> <DeletePost id={post.id} /></div>)
                         setIsVisible5(false)
@@ -565,7 +599,7 @@ const handleNsfw = (e) => {
                 </div>
                 </i>}
                     </div>}
-                    </div>
+                    </div>}
                     </div>
                 )}
             </div>

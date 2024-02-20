@@ -178,7 +178,7 @@
 
 }
 
-#hideP {
+#hidePs {
     display: flex;
     width: 100%;
     padding: 20px 8px;
@@ -186,7 +186,7 @@
     align-items: center;
 }
 
-#hideP > h2 {
+#hidePs > h2 {
     font-size: 16px;
 }
 
