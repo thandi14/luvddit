@@ -227,9 +227,9 @@ function HiddenPosts() {
         <span onClick={(() => history.push("/profile/:page"))} id="aH4">OVERVIEW</span>
         <span onClick={(() => history.push("/profile/posts/:page"))} id="aH2">POSTS</span>
         <span onClick={(() => history.push("/profile/comments/:page"))} id="aH3">COMMENTS</span>
-        <span onClick={(() => history.push("/profile/history/:page"))}id="aHl">HISTORY</span>
+        <span onClick={(() => history.push("/profile/history/:page"))}id="aH6">HISTORY</span>
         <span onClick={(() => history.push("/profile/saved/:page"))}id="aH5">SAVED</span>
-        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}id="aH6">HIDDEN</span>
+        <span onClick={(() => history.push("/profile/hidden/:page"))}id="aHl">HIDDEN</span>
         <span onClick={(() => history.push("/profile/upvoted/:page"))} id="aH7">UPVOTED</span>
         <span onClick={(() => history.push("/profile/downvoted/:page"))}id="aH8">DOWNVOTED</span>
         <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}id="aH9">AWARDS RECIEVED</span>
@@ -239,7 +239,7 @@ function HiddenPosts() {
     <div className="splashPage2">
     <div className="posts5">
         <div></div>
-        {!filterdPosts.length ? <NoPosts name="seen anything" /> : filterdPosts?.map((post, i) =>
+        {!filterdPosts.length ? <NoPosts name="hidden anything" /> : filterdPosts?.map((post, i) =>
             <div id="omg2">
             <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id={`${post.id}`} className="post-content3">
             <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side9">

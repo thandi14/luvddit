@@ -135,6 +135,78 @@
 
 }
 
+#hideP {
+    position: relative;
+}
+
+#hp > span {
+    white-space: nowrap;
+    padding: 10px;
+    font-size: 14px;
+    gap: 10px;
+    font-weight: 500;
+    display: flex;
+    border: #EDEFF1 solid 0.5px;
+}
+
+#hp > span:hover {
+    background-color: #d1e9fb;
+    color: black
+}
+
+#undoH {
+    cursor: pointer;
+    color: black;
+    border-radius: 20px;
+    height: 32px;
+    background-color: #F6F7F8;
+    border: 1px solid #F6F7F8;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: 'Noto Sans', sans-serif;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    padding: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+#undoH:hover {
+    background-color: #e7e7e7;
+
+}
+
+#hideP {
+    display: flex;
+    width: 100%;
+    padding: 20px 8px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#hideP > h2 {
+    font-size: 16px;
+}
+
+#hp > span > i {
+    font-size: 16px;
+    height: 16px;
+    width: 16px
+}
+
+#hp {
+    position: absolute;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    border: #EDEFF1 solid 1px;
+    border-radius: 4px;
+    width: 120px;
+}
+
+
 .postsC {
     width: 59%;
     display: flex;
@@ -206,6 +278,7 @@
 #comment > p {
     font-size: 12px;
     height: 20px;
+    white-space: nowrap;
     line-height: 16px;
 }
 

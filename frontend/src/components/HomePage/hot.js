@@ -28,6 +28,9 @@ function HotPage() {
     const { setModalContent } = useModal()
     const { page } = useParams(); // Retrieve the page parameter from the URL
     const { filter, setFilter } = useFilter()
+    const targetRef = useRef()
+    const [ hiddenBox, setHiddenbox ] = useState(false)
+    const [ hiddenPost, setHiddenPost ] = useState(null)
 
     let top = isVisible ? "top" : "down"
 
@@ -44,14 +47,31 @@ function HotPage() {
 
   const handleSaved = async (id) => {
     if (!user) return setModalContent(<SignupFormModal />)
-    if (singlePost.PostSetting && !singlePost.PostSetting.saved) await dispatch(postsActions.thunkUpdateSaved(id))
-    else if (!singlePost.PostSetting) await dispatch(postsActions.thunkCreateSaved(id))
+    await dispatch(postsActions.thunkCreateSaved(id))
+  }
+
+  const handleSaved2 = async (id) => {
+    if (!user) return setModalContent(<SignupFormModal />)
+    await dispatch(postsActions.thunkUpdateSaved(id))
   }
 
   const handleUnsaved = async (id) => {
     await dispatch(postsActions.thunkUpdateSaved2(id))
   }
 
+  const handleHide = async (id) => {
+    if (!user) return setModalContent(<SignupFormModal />)
+    await dispatch(postsActions.thunkCreateHidden(id))
+  }
+
+  const handleHide2 = async (id) => {
+    if (!user) return setModalContent(<SignupFormModal />)
+    await dispatch(postsActions.thunkUpdateHidden(id))
+  }
+
+  const handleUnhide = async (id) => {
+    await dispatch(postsActions.thunkUpdateHidden2(id))
+  }
   useEffect(() => {
     async function fetchData() {
       let data
@@ -111,7 +131,7 @@ function HotPage() {
 
       for ( let p of rp )
         for (let c of cm ) {
-          if (c.name == p.Community.name) {
+          if (c.name == p.Community?.name) {
               recent.push(p)
           }
       }
@@ -240,13 +260,16 @@ function HotPage() {
                 </div>
                 </div>
                 {ePost?.map((post, i) =>
-                    // <div id={`${post.id}`} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={scrolling} />))} className="post-content">
                     <div id={`${post.id}`} className="post-content">
-                    <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side1">
+                    {post.PostSetting?.hidden && <div id="hideP">
+                      <h2>Post hidden</h2>
+                      <button onClick={(() => handleUnhide(post.PostSetting.id))} id="undoH">Undo</button>
+                      </div>}
+                   {!post.PostSetting?.hidden && <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side1">
                     <PostLikes post={post}
                     />
-                    </div>
-                    <div id="pc-side2">
+                    </div>}
+                   {!post.PostSetting?.hidden && <div id="pc-side2">
                     <div id="nameOf">
                     {post.Community?.CommunityStyle?.icon ? <img onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} src={post.Community?.CommunityStyle?.icon}></img> : <div style={{ backgroundColor: `${post.Community?.CommunityStyle?.base}`, color: "white" }} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pfp30">l/</div>}
                     <span onClick={(() => history.push(`/communities/${post.communityId}/:page`))} className="userName" id="community">l/{post.Community?.name}</span>
@@ -259,8 +282,9 @@ function HotPage() {
                   {post.PostImages?.length !== 0 && <div id="img2">
                     {post.PostImages?.length === 1 ? <img style={{ maxWidth: "100%", maxHeight: "511px", alignSelf: "flex-end" }} src={post.PostImages[0]?.imgURL} alt="meaningful-text"></img> : <MyCarousel images={post.PostImages}/>}
                     </div>}
-                    { post.description && <div id="finishing2">
-                      {post.description}
+                    { post.description && <div style={{position: "relative"}} id="finishing2">
+                      <span id="post-des">{post.description}</span>
+                      { post.description.length > 140 && <div id="faded"></div>}
                       </div>}
                     </div>
                     <div id="post-extras9">
@@ -277,8 +301,7 @@ function HotPage() {
                     <p>Share</p>
                     </div>
                     { !post.PostSetting || !post.PostSetting.saved ? <div onClick={(() => {
-                      // setSaved(post.id)
-                      handleSaved(post.id)
+                      post.PostSetting ? handleSaved2(post.id) : handleSaved(post.id)
                     })} id="comment">
                     <i class="fi fi-rr-bookmark"></i>
                     <p>Save</p>
@@ -290,9 +313,18 @@ function HotPage() {
                     <p>Unsave</p>
                     </div>
                     }
-                    <i onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} class="fi fi-rr-menu-dots"></i>
+                    <i id="hideP" onClick={(() => {
+                      setHiddenPost(post.id)
+                      setHiddenbox(!hiddenBox)}
+                      )} class="fi fi-rr-menu-dots">
+                      {hiddenBox && hiddenPost == post.id && <div id="hp">
+                        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-volume-mute"></i>Mute l/help</span>
+                        <span onClick={(() => post.PostSetting ? handleHide2(post.id) : handleHide(post.id))} ><i class="fi fi-rr-eye-crossed"></i>Hide</span>
+                        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-flag"></i>Report</span>
+                      </div>}
+                    </i>
                     </div>
-                    </div>
+                    </div>}
                     </div>
                 )}
             </div>

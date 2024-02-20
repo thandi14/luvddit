@@ -1764,6 +1764,7 @@ router.put('/:id/hidden', async (req, res) => {
 router.put('/hidden/:id', async (req, res) => {
     let hiddenId = req.params.id;
     let setting = await PostSetting.findByPk(hiddenId);
+    console.log(hiddenId)
 
     if (!setting) {
 

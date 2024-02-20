@@ -741,6 +741,19 @@ export const thunkUpdateSaved2 = (id) => async (dispatch) => {
   return data
 }
 
+export const thunkUpdateHidden2 = (id) => async (dispatch) => {
+   console.log("REDUCER", id)
+  const response = await csrfFetch(`/api/posts/hidden/${id}`, {
+      method: 'PUT',
+      headers: {
+          'Content-Type': 'application/json'
+        },
+  })
+  let data = await response.json()
+  dispatch(updateHidden(data))
+  return data
+}
+
 export const thunkDeleteVote = (id, postId) => async (dispatch) => {
   const response = await csrfFetch(`/api/posts/votes/${id}`, {
       method: 'DELETE',
@@ -1162,7 +1175,7 @@ const postsReducer = (state = initialState, action) => {
       newState = { ...state };
       const hidden = action.hidden;
       if (newState.singlePost) newState.singlePost.PostSetting = { ...hidden }
-      newState.postsHidden = newState.postsHidden.filter((s) => s.Post.id !== hidden.Post.id)
+      // newState.postsHidden = newState.postsHidden.filter((s) => s.Post.id !== hidden.Post.id)
       newState.postsHidden[hidden.Post?.id] = { ...hidden.Post };
       newState.posts[hidden.Post?.id] = { ...hidden.Post };
       newState.hotPosts[hidden.Post?.id] = { ...hidden.Post };

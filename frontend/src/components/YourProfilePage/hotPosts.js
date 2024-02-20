@@ -226,7 +226,7 @@ function UsersHotPosts() {
         <span onClick={(() => history.push("/profile/comments/:page"))} id="aH3">COMMENTS</span>
         <span onClick={(() => history.push("/profile/history/:page"))}id="aH4">HISTORY</span>
         <span onClick={(() => history.push("/profile/saved/:page"))}id="aH5">SAVED</span>
-        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}id="aH6">HIDDEN</span>
+        <span onClick={(() => history.push("/profile/hidden/:page"))}id="aH6">HIDDEN</span>
         <span onClick={(() => history.push("/profile/upvoted/:page"))} id="aH7">UPVOTED</span>
         <span onClick={(() => history.push("/profile/downvoted/:page"))} id="aH8">DOWNVOTED</span>
         <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}id="aH9">AWARDS RECIEVED</span>

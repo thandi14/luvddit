@@ -51,6 +51,7 @@ import UsersTopPosts from "./components/YourProfilePage/topPosts";
 import CommentedHotPosts from "./components/YourProfilePage/hotComments";
 import CommentedTopPosts from "./components/YourProfilePage/topComments";
 import SavedPosts from "./components/YourProfilePage/saved";
+import HiddenPosts from "./components/YourProfilePage/hidden";
 
 function App() {
   const dispatch = useDispatch();
@@ -171,6 +172,9 @@ function App() {
           </Route>
           <Route exact path="/profile/saved/:page">
           {user ? <SavedPosts /> : <HomePage /> }
+          </Route>
+          <Route exact path="/profile/hidden/:page">
+          {user ? <HiddenPosts />: <HomePage /> }
           </Route>
           <Route exact path="/profile/comments/:page">
           {user ? <CommentedPosts /> : <HomePage /> }

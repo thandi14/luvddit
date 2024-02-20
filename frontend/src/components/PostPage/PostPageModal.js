@@ -458,7 +458,7 @@ function PostPageModal({ postId, scroll }) {
     const formattedDate = `${months[dateObject.getMonth()]}, ${dateObject.getDate()}, ${dateObject.getFullYear()}`;
 
     let style
-        if (singlePost.Community.CommunityStyle) style = singlePost.Community.CommunityStyle.highlight
+        if (singlePost.Community?.CommunityStyle) style = singlePost.Community.CommunityStyle.highlight
 
     function isLink(text) {
         // Regular expression to match a URL
