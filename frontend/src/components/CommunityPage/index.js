@@ -461,7 +461,7 @@ const handleNsfw = (e) => {
                 </div>
                 {ePost && !ePost.length ? <NoPosts name={"posted"} /> : ePost.map((post, i) =>
                    <div className="post-content">
-                   {post.PostSetting?.hidden && <div id="hidePs">
+                   {post.PostSetting?.hidden && <div style={{ width: "100%"}} id="hideP">
                   <h2>Post hidden</h2>
                   <button onClick={(() => handleUnhide(post.PostSetting.id))} id="undoH">Undo</button>
                   </div>}

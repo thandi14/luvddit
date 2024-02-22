@@ -394,7 +394,7 @@ function HiddenPosts() {
                     <i class="fi fi-rr-bookmark-slash"></i>
                     <p>Unsave</p>
                 </div>}
-                {!post.PostSetting.hidden ? <div onClick={((e) => {
+                {!post.PostSetting?.hidden ? <div onClick={((e) => {
                     e.stopPropagation()
                     post.PostSetting ? handleHide2(post.id) : handleHide(post.id)
                     })} id="comment4">

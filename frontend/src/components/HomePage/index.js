@@ -261,7 +261,7 @@ const handleUnhide = async (id) => {
                 </div>
                 {ePost?.map((post, i) =>
                      <div id={`${post.id}`} className="post-content">
-                     {post.PostSetting?.hidden && <div id="hideP">
+                     {post.PostSetting?.hidden && <div style={{ width: "100%"}} id="hideP">
                        <h2>Post hidden</h2>
                        <button onClick={(() => handleUnhide(post.PostSetting.id))} id="undoH">Undo</button>
                        </div>}

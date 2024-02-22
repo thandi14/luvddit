@@ -470,8 +470,8 @@ const handleNsfw = (e) => {
                 </div>
                 </div>
                 {ePost && !ePost.length ? <NoPosts name={"posted"} /> : ePost.map((post, i) =>
-                    <div className="post-content">
-                       {post.PostSetting?.hidden && <div id="hidePs">
+                   <div className="post-content">
+                       {post.PostSetting?.hidden && <div style={{ width: "100%"}} id="hideP">
                       <h2>Post hidden</h2>
                       <button onClick={(() => handleUnhide(post.PostSetting.id))} id="undoH">Undo</button>
                       </div>}
@@ -515,7 +515,7 @@ const handleNsfw = (e) => {
                     <p>Save</p>
                     </div> :
                     <div onClick={(() => {
-                      handleUnsaved(post.PostSetting.id)
+                      handleUnsaved(post.id)
                     })} id="comment">
                     <i class="fi fi-rr-bookmark-slash"></i>
                     <p>Unsave</p>
@@ -571,7 +571,7 @@ const handleNsfw = (e) => {
                    { !post.PostSetting || !post.PostSetting.saved ? <p onClick={(() => {
                       post.PostSetting ? handleSaved2(post.id) : handleSaved(post.id)
                     })} ><i class="fi fi-rr-bookmark"></i>Save</p> : <p onClick={(() => {
-                      handleUnsaved(post.PostSetting.id)
+                      handleUnsaved(post.id)
                     })} ><i class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
                     <p onClick={(() => post.PostSetting ? handleHide2(post.id) : handleHide(post.id))} ><i class="fi fi-rr-eye-crossed"></i>Hide</p>
                     <p onClick={(() => {
