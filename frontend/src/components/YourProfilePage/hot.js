@@ -46,6 +46,8 @@ function YourHotProfilePage() {
     const [threshold, setThreshold] = useState(450);
     const { filter, setFilter } = useFilter()
     const [ seeMore, setSeeMore ] = useState(false)
+    const [ hiddenBox, setHiddenbox ] = useState(false)
+    const [ hiddenPost, setHiddenPost ] = useState(null)
 
     useEffect(() => {
         setFilter(false)
@@ -62,12 +64,27 @@ function YourHotProfilePage() {
       }, [currentPage]);
 
       const handleSaved = async (id) => {
-        if (singlePost.PostSetting && !singlePost.PostSetting.saved) await dispatch(postsActions.thunkUpdateSaved(id))
-        else if (!singlePost.PostSetting) await dispatch(postsActions.thunkCreateSaved(id))
+        await dispatch(postsActions.thunkCreateSaved(id))
+      }
+
+      const handleSaved2 = async (id) => {
+        await dispatch(postsActions.thunkUpdateSaved(id))
       }
 
       const handleUnsaved = async (id) => {
         await dispatch(postsActions.thunkUpdateSaved2(id))
+      }
+
+      const handleHide = async (id) => {
+        await dispatch(postsActions.thunkCreateHidden(id))
+      }
+
+      const handleHide2 = async (id) => {
+        await dispatch(postsActions.thunkUpdateHidden(id))
+      }
+
+      const handleUnhide = async (id) => {
+        await dispatch(postsActions.thunkUpdateHidden2(id))
       }
 
       const handleScroll = () => {
@@ -126,10 +143,10 @@ function YourHotProfilePage() {
 
     if (user) profile = Object.values(userCommunities).filter((m) => m.type === "Profile")[0]
 
-    let member
 
     const myMemberships = Object.values(memberships)
-    //const member = myMemberships.filter((m) => m.id === singleCommunity.id)
+
+    filterdPosts = filterdPosts.filter((p) => typeof p.PostSetting?.hidden !== 'string')
 
     useEffect(() => {
 
@@ -334,10 +351,18 @@ function YourHotProfilePage() {
                     <p>Unsave</p>
                     </div>
                     }
-            <i onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} class="fi fi-rr-menu-dots"></i>
-            </div>
-
-
+                    <i id="hideP" onClick={((e) => {
+                      e.stopPropagation()
+                      setHiddenPost(post.id)
+                      setHiddenbox(!hiddenBox)}
+                      )} class="fi fi-rr-menu-dots">
+                      {hiddenBox && hiddenPost == post.id && <div id="hp">
+                        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-volume-mute"></i>Mute l/help</span>
+                        <span onClick={(() => post.PostSetting ? handleHide2(post.id) : handleHide(post.id))} ><i class="fi fi-rr-eye-crossed"></i>Hide</span>
+                        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-flag"></i>Report</span>
+                      </div>}
+                    </i>
+                    </div>
             : <div id="post-extras2">
             <div id="comment5">
                 <i onClick={((e) => {
@@ -348,28 +373,28 @@ function YourHotProfilePage() {
                 </div>
                 <div onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature not avaliable")
+                    window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
                     })} id="comment4">
                     <i class="fi fi-rs-heart-arrow"></i>
                     <p>Share</p>
                 </div>
                 <div onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature not avaliable")
+                    window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
                     })} id="comment4">
                     <i class="fi fi-rs-check-circle"></i>
                     <p>Approved</p>
                 </div>
                 <div onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature not avaliable")
+                    window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
                     })} id="comment4">
                     <i class="fi fi-rs-circle-cross"></i>
                     <p>Removed</p>
                 </div>
                 <div onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature not avaliable")
+                    window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
                     })} id="comment4">
                     <i class="fi fi-rr-box"></i>
                     <p>Spam</p>
@@ -387,15 +412,17 @@ function YourHotProfilePage() {
                 <div className="menu">
                 <div id={editMenu}>
                    {post.PostImages && post.PostImages.length && post.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                   { !post.PostSetting || !post.PostSetting.saved ? <p onClick={(() => {
+                    { !post.PostSetting || !post.PostSetting.saved ? <p onClick={(() => {
                       handleSaved(post.id)
                     })}>
                     <i class="fi fi-rr-bookmark"></i>Save</p> :
                     <p onClick={(() => {
                       handleUnsaved(post.id)
                     })}>
-                    <i class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
-                    <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
+                    <i onClick={(() => handleUnsaved)} class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
+                    <p onClick={(() => {
+                      handleHide(post.id)
+                    })}><i class="fi fi-rr-eye-crossed"></i>Hide</p>
                     <p onClick={(() => {
                         setModalContent2(<div> <DeletePost id={singlePost.id} /></div>)
                         setIsVisible2(false)

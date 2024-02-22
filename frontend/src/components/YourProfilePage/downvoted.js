@@ -73,12 +73,27 @@ function DownvotedPosts() {
     }
 
     const handleSaved = async (id) => {
-      if (singlePost.PostSetting && !singlePost.PostSetting.saved) await dispatch(postsActions.thunkUpdateSaved(id))
-      else if (!singlePost.PostSetting) await dispatch(postsActions.thunkCreateSaved(id))
+      await dispatch(postsActions.thunkCreateSaved(id))
+    }
+
+    const handleSaved2 = async (id) => {
+      await dispatch(postsActions.thunkUpdateSaved(id))
     }
 
     const handleUnsaved = async (id) => {
       await dispatch(postsActions.thunkUpdateSaved2(id))
+    }
+
+    const handleHide = async (id) => {
+      await dispatch(postsActions.thunkCreateHidden(id))
+    }
+
+    const handleHide2 = async (id) => {
+      await dispatch(postsActions.thunkUpdateHidden(id))
+    }
+
+    const handleUnhide = async (id) => {
+      await dispatch(postsActions.thunkUpdateHidden2(id))
     }
 
     useEffect(() => {
@@ -246,27 +261,26 @@ function DownvotedPosts() {
     <div className="splashPage2">
     <div className="posts5">
         <div></div>
-        {!filterdPosts.length ? <NoPosts name="downvoted anything" /> : filterdPosts?.map((post, i) =>
-            // <div id={`${post.id}`} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={scrolling} />))} className="post-content">
+        {!filterdPosts.length ? <NoPosts name="seen anything" /> : filterdPosts?.map((post, i) =>
             <div id="omg2">
-            <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id={`${post.id}`} className="post-content3">
+            { <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id={`${post.id}`} className="post-content3">
             <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side9">
             <PostLikes post={post}
             />
             </div>
             <div id="what-cont">
-            {post.PostImages.length ? <img src={post.PostImages[0].imgURL}></img> : < i class="fi fi-rr-notebook"></i>}
+            {post.PostImages?.length ? <img src={post.PostImages[0].imgURL}></img> : < i class="fi fi-rr-notebook"></i>}
             </div>
             <div id="pc-side2">
             <h3  id="p-tit2" onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title0"><h3 id="title-content10">{post.title}<span>{ post.tags && post.tags.includes("oc") ? <div id="oc5">OC</div> : null} {post.tags && post.tags.includes("spoiler") ? <span id="spoiler5">Spoiler</span> : null } { post.tags && post.tags.includes("nsfw") ? <span id="nsfw5">NSFW</span> : null}</span></h3></h3>            <div id="nameOf5">
             <span onClick={((e) => {
                 e.stopPropagation()
                 history.push(`/communities/${post.communityId}`)
-                })} className="userName" id="community">l/{post.Community.name}</span>
-             { !myMemberships.filter((m) => m.id === post.communityId).length ? <button onClick={((e) => {
+                })} className="userName" id="community">l/{post.Community?.name}</span>
+            { !myMemberships.filter((m) => m.id === post.communityId).length && post.Communiy && post.Community.type !== "Profile" ? <button onClick={((e) => {
                   e.stopPropagation()
                   dispatch(communitiesActions.thunkJoinCommunities(post.communityId))
-                  })} id="miniJoin2">Join</button> : null }
+                })} id="miniJoin2">Join</button> : null }
             <p>·</p>
             { user.id !== post.userId ? <p >Posted by <span onClick={((e) => {
               e.stopPropagation()
@@ -274,14 +288,8 @@ function DownvotedPosts() {
             })}  className="userName">u/{post.User && post.User.username}</span> {getTimeDifferenceString(post.createdAt)}</p> :
             <p >Posted by <span onClick={((e) => {
               e.stopPropagation()
-              history.push(`/profile/:page`)})}  className="userName">u/{post.User && post.User.username}</span> {getTimeDifferenceString(post.createdAt)}</p>}
-            </div>
-            {/* <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="content">
-            <div id="finishing4">
-              {post.description}
-              </div>
-            </div> */}
-            <div className="move" id="post-extras2">
+              history.push(`/profile/:page`)})}  className="userName">u/{post.User && post.User.username}</span> {getTimeDifferenceString(post.createdAt)}</p>}            </div>
+            {post.userId == user.id ? <div className="move" id="post-extras2">
             <div id="comment5">
                 <i onClick={((e) => {
                     e.stopPropagation()
@@ -291,28 +299,28 @@ function DownvotedPosts() {
                 </div>
                 <div onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
+                    window.alert("Feature not avaliable")
                     })} id="comment4">
                     <i class="fi fi-rs-heart-arrow"></i>
                     <p>Share</p>
                 </div>
                 <div onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
+                    window.alert("Feature not avaliable")
                     })} id="comment4">
                     <i class="fi fi-rs-check-circle"></i>
                     <p>Approved</p>
                 </div>
                 <div onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
+                    window.alert("Feature not avaliable")
                     })} id="comment4">
                     <i class="fi fi-rs-circle-cross"></i>
                     <p>Removed</p>
                 </div>
                 <div onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
+                    window.alert("Feature not avaliable")
                     })} id="comment4">
                     <i class="fi fi-rr-box"></i>
                     <p>Spam</p>
@@ -330,15 +338,19 @@ function DownvotedPosts() {
                 <div className="menu">
                 <div id={editMenu}>
                    {singlePost.PostImages && singlePost.PostImages.length && singlePost.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                   { !post.PostSetting || !post.PostSetting.saved ? <p onClick={(() => {
+                   { !post.PostSetting || (!post.PostSetting && !post.PostSetting.saved) ? <p onClick={(() => {
                       handleSaved(post.id)
                     })}>
                     <i class="fi fi-rr-bookmark"></i>Save</p> :
                     <p onClick={(() => {
-                      handleUnsaved(post.id)
+                      handleUnsaved(post.PostSetting.id)
                     })}>
                     <i class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
-                    <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
+                    {!post.PostSetting.hidden ? <p onClick={(() => {
+                      post.PostSetting ? handleHide2(post.id) : handleHide(post.id)
+                    })}><i class="fi fi-rr-eye-crossed"></i>Hide</p> : <p onClick={(() => {
+                      post.PostSetting ? handleHide2(post.id) : handleHide(post.id)
+                    })}><i class="fi fi-sr-eye-crossed"></i>Unhide</p>}
                     <p onClick={(() => {
                         setModalContent2(<div> <DeletePost id={singlePost.id} /></div>)
                         setIsVisible2(false)
@@ -363,9 +375,57 @@ function DownvotedPosts() {
                 </div>
                 </div> : null }
                 </i>
+            </div> : <div className="move" id="post-extras2">
+            <div id="comment5">
+                <i onClick={((e) => {
+                    e.stopPropagation()
+                    setModalContent(<PostPageModal postId={post.id} scroll={true} />)
+                    })} class="fa-regular fa-message"></i>
+                <p>{post.Comments && post.Comments.length} Comments</p>
+                </div>
+                <div onClick={((e) => {
+                    e.stopPropagation()
+                    window.alert("Feature not avaliable")
+                    })} id="comment4">
+                    <i class="fi fi-rs-heart-arrow"></i>
+                    <p>Share</p>
+                </div>
+                { !post.PostSetting || (!post.PostSetting && !post.PostSetting?.saved) ? <div onClick={((e) => {
+                    e.stopPropagation()
+                    handleSaved(post.id)
+                    })} id="comment4">
+                    <i class="fi fi-rr-bookmark"></i>
+                    <p>Save</p>
+                </div> : <div onClick={((e) => {
+                    e.stopPropagation()
+                    handleUnsaved(post.PostSetting.id)
+                    })} id="comment4">
+                    <i class="fi fi-rr-bookmark-slash"></i>
+                    <p>Unsave</p>
+                </div>}
+                {!post.PostSetting?.hidden ? <div onClick={((e) => {
+                    e.stopPropagation()
+                    post.PostSetting ? handleHide2(post.id) : handleHide(post.id)
+                    })} id="comment4">
+                    <i class="fi fi-rr-eye-crossed"></i>
+                    <p>Hide</p>
+                </div> : <div onClick={((e) => {
+                    e.stopPropagation()
+                    handleUnhide(post.PostSetting?.id)
+                    })} id="comment4">
+                    <i class="fi fi-sr-eye-crossed"></i>
+                    <p>Unide</p>
+                </div> }
+                <div onClick={((e) => {
+                    e.stopPropagation()
+                    window.alert("Feature not avaliable")
+                    })} id="comment4">
+                    <i class="fi fi-rr-flag"></i>
+                    <p>Report</p>
+                </div>
+            </div>}
             </div>
-            </div>
-            </div>
+            </div>}
             </div>
         )}
 

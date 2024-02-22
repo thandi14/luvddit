@@ -544,9 +544,45 @@
 
 }
 
-/* #img2 {
-    margin-bottom: "20px";
-} */
+#hideP2 {
+    background-color: white;
+    display: flex;
+    border-top: 1.2px solid transparent;
+    border-bottom: 1.2px solid #ccc;
+    border-right: 1.2px solid #ccc;
+    border-left: 1.2px solid #ccc;
+    border-radius: 0px;
+    cursor: pointer;
+    padding: 10px 8px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+}
+
+#hideP2 > h2 {
+    font-size: 16px;
+}
+
+#undoH2 {
+    cursor: pointer;
+    color: black;
+    border-radius: 20px;
+    height: 32px;
+    background-color: #F6F7F8;
+    border: 1px solid #F6F7F8;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: 'Noto Sans', sans-serif;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    padding: 10px;
+    align-items: center;
+    justify-content: center;
+}
 
 .sidebar > div {
     background-color: white;

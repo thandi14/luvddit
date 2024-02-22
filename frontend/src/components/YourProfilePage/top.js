@@ -46,7 +46,8 @@ function YourTopProfilePage() {
     const [threshold, setThreshold] = useState(450);
     const { filter, setFilter } = useFilter()
     const [ seeMore, setSeeMore ] = useState(false)
-
+    const [ hiddenBox, setHiddenbox ] = useState(false)
+    const [ hiddenPost, setHiddenPost ] = useState(null)
 
     useEffect(() => {
         setFilter(false)
@@ -86,13 +87,29 @@ function YourTopProfilePage() {
         window.scrollTo(0, 0); // Scrolls to the top instantly when the page loads
     }, []);
 
+
     const handleSaved = async (id) => {
-      if (singlePost.PostSetting && !singlePost.PostSetting.saved) await dispatch(postsActions.thunkUpdateSaved(id))
-      else if (!singlePost.PostSetting) await dispatch(postsActions.thunkCreateSaved(id))
+      await dispatch(postsActions.thunkCreateSaved(id))
+    }
+
+    const handleSaved2 = async (id) => {
+      await dispatch(postsActions.thunkUpdateSaved(id))
     }
 
     const handleUnsaved = async (id) => {
       await dispatch(postsActions.thunkUpdateSaved2(id))
+    }
+
+    const handleHide = async (id) => {
+      await dispatch(postsActions.thunkCreateHidden(id))
+    }
+
+    const handleHide2 = async (id) => {
+      await dispatch(postsActions.thunkUpdateHidden(id))
+    }
+
+    const handleUnhide = async (id) => {
+      await dispatch(postsActions.thunkUpdateHidden2(id))
     }
 
     useEffect(() => {
@@ -230,6 +247,7 @@ function YourTopProfilePage() {
       // const memberships = Object.values(communityMemberships)
       // const member = memberships.filter((m) => moderating.some((c) => m.communityId === c.id))
 
+      filterdPosts = filterdPosts.filter((p) => typeof p.PostSetting?.hidden !== 'string')
 
 
     return (
@@ -310,6 +328,7 @@ function YourTopProfilePage() {
                 { post.description.length > 140 && <div id="faded"></div>}
                 </div>}
             </div>
+
             {post.userId !== user?.id ? <div id="post-extras9">
             <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="comment">
             <i class="fa-regular fa-message"></i>
@@ -336,8 +355,18 @@ function YourTopProfilePage() {
                     <p>Unsave</p>
                     </div>
                     }
-            <i onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} class="fi fi-rr-menu-dots"></i>
-            </div>
+                    <i id="hideP" onClick={((e) => {
+                      e.stopPropagation()
+                      setHiddenPost(post.id)
+                      setHiddenbox(!hiddenBox)}
+                      )} class="fi fi-rr-menu-dots">
+                      {hiddenBox && hiddenPost == post.id && <div id="hp">
+                        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-volume-mute"></i>Mute l/help</span>
+                        <span onClick={(() => post.PostSetting ? handleHide2(post.id) : handleHide(post.id))} ><i class="fi fi-rr-eye-crossed"></i>Hide</span>
+                        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-flag"></i>Report</span>
+                      </div>}
+                    </i>
+                    </div>
             : <div id="post-extras2">
             <div id="comment5">
                 <i onClick={((e) => {
@@ -387,15 +416,17 @@ function YourTopProfilePage() {
                 <div className="menu">
                 <div id={editMenu}>
                    {post.PostImages && post.PostImages.length && post.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                   { !post.PostSetting || !post.PostSetting.saved ? <p onClick={(() => {
+                    { !post.PostSetting || !post.PostSetting.saved ? <p onClick={(() => {
                       handleSaved(post.id)
                     })}>
                     <i class="fi fi-rr-bookmark"></i>Save</p> :
                     <p onClick={(() => {
                       handleUnsaved(post.id)
                     })}>
-                    <i class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
-                    <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
+                    <i onClick={(() => handleUnsaved)} class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
+                    <p onClick={(() => {
+                      handleHide(post.id)
+                    })}><i class="fi fi-rr-eye-crossed"></i>Hide</p>
                     <p onClick={(() => {
                         setModalContent2(<div> <DeletePost id={singlePost.id} /></div>)
                         setIsVisible2(false)
