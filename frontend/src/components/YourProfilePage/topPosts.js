@@ -182,11 +182,8 @@ function UsersTopPosts() {
 
     }, [])
 
-    moderating.shift()
 
     //let member = memberships?.filter((m) => moderating.some((c) => m.communityId === c.id))
-
-
 
    // if (!ePost.length) return <h1 className="data-not-here"></h1>
 
@@ -348,7 +345,7 @@ function UsersTopPosts() {
                 { postId === i ? <div id="post-menu25">
                 <div className="menu">
                 <div id={editMenu}>
-                   {singlePost.PostImages && singlePost.PostImages.length && singlePost.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
+                   {post.PostImages && post.PostImages.length && post.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
                    { !post.PostSetting || !post.PostSetting.saved ? <p onClick={(() => {
                       !post.PostSetting ? handleSaved(post.id) : handleSaved2(post.id)
                     })}>
@@ -403,13 +400,13 @@ function UsersTopPosts() {
                     <i class="fi fi-rs-heart-arrow"></i>
                     <p>Share</p>
                 </div>
-                <div onClick={((e) => {
+                {post.PostImages && post.PostImages.length && post.PostImages[0].imgURL ? null : <div onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
+                    setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />)
                     })} id="comment4">
                     <i class="fi fi-rr-magic-wand"></i>
                     <p>Edit Post</p>
-                </div>
+                </div> }
                 { !post.PostSetting || !post.PostSetting.saved ? <div onClick={((e) => {
                     e.stopPropagation()
                     !post.PostSetting ? handleSaved(post.id) : handleSaved2(post.id)
@@ -447,7 +444,7 @@ function UsersTopPosts() {
                 { postId === i ? <div id="post-menu25">
                 <div className="menu">
                 <div id={editMenu}>
-                   {singlePost.PostImages && singlePost.PostImages.length && singlePost.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
+                   {post.PostImages && post.PostImages.length && post.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
                    { !post.PostSetting || !post.PostSetting.saved ? <p onClick={(() => {
                       handleSaved(post.id)
                     })}>

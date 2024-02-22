@@ -487,7 +487,7 @@ function YourTopProfilePage() {
                                     { commentId === i ? <div className="menu">
                                     <div id="comm-sec25">
                                     <div onClick={((e) => e.stopPropagation())} id={editMenu2}>
-                                    {singlePost.PostImages.length && singlePost.PostImages[0].imgURL ? null : <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
+                                    {post.PostImages.length && post.PostImages[0].imgURL ? null : <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
                                      <p><i class="fi fi-rr-bookmark"></i>Save</p>
                                      <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
                                      <p onClick={(() => {

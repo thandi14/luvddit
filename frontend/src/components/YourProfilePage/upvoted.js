@@ -205,7 +205,6 @@ function UpvotedPosts() {
     recent = recent.slice(0, 5)
 
 
-    moderating.shift()
 
 
     const getTimeDifferenceString = (createdAt) => {
@@ -336,7 +335,7 @@ function UpvotedPosts() {
                 { postId === i ? <div id="post-menu25">
                 <div className="menu">
                 <div id={editMenu}>
-                   {singlePost.PostImages && singlePost.PostImages.length && singlePost.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
+                   {post.PostImages && post.PostImages.length && post.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
                    { !post.PostSetting || (!post.PostSetting && !post.PostSetting.saved) ? <p onClick={(() => {
                       handleSaved(post.id)
                     })}>

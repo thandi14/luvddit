@@ -368,13 +368,13 @@ function YourProfilePage() {
             <p>Share</p>
             </div>
             { !post.PostSetting || !post.PostSetting.saved ? <div onClick={(() => {
-                      handleSaved(post.id)
+                      post.PostSetting ? handleSaved2(post.id) : handleSaved2(post.id)
                     })} id="comment">
                     <i class="fi fi-rr-bookmark"></i>
                     <p>Save</p>
                     </div> :
                     <div onClick={(() => {
-                      handleUnsaved(post.id)
+                      handleUnsaved(post.PostSetting.id)
                     })} id="comment">
                     <i class="fi fi-rr-bookmark-slash"></i>
                     <p>Unsave</p>
@@ -512,7 +512,7 @@ function YourProfilePage() {
                                     { commentId === i ? <div className="menu">
                                     <div id="comm-sec25">
                                     <div onClick={((e) => e.stopPropagation())} id={editMenu2}>
-                                    {singlePost.PostImages.length && singlePost.PostImages[0].imgURL ? null : <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
+                                    {post.PostImages.length && post.PostImages[0].imgURL ? null : <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
                                      <p><i class="fi fi-rr-bookmark"></i>Save</p>
                                      <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
                                      <p onClick={(() => {

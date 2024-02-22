@@ -189,7 +189,7 @@
     padding: 20px 8px;
     position: relative;
     display: flex;
-    width: 100%;
+    /* width: 100%; */
     align-items: center;
     justify-content: space-between;
 }
@@ -207,7 +207,9 @@
 #hp {
     position: absolute;
     background-color: white;
+    top: 15px;
     display: flex;
+    left: 0;
     flex-direction: column;
     border: #EDEFF1 solid 1px;
     border-radius: 4px;

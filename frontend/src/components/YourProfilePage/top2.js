@@ -49,6 +49,8 @@ function OtherTopProfilePage() {
     const [threshold, setThreshold] = useState(450);
     const { filter, setFilter } = useFilter()
     const [ seeMore, setSeeMore ] = useState(false)
+    const [ hiddenBox, setHiddenbox ] = useState(false)
+    const [ hiddenPost, setHiddenPost ] = useState(null)
 
     useEffect(() => {
         let data
@@ -92,13 +94,27 @@ function OtherTopProfilePage() {
     }
 
     const handleSaved = async (id) => {
-      if (!user) return setModalContent(<SignupFormModal />)
-      if (singlePost.PostSetting && !singlePost.PostSetting.saved) await dispatch(postsActions.thunkUpdateSaved(id))
-      else if (!singlePost.PostSetting) await dispatch(postsActions.thunkCreateSaved(id))
+      await dispatch(postsActions.thunkCreateSaved(id))
+    }
+
+    const handleSaved2 = async (id) => {
+      await dispatch(postsActions.thunkUpdateSaved(id))
     }
 
     const handleUnsaved = async (id) => {
       await dispatch(postsActions.thunkUpdateSaved2(id))
+    }
+
+    const handleHide = async (id) => {
+      await dispatch(postsActions.thunkCreateHidden(id))
+    }
+
+    const handleHide2 = async (id) => {
+      await dispatch(postsActions.thunkUpdateHidden(id))
+    }
+
+    const handleUnhide = async (id) => {
+      await dispatch(postsActions.thunkUpdateHidden2(id))
     }
 
 
@@ -282,85 +298,47 @@ function OtherTopProfilePage() {
         </div>
         {filterdPosts && !filterdPosts.length ? <NoPosts name={"posted"} /> : filterdPosts?.map((post, i) =>
             // <div id={`${post.id}`} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={scrolling} />))} className="post-content">
-            <div id="omg">
-            <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id={`${post.id}`} className="post-content2">
-            {post.userId !== other.id ? <div id="pc-side104"><i id="posted-c" class="fa-regular fa-message"></i></div> : <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side8">
+                 <div id="omg2">
+            { !post.PostSetting?.hidden ? <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id={`${post.id}`} className="post-content3">
+            <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side9">
             <PostLikes post={post}
             />
-            </div> }
+            </div>
+            <div id="what-cont">
+            {post.PostImages.length ? <img src={post.PostImages[0].imgURL}></img> : < i class="fi fi-rr-notebook"></i>}
+            </div>
             <div id="pc-side2">
-            { post.userId !== other.id ? <div id="nameOf2">
-            <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))}  id="almostd">
+            <h3  id="p-tit2" onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title0"><h3 id="title-content10">{post.title}<span>{ post.tags && post.tags.includes("oc") ? <div id="oc5">OC</div> : null} {post.tags && post.tags.includes("spoiler") ? <span id="spoiler5">Spoiler</span> : null } { post.tags && post.tags.includes("nsfw") ? <span id="nsfw5">NSFW</span> : null}</span></h3></h3>
+            <div id="nameOf5">
             <span onClick={((e) => {
                 e.stopPropagation()
-                window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")})}className="userName2">{user?.username} </span>
-             commented on {post.title} · <span onClick={((e) => {
-                e.stopPropagation()
-                history.push(`/communities/${post.Community.id}/:page`)})}>l/{post.Community.name}</span> · Posted by <span onClick={((e) => {
-                    e.stopPropagation()
-                    post.userId !== user?.id ? history.push(`/profile2/${post.userId}/:page`) : history.push('/profile/:page')})} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user?.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
-            {/* <p >Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user.id ? null : getTimeDifferenceString(post.createdAt)}</p> */}
-            </div> : <div id="nameOf">
-            {post.Community.CommunityStyle.icon ? <img onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} src={post.Community.CommunityStyle.icon}></img> : <div style={{ backgroundColor: `${post.Community.CommunityStyle.base}`, color: "white" }} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pfp30">l/</div>}
-            <span onClick={((e) => {
-                e.stopPropagation()
-                history.push(`/communities/${post.communityId}/:page`)
+                history.push(`/communities/${post.communityId}`)
                 })} className="userName" id="community">l/{post.Community.name}</span>
-            <p>·</p>
-            <p>Posted by <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user?.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
             { !myMemberships.filter((m) => m.id === post.communityId).length && post.Communiy && post.Community.type !== "Profile" ? <button onClick={((e) => {
                   e.stopPropagation()
                   dispatch(communitiesActions.thunkJoinCommunities(post.communityId))
-                  })} id="miniJoin">Join</button> : null }
-            </div> }
-            { post.userId !== other.id ? null : <h3  id="p-tit2" onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title"><h3 id="title-content2">{post.title}<span>{ post.tags && post.tags.includes("oc") ? <div id="oc5">OC</div> : null} {post.tags && post.tags.includes("spoiler") ? <span id="spoiler5">Spoiler</span> : null } { post.tags && post.tags.includes("nsfw") ? <span id="nsfw5">NSFW</span> : null}</span></h3></h3>}
-            <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="content">
-            {post.PostImages.length !== 0 && post.userId === other.id && <div id="img2">
-            {post.PostImages.length === 1 && post.userId === other.id ? <img style={{ maxWidth: "100%", maxHeight: "511px", alignSelf: "flex-end" }} src={post.PostImages[0]?.imgURL} alt="meaningful-text"></img> : <MyCarousel images={post.PostImages}/>}
-            </div>}
-            { post.userId === other.id && post.description && <div style={{position: "relative"}} id="finishing2">
-                <span id="post-des">{post.description}</span>
-                { post.description.length > 140 && <div id="faded"></div>}
-            </div>}
+                  })} id="miniJoin2">Join</button> : null }
+            <p>·</p>
+            { user.id !== post.userId ? <p >Posted by <span onClick={((e) => {
+              e.stopPropagation()
+              history.push(`/profile2/${post.userId}/:page`)
+            })}  className="userName">u/{post.User && post.User.username}</span> {getTimeDifferenceString(post.createdAt)}</p> :
+            <p >Posted by <span onClick={((e) => {
+              e.stopPropagation()
+              history.push(`/profile/:page`)})}  className="userName">u/{post.User && post.User.username}</span> {getTimeDifferenceString(post.createdAt)}</p>}
             </div>
-
-            {post.userId !== other.id ? <div id="post-extras9">
-            <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="comment">
-            <i class="fa-regular fa-message"></i>
-            <p id={`${post.id}`} >{post.Comments ? Object.values(post.Comments)?.length : 0} Comments</p>
-            </div>
-            <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="comment">
-            <i class="fi fi-rr-box-heart"></i>
-            <p>Awards</p>
-            </div>
-            <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="comment">
-            <i class="fi fi-rs-heart-arrow"></i>
-            <p>Share</p>
-            </div>
-            { !post.PostSetting || !post.PostSetting.saved ? <div onClick={(() => {
-                      handleSaved(post.id)
-                    })} id="comment">
-                    <i class="fi fi-rr-bookmark"></i>
-                    <p>Save</p>
-                    </div> :
-                    <div onClick={(() => {
-                      handleUnsaved(post.id)
-                    })} id="comment">
-                    <i class="fi fi-rr-bookmark-slash"></i>
-                    <p>Unsave</p>
-                    </div>
-                    }
-            <i onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} class="fi fi-rr-menu-dots"></i>
-            </div>
-
-
-            : <div id="post-extras2">
+            {/* <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="content">
+            <div id="finishing4">
+              {post.description}
+              </div>
+            </div> */}
+            <div className="move" id="post-extras2">
             <div id="comment5">
                 <i onClick={((e) => {
                     e.stopPropagation()
                     setModalContent(<PostPageModal postId={post.id} scroll={true} />)
                     })} class="fa-regular fa-message"></i>
-                <p>{post.Comments && post.Comments.length}</p>
+                <p>{post.Comments && post.Comments.length} Comments</p>
                 </div>
                 <div onClick={((e) => {
                     e.stopPropagation()
@@ -369,133 +347,48 @@ function OtherTopProfilePage() {
                     <i class="fi fi-rs-heart-arrow"></i>
                     <p>Share</p>
                 </div>
+                { !post.PostSetting || !post.PostSetting.saved ? <div onClick={((e) => {
+                    e.stopPropagation()
+                    !post.PostSetting ? handleSaved(post.id) : handleSaved2(post.id)
+                    })} id="comment4">
+                    <i class="fi fi-rr-bookmark"></i>
+                    <p>Save</p>
+                </div> :
                 <div onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
+                    handleUnsaved(post.PostSetting.id)
                     })} id="comment4">
-                    <i class="fi fi-rs-check-circle"></i>
-                    <p>Approved</p>
-                </div>
-                <div onClick={((e) => {
+                    <i class="fi fi-rr-bookmark-slash"></i>
+                    <p>Unsave</p>
+                </div>}
+                {!post.PostSetting || !post.PostSetting.hidden ? <div onClick={((e) => {
                     e.stopPropagation()
-                    window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
+                    !post.PostSetting ? handleHide(post.id) : handleHide2(post.id)
                     })} id="comment4">
-                    <i class="fi fi-rs-circle-cross"></i>
-                    <p>Removed</p>
-                </div>
+                    <i class="fi fi-rr-eye-crossed"></i>
+                    <p>Hide</p>
+                </div> :
+                <div onClick={((e) => {
+                  e.stopPropagation()
+                  handleUnhide(post.PostSetting.id)
+                })} id="comment4">
+                  <i class="fi fi-sr-eye-crossed"></i>
+                  <p>Unhide</p>
+              </div>}
                 <div onClick={((e) => {
                     e.stopPropagation()
                     window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
                     })} id="comment4">
                     <i class="fi fi-rr-box"></i>
-                    <p>Spam</p>
+                    <p>Report</p>
                 </div>
-                <div id="comment4">
-                    <i class="fi fi-rs-shield"></i>
-                </div>
-                <i  ref={targetRef2} onClick={((e) => {
-                    e.stopPropagation()
-                    setIsVisible2(true)
-                    setPostId(i)
-                    if (postId === i) setIsVisible2(!isVisible2)
-                    })} id="menu" class="fi fi-rr-menu-dots">
-                { postId === i ? <div id="post-menu25">
-                <div className="menu">
-                <div id={editMenu}>
-                   {post.PostImages && post.PostImages.length && post.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                   { !post.PostSetting || !post.PostSetting.saved ? <p onClick={(() => {
-                      handleSaved(post.id)
-                    })}>
-                    <i class="fi fi-rr-bookmark"></i>Save</p> :
-                    <p onClick={(() => {
-                      handleUnsaved(post.id)
-                    })}>
-                    <i class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
-                    <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
-                    <p onClick={(() => {
-                        setModalContent2(<div> <DeletePost id={singlePost.id} /></div>)
-                        setIsVisible2(false)
-                    })}><i class="fi fi-rr-trash-xmark"></i>Delete</p>
-                    <label>
-                    <input type="checkbox" />
-                    Mark as OC
-                    </label>
-                    <label>
-                    <input type="checkbox" />
-                    Mark as Spolier
-                    </label>
-                    <label>
-                    <input type="checkbox" />
-                    Mark as NSFW
-                    </label>
-                    <label>
-                    <input type="checkbox" />
-                    Send me reply notifications
-                    </label>
-                </div>
-                </div>
-                </div> : null }
-                </i>
-            </div> }
-            </div>
-            </div>
-            { post.Comments && post.Comments.length ?
-            <div id="if-comments2">
-                    {post.Comments.map((c, i) =>
-                    c.userId === other.id &&
-                    <div id="comm-border9">
-                        {post.Comments && post.Comments.length ? <div id="p-border"></div> : null }
-                        <div onClick={((e) => {
-                            e.stopPropagation()
-                            setModalContent(<PostPageModal postId={post.id} scroll={true} />)
-                            })} className="a-comment2">
-                            <div id="left-csec4">
-                            <div id="c-line2"></div>
-                            </div>
-                            <div className="commentB" id="right-csec4">
-                                <span><span id="username45">{user?.username}</span> { user?.id === post.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.updatedAt)}</div></span>
-                                <p>{c.comment}</p>
-                                <div id="comment-extras90">
-                                    <div>
-                                        <i class="fa-regular fa-message"></i>
-                                        <p>Reply</p>
-                                    </div>
-                                    <div >
-                                        <i class="fi fi-rs-heart-arrow"></i>
-                                        <p>Share</p>
-                                    </div>
-                                    <i onClick={(() => {
-                                        setIsVisible4(true)
-                                    //     setCommentId(i)
-                                    //    if (commentId === i) setIsVisible4(!isVisible4)
-                                    })} class="fi fi-rr-menu-dots">
-                                    { commentId === i ? <div className="menu">
-                                    <div id="comm-sec25">
-                                    <div onClick={((e) => e.stopPropagation())} id={editMenu2}>
-                                    {singlePost.PostImages.length && singlePost.PostImages[0].imgURL ? null : <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                                     <p><i class="fi fi-rr-bookmark"></i>Save</p>
-                                     <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
-                                     <p onClick={(() => {
-                                     setModalContent2(<div> <DeleteComment id={c.id} /></div>)
-                                     setIsVisible(false)
-                                     setIsVisible3(false)
-                                     })}><i class="fi fi-rr-trash-xmark"></i>Delete</p>
-                                     <label>
-                                     <input type="checkbox" />
-                                     Send me reply notifications
-                                     </label>
-                                     </div>
-                                     </div>
-                                    </div>
-                                     : null }
-                                    </i>
 
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    )}
-                </div>: null}
+            </div>
+            </div>
+            </div> : <div id="hideP2">
+                       <h2>Post hidden</h2>
+                       <button onClick={(() => handleUnhide(post.PostSetting.id))} id="undoH2">Undo</button>
+                       </div>}
             </div>
         )}
 
