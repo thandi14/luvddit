@@ -21,6 +21,7 @@ const GET_TOP_COMMENTS = 'posts/getTopComments';
 const ADD_HISTORY = 'posts/addHistory';
 const ADD_SAVED = 'posts/addSaved';
 const ADD_SAVED2 = 'posts/addSaved2';
+const DELETE_SAVED2 = 'posts/deleteSaved';
 const ADD_HIDDEN = 'posts/addHidden';
 const UPDATE_HISTORY = 'posts/addHistory';
 const UPDATE_SAVED = 'posts/addSaved';
@@ -210,6 +211,13 @@ const addSaved2 = (saved) => {
   return {
       type: ADD_SAVED2,
       saved
+  }
+}
+
+const deleteSaved = (id) => {
+  return {
+      type: DELETE_SAVED2,
+      id
   }
 }
 
@@ -689,6 +697,18 @@ export const thunkCreateSaved2 = (id) => async (dispatch) => {
   return data
 }
 
+export const thunkCreateDeleteSaved2 = (id) => async (dispatch) => {
+  const response = await csrfFetch(`/api/comments/saved/${id}`, {
+      method: 'DELETE',
+      headers: {
+          'Content-Type': 'application/json'
+        },
+  })
+  let data = await response.json()
+  dispatch(deleteSaved(id))
+  return data
+}
+
 export const thunkUpdateHistory = (id) => async (dispatch) => {
   // console.log("REDUCER", id)
   const response = await csrfFetch(`/api/posts/${id}/history`, {
@@ -882,7 +902,7 @@ let initialState = {
     removedPost: {},
     postsHistory: {},
     postsSaved: {},
-    postsSaved2: {},
+   // postsSaved2: {},
     postsHidden: {},
     postsFavorites: {},
     postsComments: {},
@@ -1130,8 +1150,14 @@ const postsReducer = (state = initialState, action) => {
     case ADD_SAVED2: {
       newState = { ...state };
       const saved = action.saved;
-      newState.postsSaved2[saved.Post?.id] = { ...saved.Post };
-      newState.singlePost.Comments[saved.Post.id] = {...saved.Post }
+      newState.postsSaved[saved.Comment?.id] = { ...saved.Comment };
+      newState.singlePost.Comments[saved.Post.id] = {...saved.Comment }
+    }
+    case DELETE_SAVED2: {
+      newState = { ...state };
+      const saved = action.saved;
+      newState.postsSaved[saved.Comment?.id] = { ...saved.Comment };
+      newState.singlePost.Comments[saved.Comment.id] = {...saved.Comment }
     }
     case UPDATE_HISTORY: {
       newState = { ...state };
