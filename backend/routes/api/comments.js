@@ -266,124 +266,65 @@ router.post('/:id/saved', async (req, res) => {
 
 })
 
-router.get("/saved", async (req, res) => {
-    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
-    const pageSize = 10; // Number of posts per page
+// router.get("/saved", async (req, res) => {
+//     const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+//     const pageSize = 10; // Number of posts per page
 
-    const { user } = req
-    const userId = user.dataValues.id
+//     const { user } = req
+//     const userId = user.dataValues.id
 
-    let comments = await CommentSetting.findAll({
-        order: [['saved', 'DESC']],
-        where: {
-            userId
-        },
-        include: [
-            {
-            model: Comments,
-            include:[
+//     let comments = await CommentSetting.findAll({
+//         order: [['saved', 'DESC']],
+//         where: {
+//             userId
+//         },
+//         include: [
+//             {
+//             model: Comments,
+//             include:[
 
-            {
-                model: Post,
-                include: [
-                    {
-                        model: Comments,
-                        include: [
-                            { model: User },
-                            { model: Votes }
-                        ]
-                    },
-                    {
-                        model: Community,
-                        include: [
-                            { model: CommunityStyle }
-                        ]
-                    },
-                    { model: User },
-                    { model: PostImages },
-                    { model: Votes },
-                    { model: PostSetting}
-                 ]
-            }
-            ]
-            }
-        ]
-        //  limit: pageSize, // Limit the number of results per page
-        //  offset: (page - 1) * pageSize
-    });
+//             {
+//                 model: Post,
+//                 include: [
+//                     {
+//                         model: Comments,
+//                         include: [
+//                             { model: User },
+//                             { model: Votes }
+//                         ]
+//                     },
+//                     {
+//                         model: Community,
+//                         include: [
+//                             { model: CommunityStyle }
+//                         ]
+//                     },
+//                     { model: User },
+//                     { model: PostImages },
+//                     { model: Votes },
+//                     { model: PostSetting}
+//                  ]
+//             }
+//             ]
+//             }
+//         ]
+//         //  limit: pageSize, // Limit the number of results per page
+//         //  offset: (page - 1) * pageSize
+//     });
 
-    comments = comments.filter((p) => p.dataValues.saved)
+//     comments = comments.filter((p) => p.dataValues.saved)
 
-    let paginatedComments = comments.slice((page - 1) * pageSize, page * pageSize);
+//     let paginatedComments = comments.slice((page - 1) * pageSize, page * pageSize);
 
 
-    return res.json(paginatedComments)
-})
+//     return res.json(paginatedComments)
+// })
 
-router.put('/:id/saved', async (req, res) => {
-    let commentId = req.params.id;
-    const { user } = req
-    const userId = user.dataValues.id
 
-    let setting = await CommentSetting.findOne({
-        where: {
-            commentId,
-            userId
-        }
-    });
 
-    if (!setting) {
-
-    return res.json({"message": "Setting couldn't be found"});
-
-    }
-
-    setting.set({
-        saved: new Date()
-    })
-
-    await setting.save()
-
-    let saved2 = await CommentSetting.findByPk(setting.dataValues.id, {
-        include: [
-            {
-            model: Comments,
-            include:[
-
-            {
-                model: Post,
-                include: [
-                    {
-                        model: Comments,
-                        include: [
-                            { model: User },
-                            { model: Votes }
-                        ]
-                    },
-                    {
-                        model: Community,
-                        include: [
-                            { model: CommunityStyle }
-                        ]
-                    },
-                    { model: User },
-                    { model: PostImages },
-                    { model: Votes },
-                    { model: PostSetting}
-                 ]
-            }
-            ]
-            }
-        ]
-    })
-
-    return res.json(saved2)
-
-})
-
-router.put('/saved/:id', async (req, res) => {
+router.delete('/saved/:id', async (req, res) => {
     let savedId = req.params.id;
-    let setting = await PostSetting.findByPk(savedId);
+    let setting = await CommentSetting.findByPk(savedId);
 
     if (!setting) {
 
@@ -395,47 +336,16 @@ router.put('/saved/:id', async (req, res) => {
         saved: null
     })
 
-    await setting.save()
 
-    //await historyExsist.destroy()
+    await setting.destroy()
 
-    let saved2 = await PostSetting.findByPk(setting.dataValues.id, {
-        include: [
-            {
-            model: Comments,
-            include:[
 
-            {
-                model: Post,
-                include: [
-                    {
-                        model: Comments,
-                        include: [
-                            { model: User },
-                            { model: Votes }
-                        ]
-                    },
-                    {
-                        model: Community,
-                        include: [
-                            { model: CommunityStyle }
-                        ]
-                    },
-                    { model: User },
-                    { model: PostImages },
-                    { model: Votes },
-                    { model: PostSetting}
-                 ]
-            }
-            ]
-            }
-        ]
-    })
-
-    return res.json(saved2)
+    return res.json({ "message": "Setting sucessfully deleted"})
 
 
 })
+
+
 
 
 module.exports = router;
