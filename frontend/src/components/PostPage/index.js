@@ -101,6 +101,14 @@ function PostPage() {
         await dispatch(postActions.thunkUpdateSaved2(id))
     }
 
+    const handleSaved2 = async (id) => {
+        if (!user) return setModalContent(<SignupFormModal />)
+        await dispatch(postActions.thunkCreateSaved2(id))
+    }
+
+    const handleUnsaved2 = async (id) => {
+       await dispatch(postActions.thunkCreateDeleteSaved2(id))
+    }
 
     useEffect( () => {
 
@@ -659,11 +667,24 @@ function PostPage() {
                                         setCommentId2(i)
                                        // if (commentId !== i) setCommentM(!commentM)
                                         })}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                                     {c.userId === user.id ? null : <p><i class="fi fi-rr-flag"></i>Report</p>}
-                                     <p><i class="fi fi-rr-bookmark"></i>Save</p>
+                                     {c.userId === user.id ? null : <p onClick={((e) => {
+                                            e.stopPropagation()
+                                            window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))
+                                        })}><i class="fi fi-rr-flag"></i>Report</p>}
+                                     {c.CommentSetting && c.CommentSetting.saved ? <p onClick={((e) => {
+                                        e.stopPropagation()
+                                        handleUnsaved2(c.CommentSetting.id)
+                                    })}><i class="fi fi-rr-bookmark-slash"></i>Unsave</p> : <p onClick={((e) => {
+                                        e.stopPropagation()
+                                        handleSaved2(c.id)
+                                    })}><i class="fi fi-rr-bookmark"></i>Save</p>}
                                      {c.userId === user.id ? null : <p><i class="fi fi-rs-cowbell"></i>Follow</p>}
-                                     {c.userId !== user.id ? null : <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>}
-                                     {c.userId !== user.id ? null : <p onClick={(() => {
+                                     {c.userId !== user.id ? null : <p onClick={((e) => {
+                                            e.stopPropagation()
+                                            window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))
+                                        })}><i class="fi fi-rr-eye-crossed"></i>Hide</p>}
+                                     {c.userId !== user.id ? null : <p onClick={((e) => {
+                                        e.stopPropagation()
                                      setModalContent2(<div> <DeleteComment id={c.id} /></div>)
                                      setIsVisible(false)
                                      setIsVisible3(false)
