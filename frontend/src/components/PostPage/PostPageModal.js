@@ -85,6 +85,15 @@ function PostPageModal({ postId, scroll }) {
         await dispatch(postActions.thunkUpdateSaved2(id))
       }
 
+      const handleSaved2 = async (id) => {
+        if (!user) return setModalContent(<SignupFormModal />)
+        await dispatch(postActions.thunkCreateSaved2(id))
+      }
+
+      const handleUnsaved2 = async (id) => {
+        await dispatch(postActions.thunkCreateDeleteSaved2(id))
+      }
+
 
     let members
     if (communityMemberships) members = Object.values(communityMemberships)
@@ -834,10 +843,13 @@ function PostPageModal({ postId, scroll }) {
                                             e.stopPropagation()
                                             window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))
                                         })}><i class="fi fi-rr-flag"></i>Report</p>}
-                                     <p onClick={((e) => {
+                                     {c.CommentSetting && c.CommentSetting.saved ? <p onClick={((e) => {
                                         e.stopPropagation()
-                                        window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))
-                                    })}><i class="fi fi-rr-bookmark"></i>Save</p>
+                                        handleUnsaved2(c.CommentSetting.id)
+                                    })}><i class="fi fi-rr-bookmark-slash"></i>Unsave</p> : <p onClick={((e) => {
+                                        e.stopPropagation()
+                                        handleSaved2(c.id)
+                                    })}><i class="fi fi-rr-bookmark"></i>Save</p>}
                                      {c.userId === user.id ? null : <p><i class="fi fi-rs-cowbell"></i>Follow</p>}
                                      {c.userId !== user.id ? null : <p onClick={((e) => {
                                             e.stopPropagation()

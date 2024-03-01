@@ -253,7 +253,10 @@ function SavedPosts() {
     <div className="posts5">
         <div></div>
         {!filterdPosts.length ? <NoPosts name="seen anything" /> : filterdPosts?.map((post, i) =>
-            <div id="omg2">
+            <>
+            { post.comment ?
+            null
+            : <div id="omg2">
             { <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id={`${post.id}`} className="post-content3">
             <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side9">
             <PostLikes post={post}
@@ -328,8 +331,8 @@ function SavedPosts() {
                 { postId === i ? <div id="post-menu25">
                 <div className="menu">
                 <div id={editMenu}>
-                   {post.PostImages && post.PostImages.length && post.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                   { !post.PostSetting || (!post.PostSetting && !post.PostSetting.saved) ? <p onClick={(() => {
+                    {post.PostImages && post.PostImages.length && post.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
+                    { !post.PostSetting || (!post.PostSetting && !post.PostSetting.saved) ? <p onClick={(() => {
                       handleSaved(post.id)
                     })}>
                     <i class="fi fi-rr-bookmark"></i>Save</p> :
@@ -417,7 +420,8 @@ function SavedPosts() {
             </div>}
             </div>
             </div>}
-            </div>
+            </div> }
+            </>
         )}
 
 

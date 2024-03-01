@@ -2,7 +2,7 @@ const express = require('express')
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Comments, Post, User, Votes, Community, CommunityStyle } = require('../../db/models');
+const { Comments, Post, User, Votes, Community, CommunityStyle, CommentSetting, PostImages, PostSetting } = require('../../db/models');
 const { Op } = require('sequelize');
 
 const { check } = require('express-validator');
@@ -232,8 +232,8 @@ router.post('/:id/saved', async (req, res) => {
             {
             model: Comments,
             include:[
-
-            {
+           { model: CommentSetting} ,
+           {
                 model: Post,
                 include: [
                     {
@@ -331,11 +331,6 @@ router.delete('/saved/:id', async (req, res) => {
     return res.json({"message": "Setting couldn't be found"});
 
     }
-
-    setting.set({
-        saved: null
-    })
-
 
     await setting.destroy()
 

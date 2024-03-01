@@ -1028,7 +1028,7 @@ const postsReducer = (state = initialState, action) => {
     case GET_SAVED: {
       newState = { ...state };
       action.posts.forEach(
-        (saved) => (newState.postsSaved[saved.Post.id] = { ...saved.Post })
+        (saved) => ( saved.Post ? newState.postsSaved[saved.Post.id] = { ...saved.Post } : newState.postsSaved[saved.Comment.id] = { ...saved.Comment })
       );
       return newState;
     }
@@ -1151,7 +1151,7 @@ const postsReducer = (state = initialState, action) => {
       newState = { ...state };
       const saved = action.saved;
       newState.postsSaved[saved.Comment?.id] = { ...saved.Comment };
-      newState.singlePost.Comments[saved.Post.id] = {...saved.Comment }
+      newState.singlePost.Comments[saved.Comment?.id] = {...saved.Comment }
     }
     case DELETE_SAVED2: {
       newState = { ...state };

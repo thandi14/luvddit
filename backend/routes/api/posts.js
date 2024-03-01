@@ -2,7 +2,7 @@ const express = require('express')
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Post, Comments, Community, User, PostImages, CommunityMembers, Votes, CommunityStyle, PostSetting } = require('../../db/models');
+const { Post, Comments, Community, User, PostImages, CommunityMembers, Votes, CommunityStyle, PostSetting, CommentSetting } = require('../../db/models');
 const { Op, Sequelize } = require('sequelize');
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -307,6 +307,38 @@ router.get("/saved", async (req, res) => {
     const { user } = req
     const userId = user.dataValues.id
 
+    let comments = await CommentSetting.findAll({
+        order: [['saved', 'DESC']],
+        where: {
+            userId
+        },
+        include: { model: Comments,
+            include: [
+            {
+                model: Post,
+                include: [
+                    { model: Comments },
+                    {
+                        model: Community,
+                        include: [
+                            { model: CommunityStyle }
+                        ]
+                    },
+                    { model: User},
+                    { model: PostImages},
+                    {
+                        model: Votes,
+                    },
+                    {
+                        model: PostSetting,
+                     }
+                ]
+            }
+         ]},
+        //  limit: pageSize, // Limit the number of results per page
+        //  offset: (page - 1) * pageSize
+    });
+
     let posts = await PostSetting.findAll({
         order: [['saved', 'DESC']],
         where: {
@@ -338,12 +370,17 @@ router.get("/saved", async (req, res) => {
         //  offset: (page - 1) * pageSize
     });
 
-    posts = posts.filter((p) => p.dataValues.saved)
+    // console.log(posts)
+    // console.log(comments)
 
-    let paginatedPosts = posts.slice((page - 1) * pageSize, page * pageSize);
+    posts = posts.concat(comments)
+
+    posts = posts.filter((p) => p.dataValues.saved).sort((a, b) => a.dataValues.saved - b.dataValues.saved)
+
+    let paginated = posts.slice((page - 1) * pageSize, page * pageSize);
 
 
-    return res.json(paginatedPosts)
+    return res.json(paginated)
 })
 
 router.get("/hidden", async (req, res) => {
@@ -1764,10 +1801,40 @@ router.put('/:id/hidden', async (req, res) => {
 router.put('/hidden/:id', async (req, res) => {
     let hiddenId = req.params.id;
     let setting = await PostSetting.findByPk(hiddenId);
-    console.log(hiddenId)
 
     if (!setting) {
-
+  let posts = await Votes.findAll({
+        order: [['createdAt', 'DESC']],
+        where: {
+            userId
+        },
+        include: [
+            {
+                model: Post,
+                include: [
+                    { model: Comments },
+                    {
+                        model: Community,
+                        include: [
+                            { model: CommunityStyle }
+                        ]
+                    },
+                    { model: User},
+                    { model: PostImages},
+                    {
+                        model: Votes,
+                        order: [['createdAt', 'DESC']],
+                        where: {
+                            userId
+                        },
+                     },
+                    { model: PostSetting }
+                ]
+            }
+         ],
+         limit: pageSize, // Limit the number of results per page
+         offset: (page - 1) * pageSize
+    });
     return res.json({"message": "Setting couldn't be found"});
 
     }

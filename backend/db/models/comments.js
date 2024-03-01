@@ -22,6 +22,10 @@ module.exports = (sequelize, DataTypes) => {
         models.Votes,
           { foreignKey: 'commentId', onDelete: 'CASCADE',  hooks: true }
       );
+      Comments.hasOne(
+        models.CommentSetting,
+          { foreignKey: 'commentId', onDelete: 'CASCADE',  hooks: true }
+      );
     }
   }
   Comments.init({
