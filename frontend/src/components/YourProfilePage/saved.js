@@ -253,9 +253,82 @@ function SavedPosts() {
     <div className="posts5">
         <div></div>
         {!filterdPosts.length ? <NoPosts name="seen anything" /> : filterdPosts?.map((post, i) =>
-            <>
+            <div id="space">
             { post.comment ?
-            null
+             <div id="omg">
+             <div onClick={(() => setModalContent(<PostPageModal postId={post.Post.id} scroll={false} />))} id={`${post.Post.id}`} className="post-content2">
+             <div id="pc-side104"><i id="posted-c" class="fa-regular fa-message"></i></div>
+             <div id="pc-side2">
+             <div id="nameOf2">
+             <p onClick={(() => setModalContent(<PostPageModal postId={post.Post.id} scroll={false} />))}  id="almostd">
+             <span onClick={((e) => {
+                 e.stopPropagation()
+                 window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")})}className="userName2">{user.username} </span>
+              commented on {post.Post.title} · <span onClick={((e) => {
+                 e.stopPropagation()
+                 history.push(`/communities/${post.Post.Community.id}/:page`)})}>l/{post.Post.Community.name}</span> · Posted by <span onClick={((e) => {
+                   e.stopPropagation()
+                   post.Post.userId !== user?.id ? history.push(`/profile2/${post.userId}/:page`) : history.push('/profile/:page')})} className="userName">u/{post.Post.User && post.Post.User.username}</span> {post.userId !== user?.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
+             {/* <p >Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user.id ? null : getTimeDifferenceString(post.createdAt)}</p> */}
+             </div>
+             <div onClick={(() => setModalContent(<PostPageModal postId={post.Post.id} scroll={false} />))} id="content">
+             </div>
+             </div>
+             </div>
+             <div id="if-comments2">
+                     <div id="comm-border9">
+                         {post.comment ? <div id="p-border2"></div> : null }
+                         <div onClick={((e) => {
+                             e.stopPropagation()
+                             setModalContent(<PostPageModal postId={post.id} scroll={true} />)
+                             })} className="a-comment3">
+                             <div id="left-csec4">
+                             <div id="c-line2"></div>
+                             </div>
+                             <div className="white" id="right-csec4">
+                             <span><span id="username45">{post.User.username}</span> { post.User?.id === post.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(post.updatedAt)}</div></span>
+                                 <p>{post.comment}</p>
+                                 <div id="comment-extras90">
+                                     <div>
+                                         <i class="fa-regular fa-message"></i>
+                                         <p>Reply</p>
+                                     </div>
+                                     <div >
+                                         <i class="fi fi-rs-heart-arrow"></i>
+                                         <p>Share</p>
+                                     </div>
+                                     <i onClick={(() => {
+                                         setIsVisible4(true)
+                                     //     setCommentId(i)
+                                     //    if (commentId === i) setIsVisible4(!isVisible4)
+                                     })} class="fi fi-rr-menu-dots">
+                                     { commentId === i ? <div className="menu">
+                                     <div id="comm-sec25">
+                                     <div onClick={((e) => e.stopPropagation())} id={editMenu2}>
+                                     {post.PostImages.length && post.PostImages[0].imgURL ? null : <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
+                                      <p><i class="fi fi-rr-bookmark"></i>Save</p>
+                                      <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
+                                      <p onClick={(() => {
+                                      setModalContent2(<div> <DeleteComment id={post.comment.id} /></div>)
+                                      setIsVisible(false)
+                                      setIsVisible3(false)
+                                      })}><i class="fi fi-rr-trash-xmark"></i>Delete</p>
+                                      <label>
+                                      <input type="checkbox" />
+                                      Send me reply notifications
+                                      </label>
+                                      </div>
+                                      </div>
+                                     </div>
+                                      : null }
+                                     </i>
+
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
             : <div id="omg2">
             { <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id={`${post.id}`} className="post-content3">
             <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side9">
@@ -421,7 +494,7 @@ function SavedPosts() {
             </div>
             </div>}
             </div> }
-            </>
+            </div>
         )}
 
 

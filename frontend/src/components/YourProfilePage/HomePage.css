@@ -1075,8 +1075,12 @@
 
 }
 
+#space {
+    margin-bottom: 5px;
+}
+
 .posts5 > div:nth-child(2) > div {
-    border-top: 1.2px solid #ccc;
+    /* border-top: 1.2px solid #ccc; */
 }
 
 .posts5 > div:nth-child(2) > div:hover {

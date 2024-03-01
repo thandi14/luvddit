@@ -312,12 +312,17 @@ router.get("/saved", async (req, res) => {
         where: {
             userId
         },
-        include: { model: Comments,
-            include: [
+        include:
+            { model: Comments,
+                include: [
+            { model: User },
             {
                 model: Post,
                 include: [
-                    { model: Comments },
+                    {
+                        model: Comments,
+
+                    },
                     {
                         model: Community,
                         include: [
