@@ -82,6 +82,22 @@ function HotPage() {
 
   }, [dispatch, posts, user])
 
+  useEffect(() => {
+
+    const handleDocumentClick = (event) => {
+        if ((targetRef.current && !targetRef.current.contains(event.target))) {
+            setHiddenbox(false);
+
+          }
+
+      };
+
+      document.addEventListener('click', handleDocumentClick);
+      return () => {
+          document.removeEventListener('click', handleDocumentClick);
+      };
+
+    }, []);
 
 
   useEffect(() => {
@@ -313,7 +329,8 @@ function HotPage() {
                     <p>Unsave</p>
                     </div>
                     }
-                    <i id="hideP" onClick={(() => {
+                    <i id="hideP" ref={targetRef} onClick={((e) => {
+                      e.stopPropagation()
                       setHiddenPost(post.id)
                       setHiddenbox(!hiddenBox)}
                       )} class="fi fi-rr-menu-dots">

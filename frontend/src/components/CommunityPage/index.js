@@ -42,6 +42,7 @@ function CommunityPage() {
   const [ indx, setIndx ] = useState(null)
   const [ postId, setPostId ] = useState(null)
   const targetRef = useRef()
+  const targetRef2 = useRef()
   const { page } = useParams(); // Retrieve the page parameter from the URL
   const [currentPage, setCurrentPage] = useState(1);
   const [currentPage2, setCurrentPage2] = useState(1);
@@ -227,6 +228,10 @@ function CommunityPage() {
     const handleDocumentClick = (event) => {
         if ((targetRef.current && !targetRef.current.contains(event.target))) {
             setIsVisible5(false);
+
+          }
+          if ((targetRef2.current && !targetRef2.current.contains(event.target))) {
+            setHiddenbox(false);
 
           }
 
@@ -511,16 +516,17 @@ const handleNsfw = (e) => {
                 <p>Unsave</p>
                 </div>
                 }
-                <i id="hideP" onClick={(() => {
-                  setHiddenPost(post.id)
-                  setHiddenbox(!hiddenBox)}
-                  )} class="fi fi-rr-menu-dots">
-                  {hiddenBox && hiddenPost == post.id && <div style={{top: "15px"}} id="hp">
-                    <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-volume-mute"></i>Mute l/help</span>
-                    <span onClick={(() => post.PostSetting ? handleHide2(post.id) : handleHide(post.id))} ><i class="fi fi-rr-eye-crossed"></i>Hide</span>
-                    <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-flag"></i>Report</span>
-                  </div>}
-                </i>
+                 <i id="hideP" ref={targetRef2} onClick={((e) => {
+                      e.stopPropagation()
+                      setHiddenPost(post.id)
+                      setHiddenbox(!hiddenBox)}
+                      )} class="fi fi-rr-menu-dots">
+                      {hiddenBox && hiddenPost == post.id && <div style={{top: "15px"}} id="hp">
+                        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-volume-mute"></i>Mute l/help</span>
+                        <span onClick={(() => post.PostSetting ? handleHide2(post.id) : handleHide(post.id))} ><i class="fi fi-rr-eye-crossed"></i>Hide</span>
+                        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-flag"></i>Report</span>
+                      </div>}
+                    </i>
                 </div> :
                 <div id="post-extras9">
                 <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="comment">

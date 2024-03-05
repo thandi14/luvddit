@@ -330,7 +330,8 @@ useEffect(() => {
                     <p>Unsave</p>
                     </div>
                     }
-                    <i id="hideP" onClick={(() => {
+                    <i id="hideP" ref={targetRef} onClick={((e) => {
+                      e.stopPropagation()
                       setHiddenPost(post.id)
                       setHiddenbox(!hiddenBox)}
                       )} class="fi fi-rr-menu-dots">

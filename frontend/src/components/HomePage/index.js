@@ -72,6 +72,22 @@ const handleUnhide = async (id) => {
   await dispatch(postsActions.thunkUpdateHidden2(id))
 }
 
+useEffect(() => {
+
+  const handleDocumentClick = (event) => {
+      if ((targetRef.current && !targetRef.current.contains(event.target))) {
+          setHiddenbox(false);
+
+        }
+
+    };
+
+    document.addEventListener('click', handleDocumentClick);
+    return () => {
+        document.removeEventListener('click', handleDocumentClick);
+    };
+
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -313,16 +329,17 @@ const handleUnhide = async (id) => {
                      <p>Unsave</p>
                      </div>
                      }
-                     <i id="hideP" onClick={(() => {
-                       setHiddenPost(post.id)
-                       setHiddenbox(!hiddenBox)}
-                       )} class="fi fi-rr-menu-dots">
-                       {hiddenBox && hiddenPost == post.id && <div id="hp">
-                         <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-volume-mute"></i>Mute l/help</span>
-                         <span onClick={(() => post.PostSetting ? handleHide2(post.id) : handleHide(post.id))} ><i class="fi fi-rr-eye-crossed"></i>Hide</span>
-                         <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-flag"></i>Report</span>
-                       </div>}
-                     </i>
+                    <i id="hideP" ref={targetRef} onClick={((e) => {
+                      e.stopPropagation()
+                      setHiddenPost(post.id)
+                      setHiddenbox(!hiddenBox)}
+                      )} class="fi fi-rr-menu-dots">
+                      {hiddenBox && hiddenPost == post.id && <div id="hp">
+                        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-volume-mute"></i>Mute l/help</span>
+                        <span onClick={(() => post.PostSetting ? handleHide2(post.id) : handleHide(post.id))} ><i class="fi fi-rr-eye-crossed"></i>Hide</span>
+                        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-flag"></i>Report</span>
+                      </div>}
+                    </i>
                      </div>
                      </div>}
                      </div>

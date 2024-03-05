@@ -42,6 +42,7 @@ function HotCommunityPage() {
   const [ indx, setIndx ] = useState(null)
   const [ postId, setPostId ] = useState(null)
   const targetRef = useRef()
+  const targetRef2 = useRef()
   const { page } = useParams(); // Retrieve the page parameter from the URL
   const [currentPage, setCurrentPage] = useState(1);
   const [currentPage2, setCurrentPage2] = useState(1);
@@ -232,6 +233,11 @@ function HotCommunityPage() {
     const handleDocumentClick = (event) => {
         if ((targetRef.current && !targetRef.current.contains(event.target))) {
             setIsVisible5(false);
+
+          }
+
+          if ((targetRef2.current && !targetRef2.current.contains(event.target))) {
+            setHiddenbox(false);
 
           }
 
@@ -521,7 +527,8 @@ const handleNsfw = (e) => {
                     <p>Unsave</p>
                     </div>
                     }
-                    <i id="hideP" onClick={(() => {
+                    <i id="hideP" ref={targetRef2} onClick={((e) => {
+                      e.stopPropagation()
                       setHiddenPost(post.id)
                       setHiddenbox(!hiddenBox)}
                       )} class="fi fi-rr-menu-dots">

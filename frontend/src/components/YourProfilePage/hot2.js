@@ -135,6 +135,9 @@ function OtherHotProfilePage() {
            if (targetRef2 && !targetRef2.current?.contains(e.target)) {
              setIsVisible2(false);
            }
+           if (targetRef3 && !targetRef3.current?.contains(e.target)) {
+            setHiddenbox(false);
+        }
 
          };
 
