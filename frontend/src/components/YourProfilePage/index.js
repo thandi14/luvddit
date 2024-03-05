@@ -40,6 +40,7 @@ function YourProfilePage() {
     const [ singleCommunity, setSingleCommunity ] = useState(null)
     const [ joined, setJoined ] = useState(true)
     const targetRef2 = useRef()
+    const targetRef3 = useRef()
     const { page } = useParams(); // Retrieve the page parameter from the URL
     const [currentPage, setCurrentPage] = useState(1);
     const [currentPage2, setCurrentPage2] = useState(1);
@@ -118,6 +119,9 @@ function YourProfilePage() {
            if (targetRef2 && !targetRef2.current?.contains(e.target)) {
              setIsVisible2(false);
            }
+           if (targetRef3 && !targetRef3.current?.contains(e.target)) {
+            setHiddenbox(false);
+          }
          };
 
          document.addEventListener('click', closeMenu);
@@ -380,7 +384,7 @@ function YourProfilePage() {
                     <p>Unsave</p>
                     </div>
                     }
-                    <i id="hideP" onClick={((e) => {
+                    <i id="hideP" ref={targetRef3} onClick={((e) => {
                       e.stopPropagation()
                       setHiddenPost(post.id)
                       setHiddenbox(!hiddenBox)}

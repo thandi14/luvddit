@@ -38,6 +38,7 @@ function OtherProfilePage() {
     const { setModalContent } = useModal()
     const [ scrolling, setScrolling ] = useState(null)
     const targetRef = useRef()
+    const targetRef3 = useRef()
     const  { setModalContent2, modalRef2 } = useModal2()
     const [ postId, setPostId ] = useState(null)
     const [ commentId, setCommentId ] = useState(null)
@@ -152,6 +153,9 @@ function OtherProfilePage() {
             if (targetRef2 && !targetRef2.current?.contains(e.target)) {
                 setIsVisible2(false);
             }
+            if (targetRef3 && !targetRef3.current?.contains(e.target)) {
+              setHiddenbox(false);
+          }
         };
 
         document.addEventListener('click', closeMenu);
@@ -390,7 +394,7 @@ function OtherProfilePage() {
                     <p>Unsave</p>
                     </div>
                     }
-                  <i id="hideP" onClick={((e) => {
+                  <i id="hideP" ref={targetRef3} onClick={((e) => {
                       e.stopPropagation()
                       setHiddenPost(post.id)
                       setHiddenbox(!hiddenBox)}
