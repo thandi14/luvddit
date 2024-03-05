@@ -20,6 +20,7 @@ function CommunitiesMenu({ value }) {
     const location = useLocation()
     const targetRef2 = useRef(null);
     const [ comms, setComms ] = useState(null)
+    const [ type, setType ] = useState(null)
     const [ comms2, setComms2 ] = useState(null)
     const history = useHistory()
     const { menuOpen, toggleMenu } = useContext(MenuContext);
@@ -39,6 +40,7 @@ function CommunitiesMenu({ value }) {
           }
           fetchData();
           setComms(singleCommunity.name)
+          setType(singleCommunity.type)
 
     }, [dispatch, id, singleCommunity.name])
 
@@ -102,8 +104,8 @@ function CommunitiesMenu({ value }) {
         {!singleCommunity.name ? <i class="fi fi-rr-circle-dashed"></i> : null}
         {singleCommunity.name && !singleCommunity.CommunityStyle && singleCommunity.type === "Profile" ? <img src={avatar}></img> : null }
         {singleCommunity.name && singleCommunity.CommunityStyle && singleCommunity.CommunityStyle.icon ? <img id="pfp30" src={singleCommunity.CommunityStyle.icon}></img> : null }
-        {singleCommunity.name && singleCommunity.CommunityStyle && singleCommunity.CommunityStyle.base && !singleCommunity.CommunityStyle.icon ? <div style={{ backgroundColor: `${singleCommunity.CommunityStyle.base}`}} id="nav-comms90">l/</div> : null}
-        <input onChange={((e) => setComms(e.target.value))} defaultValue={comms ? `l/${comms}` : null} placeholder="Choose your community"></input>
+        {singleCommunity.name && singleCommunity.CommunityStyle && singleCommunity.CommunityStyle.base && !singleCommunity.CommunityStyle.icon ? <div style={{ backgroundColor: `${singleCommunity.CommunityStyle.base}`}} id="nav-comms90">{singleCommunity.type == "Profile" ? "u" : "l"}/</div> : null}
+        <input onChange={((e) => setComms(e.target.value))} defaultValue={comms ? `${type == "Profile" ? "u" : "l"}/${comms}` : null} placeholder="Choose your community"></input>
         <i onClick={handleClick} class="fa-solid fa-chevron-down"></i>
         <div id="div2"></div>
         </div>

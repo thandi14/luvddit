@@ -1153,7 +1153,7 @@ router.get("/:id/comments/hot", async (req, res) => {
          offset: (page - 1) * pageSize
     });
 
-    posts = posts.sort((a, b) => b.dataValues.Votes.length - a.dataValues.Votes.length)
+    posts = posts.sort((a, b) => b.dataValues.Votes?.length - a.dataValues.Votes?.length)
 
     let paginatedPosts = posts.slice((page - 1) * pageSize, page * pageSize);
 
@@ -1201,7 +1201,7 @@ router.get("/:id/comments/top", async (req, res) => {
          offset: (page - 1) * pageSize
     });
 
-    posts = posts.sort((a, b) => b.dataValues.Votes.filter((v) => v.dataValues.upVote === 1).length - a.dataValues.Votes.filter((v) => v.dataValues.upVote === 1).length)
+    posts = posts.sort((a, b) => b.dataValues.Votes?.filter((v) => v.dataValues.upVote === 1)?.length - a.dataValues.Votes?.filter((v) => v.dataValues.upVote === 1)?.length)
 
     let paginatedPosts = posts.slice((page - 1) * pageSize, page * pageSize);
 
