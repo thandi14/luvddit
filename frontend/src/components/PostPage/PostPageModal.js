@@ -21,7 +21,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import SignupFormModal from "../SignupFormPage";
 
-function PostPageModal({ postId, scroll }) {
+function PostPageModal({ postId, scroll, cId, vis3 }) {
     const { communities, singleCommunity, communityMemberships, memberships, userCommunities } = useSelector((state) => state.communities);
     const { singlePost, postsHistory } = useSelector((state) => state.posts)
     const { user } = useSelector((state) => state.session)
@@ -53,8 +53,8 @@ function PostPageModal({ postId, scroll }) {
     const [ focus2, setFocus2 ] = useState(false)
     const [ focus3, setFocus3 ] = useState(false)
     const [ sortComment, setSortComment ] = useState(false)
-    const [ commentM, setCommentM ] = useState(false)
-    const [ commentId2, setCommentId2 ] = useState(null);
+    const [ commentM, setCommentM ] = useState(vis3 ? true : false)
+    const [ commentId2, setCommentId2 ] = useState(cId ? cId : null);
     const [ p, setP ] = useState(null)
     const [ message, setMessage ] = useState(false)
     const [ tags, setTags ] = useState(null)
@@ -66,6 +66,8 @@ function PostPageModal({ postId, scroll }) {
     const [ sComments2, setSComments2 ] = useState("Best")
 
     let joined = null
+
+    console.log(vis3, cId)
 
 
     useEffect(() => {
@@ -85,9 +87,9 @@ function PostPageModal({ postId, scroll }) {
         await dispatch(postActions.thunkUpdateSaved2(id))
       }
 
-      const handleSaved2 = async (id) => {
+      const handleSaved2 = async (id, i) => {
         if (!user) return setModalContent(<SignupFormModal />)
-        await dispatch(postActions.thunkCreateSaved2(id))
+        await dispatch(postActions.thunkCreateSaved2(id, i))
       }
 
       const handleUnsaved2 = async (id) => {
@@ -533,8 +535,8 @@ function PostPageModal({ postId, scroll }) {
             </div>
             <div id="details-side">
             <div id="nameOf3">
-                    {singlePost.Community.CommunityStyle.icon && <img src={singlePost.Community.CommunityStyle.icon}></img>}
-                    {!singlePost.Community.CommunityStyle.icon && <div id="pfp30" style={{ color: "white", backgroundColor: `${singlePost.Community.CommunityStyle.base}`}}>l/</div>}
+                    {singlePost.Community?.CommunityStyle?.icon && <img src={singlePost.Community?.CommunityStyle?.icon}></img>}
+                    {!singlePost.Community?.CommunityStyle?.icon && <div id="pfp30" style={{ color: "white", backgroundColor: `${singlePost.Community.CommunityStyle?.base}`}}>l/</div>}
                     <span id="community">l/{singlePost.Community?.name}</span>
                     <p>·</p>
                     <p style={{ display: "flex", width: "100%", alignItems: "center"}} >Posted by l/{singlePost?.User?.username} {getTimeDifferenceString(singlePost.createdAt)}<i style={{ fontSize: "20px", marginRight: "1%", marginTop: "0.6%", position: "absolute", right: "0" }} onClick={((e) => {
@@ -843,13 +845,16 @@ function PostPageModal({ postId, scroll }) {
                                             e.stopPropagation()
                                             window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))
                                         })}><i class="fi fi-rr-flag"></i>Report</p>}
-                                     {c.CommentSetting && c.CommentSetting.saved ? <p onClick={((e) => {
+                                     {/* {c.CommentSetting && c.CommentSetting.saved ? <p onClick={((e) => {
                                         e.stopPropagation()
                                         handleUnsaved2(c.CommentSetting.id)
                                     })}><i class="fi fi-rr-bookmark-slash"></i>Unsave</p> : <p onClick={((e) => {
                                         e.stopPropagation()
-                                        handleSaved2(c.id)
-                                    })}><i class="fi fi-rr-bookmark"></i>Save</p>}
+                                        handleSaved2(c.id, commentId)
+                                    })}><i class="fi fi-rr-bookmark"></i>Save</p>} */}
+                                    <p onClick={((e) => {
+                                        window.alert("coming soon")
+                                    })}><i class="fi fi-rr-bookmark"></i>Save</p>
                                      {c.userId === user.id ? null : <p><i class="fi fi-rs-cowbell"></i>Follow</p>}
                                      {c.userId !== user.id ? null : <p onClick={((e) => {
                                             e.stopPropagation()

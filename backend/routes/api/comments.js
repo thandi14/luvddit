@@ -233,6 +233,20 @@ router.post('/:id/saved', async (req, res) => {
             model: Comments,
             include:[
            { model: CommentSetting} ,
+            { model: User,
+                // include: [
+                //     {
+                //         model: Community,
+                //         where: {
+                //             type: "Profile"
+                //         },
+                //         include: [
+                //             { model: CommunityStyle }
+                //         ]
+                //     },
+                // ]
+            },
+            { model: Votes },
            {
                 model: Post,
                 include: [

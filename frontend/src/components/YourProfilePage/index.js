@@ -33,7 +33,7 @@ function YourProfilePage() {
     const history = useHistory()
     const { setModalContent } = useModal()
     const [ scrolling, setScrolling ] = useState(null)
-    const targetRef = useRef()
+    const targetRef4 = useRef()
     const  { setModalContent2, modalRef2 } = useModal2()
     const [ postId, setPostId ] = useState(null)
     const [ commentId, setCommentId ] = useState(null)
@@ -102,6 +102,14 @@ function YourProfilePage() {
       await dispatch(postsActions.thunkUpdateHidden2(id))
     }
 
+    const handleCommentSaved = async (id) => {
+      await dispatch(postsActions.thunkCreateSaved2(id))
+    }
+
+    const handleUnsaved2 = async (id) => {
+      await dispatch(postsActions.thunkCreateDeleteSaved2(id))
+    }
+
 
     useEffect(() => {
         dispatch(postsActions.thunkGetOverview(user?.id, page)); // Fetch posts for the specified page
@@ -121,6 +129,9 @@ function YourProfilePage() {
            }
            if (targetRef3 && !targetRef3.current?.contains(e.target)) {
             setHiddenbox(false);
+          }
+          if (targetRef4 && !targetRef4.current?.contains(e.target)) {
+            setIsVisible4(false);
           }
          };
 
@@ -508,26 +519,31 @@ function YourProfilePage() {
                                         <i class="fi fi-rs-heart-arrow"></i>
                                         <p>Share</p>
                                     </div>
-                                    <i onClick={(() => {
-                                        setIsVisible4(true)
-                                    //     setCommentId(i)
+                                    <i onClick={((e) => {
+                                      e.stopPropagation()
+                                        setIsVisible4(!isVisible4)
+                                        setCommentId(c.id)
                                     //    if (commentId === i) setIsVisible4(!isVisible4)
                                     })} class="fi fi-rr-menu-dots">
-                                    { commentId === i ? <div className="menu">
+                                    { c.userId === user.id && commentId == c.id? <div className="menu">
                                     <div id="comm-sec25">
                                     <div onClick={((e) => e.stopPropagation())} id={editMenu2}>
-                                    {post.PostImages.length && post.PostImages[0].imgURL ? null : <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                                     <p><i class="fi fi-rr-bookmark"></i>Save</p>
-                                     <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
+                                    {c.CommentSetting && c.CommentSetting.saved ? <p onClick={((e) => {
+                                        e.stopPropagation()
+                                        handleUnsaved2(c.CommentSetting.id)
+                                    })}><i class="fi fi-rr-bookmark-slash"></i>Unsave</p> : <p onClick={((e) => {
+                                        e.stopPropagation()
+                                        handleCommentSaved(c.id)
+                                    })}><i class="fi fi-rr-bookmark"></i>Save</p>}
+                                     <p onClick={((e) => {
+                                      e.stopPropagation()
+                                      setModalContent(<PostPageModal scroll={true} vis3={true} cId={c.id} />)
+                                     })}><i class="fi fi-rr-magic-wand"></i>Edit</p>
                                      <p onClick={(() => {
                                      setModalContent2(<div> <DeleteComment id={c.id} /></div>)
                                      setIsVisible(false)
                                      setIsVisible3(false)
                                      })}><i class="fi fi-rr-trash-xmark"></i>Delete</p>
-                                     <label>
-                                     <input type="checkbox" />
-                                     Send me reply notifications
-                                     </label>
                                      </div>
                                      </div>
                                     </div>

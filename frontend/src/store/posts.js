@@ -207,10 +207,11 @@ const addSaved = (saved) => {
   }
 }
 
-const addSaved2 = (saved) => {
+const addSaved2 = (saved, id) => {
   return {
       type: ADD_SAVED2,
-      saved
+      saved,
+      id
   }
 }
 
@@ -685,7 +686,7 @@ export const thunkCreateHidden = (id) => async (dispatch) => {
   return data
 }
 
-export const thunkCreateSaved2 = (id) => async (dispatch) => {
+export const thunkCreateSaved2 = (id, i) => async (dispatch) => {
   const response = await csrfFetch(`/api/comments/${id}/saved`, {
       method: 'POST',
       headers: {
@@ -693,7 +694,7 @@ export const thunkCreateSaved2 = (id) => async (dispatch) => {
         },
   })
   let data = await response.json()
-  dispatch(addSaved2(data))
+  dispatch(addSaved2(data, i))
   return data
 }
 
@@ -1149,22 +1150,24 @@ const postsReducer = (state = initialState, action) => {
 
     case ADD_SAVED2: {
       newState = { ...state };
+      const commentId = action.id
       const saved = action.saved;
       newState.postsSaved[saved.Comment?.id] = { ...saved.Comment };
-      newState.singlePost.Comments[saved.Comment?.id] = {...saved.Comment }
+      newState.singlePost.Comments = newState.singlePost.Comments.filter((c) => c.id !== saved.commentId)
+      if (Object.values(newState.singlePost).length) newState.singlePost.Comments[commentId] = { ...saved.Comment }
     }
     case DELETE_SAVED2: {
       newState = { ...state };
       const saved = action.saved;
       newState.postsSaved[saved.Comment?.id] = { ...saved.Comment };
-      newState.singlePost.Comments[saved.Comment.id] = {...saved.Comment }
+      if (Object.values(newState.singlePost).length) newState.singlePost.Comments[saved.Comment?.id] = {...saved.Comment }
     }
     case UPDATE_HISTORY: {
       newState = { ...state };
       const history = action.history;
       if (newState.singlePost) newState.singlePost.PostSetting = { ...history }
-      newState.postsHistory = newState.postsHistory.filter((h) => h.Post.id !== history.Post.id)
-      newState.postsHistory[history.Post?.id] = { ...history.Post };
+     // if (Object.values(newState.postsHistory).length) newState.postsHistory = newState.postsHistory.filter((h) => h.Post.id !== history.Post.id)
+      if (history) newState.postsHistory[history.Post?.id] = { ...history.Post };
       ///newState.posts = { ...post };
       return newState;
     }

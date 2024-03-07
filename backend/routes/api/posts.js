@@ -47,7 +47,12 @@ router.get("/", async (req, res) => {
 
             },
             include: [
-                { model: Comments },
+                {
+                    model: Comments,
+                    include: [
+                        { model: CommentSetting}
+                    ]
+                 },
                 {
                     model: Community,
                     include: [
@@ -78,10 +83,6 @@ router.get("/best", async (req, res) => {
         },
     })
 
-
-    // attributes: {
-    //     include: [[Sequelize.literal('(SELECT COUNT(*) FROM "Votes" WHERE "Votes"."postId" = "Post"."id")'), 'voteCount']]
-    //   },
     let posts = await Post.findAll({
         where: {
             communityId: {
@@ -90,7 +91,12 @@ router.get("/best", async (req, res) => {
 
         },
         include: [
-            { model: Comments },
+            {
+                model: Comments,
+                include: [
+                    { model: CommentSetting}
+                ]
+             },
             {
                 model: Community,
                 include: [
@@ -171,7 +177,12 @@ router.get("/hot", async (req, res) => {
         },
 
         include: [
-            { model: Comments },
+            {
+                model: Comments,
+                include: [
+                    { model: CommentSetting}
+                ]
+             },
             {
                 model: Community,
                 include: [
@@ -185,8 +196,7 @@ router.get("/hot", async (req, res) => {
             } ,
             { model: PostSetting }
         ],
-        // limit: pageSize, // Limit the number of results per page
-        // offset: (page - 1) * pageSize
+
 
     });
 
@@ -221,7 +231,12 @@ router.get("/top", async (req, res) => {
 
         },
         include: [
-            { model: Comments },
+            {
+                model: Comments,
+                include: [
+                    { model: CommentSetting}
+                ]
+             },
             {
                 model: Community,
                 include: [
@@ -601,7 +616,8 @@ router.get("/:id", async (req, res) => {
         include: [
             {
                 model: Comments,
-            include: [
+                include: [
+                { model: CommentSetting},
                 { model: User,
                     // include: [
                     //     {
@@ -765,8 +781,25 @@ router.get('/:id/overview', async (req, res) => {
             },
             include: [
                 {
-                  model: Comments,
-                  order: [['updatedAt', 'DESC']],
+                    model: Comments,
+                    order: [['updatedAt', 'DESC']],
+                    include: [
+                    { model: CommentSetting},
+                    { model: User,
+                        // include: [
+                        //     {
+                        //         model: Community,
+                        //         where: {
+                        //             type: "Profile"
+                        //         },
+                        //         include: [
+                        //             { model: CommunityStyle }
+                        //         ]
+                        //     },
+                        // ]
+                    },
+                    { model: Votes }
+                    ]
 
                  },
                 {
@@ -790,7 +823,23 @@ router.get('/:id/overview', async (req, res) => {
                     order: [['updatedAt', 'DESC']],
                     where: {
                         userId
-                    }
+                    },
+                    include: [
+                    { model: CommentSetting},
+                    { model: User,
+                        // include: [
+                        //     {
+                        //         model: Community,
+                        //         where: {
+                        //             type: "Profile"
+                        //         },
+                        //         include: [
+                        //             { model: CommunityStyle }
+                        //         ]
+                        //     },
+                        // ]
+                    },
+                ]
                 },
                 {
                     model: Community,
@@ -835,6 +884,25 @@ router.get('/:id/overview/top', async (req, res) => {
                 {
                     model: Comments,
                     order: [['updatedAt', 'DESC']],
+                    where: {
+                        userId
+                    },
+                    include: [
+                    { model: CommentSetting},
+                    { model: User,
+                        // include: [
+                        //     {
+                        //         model: Community,
+                        //         where: {
+                        //             type: "Profile"
+                        //         },
+                        //         include: [
+                        //             { model: CommunityStyle }
+                        //         ]
+                        //     },
+                        // ]
+                    },
+                ]
                 },
                 {
                     model: Community,
@@ -907,6 +975,25 @@ router.get('/:id/overview/hot', async (req, res) => {
                 {
                     model: Comments,
                     order: [['updatedAt', 'DESC']],
+                    where: {
+                        userId
+                    },
+                    include: [
+                    { model: CommentSetting},
+                    { model: User,
+                        // include: [
+                        //     {
+                        //         model: Community,
+                        //         where: {
+                        //             type: "Profile"
+                        //         },
+                        //         include: [
+                        //             { model: CommunityStyle }
+                        //         ]
+                        //     },
+                        // ]
+                    },
+                ]
                 },
                 {
                     model: Community,

@@ -286,7 +286,7 @@ function SavedPosts() {
                              <div id="c-line2"></div>
                              </div>
                              <div className="white" id="right-csec4">
-                             <span><span id="username45">{post.User.username}</span> { post.User?.id === post.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(post.updatedAt)}</div></span>
+                             <span><span id="username45">{post.User?.username}</span> { post.User?.id === post.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(post.updatedAt)}</div></span>
                                  <p>{post.comment}</p>
                                  <div id="comment-extras90">
                                      <div>
