@@ -256,19 +256,19 @@ function SavedPosts() {
             <div id="space">
             { post.comment ?
              <div id="omg">
-             <div onClick={(() => setModalContent(<PostPageModal postId={post.Post.id} scroll={false} />))} id={`${post.Post.id}`} className="post-content2">
+             <div onClick={(() => setModalContent(<PostPageModal postId={post.Post?.id} scroll={false} />))} id={`${post.Post?.id}`} className="post-content2">
              <div id="pc-side104"><i id="posted-c" class="fa-regular fa-message"></i></div>
              <div id="pc-side2">
              <div id="nameOf2">
-             <p onClick={(() => setModalContent(<PostPageModal postId={post.Post.id} scroll={false} />))}  id="almostd">
+             <p onClick={(() => setModalContent(<PostPageModal postId={post.Post?.id} scroll={false} />))}  id="almostd">
              <span onClick={((e) => {
                  e.stopPropagation()
                  window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")})}className="userName2">{user.username} </span>
-              commented on {post.Post.title} · <span onClick={((e) => {
+              commented on {post.Post?.title} · <span onClick={((e) => {
                  e.stopPropagation()
-                 history.push(`/communities/${post.Post.Community.id}/:page`)})}>l/{post.Post.Community.name}</span> · Posted by <span onClick={((e) => {
+                 history.push(`/communities/${post.Post?.Community?.id}/:page`)})}>l/{post.Post?.Community?.name}</span> · Posted by <span onClick={((e) => {
                    e.stopPropagation()
-                   post.Post.userId !== user?.id ? history.push(`/profile2/${post.userId}/:page`) : history.push('/profile/:page')})} className="userName">u/{post.Post.User && post.Post.User.username}</span> {post.userId !== user?.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
+                   post.Post?.userId !== user?.id ? history.push(`/profile2/${post.userId}/:page`) : history.push('/profile/:page')})} className="userName">u/{post.Post?.User && post.Post?.User?.username}</span> {post.userId !== user?.id ? null : getTimeDifferenceString(post.updatedAt)}</p>
              {/* <p >Posted by <span onClick={(() => window.alert("Feature not avaliable"))} className="userName">u/{post.User && post.User.username}</span> {post.userId !== user.id ? null : getTimeDifferenceString(post.createdAt)}</p> */}
              </div>
              <div onClick={(() => setModalContent(<PostPageModal postId={post.Post.id} scroll={false} />))} id="content">

@@ -252,7 +252,7 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
 
 
     let comments
-    if (singlePost.Comments && singlePost.Comments.length) comments = Object.values(singlePost.Comments).reverse()
+    if (singlePost.Comments && singlePost.Comments.length) comments = Object.values(singlePost.Comments).sort((a, b) => a.createdAt - b.createdAt)
 
     useEffect( () => {
 
@@ -845,16 +845,13 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
                                             e.stopPropagation()
                                             window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))
                                         })}><i class="fi fi-rr-flag"></i>Report</p>}
-                                     {/* {c.CommentSetting && c.CommentSetting.saved ? <p onClick={((e) => {
+                                     {c.CommentSetting && c.CommentSetting.saved ? <p onClick={((e) => {
                                         e.stopPropagation()
                                         handleUnsaved2(c.CommentSetting.id)
                                     })}><i class="fi fi-rr-bookmark-slash"></i>Unsave</p> : <p onClick={((e) => {
                                         e.stopPropagation()
-                                        handleSaved2(c.id, commentId)
-                                    })}><i class="fi fi-rr-bookmark"></i>Save</p>} */}
-                                    <p onClick={((e) => {
-                                        window.alert("coming soon")
-                                    })}><i class="fi fi-rr-bookmark"></i>Save</p>
+                                        handleSaved2(c.id)
+                                    })}><i class="fi fi-rr-bookmark"></i>Save</p>}
                                      {c.userId === user.id ? null : <p><i class="fi fi-rs-cowbell"></i>Follow</p>}
                                      {c.userId !== user.id ? null : <p onClick={((e) => {
                                             e.stopPropagation()

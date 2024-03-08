@@ -207,18 +207,17 @@ const addSaved = (saved) => {
   }
 }
 
-const addSaved2 = (saved, id) => {
+const addSaved2 = (saved) => {
   return {
       type: ADD_SAVED2,
-      saved,
-      id
+      saved
   }
 }
 
-const deleteSaved = (id) => {
+const deleteSaved = (comment) => {
   return {
       type: DELETE_SAVED2,
-      id
+      comment
   }
 }
 
@@ -686,7 +685,7 @@ export const thunkCreateHidden = (id) => async (dispatch) => {
   return data
 }
 
-export const thunkCreateSaved2 = (id, i) => async (dispatch) => {
+export const thunkCreateSaved2 = (id) => async (dispatch) => {
   const response = await csrfFetch(`/api/comments/${id}/saved`, {
       method: 'POST',
       headers: {
@@ -694,19 +693,19 @@ export const thunkCreateSaved2 = (id, i) => async (dispatch) => {
         },
   })
   let data = await response.json()
-  dispatch(addSaved2(data, i))
+  dispatch(addSaved2(data))
   return data
 }
 
 export const thunkCreateDeleteSaved2 = (id) => async (dispatch) => {
   const response = await csrfFetch(`/api/comments/saved/${id}`, {
-      method: 'DELETE',
+      method: 'PUT',
       headers: {
           'Content-Type': 'application/json'
         },
   })
   let data = await response.json()
-  dispatch(deleteSaved(id))
+  dispatch(deleteSaved(data))
   return data
 }
 
@@ -1150,17 +1149,19 @@ const postsReducer = (state = initialState, action) => {
 
     case ADD_SAVED2: {
       newState = { ...state };
-      const commentId = action.id
       const saved = action.saved;
       newState.postsSaved[saved.Comment?.id] = { ...saved.Comment };
-      newState.singlePost.Comments = newState.singlePost.Comments.filter((c) => c.id !== saved.commentId)
-      if (Object.values(newState.singlePost).length) newState.singlePost.Comments[commentId] = { ...saved.Comment }
+      newState.singlePost.Comments = newState.singlePost.Comments.filter((c) => c.id != saved.commentId)
+      if (Object.values(newState.singlePost).length) newState.singlePost.Comments.push({ ...saved.Comment })
     }
     case DELETE_SAVED2: {
       newState = { ...state };
-      const saved = action.saved;
-      newState.postsSaved[saved.Comment?.id] = { ...saved.Comment };
-      if (Object.values(newState.singlePost).length) newState.singlePost.Comments[saved.Comment?.id] = {...saved.Comment }
+      const comment = action.comment;
+      if (comment && Object.values(comment).length) newState.postsSaved[comment.id] = { ...comment };
+      if (comment && Object.values(newState.singlePost).length) {
+        newState.singlePost.Comments = newState.singlePost.Comments.filter((c) => c.id != comment.id)
+        newState.singlePost.Comments.push({...comment })
+      }
     }
     case UPDATE_HISTORY: {
       newState = { ...state };

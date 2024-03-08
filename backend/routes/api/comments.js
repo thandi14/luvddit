@@ -2,7 +2,7 @@ const express = require('express')
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { Comments, Post, User, Votes, Community, CommunityStyle, CommentSetting, PostImages, PostSetting } = require('../../db/models');
+const { Comments, Post, User, Votes, Community, CommunityStyle, CommentSetting, PostImages, PostSetting, CommunityMembers } = require('../../db/models');
 const { Op } = require('sequelize');
 
 const { check } = require('express-validator');
@@ -247,32 +247,46 @@ router.post('/:id/saved', async (req, res) => {
                 // ]
             },
             { model: Votes },
-           {
-                model: Post,
-                include: [
-                    {
-                        model: Comments,
-                        include: [
-                            { model: User },
-                            { model: Votes }
-                        ]
-                    },
-                    {
-                        model: Community,
-                        include: [
-                            { model: CommunityStyle }
-                        ]
-                    },
-                    { model: User },
-                    { model: PostImages },
-                    { model: Votes },
-                    { model: PostSetting}
-                 ]
-            }
+        //    {
+        //         model: Post,
+        //         include: [
+        //             {
+        //                 model: Comments,
+        //                 include: [
+        //                     { model: User },
+        //                     { model: Votes }
+        //                 ]
+        //             },
+        //             {
+        //                 model: Community,
+        //                 include: [
+        //                     { model: CommunityStyle }
+        //                 ]
+        //             },
+        //             { model: User },
+        //             { model: PostImages },
+        //             { model: Votes },
+        //             { model: PostSetting}
+        //          ]
+        //     }
             ]
-            }
+             }
         ]
     })
+
+
+    let profile = await Community.findOne({
+        where: {
+            userId: saved2.dataValues.Comment.dataValues.userId,
+            type: "Profile"
+        },
+        include: [
+                { model: CommunityStyle }
+        ]
+    })
+
+    saved2.dataValues.Comment.dataValues.Profile = profile
+
 
     return res.json(
         saved2
@@ -336,7 +350,7 @@ router.post('/:id/saved', async (req, res) => {
 
 
 
-router.delete('/saved/:id', async (req, res) => {
+router.put('/saved/:id', async (req, res) => {
     let savedId = req.params.id;
     let setting = await CommentSetting.findByPk(savedId);
 
@@ -346,10 +360,35 @@ router.delete('/saved/:id', async (req, res) => {
 
     }
 
-    await setting.destroy()
+    setting.set({
+        saved: null
+    })
+
+    await setting.save()
+
+    let comment = await Comments.findByPk(setting.dataValues.commentId, {
+        include:[
+             { model: CommentSetting },
+             { model: User},
+             { model: Votes },
+             ]
+
+    })
+
+    let profile = await Community.findOne({
+        where: {
+            userId: comment.dataValues.userId,
+            type: "Profile"
+        },
+        include: [
+                { model: CommunityStyle }
+        ]
+    })
+
+    comment.dataValues.Profile = profile
 
 
-    return res.json({ "message": "Setting sucessfully deleted"})
+    return res.json(comment)
 
 
 })
