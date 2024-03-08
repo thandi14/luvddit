@@ -87,9 +87,9 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
         await dispatch(postActions.thunkUpdateSaved2(id))
       }
 
-      const handleSaved2 = async (id, i) => {
+      const handleSaved2 = async (id) => {
         if (!user) return setModalContent(<SignupFormModal />)
-        await dispatch(postActions.thunkCreateSaved2(id, i))
+        await dispatch(postActions.thunkCreateSaved2(id))
       }
 
       const handleUnsaved2 = async (id) => {
@@ -785,7 +785,7 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
                                 <span><span onClick={(() => {
                                     closeModal()
                                     c.userId === user.id ? history.push('/profile/:page') : history.push(`/profile2/${c.userId}/:page`)})} id="username45">{c.User?.username}</span> { c.User && c.User.id === singlePost.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.createdAt)}</div></span>
-                                { !(commentM && commentId2 === i) ? <p>{c.comment}</p> :
+                                { !(commentM && (commentId2 === c.id || cId == c.id)) ? <p>{c.comment}</p> :
                                 <div className="comment-input">
                                     <textarea onFocus={(() => setFocus3(true))} onBlur={(() => setFocus3(false))} defaultValue={c.comment} onChange={((e) => setComment2(e.target.value))}></textarea>
                                 <div id={focus3 ? "my-comments2" : "my-comments"}>
@@ -832,13 +832,13 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
                                         setCommentId(i)
                                        if (commentId === i) setIsVisible3(!isVisible3)
                                     })} class="fi fi-rr-menu-dots">
-                                    { commentId === i ? <div className="menu">
+                                    { commentId === c.id ? <div className="menu">
                                     <div id="comm-sec25">
                                     <div onClick={((e) => e.stopPropagation())} id={editMenu2}>
                                     {c.userId !== user.id ? null : <p onClick={(() => {
                                         setCommentM(true)
                                         setIsVisible3(false)
-                                        setCommentId2(i)
+                                        setCommentId2(c.id)
                                        // if (commentId !== i) setCommentM(!commentM)
                                         })}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
                                      {c.userId === user.id ? null : <p onClick={((e) => {

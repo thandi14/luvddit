@@ -72,6 +72,15 @@ function CommentedPosts() {
       }
     }
 
+    const handleSaved2 = async (id) => {
+      await dispatch(postsActions.thunkCreateSaved2(id))
+    }
+
+    const handleUnsaved2 = async (id) => {
+      await dispatch(postsActions.thunkCreateDeleteSaved2(id))
+    }
+
+
 
     useEffect(() => {
         dispatch(postsActions.thunkGetComments(user?.id, page)); // Fetch posts for the specified page
@@ -307,17 +316,25 @@ function CommentedPosts() {
                                         <i class="fi fi-rs-heart-arrow"></i>
                                         <p>Share</p>
                                     </div>
-                                    <i onClick={(() => {
-                                        setIsVisible4(true)
-                                    //     setCommentId(i)
+                                    <i onClick={((e) => {
+                                        e.stopPropagation()
+                                        setIsVisible4(!isVisible4)
+                                        setCommentId(c.id)
                                     //    if (commentId === i) setIsVisible4(!isVisible4)
                                     })} class="fi fi-rr-menu-dots">
-                                    { commentId === i ? <div className="menu">
+                                    { commentId === c.id ? <div className="menu">
                                     <div id="comm-sec25">
                                     <div onClick={((e) => e.stopPropagation())} id={editMenu2}>
-                                    {post.PostImages.length && post.PostImages[0].imgURL ? null : <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                                     <p><i class="fi fi-rr-bookmark"></i>Save</p>
-                                     <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
+                                    <p onClick={(() => {
+                                      setModalContent(<PostPageModal postId={post.id} scroll={true} cId={c.id} vis3={true} />)
+                                    })} ><i class="fi fi-rr-magic-wand"></i>Edit</p>
+                                    {c.CommentSetting && c.CommentSetting.saved ? <p onClick={((e) => {
+                                        e.stopPropagation()
+                                        handleUnsaved2(c.CommentSetting.id)
+                                    })}><i class="fi fi-rr-bookmark-slash"></i>Unsave</p> : <p onClick={((e) => {
+                                        e.stopPropagation()
+                                        handleSaved2(c.id)
+                                    })}><i class="fi fi-rr-bookmark"></i>Save</p>}
                                      <p onClick={(() => {
                                      setModalContent2(<div> <DeleteComment id={c.id} /></div>)
                                      setIsVisible(false)

@@ -263,7 +263,7 @@ function SavedPosts() {
              <p onClick={(() => setModalContent(<PostPageModal postId={post.Post?.id} scroll={false} />))}  id="almostd">
              <span onClick={((e) => {
                  e.stopPropagation()
-                 window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")})}className="userName2">{user.username} </span>
+                 window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")})}className="userName2">{post.User.username} </span>
               commented on {post.Post?.title} · <span onClick={((e) => {
                  e.stopPropagation()
                  history.push(`/communities/${post.Post?.Community?.id}/:page`)})}>l/{post.Post?.Community?.name}</span> · Posted by <span onClick={((e) => {
@@ -286,7 +286,7 @@ function SavedPosts() {
                              <div id="c-line2"></div>
                              </div>
                              <div className="white" id="right-csec4">
-                             <span><span id="username45">{post.User?.username}</span> { post.User?.id === post.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(post.updatedAt)}</div></span>
+                             <span><span id="username45">{post.User?.username}</span> { post.User?.id === post.comment.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(post.updatedAt)}</div></span>
                                  <p>{post.comment}</p>
                                  <div id="comment-extras90">
                                      <div>
