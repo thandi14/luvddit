@@ -1150,17 +1150,69 @@ const postsReducer = (state = initialState, action) => {
     case ADD_SAVED2: {
       newState = { ...state };
       const saved = action.saved;
+      if (Object.values(newState.postsSaved).length) {
       newState.postsSaved[saved.Comment?.id] = { ...saved.Comment };
-      newState.singlePost.Comments = newState.singlePost.Comments.filter((c) => c.id != saved.commentId)
-      if (Object.values(newState.singlePost).length) newState.singlePost.Comments.push({ ...saved.Comment })
+      }
+      if (Object.values(newState.postsComments).length) {
+        newState.postsComments[saved.Comment?.postId].Comments = newState.postsComments[saved.Comment?.postId].Comments?.filter((c) => c.id != saved.Comment?.id)
+        newState.postsComments[saved.Comment?.postId].Comments[saved.Comment?.id] = { ...saved.Comment };
+      }
+      if (Object.values(newState.postsTopComments).length) {
+        newState.postsTopComments[saved.Comment?.postId].Comments = newState.postsTopComments[saved.Comment?.postId].Comments?.filter((c) => c.id != saved.Comment?.id)
+        newState.postsTopComments[saved.Comment?.postId].Comments[saved.Comment?.id] = { ...saved.Comment };
+      }
+      if (Object.values(newState.postsHotComments).length) {
+        newState.postsHotComments[saved.Comment?.postId].Comments = newState.postsHotComments[saved.Comment?.postId].Comments?.filter((c) => c.id != saved.Comment?.id)
+        newState.postsHotComments[saved.Comment?.postId].Comments[saved.Comment?.id] = { ...saved.Comment };
+      }
+      if (Object.values(newState.postsOverview).length) {
+        newState.postsOverview[saved.Comment?.postId].Comments = newState.postsOverview[saved.Comment?.postId].Comments?.filter((c) => c.id != saved.Comment?.id)
+        newState.postsOverview[saved.Comment?.postId].Comments[saved.Comment?.id] = { ...saved.Comment };
+      }
+      if (Object.values(newState.postsHotOverview).length) {
+        newState.postsHotOverview[saved.Comment?.postId].Comments = newState.postsHotOverview[saved.Comment?.postId].Comments?.filter((c) => c.id != saved.Comment?.id)
+        newState.postsHotOverview[saved.Comment?.postId].Comments[saved.Comment?.id] = { ...saved.Comment };
+      }
+      if (Object.values(newState.postsTopOverview).length) {
+        newState.postsTopOverview[saved.Comment?.postId].Comments = newState.postsTopOverview[saved.Comment?.postId].Comments?.filter((c) => c.id != saved.Comment?.id)
+        newState.postsTopOverview[saved.Comment?.postId].Comments[saved.Comment?.id] = { ...saved.Comment };
+      }
+      if (Object.values(newState.singlePost).length) {
+        newState.singlePost.Comments = newState.singlePost.Comments?.filter((c) => c.id != saved.commentId)
+        newState.singlePost.Comments?.push({ ...saved.Comment })
+      }
     }
     case DELETE_SAVED2: {
       newState = { ...state };
       const comment = action.comment;
       if (comment && Object.values(comment).length) newState.postsSaved[comment.id] = { ...comment };
       if (comment && Object.values(newState.singlePost).length) {
-        newState.singlePost.Comments = newState.singlePost.Comments.filter((c) => c.id != comment.id)
-        newState.singlePost.Comments.push({...comment })
+        newState.singlePost.Comments = newState.singlePost.Comments?.filter((c) => c.id != comment.id)
+        newState.singlePost.Comments?.push({...comment })
+      }
+      if (comment && Object.values(newState.postsComments).length) {
+        newState.postsComments[comment.postId].Comments = newState.postsComments[comment.postId].Comments?.filter((c) => c.id != comment.id)
+        newState.postsComments[comment.postId].Comments?.push({...comment })
+      }
+      if (comment && Object.values(newState.postsTopComments).length) {
+        newState.postsTopComments[comment.postId].Comments = newState.postsTopComments[comment.postId].Comments?.filter((c) => c.id != comment.id)
+        newState.postsTopComments[comment.postId].Comments?.push({...comment })
+      }
+      if (comment && Object.values(newState.postsHotComments).length) {
+        newState.postsHotComments[comment.postId].Comments = newState.postsHotComments[comment.postId].Comments?.filter((c) => c.id != comment.id)
+        newState.postsHotComments[comment.postId].Comments?.push({...comment })
+      }
+      if (comment && Object.values(newState.postsOverview).length) {
+        newState.postsOverview[comment.postId].Comments = newState.postsOverview[comment.postId].Comments?.filter((c) => c.id != comment.id)
+        newState.postsOverview[comment.postId].Comments?.push({...comment })
+      }
+      if (comment && Object.values(newState.postsTopOverview).length) {
+        newState.postsTopOverview[comment.postId].Comments = newState.postsTopOverview[comment.postId].Comments?.filter((c) => c.id != comment.id)
+        newState.postsTopOverview[comment.postId].Comments?.push({...comment })
+      }
+      if (comment && Object.values(newState.postsHotOverview).length) {
+        newState.postsHotOverview[comment.postId].Comments = newState.postsHotOverview[comment.postId].Comments?.filter((c) => c.id != comment.id)
+        newState.postsHotOverview[comment.postId].Comments?.push({...comment })
       }
     }
     case UPDATE_HISTORY: {

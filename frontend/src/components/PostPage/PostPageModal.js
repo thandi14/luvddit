@@ -827,10 +827,10 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
                                         <i class="fi fi-rs-heart-arrow"></i>
                                         <p>Share</p>
                                     </div>
-                                    <i ref={commentId === i ? targetRef : null} onClick={(() => {
+                                    <i ref={commentId === c.id ? targetRef : null} onClick={(() => {
                                         setIsVisible3(true)
-                                        setCommentId(i)
-                                       if (commentId === i) setIsVisible3(!isVisible3)
+                                        setCommentId(c.id)
+                                       if (commentId === c.id) setIsVisible3(!isVisible3)
                                     })} class="fi fi-rr-menu-dots">
                                     { commentId === c.id ? <div className="menu">
                                     <div id="comm-sec25">

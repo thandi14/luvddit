@@ -32,7 +32,7 @@ function CommentedPosts() {
     const history = useHistory()
     const { setModalContent } = useModal()
     const [ scrolling, setScrolling ] = useState(null)
-    const targetRef = useRef()
+    const targetRef4 = useRef()
     const  { setModalContent2, modalRef2 } = useModal2()
     const [ postId, setPostId ] = useState(null)
     const [ commentId, setCommentId ] = useState(null)
@@ -97,6 +97,10 @@ function CommentedPosts() {
            if (targetRef2 && !targetRef2.current?.contains(e.target)) {
              setIsVisible2(false);
            }
+
+           if (targetRef4 && !targetRef4.current?.contains(e.target)) {
+            setIsVisible4(false);
+          }
          };
 
          document.addEventListener('click', closeMenu);
@@ -316,7 +320,7 @@ function CommentedPosts() {
                                         <i class="fi fi-rs-heart-arrow"></i>
                                         <p>Share</p>
                                     </div>
-                                    <i onClick={((e) => {
+                                    <i ref={targetRef4} onClick={((e) => {
                                         e.stopPropagation()
                                         setIsVisible4(!isVisible4)
                                         setCommentId(c.id)

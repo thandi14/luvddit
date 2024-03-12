@@ -519,7 +519,7 @@ function YourProfilePage() {
                                         <i class="fi fi-rs-heart-arrow"></i>
                                         <p>Share</p>
                                     </div>
-                                    <i onClick={((e) => {
+                                    <i ref={targetRef4} onClick={((e) => {
                                       e.stopPropagation()
                                         setIsVisible4(!isVisible4)
                                         setCommentId(c.id)

@@ -35,7 +35,7 @@ function Commented2TopPosts() {
     const history = useHistory()
     const { setModalContent } = useModal()
     const [ scrolling, setScrolling ] = useState(null)
-    const targetRef = useRef()
+    const targetRef4 = useRef()
     const  { setModalContent2, modalRef2 } = useModal2()
     const [ postId, setPostId ] = useState(null)
     const [ commentId, setCommentId ] = useState(null)
@@ -63,6 +63,14 @@ function Commented2TopPosts() {
 
       }, [currentPage]);
 
+      const handleCommentSaved = async (id) => {
+        await dispatch(postsActions.thunkCreateSaved2(id))
+      }
+
+      const handleUnsaved2 = async (id) => {
+        await dispatch(postsActions.thunkCreateDeleteSaved2(id))
+      }
+
       const handleScroll = () => {
         const windowHeight = window.innerHeight;
         const documentHeight = document.documentElement.scrollHeight;
@@ -88,6 +96,9 @@ function Commented2TopPosts() {
       const closeMenu = (e) => {
         if (targetRef2 && !targetRef2.current?.contains(e.target)) {
           setIsVisible2(false);
+        }
+        if (targetRef4 && !targetRef4.current?.contains(e.target)) {
+          setIsVisible4(false);
         }
       };
 
@@ -315,32 +326,31 @@ function Commented2TopPosts() {
                                         <i class="fi fi-rs-heart-arrow"></i>
                                         <p>Share</p>
                                     </div>
-                                    <i onClick={(() => {
-                                        setIsVisible4(true)
-                                    //     setCommentId(i)
+                                    <i ref={targetRef4} onClick={((e) => {
+                                      e.stopPropagation()
+                                        setIsVisible4(!isVisible4)
+                                        setCommentId(c.id)
                                     //    if (commentId === i) setIsVisible4(!isVisible4)
                                     })} class="fi fi-rr-menu-dots">
-                                    { commentId === i ? <div className="menu">
+                                    { c.userId === other.id && commentId == c.id? <div className="menu">
                                     <div id="comm-sec25">
                                     <div onClick={((e) => e.stopPropagation())} id={editMenu2}>
-                                    {post.PostImages.length && post.PostImages[0].imgURL ? null : <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                                     <p><i class="fi fi-rr-bookmark"></i>Save</p>
-                                     <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
-                                     <p onClick={(() => {
-                                     setModalContent2(<div> <DeleteComment id={c.id} /></div>)
-                                     setIsVisible(false)
-                                     setIsVisible3(false)
-                                     })}><i class="fi fi-rr-trash-xmark"></i>Delete</p>
-                                     <label>
-                                     <input type="checkbox" />
-                                     Send me reply notifications
-                                     </label>
+                                    {c.CommentSetting && c.CommentSetting.saved ? <p onClick={((e) => {
+                                        e.stopPropagation()
+                                        handleUnsaved2(c.CommentSetting.id)
+                                    })}><i class="fi fi-rr-bookmark-slash"></i>Unsave</p> : <p onClick={((e) => {
+                                        e.stopPropagation()
+                                        handleCommentSaved(c.id)
+                                    })}><i class="fi fi-rr-bookmark"></i>Save</p>}
+                                    <p onClick={((e) => {
+                                            e.stopPropagation()
+                                            window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))
+                                     })}><i class="fi fi-rr-flag"></i>Report</p>
                                      </div>
                                      </div>
                                     </div>
                                      : null }
                                     </i>
-
                                 </div>
                             </div>
                         </div>

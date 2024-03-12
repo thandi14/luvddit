@@ -653,18 +653,18 @@ function PostPage() {
                                         <i class="fi fi-rs-heart-arrow"></i>
                                         <p>Share</p>
                                     </div>
-                                    <i ref={targetRef} onClick={(() => {
+                                    <i ref={commentId === c.id ? targetRef : null} onClick={(() => {
                                         setIsVisible3(true)
-                                        setCommentId(i)
-                                       if (commentId === i) setIsVisible3(!isVisible3)
+                                        setCommentId(c.id)
+                                       if (commentId === c.id) setIsVisible3(!isVisible3)
                                     })} class="fi fi-rr-menu-dots">
-                                    { commentId === i ? <div className="menu">
+                                    { commentId === c.id ? <div className="menu">
                                     <div id="comm-sec25">
                                     <div onClick={((e) => e.stopPropagation())} id={editMenu2}>
                                     {c.userId !== user.id ? null : <p onClick={(() => {
                                         setCommentM(true)
                                         setIsVisible3(false)
-                                        setCommentId2(i)
+                                        setCommentId2(c.id)
                                        // if (commentId !== i) setCommentM(!commentM)
                                         })}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
                                      {c.userId === user.id ? null : <p onClick={((e) => {

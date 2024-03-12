@@ -32,7 +32,7 @@ function CommentedTopPosts() {
     const history = useHistory()
     const { setModalContent } = useModal()
     const [ scrolling, setScrolling ] = useState(null)
-    const targetRef = useRef()
+    const targetRef4 = useRef()
     const  { setModalContent2, modalRef2 } = useModal2()
     const [ postId, setPostId ] = useState(null)
     const [ commentId, setCommentId ] = useState(null)
@@ -95,6 +95,9 @@ function CommentedTopPosts() {
            if (targetRef2 && !targetRef2.current?.contains(e.target)) {
              setIsVisible2(false);
            }
+           if (targetRef4 && !targetRef4.current?.contains(e.target)) {
+            setIsVisible4(false);
+          }
          };
 
          document.addEventListener('click', closeMenu);
@@ -313,21 +316,25 @@ function CommentedTopPosts() {
                                         <i class="fi fi-rs-heart-arrow"></i>
                                         <p>Share</p>
                                     </div>
-                                    <i onClick={(() => {
-                                        setIsVisible4(true)
-                                    //     setCommentId(i)
+                                    <i ref={targetRef4} onClick={((e) => {
+                                        e.stopPropagation()
+                                        setIsVisible4(!isVisible4)
+                                        setCommentId(c.id)
                                     //    if (commentId === i) setIsVisible4(!isVisible4)
                                     })} class="fi fi-rr-menu-dots">
-                                    { commentId === i ? <div className="menu">
+                                    { commentId === c.id ? <div className="menu">
                                     <div id="comm-sec25">
                                     <div onClick={((e) => e.stopPropagation())} id={editMenu2}>
+                                    <p onClick={(() => {
+                                      setModalContent(<PostPageModal postId={post.id} scroll={true} cId={c.id} vis3={true} />)
+                                    })} ><i class="fi fi-rr-magic-wand"></i>Edit</p>
                                     {c.CommentSetting && c.CommentSetting.saved ? <p onClick={((e) => {
                                         e.stopPropagation()
                                         handleUnsaved2(c.CommentSetting.id)
                                     })}><i class="fi fi-rr-bookmark-slash"></i>Unsave</p> : <p onClick={((e) => {
                                         e.stopPropagation()
                                         handleSaved2(c.id)
-                                    })}><i class="fi fi-rr-bookmark"></i>Save</p>}                                     <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
+                                    })}><i class="fi fi-rr-bookmark"></i>Save</p>}
                                      <p onClick={(() => {
                                      setModalContent2(<div> <DeleteComment id={c.id} /></div>)
                                      setIsVisible(false)

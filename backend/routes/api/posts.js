@@ -331,6 +331,7 @@ router.get("/saved", async (req, res) => {
             { model: Comments,
                 include: [
             { model: User },
+            { model: CommentSetting },
             {
                 model: Post,
                 include: [
@@ -1178,6 +1179,9 @@ router.get("/:id/comments", async (req, res) => {
                         where: {
                             userId
                         },
+                        include: [
+                            { model: CommentSetting }
+                        ]
                     },
                     {
                         model: Community,
