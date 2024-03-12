@@ -43,6 +43,7 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
     const targetRef5 = useRef(null)
     const [ comment, setComment ] = useState("")
     const [ comment2, setComment2 ] = useState("")
+    const [ comment3, setComment3 ] = useState("")
     const [ scrolling, setScrolling ] = useState(scroll)
     const [isVisible3, setIsVisible3] = useState(false);
     const [ commentId, setCommentId ] = useState(null);
@@ -52,8 +53,10 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
     const [ focus, setFocus ] = useState(false)
     const [ focus2, setFocus2 ] = useState(false)
     const [ focus3, setFocus3 ] = useState(false)
+    const [ focus4, setFocus4 ] = useState(false)
     const [ sortComment, setSortComment ] = useState(false)
     const [ commentM, setCommentM ] = useState(vis3 ? true : false)
+    const [ commentR, setCommentR ] = useState(false)
     const [ commentId2, setCommentId2 ] = useState(cId ? cId : null);
     const [ p, setP ] = useState(null)
     const [ message, setMessage ] = useState(false)
@@ -64,6 +67,8 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
     const { setModalContent } = useModal()
     const [ sComments, setSComments ] = useState("")
     const [ sComments2, setSComments2 ] = useState("Best")
+    const [ parent, setParent ] = useState(null)
+
 
     let joined = null
 
@@ -168,13 +173,28 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
 
     }
 
+    const handleReply = (e) => {
+        e.stopPropagation()
+
+        if (!user) return setModalContent(<SignupFormModal />)
+
+        setData2({
+            comment: comment3,
+            parent
+        })
+
+        setParent(null)
+        setComment3("")
+
+    }
+
     const handleComment2 = (e) => {
         e.stopPropagation()
 
         if (!user) return setModalContent(<SignupFormModal />)
 
         setData3({
-            comment2
+            comment: comment2
         })
 
         setCommentM(false)
@@ -512,6 +532,8 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
 
     if (sComments.length) comments = comments.filter((c) => c.comment.toLowerCase().includes(sComments.toLowerCase()))
 
+    console.log(comment3, parent, data2)
+
     return (
         <div className="post-modal">
             <div id="one">
@@ -775,6 +797,7 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
                 </div> :
                 <div id="if-comments">
                     {comments.map((c, i) =>
+                        <>
                         <div onClick={(() => setC(c))} className="a-comment">
                             <div id="left-csec">
                             { !c.Profile?.CommunityStyle ? <img id="avatar6" src={pfp}></img> : null}
@@ -782,6 +805,7 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
                             <div id="c-line"></div>
                             </div>
                             <div id="right-csec">
+                                <>
                                 <span><span onClick={(() => {
                                     closeModal()
                                     c.userId === user.id ? history.push('/profile/:page') : history.push(`/profile2/${c.userId}/:page`)})} id="username45">{c.User?.username}</span> { c.User && c.User.id === singlePost.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.createdAt)}</div></span>
@@ -819,7 +843,9 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
                                     <div>
                                         <CommentLikes comment={c} />
                                     </div>
-                                    <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))}>
+                                    <div onClick={(() => {
+                                        setParent(c.id)
+                                        setCommentR(!commentR)})}>
                                         <i class="fa-regular fa-message"></i>
                                         <p>Reply</p>
                                     </div>
@@ -874,8 +900,43 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
                                     </i>
 
                                 </div> }
+                        { commentR && parent == c.id ? <div id="reply">
+                        <div id="r-line"></div>
+                        <div style={{ marginBottom: "40px" }} className="comment-input">
+                                    <textarea onFocus={(() => setFocus4(true))} onBlur={(() => setFocus4(false))} placeholder={"What are your thoughts?"} onChange={((e) => setComment3(e.target.value))}></textarea>
+                                <div id={focus4 ? "my-comments2" : "my-comments"}>
+                                <i class="fi fi-rr-gif-square"></i>
+                                        <i class="fi fi-rr-picture"></i>
+                                        <div id="divider16"></div>
+                                        <i class="fi fi-rr-bold"></i>
+                                        <i class="fa-solid fa-italic"></i>
+                                        <i class="fi fi-rr-link-alt"></i>
+                                        <i class="fi fi-rr-strikethrough"></i>
+                                        <i class="fi fi-rr-code-simple"></i>
+                                        <i class="fa-solid fa-superscript"></i>
+                                        <i class="fi fi-rr-diamond-exclamation"></i>
+                                        <div id="divider16"></div>
+                                        <i class="fi fi-rr-heading"></i>
+                                        <i class="fi fi-rr-menu-dots"></i>
+                                        {/* <i class="fi fi-rr-rectangle-list"></i>
+                                        <i class="fa-solid fa-list-ol"></i>
+                                        <i class="fi fi-rr-square-quote"></i>
+                                        <i class="fi fi-rr-square-code"></i>
+                                        <div id="divider16"></div>
+                                        <i class="fa-brands fa-youtube"></i> */}
+                                    <button id="cancel-c" onClick={((e) => {
+                                        e.stopPropagation()
+                                        setCommentR(false)
+                                        })}>Cancel</button>
+                                    <button id="submit-c2" onClick={handleReply}>Reply</button>
+                                </div>
+                                </div>
+                        </div> : null}
+                                </>
                             </div>
                         </div>
+                        </>
+
                     )}
                 </div>}
             </div>

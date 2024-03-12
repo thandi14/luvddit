@@ -691,6 +691,26 @@
     color: #0079D3;
 }
 
+#reply {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+    margin-bottom: 12px;
+}
+
+.reply-input {
+    position: relative;
+    margin-left: 6px;
+    width: 96%;
+    margin-bottom: 40px;
+}
+
+#r-line {
+    background-color: #EDEFF1;
+    width: 2.16px;
+    border-radius: 4px;
+}
+
 .top2 {
     width: 8%;
     height: 32px;

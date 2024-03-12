@@ -2142,7 +2142,7 @@ router.delete('/votes/:id', async (req, res) => {
 })
 
 router.post("/:id/comment", async (req, res) => {
-    const { comment } = req.body
+    const { comment, parent } = req.body
     const postId = req.params.id
     const { user } = req
     const userId = user.dataValues.id
@@ -2150,7 +2150,8 @@ router.post("/:id/comment", async (req, res) => {
     let c = await Comments.create({
         userId,
         comment,
-        postId
+        postId,
+        parent
 
     });
 
