@@ -617,21 +617,12 @@ router.get("/:id", async (req, res) => {
         include: [
             {
                 model: Comments,
+                where: {
+                    parent: null
+                },
                 include: [
                 { model: CommentSetting},
-                { model: User,
-                    // include: [
-                    //     {
-                    //         model: Community,
-                    //         where: {
-                    //             type: "Profile"
-                    //         },
-                    //         include: [
-                    //             { model: CommunityStyle }
-                    //         ]
-                    //     },
-                    // ]
-                },
+                { model: User},
                 { model: Votes }
             ]
             },
@@ -667,6 +658,32 @@ router.get("/:id", async (req, res) => {
                   { model: CommunityStyle }
             ]
         })
+
+        let replies = await Comments.findAll({
+            where: {
+                parent: c.dataValues.id
+            },
+            include: [
+            { model: CommentSetting},
+            { model: User},
+            { model: Votes }
+            ]
+        })
+
+        for (let r of replies) {
+            let profile = await Community.findOne({
+                where: {
+                    userId: r.dataValues.userId,
+                    type: "Profile"
+                },
+                include: [
+                      { model: CommunityStyle }
+                ]
+            })
+            r.dataValues.Profile = profile
+        }
+
+        c.dataValues.Replies = replies
 
         c.dataValues.Profile = profile
 
@@ -1420,6 +1437,9 @@ router.put("/:id", async (req, res) => {
         include: [
             {
                 model: Comments,
+                where: {
+                    parent: null
+                },
                 include: [
                     { model: User },
                     { model: Votes }
@@ -1444,11 +1464,22 @@ router.put("/:id", async (req, res) => {
             }
         });
 
+        for (let c of post.dataValues.Comments) {
+            let replies = Comments.findAll({
+                where: {
+                    parent: c.dataValues.id
+                }
+            })
+            c.dataValues.Replies = replies
+        }
+
         post.dataValues.Community.dataValues.CommunityMembers = members.length
 
 
     return res.json(post)
 })
+
+
 
 router.delete("/:id", async (req, res) => {
     let postId = req.params.id;
