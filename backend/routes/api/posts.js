@@ -641,13 +641,6 @@ router.get("/:id", async (req, res) => {
         ]
     });
 
-    let members = await CommunityMembers.findAll({
-    where: {
-        communityId: post.dataValues.Community.dataValues.id
-    }
-    });
-
-
     for (let c of post.dataValues.Comments) {
         let profile = await Community.findOne({
             where: {
@@ -670,6 +663,29 @@ router.get("/:id", async (req, res) => {
             ]
         })
 
+        // for (let r of replies) {
+        //     let profile = await Community.findOne({
+        //         where: {
+        //             userId: r.dataValues.userId,
+        //             type: "Profile"
+        //         },
+        //         include: [
+        //               { model: CommunityStyle }
+        //         ]
+        //     })
+        //     r.dataValues.Profile = profile
+        // }
+
+        includeReply(replies)
+
+        c.dataValues.Replies = replies
+
+        c.dataValues.Profile = profile
+
+    }
+
+    const includeReply = async function(replies) {
+
         for (let r of replies) {
             let profile = await Community.findOne({
                 where: {
@@ -680,14 +696,36 @@ router.get("/:id", async (req, res) => {
                       { model: CommunityStyle }
                 ]
             })
+
             r.dataValues.Profile = profile
+
+            let moreReplies = await Comments.findAll({
+                where: {
+                    parent: r.dataValues.id
+                },
+                include: [
+                { model: CommentSetting},
+                { model: User},
+                { model: Votes }
+                ]
+            })
+
+            r.dataValues.Replies = moreReplies
+
+            if (moreReplies.length) {
+                includeReply(moreReplies)
+            }
+
+
         }
 
-        c.dataValues.Replies = replies
-
-        c.dataValues.Profile = profile
-
     }
+
+    let members = await CommunityMembers.findAll({
+        where: {
+            communityId: post.dataValues.Community.dataValues.id
+        }
+    });
 
     post.dataValues.Community.dataValues.CommunityMembers = members.length
 
