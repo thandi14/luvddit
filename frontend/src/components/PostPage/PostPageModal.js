@@ -72,9 +72,6 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
 
     let joined = null
 
-    console.log(vis3, cId)
-
-
     useEffect(() => {
 
         if (scroll) setScrolling(true)
