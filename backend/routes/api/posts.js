@@ -639,11 +639,14 @@ router.get("/:id", async (req, res) => {
                 ]
             })
 
-            includeReply(moreReplies)
 
+            moreReplies = await includeReply(moreReplies)
             r.dataValues.Replies = moreReplies
 
+
         }
+
+        return replies
 
     }
 
@@ -710,7 +713,10 @@ router.get("/:id", async (req, res) => {
         //     r.dataValues.Profile = profile
         // }
 
-        includeReply(replies)
+        replies = await includeReply(replies)
+
+        console.log(replies)
+
 
         c.dataValues.Replies = replies
 
@@ -1446,7 +1452,6 @@ router.get("/:id/comments", async (req, res) => {
         ]
     })
 
-    console.log(comments)
 
     return res.json(comments)
 })
@@ -2093,7 +2098,6 @@ router.put('/:id/votes', async (req, res) => {
     const boolean = req.query.boolean;
     let post = await Post.findByPk(voteExist.dataValues.postId)
 
-    console.log(boolean)
     const { user } = req
     const userId = user.dataValues.id
 
