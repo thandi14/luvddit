@@ -613,6 +613,43 @@ router.get("/:id", async (req, res) => {
 
     }
 
+    const includeReply = async function(replies) {
+
+        for (let r of replies) {
+            let profile = await Community.findOne({
+                where: {
+                    userId: r.dataValues.userId,
+                    type: "Profile"
+                },
+                include: [
+                      { model: CommunityStyle }
+                ]
+            })
+
+            r.dataValues.Profile = profile
+
+            let moreReplies = await Comments.findAll({
+                where: {
+                    parent: r.dataValues.id
+                },
+                include: [
+                { model: CommentSetting},
+                { model: User},
+                { model: Votes }
+                ]
+            })
+
+            r.dataValues.Replies = moreReplies
+
+            if (moreReplies.length) {
+                includeReply(moreReplies)
+            }
+
+
+        }
+
+    }
+
     let post = await Post.findByPk(postId, {
         include: [
             {
@@ -684,42 +721,6 @@ router.get("/:id", async (req, res) => {
 
     }
 
-    const includeReply = async function(replies) {
-
-        for (let r of replies) {
-            let profile = await Community.findOne({
-                where: {
-                    userId: r.dataValues.userId,
-                    type: "Profile"
-                },
-                include: [
-                      { model: CommunityStyle }
-                ]
-            })
-
-            r.dataValues.Profile = profile
-
-            let moreReplies = await Comments.findAll({
-                where: {
-                    parent: r.dataValues.id
-                },
-                include: [
-                { model: CommentSetting},
-                { model: User},
-                { model: Votes }
-                ]
-            })
-
-            r.dataValues.Replies = moreReplies
-
-            if (moreReplies.length) {
-                includeReply(moreReplies)
-            }
-
-
-        }
-
-    }
 
     let members = await CommunityMembers.findAll({
         where: {
