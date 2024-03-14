@@ -532,6 +532,42 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
     if (sComments.length) comments = comments.filter((c) => c.comment.toLowerCase().includes(sComments.toLowerCase()))
 
     const ReplyList = ({comments}) => {
+
+        const [ c, setC ] = useState(null)
+        const [ c2, setC2 ] = useState(null)
+        const [ focus5, setFocus5 ] = useState(false)
+        const [ focus6, setFocus6 ] = useState(false)
+
+        const handleCommenting = (e) => {
+            e.stopPropagation()
+
+            if (!user) return setModalContent(<SignupFormModal />)
+
+            setData3({
+                comment: c2
+            })
+
+            setCommentM(false)
+
+        }
+
+
+
+        const handleReplying = (e) => {
+            e.stopPropagation()
+
+            if (!user) return setModalContent(<SignupFormModal />)
+
+            setData2({
+                comment: c,
+                parent
+            })
+
+            setParent(null)
+            setC("")
+
+        }
+
         return (
             <div style={{marginLeft: "-15px", marginBottom: "5px"}} id="if-comments">
             {comments.map((c, i) =>
@@ -550,8 +586,8 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
                             c.userId === user.id ? history.push('/profile/:page') : history.push(`/profile2/${c.userId}/:page`)})} id="username45">{c.User?.username}</span> { c.User && c.User.id === singlePost.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.createdAt)}</div></span>
                         { !(commentM && (commentId2 === c.id || cId == c.id)) ? <p>{c.comment}</p> :
                         <div className="comment-input">
-                            <textarea onFocus={(() => setFocus3(true))} onBlur={(() => setFocus3(false))} defaultValue={c.comment} onChange={((e) => setComment2(e.target.value))}></textarea>
-                        <div id={focus3 ? "my-comments2" : "my-comments"}>
+                            <textarea onFocus={(() => setFocus5(true))} onBlur={(() => setFocus5(false))} defaultValue={c.comment} onChange={((e) => setC2(e.target.value))}></textarea>
+                        <div id={focus5 ? "my-comments2" : "my-comments"}>
                         <i class="fi fi-rr-gif-square"></i>
                                 <i class="fi fi-rr-picture"></i>
                                 <div id="divider16"></div>
@@ -575,10 +611,10 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
                                 e.stopPropagation()
                                 setCommentM(false)
                                 })}>Cancel</button>
-                            <button id="submit-c2" onClick={handleComment2}>Save Edits</button>
+                            <button id="submit-c2" onClick={handleCommenting}>Save Edits</button>
                         </div>
                         </div> }
-                        { commentM && commentId2 === i ? null : <div id="comment-extras">
+                        { commentM && commentId2 === c.id ? null : <div id="comment-extras">
                             <div>
                                 <CommentLikes comment={c} />
                             </div>
@@ -643,8 +679,8 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
                 { commentR && parent == c.id ? <div id="reply">
                 <div id="r-line"></div>
                 <div onClick={((e) => e.stopPropagation())} style={{ marginBottom: "40px" }} className="comment-input">
-                            <textarea onFocus={(() => setFocus4(true))} onBlur={(() => setFocus4(false))} placeholder={"What are your thoughts?"} onClick={((e) => e.stopPropagation())} onChange={((e) => setComment3(e.target.value))}></textarea>
-                        <div id={focus4 ? "my-comments2" : "my-comments"}>
+                            <textarea onFocus={(() => setFocus6(true))} onBlur={(() => setFocus6(false))} placeholder={"What are your thoughts?"} onChange={((e) => setC(e.target.value))}></textarea>
+                        <div id={focus6 ? "my-comments2" : "my-comments"}>
                         <i class="fi fi-rr-gif-square"></i>
                                 <i class="fi fi-rr-picture"></i>
                                 <div id="divider16"></div>
@@ -668,7 +704,7 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
                                 e.stopPropagation()
                                 setCommentR(false)
                                 })}>Cancel</button>
-                            <button id="submit-c2" onClick={handleReply}>Reply</button>
+                            <button id="submit-c2" onClick={handleReplying}>Reply</button>
                         </div>
                         </div>
                 </div> : null}

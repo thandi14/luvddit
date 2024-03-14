@@ -639,12 +639,9 @@ router.get("/:id", async (req, res) => {
                 ]
             })
 
+            includeReply(moreReplies)
+
             r.dataValues.Replies = moreReplies
-
-            if (moreReplies.length) {
-                includeReply(moreReplies)
-            }
-
 
         }
 
