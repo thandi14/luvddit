@@ -52,6 +52,7 @@ import CommentedHotPosts from "./components/YourProfilePage/hotComments";
 import CommentedTopPosts from "./components/YourProfilePage/topComments";
 import SavedPosts from "./components/YourProfilePage/saved";
 import HiddenPosts from "./components/YourProfilePage/hidden";
+import CommentsPage from "./components/PostPage/Comments/CommentsPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -238,6 +239,9 @@ function App() {
           </Route>
           <Route exact path="/posts-modal/:id">
             <PostPageModal />
+          </Route>
+          <Route exact path="/posts/:id/comments">
+            <CommentsPage />
           </Route>
         </Switch>
       )}

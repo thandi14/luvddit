@@ -717,6 +717,27 @@
     font-weight: 900;
 }
 
+#parent-comments {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+    font-weight: 900;
+    margin: 15px 0px;
+    gap: 5px;
+    margin-left: 1px;
+}
+
+#parent-comments > p {
+    line-height: 16px;
+    height: 16px;
+    margin: 0px
+}
+
+#parent-comments > p:hover {
+    text-decoration: underline;
+}
+
 .reply-input {
     position: relative;
     margin-left: 6px;

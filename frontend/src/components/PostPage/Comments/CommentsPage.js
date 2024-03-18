@@ -1,32 +1,26 @@
-import './PostPage.css'
-import '../CreatePostPage/CreatePostPage.css'
-import { Link, useParams } from 'react-router-dom/cjs/react-router-dom'
-import { useSelector, useDispatch } from 'react-redux';
-import { useEffect, useRef, useState } from 'react';
-import * as postActions from '../../store/posts'
-import '../CreatePostPage/CreatePostPage.css'
-import CommunitiesProfile from '../CreatePostPage/communites2';
-import * as communityActions from '../../store/communities'
-import DeletePost from './delete';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-import { useModal2 } from '../../context/Modal2';
-import pfp from "./IMG6.jpg";
-import * as commentActions from '../../store/comments'
-import PostLikes from '../HomePage/likes';
-import DeleteComment from "./Comments/deleteC";
-import CommentLikes from '../HomePage/likesC';
-import MyCarousel from './postCrousel';
-import YourCommunitesProfile from '../CommunityPage/communites3';
-import SignupFormModal from '../SignupFormPage';
-import { useModal } from '../../context/Modal';
-import Comments from './Comments/Comments';
+import { useSelector, useDispatch } from "react-redux";
+import { useState, useRef, useEffect } from "react";
+import { useModal } from "../../../context/Modal";
+import { useParams } from "react-router-dom/cjs/react-router-dom.min";
+import "../PostPage.css"
+import * as postActions from '../../../store/posts';
+import * as communityActions from '../../../store/communities';
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import pfp from "../IMG6.jpg";
+import { useModal2 } from "../../../context/Modal2";
+import * as commentActions from '../../../store/comments'
+import DeleteComment from "./deleteC";
+import CommentLikes from "../../HomePage/likesC";
+import SignupFormModal from "../../SignupFormPage";
+import DeletePost from "../delete";
+import PostLikes from "../../HomePage/likes";
+import MyCarousel from "../postCrousel";
+import CommunitiesProfile from "../../CreatePostPage/communites2";
+import YourProfilePage from "../../YourProfilePage";
+import YourCommunitesProfile from "../../CommunityPage/communites3";
+import Comments2 from "./Comments2";
 
-//import Slider from 'react-slick';
-// import 'slick-carousel/slick/slick.css';
-// import 'slick-carousel/slick/slick-theme.css';
-
-
-function PostPage() {
+function CommentsPage() {
     const { singlePost } = useSelector((state) => state.posts)
     const { user } = useSelector((state) => state.session)
     const { singleCommunity, userCommunities } = useSelector((state) => state.communities)
@@ -424,7 +418,7 @@ function PostPage() {
         <p style={{ filter: "brightness(5)", fontWeight: "900", color: `${singlePost.Community.CommunityStyle.highlight}`, borderColor: `${singlePost.Community.CommunityStyle.highlight}`}}>Posts</p>
     </div> : null}
     <div className="whole-post-page">
-        <div className="post-page">
+        <div style={{ marginTop: "0px"}} className="post-page">
         <div id="vote-side">
         <PostLikes post={singlePost} />
         </div>
@@ -542,40 +536,8 @@ function PostPage() {
             </div>
             </div>
         </div>
-        <div id="insights">
-            <p>Post Insights</p>
-            <p>Check back later to see views, shares, and more. <span style={{ color: `${singlePost.Community.CommunityStyle.base}`}} >Share your post</span> to spread the word!</p>
-        </div>
-        <div className="comment-input">
-        {user ? <p>Comment as <span style={{ color: `${singlePost.Community.CommunityStyle.base}`}} >{user.username}</span></p> : "Please login"}
-            <textarea onFocus={(() => setFocus(true))} onBlur={(() => setFocus(false))}  value={comment} onChange={((e) => setComment(e.target.value))} placeholder="What are your thoughts?"></textarea>
-        <div id={focus ? "my-comments2" : "my-comments"}>
-        <i class="fi fi-rr-gif-square"></i>
-                <i class="fi fi-rr-picture"></i>
-                <div id="divider16"></div>
-                <i class="fi fi-rr-bold"></i>
-                <i class="fa-solid fa-italic"></i>
-                <i class="fi fi-rr-link-alt"></i>
-                <i class="fi fi-rr-strikethrough"></i>
-                <i class="fi fi-rr-code-simple"></i>
-                <i class="fa-solid fa-superscript"></i>
-                <i class="fi fi-rr-diamond-exclamation"></i>
-                <div id="divider16"></div>
-                <i class="fi fi-rr-heading"></i>
-                <i class="fi fi-rr-menu-dots"></i>
-                {/* <i class="fi fi-rr-rectangle-list"></i>
-                <i class="fa-solid fa-list-ol"></i>
-                <i class="fi fi-rr-square-quote"></i>
-                <i class="fi fi-rr-square-code"></i>
-                <div id="divider16"></div>
-                <i class="fa-brands fa-youtube"></i> */}
-            {!comment && <button id={"submit-c3"} onClick={handleComment}>Comment</button> }
-            {comment &&  !cHover && <button onMouseEnter={(() => setCHover(true))} style={{ backgroundColor: `${singlePost.Community.CommunityStyle.highlight}`}} id={"submit-c4"} onClick={handleComment}>Comment</button> }
-            {comment &&  cHover && <button onMouseLeave={(() => setCHover(false))} style={{ backgroundColor: `${reduceOpacity(singlePost.Community.CommunityStyle.highlight, 0.5)}`}} id={"submit-c4"} onClick={handleComment}>Comment</button> }
-        </div>
-        </div>
         <div className="comments-for-post">
-        <div style={{ color: `${singlePost.Community.CommunityStyle.highlight}`}} id="sort-comments">
+        <div style={{ marginTop: "5px", color: `${singlePost.Community.CommunityStyle.highlight}`}} id="sort-comments">
                     <div style={{ position: "relative", display: "flex", flexDirection: "column"}}>
                     <p onClick={(() => setSortComment(!sortComment))} id="sorting-comms">Sort By: {sComments2}
                     <i class="fi fi-rr-caret-down"></i>
@@ -616,18 +578,13 @@ function PostPage() {
                     <p>Contest</p>
                     <img src="https://vizzendata.files.wordpress.com/2020/01/switch-left.png"></img>
                     </div> */}
-                    <div id="divider16"></div>
-                    <div>
-                    <i id="searchI" class="fi fi-rs-search-heart"></i>
-                    <input onChange={((e) => setSComments(e.target.value))} type="text" placeholder='Search comments'></input>
-                    </div>
                 </div>
             { !comments || !comments.length ? <div id="any-comments">
                     <i style={{ color: `${singlePost.Community.CommunityStyle.base}`}} class="fi fi-rr-comment-heart"></i>
                     <p>No Comments Yet</p>
                     <span>Be the first to share what you think</span>
                 </div> :
-                <Comments />
+                <Comments2 />
                 }
         </div>
         </div>
@@ -656,4 +613,4 @@ function PostPage() {
     )
 }
 
-export default PostPage
+export default CommentsPage

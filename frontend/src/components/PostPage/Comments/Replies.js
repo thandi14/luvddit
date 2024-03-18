@@ -332,7 +332,7 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par }) {
 
 
         return (
-            <>{level >= 20 ? <div id="continue"><p>Continue this thread</p><i class="fi fi-rr-arrow-small-right"></i></div> : <div style={{marginLeft: "-15px", marginBottom: "5px"}} id="if-comments">
+            <>{level >= 20 ? <div onClick={(() => history.push(`/posts/${singlePost.id}/comments`))} id="continue"><p>Continue this thread</p><i class="fi fi-rr-arrow-small-right"></i></div> : <div style={{marginLeft: "-15px", marginBottom: "5px"}} id="if-comments">
             {comments.map((c, i) =>
                 <>
                { i <= length ? <>
