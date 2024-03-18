@@ -577,7 +577,7 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
 
 
         return (
-            <>{level >= 4 ? <div id="continue"><p>Continue this thread</p><i class="fi fi-rr-arrow-small-right"></i></div> : <div style={{marginLeft: "-15px", marginBottom: "5px"}} id="if-comments">
+            <>{level >= 15 ? <div id="continue"><p>Continue this thread</p><i class="fi fi-rr-arrow-small-right"></i></div> : <div style={{marginLeft: "-15px", marginBottom: "5px"}} id="if-comments">
             {comments.map((c, i) =>
                 <>
                 <div onClick={(() => setC(c)
