@@ -13,7 +13,7 @@ import PostLikes from '../HomePage/likes'
 import CommunitiesProfile from '../CreatePostPage/communites2'
 import DeletePost from '../PostPage/delete'
 import { useModal2 } from '../../context/Modal2'
-import DeleteComment from '../PostPage/deleteC'
+import DeleteComment from '../PostPage/Comments/deleteC'
 import '../PostPage/PostPage.css'
 import NoPosts from './none'
 import * as sessionActions from "../../store/session"

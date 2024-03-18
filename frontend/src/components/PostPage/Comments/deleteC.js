@@ -1,11 +1,11 @@
-import { useModal2 } from "../../context/Modal2";
-import "./PostPage.css";
+import { useModal2 } from "../../../context/Modal2";
+import "../PostPage.css";
 import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import * as postsActions from '../../store/posts';
+import * as postsActions from '../../../store/posts';
 import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import { useModal } from "../../context/Modal";
+import { useModal } from "../../../context/Modal";
 
 function DeleteComment({ id, deleted }){
     const { closeModal2 } = useModal2();
