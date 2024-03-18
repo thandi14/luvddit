@@ -21,7 +21,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import SignupFormModal from "../SignupFormPage";
 
-function PostPageModal({ postId, scroll, cId, vis3 }) {
+function PostPageComments({ postId, scroll, cId, vis3 }) {
     const { communities, singleCommunity, communityMemberships, memberships, userCommunities } = useSelector((state) => state.communities);
     const { singlePost, postsHistory } = useSelector((state) => state.posts)
     const { user } = useSelector((state) => state.session)
@@ -1201,4 +1201,4 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
     )
 }
 
-export default PostPageModal
+export default PostPageComments

@@ -698,6 +698,25 @@
     margin-bottom: 12px;
 }
 
+#continue > i {
+    height: 16px;
+    font-size: 16px;
+    width: 16px;
+}
+
+#continue > p:hover {
+    text-decoration: underline;
+}
+
+#continue {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    gap: 3px;
+    font-weight: 900;
+}
+
 .reply-input {
     position: relative;
     margin-left: 6px;
