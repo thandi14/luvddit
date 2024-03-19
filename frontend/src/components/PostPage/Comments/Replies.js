@@ -13,7 +13,7 @@ import DeleteComment from "./deleteC";
 import CommentLikes from "../../HomePage/likesC";
 import SignupFormModal from "../../SignupFormPage";
 
-function Replies({ postId, scroll, cId, vis3, comments, level, id, par }) {
+function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId }) {
     const { communities, singleCommunity, communityMemberships, memberships, userCommunities } = useSelector((state) => state.communities);
     const { singlePost, postsHistory } = useSelector((state) => state.posts)
     const { user } = useSelector((state) => state.session)
@@ -318,12 +318,13 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par }) {
         }
 
         return (
-            <>{level >= 7 ? null : <div style={{marginLeft: "-15px", marginBottom: "5px"}} id="if-comments">
+            <>{level >= 7 ? null : <div style={{marginLeft: "-15px"}} id="if-comments">
             {comments.map((c, i) =>
-                <>
+                <div style={{ position: "relative" }}>
+                {scroll && replyId=== c.id && <div id="replying"></div>}
                { i <= (!more ? 6 : comments.length )? <>
                <div onClick={(() => setC(c)
-                    )} className="a-comment">
+                    )} id={`${c.id}`} style={{ position: "relative", zIndex: "10", margin: "0px", marginTop: "5px", overflow: "hidden"}} className="a-comment">
                     <div id="left-csec">
                     { !c.Profile?.CommunityStyle ? <img id="avatar6" src={pfp}></img> : null}
                     { c.Profile?.CommunityStyle?.icon ? <img id="avatar6" src={c.Profile?.CommunityStyle.icon}></img> : null}
@@ -468,7 +469,7 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par }) {
                     </div>
                 </div>
                 </> : null}
-                </>
+                </div>
                 )}
         </div>}
         {comments.length >= 6 && !more && <div onClick={(() =>setMore(true))} id="continue"><p style={{ color: `${singlePost.Community?.CommunityStyle?.base}`}}>{comments.slice(6).length - 1 < 0 ? 0 : comments.slice(6).length - 1} more replies</p></div>}

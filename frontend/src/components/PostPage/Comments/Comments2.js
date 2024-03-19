@@ -471,8 +471,9 @@ function Comments2({ postId, scroll, cId, vis3 }) {
                     </div>
                     {
                     single ?
-                        <>
-                        <div onClick={(() => setC(c))} className="a-comment">
+                        <div style={{ position: "relative"}} >
+                        <div id="replying"></div>
+                        <div onClick={(() => setC(c))} style={{ position: "relative", zIndex: "10"}} className="a-comment">
                             <div id="left-csec">
                             { !singleComment.Profile?.CommunityStyle ? <img id="avatar6" src={pfp}></img> : null}
                             { singleComment.Profile?.CommunityStyle?.icon ? <img id="avatar6" src={singleComment.Profile?.CommunityStyle.icon}></img> : null}
@@ -612,7 +613,7 @@ function Comments2({ postId, scroll, cId, vis3 }) {
                                 </>
                             </div>
                         </div>
-                        </>
+                        </div>
                     :
                     <>
                     {comments.map((c, i) =>

@@ -14,7 +14,7 @@ import CommentLikes from "../../HomePage/likesC";
 import Replies from "./Replies";
 import SignupFormModal from "../../SignupFormPage";
 
-function Comments({ postId, scroll, cId, vis3 }) {
+function Comments({ postId, scroll, cId, vis3, replyId }) {
     const { communities, singleCommunity, communityMemberships, memberships, userCommunities } = useSelector((state) => state.communities);
     const { singlePost, postsHistory } = useSelector((state) => state.posts)
     const { user } = useSelector((state) => state.session)
@@ -49,7 +49,7 @@ function Comments({ postId, scroll, cId, vis3 }) {
     const [ focus4, setFocus4 ] = useState(false)
     const [ sortComment, setSortComment ] = useState(false)
     const [ commentM, setCommentM ] = useState(vis3 ? true : false)
-    const [ commentR, setCommentR ] = useState(false)
+    const [ commentR, setCommentR ] = useState(replyId ? true : false)
     const [ commentId2, setCommentId2 ] = useState(cId ? cId : null);
     const [ p, setP ] = useState(null)
     const [ message, setMessage ] = useState(false)
@@ -60,7 +60,7 @@ function Comments({ postId, scroll, cId, vis3 }) {
     const { setModalContent } = useModal()
     const [ sComments, setSComments ] = useState("")
     const [ sComments2, setSComments2 ] = useState("Best")
-    const [ parent, setParent ] = useState(null)
+    const [ parent, setParent ] = useState(replyId)
 
 
     let joined = null
@@ -525,11 +525,14 @@ function Comments({ postId, scroll, cId, vis3 }) {
     if (sComments.length) comments = comments.filter((c) => c.comment.toLowerCase().includes(sComments.toLowerCase()))
    // let thread = comments
 
+   console.log(replyId)
+
     return (
                 <div id="if-comments">
                     {comments.map((c, i) =>
-                        <>
-                        <div onClick={(() => setC(c))} className="a-comment">
+                        <div style={{ position: "relative"}}>
+                        {replyId === c.id ? <div id="replying"></div> : null}
+                        <div onClick={(() => setC(c))} id={`${c.id}`} style={{ position: "relative", zIndex: "10"}} className="a-comment">
                             <div id="left-csec">
                             { !c.Profile?.CommunityStyle ? <img id="avatar6" src={pfp}></img> : null}
                             { c.Profile?.CommunityStyle?.icon ? <img id="avatar6" src={c.Profile?.CommunityStyle.icon}></img> : null}
@@ -669,7 +672,7 @@ function Comments({ postId, scroll, cId, vis3 }) {
                                 </>
                             </div>
                         </div>
-                        </>
+                        </div>
 
                     )}
                 </div>

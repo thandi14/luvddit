@@ -511,11 +511,14 @@ function YourProfilePage() {
                                 <span><span id="username45">{user.username}</span> { user?.id === post.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.updatedAt)}</div></span>
                                 <p>{c.comment}</p>
                                 <div id="comment-extras90">
-                                    <div>
+                                    <div onClick={((e) => {
+                                      e.stopPropagation()
+                                      setModalContent(<PostPageModal postId={post.id} replyId={c.id}/>)
+                                    })}>
                                         <i class="fa-regular fa-message"></i>
                                         <p>Reply</p>
                                     </div>
-                                    <div >
+                                    <div>
                                         <i class="fi fi-rs-heart-arrow"></i>
                                         <p>Share</p>
                                     </div>

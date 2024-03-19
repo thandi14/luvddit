@@ -194,7 +194,6 @@ function CommentsPage() {
 
     }
 
-
     let comments
 
     if (singlePost.Comments && singlePost.Comments.length) comments = Object.values(singlePost.Comments).reverse()
@@ -267,6 +266,25 @@ function CommentsPage() {
 
 
     }, [dispatch, data1, id])
+
+    useEffect(() => {
+
+        let scrollToTarget = () => {
+            if (document.referrer.includes('/profile')) {
+                    const targetElement = document.getElementById(`${commentId}`);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+                else if (!targetElement && commentId >= 0) {
+                    history.push(`/posts/${id}/comments/${commentId}`)
+                }
+            }
+         };
+
+
+        scrollToTarget();
+
+    }, [document.referrer, commentId, history, id]);
 
     useEffect( () => {
 

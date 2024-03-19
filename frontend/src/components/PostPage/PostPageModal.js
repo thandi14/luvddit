@@ -22,7 +22,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import SignupFormModal from "../SignupFormPage";
 import Comments from "./Comments/Comments";
 
-function PostPageModal({ postId, scroll, cId, vis3 }) {
+function PostPageModal({ postId, scroll, cId, vis3, replyId }) {
     const { communities, singleCommunity, communityMemberships, memberships, userCommunities } = useSelector((state) => state.communities);
     const { singlePost, postsHistory } = useSelector((state) => state.posts)
     const { user } = useSelector((state) => state.session)
@@ -46,7 +46,6 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
     const [ comment, setComment ] = useState("")
     const [ comment2, setComment2 ] = useState("")
     const [ comment3, setComment3 ] = useState("")
-    const [ scrolling, setScrolling ] = useState(scroll)
     const [isVisible3, setIsVisible3] = useState(false);
     const [ commentId, setCommentId ] = useState(null);
     const [ c, setC ] = useState(null)
@@ -75,12 +74,12 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
 
     let joined = null
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        if (scroll) setScrolling(true)
-        if (!scroll) setScrolling(false)
+    //     if (scroll) setScrolling(true)
+    //     if (!scroll) setScrolling(false)
 
-    }, [scroll])
+    // }, [scroll])
 
     const handleSaved = async (id) => {
         if (!user) return setModalContent(<SignupFormModal />)
@@ -402,19 +401,6 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
     };
 
     useEffect(() => {
-        if (scrolling) {
-          // Replace "targetElementId" with the actual ID of the target element
-          const targetElement = document.getElementById("go-to-c");
-
-          if (targetElement) {
-            targetElement.scrollIntoView({ behavior: "smooth" });
-          }
-
-          // Reset the flag after scrolling
-        }
-    }, [scrolling]);
-
-    useEffect(() => {
 
         const handleDocumentClick = (event) => {
             if ((modalRef2.current && !modalRef2.current.contains(event.target)) && (targetRef2.current && !targetRef2.current.contains(event.target)) && (targetRef3.current && !targetRef3.current.contains(event.target))) {
@@ -428,6 +414,34 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
         return () => {
             document.removeEventListener('click', handleDocumentClick);
         };
+
+    }, []);
+
+
+    useEffect(() => {
+
+        let scrollToTarget = () => {
+                const targetElements = document.getElementsByClassName('comments-for-post');
+                if (targetElements.length > 0 && scroll) {
+                    const targetElement = targetElements[0];
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+        };
+
+        scrollToTarget();
+
+        let scrollToTarget2 = () => {
+            const targetElement = document.getElementById(`${replyId}`);
+            if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth' });
+            }
+            // else if (!targetElement && replyId > -1) {
+            //     closeModal()
+            //     history.push(`/posts/${postId}/comments/${replyId}`)
+            // }
+         };
+
+        scrollToTarget2();
 
     }, []);
 
@@ -813,7 +827,7 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
                     <p>No Comments Yet</p>
                     <span>Be the first to share what you think</span>
                 </div> :
-                    <Comments />
+                    <Comments replyId={replyId} />
                  }
             </div>
             </div>
