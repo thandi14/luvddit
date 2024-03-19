@@ -934,6 +934,25 @@ export const thunkRefreshSearch = (id) => async (dispatch) => {
   return "succesfully refreshed"
 }
 
+const replies = (comments, reply) => {
+
+
+  for (let i = 0; i < comments?.length; i++) {
+    let comment = comments[i]
+    if (comment.id == reply.parent) {
+      if (!comment.Replies) comment.Replies = []
+      comment.Replies.push(reply)
+    }
+    else if (comment.Replies?.length) {
+      replies(comment.Replies, reply)
+    }
+
+  }
+
+  return comments
+
+}
+
 
 let initialState = {
     posts: {},
@@ -1628,8 +1647,13 @@ const postsReducer = (state = initialState, action) => {
     case GET_COMMENT_DETAILS: {
       newState = { ...state };
       let comment = action.details;
-      newState.singlePost.Comments.push(comment)
-      newState.singleComment = { ...comment }
+      if (comment.parent > 0) {
+        newState.singlePost.Comments = replies(newState.singlePost.Comments, comment)
+      }
+      else {
+        newState.singlePost.Comments.push(comment)
+      }
+      if (comment.parent > 0) newState.singleComment.Replies = replies(newState.singleComment.Replies, comment)
       let post = newState.posts[comment.postId]
       if (post && post.Comments) newState.posts[comment.postId].Comments.push(comment)
       let post2 = newState.communityPosts[comment.postId]

@@ -75,6 +75,7 @@ function CommentsPage() {
 
     console.log(singleComment)
 
+
     useEffect(() => {
         const handleScroll = () => {
           if (window.scrollY < 450) {
@@ -110,6 +111,19 @@ function CommentsPage() {
 
     const handleUnsaved = async (postId) => {
         await dispatch(postActions.thunkUpdateSaved2(postId))
+    }
+
+    const handleComment = (e) => {
+        e.stopPropagation()
+
+        if (!user) return setModalContent(<SignupFormModal />)
+
+        setData2({
+            comment
+        })
+
+        setComment("")
+
     }
 
     useEffect( () => {
@@ -495,8 +509,40 @@ function CommentsPage() {
             </div>
             </div>
         </div>
+        <div id="insights">
+            <p>Post Insights</p>
+            <p>Check back later to see views, shares, and more. <span style={{ color: `${singlePost.Community.CommunityStyle.base}`}} >Share your post</span> to spread the word!</p>
+        </div>
+        <div className="comment-input">
+        {user ? <p>Comment as <span style={{ color: `${singlePost.Community.CommunityStyle.base}`}} >{user.username}</span></p> : "Please login"}
+            <textarea onFocus={(() => setFocus(true))} onBlur={(() => setFocus(false))}  value={comment} onChange={((e) => setComment(e.target.value))} placeholder="What are your thoughts?"></textarea>
+        <div id={focus ? "my-comments2" : "my-comments"}>
+        <i class="fi fi-rr-gif-square"></i>
+                <i class="fi fi-rr-picture"></i>
+                <div id="divider16"></div>
+                <i class="fi fi-rr-bold"></i>
+                <i class="fa-solid fa-italic"></i>
+                <i class="fi fi-rr-link-alt"></i>
+                <i class="fi fi-rr-strikethrough"></i>
+                <i class="fi fi-rr-code-simple"></i>
+                <i class="fa-solid fa-superscript"></i>
+                <i class="fi fi-rr-diamond-exclamation"></i>
+                <div id="divider16"></div>
+                <i class="fi fi-rr-heading"></i>
+                <i class="fi fi-rr-menu-dots"></i>
+                {/* <i class="fi fi-rr-rectangle-list"></i>
+                <i class="fa-solid fa-list-ol"></i>
+                <i class="fi fi-rr-square-quote"></i>
+                <i class="fi fi-rr-square-code"></i>
+                <div id="divider16"></div>
+                <i class="fa-brands fa-youtube"></i> */}
+            {!comment && <button id={"submit-c3"} onClick={handleComment}>Comment</button> }
+            {comment &&  !cHover && <button onMouseEnter={(() => setCHover(true))} style={{ backgroundColor: `${singlePost.Community.CommunityStyle.highlight}`}} id={"submit-c4"} onClick={handleComment}>Comment</button> }
+            {comment &&  cHover && <button onMouseLeave={(() => setCHover(false))} style={{ backgroundColor: `${reduceOpacity(singlePost.Community.CommunityStyle.highlight, 0.5)}`}} id={"submit-c4"} onClick={handleComment}>Comment</button> }
+        </div>
+        </div>
         <div className="comments-for-post">
-        <div style={{ marginTop: "5px", color: `${singlePost.Community.CommunityStyle.highlight}`}} id="sort-comments">
+        <div style={{ color: `${singlePost.Community.CommunityStyle.highlight}`}} id="sort-comments">
                     <div style={{ position: "relative", display: "flex", flexDirection: "column"}}>
                     <p onClick={(() => setSortComment(!sortComment))} id="sorting-comms">Sort By: {sComments2}
                     <i class="fi fi-rr-caret-down"></i>
@@ -537,6 +583,11 @@ function CommentsPage() {
                     <p>Contest</p>
                     <img src="https://vizzendata.files.wordpress.com/2020/01/switch-left.png"></img>
                     </div> */}
+                    <div id="divider16"></div>
+                    <div>
+                    <i id="searchI" class="fi fi-rs-search-heart"></i>
+                    <input onChange={((e) => setSComments(e.target.value))} type="text" placeholder='Search comments'></input>
+                    </div>
                 </div>
             { !comments || !comments.length ? <div id="any-comments">
                     <i style={{ color: `${singlePost.Community.CommunityStyle.base}`}} class="fi fi-rr-comment-heart"></i>

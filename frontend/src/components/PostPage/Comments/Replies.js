@@ -92,17 +92,6 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par }) {
     if (member) joined = true
     if (!member.length) joined = false
 
-    useEffect(() => {
-
-        async function fetchData() {
-          await dispatch(communityActions.thunkGetCommunityMemberships(id))
-          if (id) await dispatch(communityActions.thunkGetDetailsById(id))
-          else return
-        }
-
-        fetchData()
-
-    }, [dispatch, id])
 
     // const handleComment2 = (e) => {
     //     e.stopPropagation()
@@ -332,7 +321,7 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par }) {
             <>{level >= 7 ? null : <div style={{marginLeft: "-15px", marginBottom: "5px"}} id="if-comments">
             {comments.map((c, i) =>
                 <>
-               { i <= length ? <>
+               { i <= (!more ? 6 : comments.length )? <>
                <div onClick={(() => setC(c)
                     )} className="a-comment">
                     <div id="left-csec">
@@ -469,10 +458,10 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par }) {
                         </div>
                         </div>
                 </div> : null}
-                { level >= 7 && c.Replies?.length > 0 ? <div onClick={(() => {
+                { level >= 6 && c.Replies?.length > 0 ? <div onClick={(() => {
                     closeModal()
                     history.push(`/posts/${c.postId}/comments/${c.id}`)
-                    })} id="continue"><p>Continue this thread</p><i class="fi fi-rr-arrow-small-right"></i></div> : c.Replies?.length > 0 && level <= 7 ? <div onClick={((e) => e.stopPropagation())} id="replies">
+                    })} id="continue"><p>Continue this thread</p><i class="fi fi-rr-arrow-small-right"></i></div> : c.Replies?.length > 0 && level <= 6 ? <div onClick={((e) => e.stopPropagation())} id="replies">
                     <Replies comments={c.Replies} level={level} parent={c.parent} />
                 </div> : null}
                         </>
@@ -482,9 +471,7 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par }) {
                 </>
                 )}
         </div>}
-        {comments.length >= length && !more && <div onClick={(() => {
-            setMore(true)
-            setLength(comments.length)})} id="continue"><p style={{ color: `${singlePost.Community?.CommunityStyle?.base}`}}>{comments.slice(length).length - 1 < 0 ? 0 : comments.slice(length).length - 1} more replies</p></div>}
+        {comments.length >= 6 && !more && <div onClick={(() =>setMore(true))} id="continue"><p style={{ color: `${singlePost.Community?.CommunityStyle?.base}`}}>{comments.slice(6).length - 1 < 0 ? 0 : comments.slice(6).length - 1} more replies</p></div>}
         </>
         )
     }

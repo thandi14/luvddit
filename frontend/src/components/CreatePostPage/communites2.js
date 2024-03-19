@@ -8,6 +8,7 @@ import { useModal } from "../../context/Modal"
 
 function CommunitiesProfile({ page, community }) {
     const { communities, userCommunities, singleCommunity, communityMemberships, memberships } = useSelector((state) => state.communities)
+    // const { singlePost } = useSelector((state) => state.posts)
     const { user } = useSelector((state) => state.session)
     const [ id, setId ] = useState(null)
     const dispatch = useDispatch()
@@ -38,6 +39,18 @@ function CommunitiesProfile({ page, community }) {
 
     if (member) joined = true
     if (!member.length) joined = false
+
+    // useEffect(() => {
+
+    //     async function fetchData() {
+    //         if (location.pathname.includes("/comments/")) {
+    //             if (singlePost && singlePost?.id) await dispatch(communityActions.thunkGetDetailsById(singlePost.Community?.id))
+    //         }
+    //     }
+
+    //     fetchData()
+
+    // }, [dispatch, id])
 
 
     useEffect(() => {
@@ -319,10 +332,10 @@ function CommunitiesProfile({ page, community }) {
         </div>
         </div> :
          <div onClick={handleClick} id="your-community-profile">
-                    {!singleCommunity.CommunityStyle?.banner ? <div style={{ backgroundColor: `${singleCommunity.CommunityStyle?.base}`}} id="header-profile-comm4">
-                    </div> : <div className="header-postC"><img id="header-profile-comm10" src={singleCommunity.CommunityStyle?.banner} ></img></div> }
+                    {!community.CommunityStyle?.banner ? <div style={{ backgroundColor: `${community.CommunityStyle?.base}`}} id="header-profile-comm4">
+                    </div> : <div className="header-postC"><img id="header-profile-comm10" src={community.CommunityStyle?.banner} ></img></div> }
                     <div id="profile-content">
-                        <span id="profile-comm-title7">{ singleCommunity.CommunityStyle?.icon ? <img id="PFP36" src={singleCommunity.CommunityStyle?.icon}></img> : <div style={{ backgroundColor: `${singleCommunity.CommunityStyle?.base}`}} >l/</div>}{community?.name}</span>
+                        <span id="profile-comm-title7">{ community.CommunityStyle?.icon ? <img id="PFP36" src={community.CommunityStyle?.icon}></img> : <div style={{ backgroundColor: `${community.CommunityStyle?.base}`}} >l/</div>}{community?.name}</span>
                         <span id="profile-about7">{community?.about}</span>
                         <span id="when-created"><i class="fi fi-rr-cake-birthday"></i>Created {formattedDate}</span>
                         <div id="line"></div>

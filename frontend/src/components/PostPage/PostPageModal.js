@@ -283,6 +283,8 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
 
     }, [dispatch, data2, singlePost.id])
 
+    console.log(data2)
+
     useEffect( () => {
 
         async function fetchData() {
