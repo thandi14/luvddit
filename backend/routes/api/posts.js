@@ -737,6 +737,8 @@ router.get("/:id", async (req, res) => {
 })
 
 
+
+
 router.get("/hot", async (req, res) => {
     const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
 

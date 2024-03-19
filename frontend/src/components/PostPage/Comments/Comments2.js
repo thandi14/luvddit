@@ -16,12 +16,12 @@ import SignupFormModal from "../../SignupFormPage";
 
 function Comments2({ postId, scroll, cId, vis3 }) {
     const { communities, singleCommunity, communityMemberships, memberships, userCommunities } = useSelector((state) => state.communities);
-    const { singlePost, postsHistory } = useSelector((state) => state.posts)
+    const { singlePost, postsHistory, singleComment } = useSelector((state) => state.posts)
     const { user } = useSelector((state) => state.session)
     const { id } = useParams();
     const dispatch = useDispatch()
     const [isVisible, setIsVisible] = useState(false);
-    const [ deleted, setDeleted ] = useState("")
+    const [ single, setSingle ] = useState(true)
     const targetRef = useRef(null);
     const  { setModalContent2, modalRef2 } = useModal2()
     const [isVisible2, setIsVisible2] = useState(false);
@@ -40,6 +40,7 @@ function Comments2({ postId, scroll, cId, vis3 }) {
     const [ scrolling, setScrolling ] = useState(scroll)
     const [isVisible3, setIsVisible3] = useState(false);
     const [ commentId, setCommentId ] = useState(null);
+    const [ threadId, setThreadId ] = useState(null);
     const [ c, setC ] = useState(null)
     const [ button, setButton ] = useState(false)
     const [ postH, setPostH ] = useState([])
@@ -72,24 +73,14 @@ function Comments2({ postId, scroll, cId, vis3 }) {
 
     }, [scroll])
 
-    const handleSaved = async (id) => {
-        if (!user) return setModalContent(<SignupFormModal />)
-        if (singlePost.PostSetting && !singlePost.PostSetting.saved) await dispatch(postActions.thunkUpdateSaved(id))
-        else if (!singlePost.PostSetting) await dispatch(postActions.thunkCreateSaved(id))
-      }
+    const handleSaved2 = async (id) => {
+    if (!user) return setModalContent(<SignupFormModal />)
+    await dispatch(postActions.thunkCreateSaved2(id))
+    }
 
-      const handleUnsaved = async (id) => {
-        await dispatch(postActions.thunkUpdateSaved2(id))
-      }
-
-      const handleSaved2 = async (id) => {
-        if (!user) return setModalContent(<SignupFormModal />)
-        await dispatch(postActions.thunkCreateSaved2(id))
-      }
-
-      const handleUnsaved2 = async (id) => {
-        await dispatch(postActions.thunkCreateDeleteSaved2(id))
-      }
+    const handleUnsaved2 = async (id) => {
+    await dispatch(postActions.thunkCreateDeleteSaved2(id))
+    }
 
 
     let members
@@ -198,69 +189,16 @@ function Comments2({ postId, scroll, cId, vis3 }) {
     }, [dispatch, singlePost.tags])
 
 
-    const handleOc = (e) => {
-        e.stopPropagation()
 
-        if (tags && tags.includes("oc")) {
-            setData1({
-                tags: singlePost.tags.split('oc,').join()
-            })
-        }
-        else if (tags && !tags.includes("oc")) {
-            setData1({
-                tags: singlePost.tags += ",oc"
-            })
-        }
-        else if (!tags) {
-            setData1({
-                tags: "oc"
-            })
-        }
-    }
+    useEffect(() => {
 
-    const handleSpoiler = (e) => {
-        e.stopPropagation()
-
-        if (tags && tags.includes("spoiler")) {
-            setData1({
-                tags: singlePost.tags.split('spoiler,').join()
-            })
+        async function fetchData() {
+            await dispatch(postActions.thunkGetCommentById(threadId))
         }
-        else if (tags && !tags.includes("spoiler")) {
-            setData1({
-                tags: singlePost.tags += ",spoiler"
-            })
-        }
-        else if (!tags) {
-            setData1({
-                tags: "spoiler"
-            })
-        }
+        fetchData()
 
-    }
+    }, [dispatch])
 
-    const handleNsfw = (e) => {
-
-        e.stopPropagation()
-
-        if (tags && tags.includes("nsfw")) {
-            setData1({
-                tags: singlePost.tags.split('nsfw').join()
-            })
-        }
-        else if (tags && !tags.includes("nsfw")) {
-            setData1({
-                tags: singlePost.tags += ",nsfw"
-            })
-        }
-        else if (!tags) {
-            setData1({
-                tags: "nsfw"
-            })
-        }
-
-
-    }
 
 
     let comments
@@ -528,9 +466,155 @@ function Comments2({ postId, scroll, cId, vis3 }) {
     return (
                 <div style={{marginTop: "0px"}} id="if-comments">
                     <div style={{marginLeft: "15px"}} id="parent-comments">
-                        <p>Show all comments</p>
-                        <p>Show parent comments</p>
+                        <p onClick={(() => setSingle(false))} >Show all comments</p>
+                        <p onClick={(() => setSingle(true))} >Show parent comments</p>
                     </div>
+                    {
+                    single ?
+                        <>
+                        <div onClick={(() => setC(c))} className="a-comment">
+                            <div id="left-csec">
+                            { !singleComment.Profile?.CommunityStyle ? <img id="avatar6" src={pfp}></img> : null}
+                            { singleComment.Profile?.CommunityStyle?.icon ? <img id="avatar6" src={singleComment.Profile?.CommunityStyle.icon}></img> : null}
+                            <div id="c-line"></div>
+                            </div>
+                            <div id="right-csec">
+                                <>
+                                <span><span onClick={(() => {
+                                    closeModal()
+                                    singleComment.userId === user.id ? history.push('/profile/:page') : history.push(`/profile2/${singleComment.userId}/:page`)})} id="username45">{singleComment.User?.username}</span> { singleComment.User && singleComment.User.id === singlePost.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(singleComment.createdAt)}</div></span>
+                                { !(commentM && (commentId2 === singleComment.id || cId == singleComment.id)) ? <p>{singleComment.comment}</p> :
+                                <div className="comment-input">
+                                    <textarea onFocus={(() => setFocus3(true))} onBlur={(() => setFocus3(false))} defaultValue={singleComment.comment} onChange={((e) => setComment2(e.target.value))}></textarea>
+                                <div id={focus3 ? "my-comments2" : "my-comments"}>
+                                <i class="fi fi-rr-gif-square"></i>
+                                        <i class="fi fi-rr-picture"></i>
+                                        <div id="divider16"></div>
+                                        <i class="fi fi-rr-bold"></i>
+                                        <i class="fa-solid fa-italic"></i>
+                                        <i class="fi fi-rr-link-alt"></i>
+                                        <i class="fi fi-rr-strikethrough"></i>
+                                        <i class="fi fi-rr-code-simple"></i>
+                                        <i class="fa-solid fa-superscript"></i>
+                                        <i class="fi fi-rr-diamond-exclamation"></i>
+                                        <div id="divider16"></div>
+                                        <i class="fi fi-rr-heading"></i>
+                                        <i class="fi fi-rr-menu-dots"></i>
+                                        {/* <i class="fi fi-rr-rectangle-list"></i>
+                                        <i class="fa-solid fa-list-ol"></i>
+                                        <i class="fi fi-rr-square-quote"></i>
+                                        <i class="fi fi-rr-square-code"></i>
+                                        <div id="divider16"></div>
+                                        <i class="fa-brands fa-youtube"></i> */}
+                                    <button id="cancel-c" onClick={((e) => {
+                                        e.stopPropagation()
+                                        setCommentM(false)
+                                        })}>Cancel</button>
+                                    <button id="submit-c2" onClick={handleComment2}>Save Edits</button>
+                                </div>
+                                </div> }
+                                { commentM && commentId2 === singleComment.id ? null : <div id="comment-extras">
+                                    <div>
+                                        <CommentLikes comment={singleComment} />
+                                    </div>
+                                    <div onClick={(() => {
+                                        setParent(singleComment.id)
+                                        setCommentR(!commentR)})}>
+                                        <i class="fa-regular fa-message"></i>
+                                        <p>Reply</p>
+                                    </div>
+                                    <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))}>
+                                        <i class="fi fi-rs-heart-arrow"></i>
+                                        <p>Share</p>
+                                    </div>
+                                    <i ref={commentId === singleComment.id ? targetRef : null} onClick={(() => {
+                                        setIsVisible3(true)
+                                        setCommentId(singleComment.id)
+                                       if (commentId === singleComment.id) setIsVisible3(!isVisible3)
+                                    })} class="fi fi-rr-menu-dots">
+                                    { commentId === singleComment.id ? <div className="menu">
+                                    <div id="comm-sec25">
+                                    <div onClick={((e) => e.stopPropagation())} id={editMenu2}>
+                                    {c.userId !== user.id ? null : <p onClick={(() => {
+                                        setCommentM(true)
+                                        setIsVisible3(false)
+                                        setCommentId2(c.id)
+                                       // if (commentId !== i) setCommentM(!commentM)
+                                        })}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
+                                     {singleComment.userId === user.id ? null : <p onClick={((e) => {
+                                            e.stopPropagation()
+                                            window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))
+                                        })}><i class="fi fi-rr-flag"></i>Report</p>}
+                                     {singleComment.CommentSetting && singleComment.CommentSetting.saved ? <p onClick={((e) => {
+                                        e.stopPropagation()
+                                        handleUnsaved2(singleComment.CommentSetting.id)
+                                    })}><i class="fi fi-rr-bookmark-slash"></i>Unsave</p> : <p onClick={((e) => {
+                                        e.stopPropagation()
+                                        handleSaved2(singleComment.id)
+                                    })}><i class="fi fi-rr-bookmark"></i>Save</p>}
+                                     {singleComment.userId === user.id ? null : <p><i class="fi fi-rs-cowbell"></i>Follow</p>}
+                                     {singleComment.userId !== user.id ? null : <p onClick={((e) => {
+                                            e.stopPropagation()
+                                            window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))
+                                        })}><i class="fi fi-rr-eye-crossed"></i>Hide</p>}
+                                     {singleComment.userId !== user.id ? null : <p onClick={((e) => {
+                                        e.stopPropagation()
+                                     setModalContent2(<div> <DeleteComment id={singleComment.id} /></div>)
+                                     setIsVisible(false)
+                                     setIsVisible3(false)
+                                     })}><i class="fi fi-rr-trash-xmark"></i>Delete</p> }
+                                    {c.userId !== user.id ? null : <label>
+                                     <input type="checkbox" />
+                                     Send me reply notifications
+                                     </label> }
+                                     </div>
+                                     </div>
+                                    </div>
+                                     : null }
+                                    </i>
+
+                                </div> }
+                        { commentR && parent == singleComment.id ? <div id="reply">
+                        <div id="r-line"></div>
+                        <div style={{ marginBottom: "40px" }} className="comment-input">
+                                    <textarea onFocus={(() => setFocus4(true))} onBlur={(() => setFocus4(false))} placeholder={"What are your thoughts?"} onChange={((e) => setComment3(e.target.value))}></textarea>
+                                <div id={focus4 ? "my-comments2" : "my-comments"}>
+                                <i class="fi fi-rr-gif-square"></i>
+                                        <i class="fi fi-rr-picture"></i>
+                                        <div id="divider16"></div>
+                                        <i class="fi fi-rr-bold"></i>
+                                        <i class="fa-solid fa-italic"></i>
+                                        <i class="fi fi-rr-link-alt"></i>
+                                        <i class="fi fi-rr-strikethrough"></i>
+                                        <i class="fi fi-rr-code-simple"></i>
+                                        <i class="fa-solid fa-superscript"></i>
+                                        <i class="fi fi-rr-diamond-exclamation"></i>
+                                        <div id="divider16"></div>
+                                        <i class="fi fi-rr-heading"></i>
+                                        <i class="fi fi-rr-menu-dots"></i>
+                                        {/* <i class="fi fi-rr-rectangle-list"></i>
+                                        <i class="fa-solid fa-list-ol"></i>
+                                        <i class="fi fi-rr-square-quote"></i>
+                                        <i class="fi fi-rr-square-code"></i>
+                                        <div id="divider16"></div>
+                                        <i class="fa-brands fa-youtube"></i> */}
+                                    <button id="cancel-c" onClick={((e) => {
+                                        e.stopPropagation()
+                                        setCommentR(false)
+                                        })}>Cancel</button>
+                                    <button id="submit-c2" onClick={handleReply}>Reply</button>
+                                </div>
+                                </div>
+                        </div> : null}
+                        { singleComment.Replies?.length ? <div onClick={((e) => e.stopPropagation())} id="replies">
+                            <Replies comments={singleComment.Replies} level={2} id={singleComment.id} />
+                        </div> : null}
+                                </>
+                            </div>
+                        </div>
+                        </>
+                    :
+                    <>
                     {comments.map((c, i) =>
                         <>
                         <div onClick={(() => setC(c))} className="a-comment">
@@ -676,6 +760,8 @@ function Comments2({ postId, scroll, cId, vis3 }) {
                         </>
 
                     )}
+                    </>
+                    }
                 </div>
     )
 }

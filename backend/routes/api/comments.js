@@ -10,6 +10,96 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 const router = express.Router();
 
+
+router.get("/:id", async (req, res) => {
+    let commentId = req.params.id;
+    let commentExist = await Comments.findByPk(commentId);
+
+    if (!commentExist) {
+
+        res.status(404).json({"message": "Post couldn't be found"});
+
+    }
+
+    const includeReply = async function(replies) {
+
+        for (let r of replies) {
+            let profile = await Community.findOne({
+                where: {
+                    userId: r.dataValues.userId,
+                    type: "Profile"
+                },
+                include: [
+                      { model: CommunityStyle }
+                ]
+            })
+
+            r.dataValues.Profile = profile
+
+            let moreReplies = await Comments.findAll({
+                where: {
+                    parent: r.dataValues.id
+                },
+                include: [
+                { model: CommentSetting},
+                { model: User},
+                { model: Votes }
+                ]
+            })
+
+
+            moreReplies = await includeReply(moreReplies)
+            r.dataValues.Replies = moreReplies
+
+
+        }
+
+        return replies
+
+    }
+
+    let comment = await Comments.findByPk(commentId, {
+                include: [
+                { model: CommentSetting},
+                { model: User},
+                { model: Votes }
+            ]
+    });
+
+        let profile = await Community.findOne({
+            where: {
+                userId: comment.dataValues.userId,
+                type: "Profile"
+            },
+            include: [
+                  { model: CommunityStyle }
+            ]
+        })
+
+        let replies = await Comments.findAll({
+            where: {
+                parent: comment.dataValues.id
+            },
+            include: [
+            { model: CommentSetting},
+            { model: User},
+            { model: Votes }
+            ]
+        })
+
+        replies = await includeReply(replies)
+
+        console.log(replies)
+
+
+        comment.dataValues.Replies = replies
+
+        comment.dataValues.Profile = profile
+
+    return res.json(comment)
+})
+
+
 router.get("/current", async (req, res) => {
     const { user } = req
     const userId = user.dataValues.id

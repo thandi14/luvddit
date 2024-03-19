@@ -328,11 +328,8 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par }) {
 
         }
 
-        console.log(length)
-
-
         return (
-            <>{level >= 20 ? <div onClick={(() => history.push(`/posts/${singlePost.id}/comments`))} id="continue"><p>Continue this thread</p><i class="fi fi-rr-arrow-small-right"></i></div> : <div style={{marginLeft: "-15px", marginBottom: "5px"}} id="if-comments">
+            <>{level >= 7 ? null : <div style={{marginLeft: "-15px", marginBottom: "5px"}} id="if-comments">
             {comments.map((c, i) =>
                 <>
                { i <= length ? <>
@@ -472,7 +469,10 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par }) {
                         </div>
                         </div>
                 </div> : null}
-                { c.Replies?.length > 0 ? <div onClick={((e) => e.stopPropagation())} id="replies">
+                { level >= 7 && c.Replies?.length > 0 ? <div onClick={(() => {
+                    closeModal()
+                    history.push(`/posts/${c.postId}/comments/${c.id}`)
+                    })} id="continue"><p>Continue this thread</p><i class="fi fi-rr-arrow-small-right"></i></div> : c.Replies?.length > 0 && level <= 7 ? <div onClick={((e) => e.stopPropagation())} id="replies">
                     <Replies comments={c.Replies} level={level} parent={c.parent} />
                 </div> : null}
                         </>

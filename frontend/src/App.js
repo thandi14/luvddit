@@ -240,7 +240,7 @@ function App() {
           <Route exact path="/posts-modal/:id">
             <PostPageModal />
           </Route>
-          <Route exact path="/posts/:id/comments">
+          <Route exact path="/posts/:id/comments/:commentId">
             <CommentsPage />
           </Route>
         </Switch>

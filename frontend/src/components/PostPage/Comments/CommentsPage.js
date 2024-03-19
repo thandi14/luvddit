@@ -21,10 +21,11 @@ import YourCommunitesProfile from "../../CommunityPage/communites3";
 import Comments2 from "./Comments2";
 
 function CommentsPage() {
-    const { singlePost } = useSelector((state) => state.posts)
+    const { singlePost, singleComment } = useSelector((state) => state.posts)
     const { user } = useSelector((state) => state.session)
     const { singleCommunity, userCommunities } = useSelector((state) => state.communities)
     const { id } = useParams();
+    const { commentId } = useParams();
     const { closeModal } = useModal();
     const dispatch = useDispatch()
     const [isVisible, setIsVisible] = useState(false);
@@ -39,7 +40,7 @@ function CommentsPage() {
     const [ data2, setData2 ] = useState({})
     const [isVisible3, setIsVisible3] = useState(false);
     const [isVisible5, setIsVisible5] = useState(false);
-    const [ commentId, setCommentId ] = useState(null)
+    // const [ commentId, setCommentId ] = useState(null)
     const [ comment3, setComment3 ] = useState("")
     const [ data3, setData3 ] = useState({})
     const [ comment2, setComment2 ] = useState("")
@@ -63,6 +64,16 @@ function CommentsPage() {
     const [ sComments, setSComments ] = useState("")
     const [ sComments2, setSComments2 ] = useState("Best")
     const [ parent, setParent ] = useState(null)
+
+    useEffect(() => {
+
+        async function fetchData() {
+            if (commentId) await dispatch(postActions.thunkGetCommentById(commentId))
+        }
+        fetchData()
+    }, [commentId, dispatch])
+
+    console.log(singleComment)
 
     useEffect(() => {
         const handleScroll = () => {
@@ -92,22 +103,13 @@ function CommentsPage() {
 
     const myCommunity = Object.values(userCommunities)
 
-    const handleSaved = async (id) => {
-        if (singlePost.PostSetting && !singlePost.PostSetting.saved) await dispatch(postActions.thunkUpdateSaved(id))
-        else if (!singlePost.PostSetting) await dispatch(postActions.thunkCreateSaved(id))
+    const handleSaved = async (postId) => {
+        if (singlePost.PostSetting && !singlePost.PostSetting.saved) await dispatch(postActions.thunkUpdateSaved(postId))
+        else if (!singlePost.PostSetting) await dispatch(postActions.thunkCreateSaved(postId))
     }
 
-      const handleUnsaved = async (id) => {
-        await dispatch(postActions.thunkUpdateSaved2(id))
-    }
-
-    const handleSaved2 = async (id) => {
-        if (!user) return setModalContent(<SignupFormModal />)
-        await dispatch(postActions.thunkCreateSaved2(id))
-    }
-
-    const handleUnsaved2 = async (id) => {
-       await dispatch(postActions.thunkCreateDeleteSaved2(id))
+    const handleUnsaved = async (postId) => {
+        await dispatch(postActions.thunkUpdateSaved2(postId))
     }
 
     useEffect( () => {
@@ -136,49 +138,6 @@ function CommentsPage() {
         })
 
         setIsVisible2(false)
-
-    }
-
-    const handleComment = (e) => {
-        e.stopPropagation()
-
-        if (!user) return setModalContent(<SignupFormModal />)
-
-        setData2({
-            comment
-        })
-
-        setComment("")
-
-    }
-
-    const handleReply = (e) => {
-        e.stopPropagation()
-
-        if (!user) return setModalContent(<SignupFormModal />)
-
-        setData2({
-            comment: comment3,
-            parent
-        })
-
-        setParent(null)
-        setComment3("")
-
-    }
-
-
-
-    const handleComment2 = (e) => {
-        e.stopPropagation()
-
-        if (!user) return setModalContent(<SignupFormModal />)
-
-        setData3({
-            comment: comment2
-        })
-
-        setCommentM(false)
 
     }
 

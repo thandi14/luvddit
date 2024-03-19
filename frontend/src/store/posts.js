@@ -27,7 +27,9 @@ const UPDATE_HISTORY = 'posts/addHistory';
 const UPDATE_SAVED = 'posts/addSaved';
 const UPDATE_HIDDEN = 'posts/updateHidden';
 const GET_DETAILS = 'posts/getDetails';
+const GET_COMMENT = 'posts/getComment';
 const ADD_DETAILS = 'posts/addDetails';
+const ADD_COMMENT = 'posts/addComment';
 const GET_UPDATES = 'posts/getUpdates';
 const GET_COMMENT_DETAILS = 'posts/getCommentDetails';
 const GET_COMMENT_UPDATES = 'posts/getCommentUpdates';
@@ -256,12 +258,27 @@ const getDetails = (details) => {
     }
 }
 
+const getComment = (details) => {
+  return {
+      type: GET_COMMENT,
+      details
+  }
+}
+
 const addDetails = (details) => {
   return {
       type: ADD_DETAILS,
       details
   }
 }
+
+const addComment = (details) => {
+  return {
+      type: ADD_COMMENT,
+      details
+  }
+}
+
 
 const getUpdates = (updates) => {
   return {
@@ -578,6 +595,35 @@ export const thunkGetDetailsById = (id) => async (dispatch) => {
     dispatch(getDetails(data1));
     return data1;
 }
+
+export const thunkGetCommentById = (id) => async (dispatch) => {
+  const response1 = await csrfFetch(`/api/comments/${id}`)
+  const data1 = await response1.json();
+  dispatch(getComment(data1));
+  console.log(data1, id)
+  return data1;
+}
+
+// export const thunkCreateReply = (data, id, images) => async (dispatch) => {
+//     const response = await csrfFetch(`/api/communities/${id}/posts`, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json'
+//       },
+//       body: JSON.stringify(data)
+//     })
+
+
+//     const data1 = await response.json()
+//     const postId = data1.id
+
+
+//         dispatch(getDetails(data1))
+//         return data1
+
+
+// }
+
 
 
 export const thunkCreatePost = (data, id, images) => async (dispatch) => {
@@ -902,7 +948,7 @@ let initialState = {
     removedPost: {},
     postsHistory: {},
     postsSaved: {},
-   // postsSaved2: {},
+    singleComment: {},
     postsHidden: {},
     postsFavorites: {},
     postsComments: {},
@@ -1072,6 +1118,12 @@ const postsReducer = (state = initialState, action) => {
       action.posts.forEach(
         (comment) => (newState.postsTopComments[comment.Post.id] = { ...comment.Post })
       );
+      return newState;
+    }
+    case GET_COMMENT: {
+      newState = { ...state };
+      const comment = action.details;
+      newState.singleComment = { ...comment };
       return newState;
     }
     case ADD_DETAILS: {
@@ -1289,6 +1341,12 @@ const postsReducer = (state = initialState, action) => {
        // newState.posts.push(post)
         return newState;
     }
+    case GET_COMMENT: {
+      newState = { ...state };
+      const comment = action.details;
+      newState.singleComment.Replies[comment.id] = { ...comment };
+      return newState;
+  }
     case GET_VOTE_DETAILS: {
       newState = { ...state };
       const vote = action.details;
@@ -1571,6 +1629,7 @@ const postsReducer = (state = initialState, action) => {
       newState = { ...state };
       let comment = action.details;
       newState.singlePost.Comments.push(comment)
+      newState.singleComment = { ...comment }
       let post = newState.posts[comment.postId]
       if (post && post.Comments) newState.posts[comment.postId].Comments.push(comment)
       let post2 = newState.communityPosts[comment.postId]
