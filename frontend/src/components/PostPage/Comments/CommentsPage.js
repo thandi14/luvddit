@@ -27,10 +27,11 @@ function CommentsPage() {
     const { id } = useParams();
     const { commentId } = useParams();
     const { closeModal } = useModal();
+    const targetRef5 = useRef(null)
     const dispatch = useDispatch()
-    const [isVisible, setIsVisible] = useState(false);
     const [ deleted, setDeleted ] = useState("")
     const targetRef = useRef(null);
+    const [isVisible, setIsVisible] = useState(false);
     const { setModalContent2 } = useModal2()
     const [isVisible2, setIsVisible2] = useState(false);
     const [ description, setDescription ] = useState("");
@@ -64,6 +65,9 @@ function CommentsPage() {
     const [ sComments, setSComments ] = useState("")
     const [ sComments2, setSComments2 ] = useState("Best")
     const [ parent, setParent ] = useState(null)
+    const [ hiddenBox, setHiddenbox ] = useState(false)
+    const [ hiddenPost, setHiddenPost ] = useState(null)
+    const targetRef6 = useRef(null)
 
     useEffect(() => {
 
@@ -136,6 +140,31 @@ function CommentsPage() {
 
     }, [dispatch, data2, singlePost.id])
 
+    useEffect(() => {
+
+        const handleDocumentClick = (event) => {
+            if ((targetRef.current && !targetRef.current.contains(event.target))) {
+                        setIsVisible3(false);
+                }
+            if ((targetRef5.current && !targetRef5.current.contains(event.target))) {
+                    setIsVisible(false);
+            }
+
+            if ((targetRef6.current && !targetRef6.current.contains(event.target))) {
+                setHiddenbox(false);
+            }
+
+
+
+            };
+
+            document.addEventListener('click', handleDocumentClick);
+            return () => {
+                document.removeEventListener('click', handleDocumentClick);
+            };
+
+        }, []);
+
 
     const handleClick = () => {
         setIsVisible(!isVisible);
@@ -144,6 +173,16 @@ function CommentsPage() {
     const handleClick2 = () => {
         setIsVisible2(!isVisible2);
     };
+
+    const handleHide = async (id) => {
+        if (!user) return setModalContent(<SignupFormModal />)
+        await dispatch(postActions.thunkCreateHidden(id))
+        }
+
+        const handleHide2 = async (id) => {
+        if (!user) return setModalContent(<SignupFormModal />)
+        await dispatch(postActions.thunkUpdateHidden(id))
+        }
 
     const handleSave = (e) => {
 
@@ -249,8 +288,6 @@ function CommentsPage() {
     }, [dispatch, singlePost.tags])
 
     if (!Object.values(singlePost).length) return <h2></h2>
-
-
 
     let editMenu = isVisible ? "edit-menu" : "hidden";
 
@@ -400,10 +437,10 @@ function CommentsPage() {
                                         e.stopPropagation()
                                         window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))
                                     })}class="fi fi-rs-cowbell"></i></p>
-        <h1>{singlePost?.title}</h1>
+        <h1 style={{ color: "#878A8C"}}>{singlePost?.title}</h1>
         <span id="tags">{ tags && tags.includes("oc") ? <div id="oc6">OC</div> : null} {tags && tags.includes("spoiler") ? <div id="spoiler6">Spoiler</div> : null } { tags && tags.includes("nsfw") ? <div id="nsfw6">NSFW</div> : null}</span>
         {singlePost.description && <div id="post-info1">
-        { isVisible2 ? null : !isLink(singlePost.description) ? <p>{singlePost?.description}</p> : null}
+        { isVisible2 ? null : !isLink(singlePost.description) ? <p style={{ color: "#878A8C"}}>{singlePost?.description}</p> : null}
         { isVisible2 ? null : isLink(singlePost.description) ? <a href={`${singlePost?.description}`}>{singlePost?.description}</a> : null}
         { isVisible2 ? <div className="post-input7">
                      <div id={ focus2 ? "add-to11" : "add-to7"}>
@@ -442,73 +479,111 @@ function CommentsPage() {
                     e.stopPropagation()
                     handleSave()
                     })}>Save</button>}</div> : null}
-        <div id="post-extras1">
-            <div style={{ backgroundColor: "transparent"}} id="comment5">
-            <i class="fa-regular fa-message"></i>
-            <p>{comments && comments.length}</p>
-            </div>
-            <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="comment4">
-                <i class="fi fi-rs-heart-arrow"></i>
-                <p>Share</p>
-            </div>
-            <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="comment4">
-                <i class="fi fi-rs-check-circle"></i>
-                <p>Approved</p>
-            </div>
-            <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="comment4">
-                <i class="fi fi-rs-circle-cross"></i>
-                <p>Removed</p>
-            </div>
-            <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="comment4">
-                <i class="fi fi-rr-box"></i>
-                <p>Spam</p>
-            </div>
-            <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="comment4">
-                <i class="fi fi-rs-shield"></i>
-            </div>
-            <div id="comment4">
-                <i class="fa-brands fa-reddit-alien"></i>
-            </div>
-            <i  onClick={handleClick} id="menu" class="fi fi-rr-menu-dots"></i>
-            <div className="menu">
-            <div ref={targetRef} id={editMenu}>
-                {!singlePost.PostImages?.length ? <p onClick={(() => {
-                    setIsVisible2(true)
-                    setIsVisible(false)
-                    })}><i class="fi fi-rr-magic-wand"></i>Edit</p> : null}
-                        { !singlePost.PostSetting || !singlePost.PostSetting.saved ? <p onClick={(() => {
+       {user && singlePost.User?.id !== user.id ?<div id="post-extras3">
+                    <div style={{ backgroundColor: "transparent"}} id="comment">
+                    <i class="fa-regular fa-message"></i>
+                    <p>{comments && comments.length} Comments</p>
+                    </div>
+                    <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="comment">
+                    <i class="fi fi-rr-box-heart"></i>
+                    <p>Awards</p>
+                    </div>
+                    <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))}id="comment">
+                    <i class="fi fi-rs-heart-arrow"></i>
+                    <p>Share</p>
+                    </div>
+                    { !singlePost.PostSetting || !singlePost.PostSetting.saved ? <div onClick={(() => {
+                      // setSaved(post.id)
                       handleSaved(singlePost.id)
-                    })}>
-                    <i class="fi fi-rr-bookmark"></i>Save</p> :
-                    <p onClick={(() => {
+                    })} id="comment">
+                    <i class="fi fi-rr-bookmark"></i>
+                    <p>Save</p>
+                    </div> :
+                    <div onClick={(() => {
                       handleUnsaved(singlePost.id)
-                    })}>
-                    <i class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
-                <p onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))}><i class="fi fi-rr-eye-crossed"></i>Hide</p>
-                <p onClick={(() => {
-                    setModalContent2(<DeletePost id={id} deleted={deleted}/>)
-                    setIsVisible(false)
-                    history.push('/')
-                })}><i class="fi fi-rr-trash-xmark"></i>Delete</p>
-                <label onClick={handleOc}>
-                <input defaultChecked={tags?.includes("oc")} type="checkbox" />
-                Mark as OC
-                </label>
-                <label onClick={handleSpoiler}>
-                <input defaultChecked={tags?.includes("spoiler")} type="checkbox" />
-                Mark as Spolier
-                </label>
-                <label onClick={handleNsfw}>
-                <input defaultChecked={tags?.includes("nsfw")} type="checkbox" />
-                Mark as NSFW
-                </label>
-                <label>
-                <input type="checkbox" />
-                Send me reply notifications
-                </label>
+                    })} id="comment">
+                    <i class="fi fi-rr-bookmark-slash"></i>
+                    <p>Unsave</p>
+                    </div>
+                    }
+                    <i id="hideP" style={{ padding: "0.5%"}} ref={targetRef6} onClick={((e) => {
+                      e.stopPropagation()
+                      setHiddenPost(singlePost.id)
+                      setHiddenbox(!hiddenBox)}
+                      )} class="fi fi-rr-menu-dots">
+                      {hiddenBox && hiddenPost == singlePost.id && <div id="hp">
+                        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-volume-mute"></i>Mute l/help</span>
+                        <span onClick={(() => singlePost.PostSetting ? handleHide2(singlePost.id) : handleHide(singlePost.id))} ><i class="fi fi-rr-eye-crossed"></i>Hide</span>
+                        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-flag"></i>Report</span>
+                      </div>}
+                    </i>
             </div>
-            </div>
-        </div>
+             :
+             <div id="post-extras1">
+                <div style={{ backgroundColor: "transparent"}} id="comment5">
+                <i class="fa-regular fa-message"></i>
+                <p>{comments && comments.length}</p>
+                </div>
+                <div id="comment4">
+                    <i class="fi fi-rs-heart-arrow"></i>
+                    <p>Share</p>
+                </div>
+                <div id="comment4">
+                    <i class="fi fi-rs-check-circle"></i>
+                    <p>Approved</p>
+                </div>
+                <div id="comment4">
+                    <i class="fi fi-rs-circle-cross"></i>
+                    <p>Removed</p>
+                </div>
+                <div id="comment4">
+                    <i class="fi fi-rr-box"></i>
+                    <p>Spam</p>
+                </div>
+                <div id="comment4">
+                    <i class="fi fi-rs-shield"></i>
+                </div>
+                <div id="comment4">
+                    <i class="fa-brands fa-reddit-alien"></i>
+                </div>
+                <i  onClick={handleClick} id="menu" class="fi fi-rr-menu-dots">
+                <div id="post-menu25">
+                <div className="menu">
+                <div ref={targetRef5} id={editMenu}>
+                   {singlePost.PostImages.length && singlePost.PostImages[0].imgURL ? null : <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
+                    <p onClick={((e) => {
+                        e.stopPropagation()
+                        window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))
+                    })}><i class="fi fi-rr-bookmark"></i>Save</p>
+                    <p onClick={((e) => {
+                        e.stopPropagation()
+                        window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))
+                    })}><i class="fi fi-rr-eye-crossed"></i>Hide</p>
+                    <p onClick={(() => {
+                        setModalContent2(<div> <DeletePost id={singlePost.id} /></div>)
+                        setIsVisible(false)
+                    })}><i class="fi fi-rr-trash-xmark"></i>Delete</p>
+                   <label onClick={handleOc}>
+                    <input defaultChecked={tags?.includes("oc")} type="checkbox" />
+                    Mark as OC
+                    </label>
+                    <label onClick={handleSpoiler}>
+                    <input defaultChecked={tags?.includes("spoiler")} type="checkbox" />
+                    Mark as Spolier
+                    </label>
+                    <label onClick={handleNsfw}>
+                    <input defaultChecked={tags?.includes("nsfw")} type="checkbox" />
+                    Mark as NSFW
+                    </label>
+                    <label>
+                    <input type="checkbox" />
+                    Send me reply notifications
+                    </label>
+                </div>
+                </div>
+                </div>
+                </i>
+            </div> }
         <div id="insights">
             <p>Post Insights</p>
             <p>Check back later to see views, shares, and more. <span style={{ color: `${singlePost.Community.CommunityStyle.base}`}} >Share your post</span> to spread the word!</p>

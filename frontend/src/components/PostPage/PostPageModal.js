@@ -42,6 +42,7 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
     const targetRef2 = useRef(null);
     const targetRef3 = useRef(null)
     const targetRef5 = useRef(null)
+    const targetRef6 = useRef(null)
     const [ comment, setComment ] = useState("")
     const [ comment2, setComment2 ] = useState("")
     const [ comment3, setComment3 ] = useState("")
@@ -69,7 +70,8 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
     const [ sComments, setSComments ] = useState("")
     const [ sComments2, setSComments2 ] = useState("Best")
     const [ parent, setParent ] = useState(null)
-
+    const [ hiddenBox, setHiddenbox ] = useState(false)
+    const [ hiddenPost, setHiddenPost ] = useState(null)
 
     let joined = null
 
@@ -204,6 +206,17 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
     useEffect( () => {
         if (singlePost.tags) setTags(singlePost.tags.split(','))
     }, [dispatch, singlePost.tags])
+
+
+    const handleHide = async (id) => {
+    if (!user) return setModalContent(<SignupFormModal />)
+    await dispatch(postActions.thunkCreateHidden(id))
+    }
+
+    const handleHide2 = async (id) => {
+    if (!user) return setModalContent(<SignupFormModal />)
+    await dispatch(postActions.thunkUpdateHidden(id))
+    }
 
 
     const handleOc = (e) => {
@@ -418,21 +431,6 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
 
     }, []);
 
-    useEffect(() => {
-
-        const handleDocumentClick = (event) => {
-            if ((targetRef5.current && !targetRef5.current.contains(event.target))) {
-                           setIsVisible(false);
-                }
-
-            };
-
-            document.addEventListener('click', handleDocumentClick);
-            return () => {
-                document.removeEventListener('click', handleDocumentClick);
-            };
-
-    }, []);
 
     useEffect(() => {
 
@@ -440,6 +438,15 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
         if ((targetRef.current && !targetRef.current.contains(event.target))) {
                     setIsVisible3(false);
             }
+        if ((targetRef5.current && !targetRef5.current.contains(event.target))) {
+                setIsVisible(false);
+        }
+
+        if ((targetRef6.current && !targetRef6.current.contains(event.target))) {
+            setHiddenbox(false);
+        }
+
+
 
         };
 
@@ -641,7 +648,17 @@ function PostPageModal({ postId, scroll, cId, vis3 }) {
                     <p>Unsave</p>
                     </div>
                     }
-                    <i class="fi fi-rr-menu-dots"></i>
+                    <i id="hideP" style={{ padding: "0.5%"}} ref={targetRef6} onClick={((e) => {
+                      e.stopPropagation()
+                      setHiddenPost(singlePost.id)
+                      setHiddenbox(!hiddenBox)}
+                      )} class="fi fi-rr-menu-dots">
+                      {hiddenBox && hiddenPost == singlePost.id && <div id="hp">
+                        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-volume-mute"></i>Mute l/help</span>
+                        <span onClick={(() => singlePost.PostSetting ? handleHide2(singlePost.id) : handleHide(singlePost.id))} ><i class="fi fi-rr-eye-crossed"></i>Hide</span>
+                        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-flag"></i>Report</span>
+                      </div>}
+                    </i>
             </div>
              :
              <div id="post-extras1">
