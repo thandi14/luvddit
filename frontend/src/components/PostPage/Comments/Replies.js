@@ -93,18 +93,18 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId 
     if (!member.length) joined = false
 
 
-    // const handleComment2 = (e) => {
-    //     e.stopPropagation()
+    const handleComment2 = (e) => {
+        e.stopPropagation()
 
-    //     if (!user) return setModalContent(<SignupFormModal />)
+        if (!user) return setModalContent(<SignupFormModal />)
 
-    //     setData3({
-    //         comment: comment2
-    //     })
+        setData3({
+            comment: comment2
+        })
 
-    //     setCommentM(false)
+        setCommentM(false)
 
-    // }
+    }
 
     // let comments
     // if (singlePost.Comments && singlePost.Comments.length) comments = Object.values(singlePost.Comments).sort((a, b) => a.createdAt - b.createdAt)
@@ -121,8 +121,7 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId 
     useEffect( () => {
 
         async function fetchData() {
-            let response
-            if (c && c.id) response = await dispatch(postActions.thunkUpdateComment(data3, c.id))
+            let response = await dispatch(postActions.thunkUpdateComment(data3, c?.id))
         }
         fetchData()
 
@@ -206,6 +205,7 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId 
 
     }, [threadId, scroll]);
 
+    console.log(data3, c, commentId2)
 
     if (!Object.values(singlePost).length) return <h1></h1>
 
@@ -347,7 +347,7 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId 
                             c.userId === user.id ? history.push('/profile/:page') : history.push(`/profile2/${c.userId}/:page`)})} id="username45">{c.User?.username}</span> { c.User && c.User.id === singlePost.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.createdAt)}</div></span>
                         { !(commentM && (commentId2 === c.id || cId == c.id)) ? <p>{c.comment}</p> :
                         <div className="comment-input">
-                            <textarea onFocus={(() => setFocus5(true))} onBlur={(() => setFocus5(false))} defaultValue={c.comment} onChange={((e) => setC2(e.target.value))}></textarea>
+                            <textarea onFocus={(() => setFocus5(true))} onBlur={(() => setFocus5(false))} defaultValue={c.comment} onChange={((e) => setComment2(e.target.value))}></textarea>
                         <div id={focus5 ? "my-comments2" : "my-comments"}>
                         <i class="fi fi-rr-gif-square"></i>
                                 <i class="fi fi-rr-picture"></i>
@@ -372,7 +372,7 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId 
                                 e.stopPropagation()
                                 setCommentM(false)
                                 })}>Cancel</button>
-                            <button id="submit-c2" onClick={handleCommenting}>Save Edits</button>
+                            <button id="submit-c2" onClick={handleComment2}>Save Edits</button>
                         </div>
                         </div> }
                         { commentM && commentId2 === c.id ? null : <div id="comment-extras">
@@ -402,6 +402,7 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId 
                                 setCommentM(true)
                                 setIsVisible3(false)
                                 setCommentId2(c.id)
+                                setC(c)
                                // if (commentId !== i) setCommentM(!commentM)
                                 })}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
                              {c.userId === user.id ? null : <p onClick={((e) => {

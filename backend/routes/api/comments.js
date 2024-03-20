@@ -225,7 +225,7 @@ router.get("/search/comments", async (req, res) => {
 router.put("/:id", async (req, res) => {
     let commentId = req.params.id;
     let commentExist = await Comments.findByPk(commentId);
-    const { comment2 } = req.body
+    const { comment } = req.body
 
     if (!commentExist) {
 
@@ -233,29 +233,17 @@ router.put("/:id", async (req, res) => {
 
     }
 
-    console.log(comment2)
 
     commentExist.set({
-        comment: comment2
+        comment
     })
 
     await commentExist.save()
 
-    let comment = await Comments.findByPk(commentId, {
+    let comment2 = await Comments.findByPk(commentId, {
         include: [
             {
                 model: User,
-                // include: [
-                //     {
-                //         model: Community,
-                //         where: {
-                //             type: "Profile"
-                //         },
-                //         include: [
-                //             { model: CommunityStyle }
-                //         ]
-                //     },
-                // ]
              },
             { model: Votes }
         ]
@@ -263,7 +251,7 @@ router.put("/:id", async (req, res) => {
 
     let profile = await Community.findOne({
         where: {
-            userId: comment.dataValues.userId,
+            userId: comment2.dataValues.userId,
             type: "Profile"
         },
         include: [
@@ -271,10 +259,61 @@ router.put("/:id", async (req, res) => {
         ]
     })
 
-    comment.dataValues.Profile = profile
+    const includeReply = async function(replies) {
+
+        for (let r of replies) {
+            let profile = await Community.findOne({
+                where: {
+                    userId: r.dataValues.userId,
+                    type: "Profile"
+                },
+                include: [
+                      { model: CommunityStyle }
+                ]
+            })
+
+            r.dataValues.Profile = profile
+
+            let moreReplies = await Comments.findAll({
+                where: {
+                    parent: r.dataValues.id
+                },
+                include: [
+                { model: CommentSetting},
+                { model: User},
+                { model: Votes }
+                ]
+            })
 
 
-    return res.json(comment)
+            moreReplies = await includeReply(moreReplies)
+            r.dataValues.Replies = moreReplies
+
+
+        }
+
+        return replies
+
+    }
+
+    let replies = await Comments.findAll({
+        where: {
+            parent: comment2.dataValues.id
+        },
+        include: [
+        { model: CommentSetting},
+        { model: User},
+        { model: Votes }
+        ]
+    })
+
+    replies = await includeReply(replies)
+
+    comment2.dataValues.Replies = replies
+
+    comment2.dataValues.Profile = profile
+
+    return res.json(comment2)
 })
 
 

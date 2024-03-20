@@ -910,6 +910,7 @@ export const thunkUpdateComment = (data, id) => async (dispatch) => {
       })
 
       const data1 = await response.json()
+      console.log(data, data1)
       dispatch(getCommentUpdates(data1))
       return data1
 
@@ -945,6 +946,85 @@ const replies = (comments, reply) => {
     }
     else if (comment.Replies?.length) {
       replies(comment.Replies, reply)
+    }
+
+  }
+
+  return comments
+
+}
+
+const reply = (comments, replyId) => {
+
+  for (let i = 0; i < comments?.length; i++) {
+    let comment = comments[i]
+    if (comment.id == replyId) {
+      return comment
+    }
+    else if (comment.Replies?.length) {
+      replies(comment.Replies, replyId)
+    }
+
+  }
+
+}
+
+const voteReply = (comments, reply) => {
+
+  for (let i = 0; i < comments?.length; i++) {
+    let comment = comments[i]
+    if (comment.id == reply.Id) {
+      comment.Votes.push(reply)
+    }
+    else if (comment.Replies?.length) {
+      replies(comment.Replies, reply)
+    }
+
+  }
+
+}
+
+const unvoteReply = (comments, commentId, voteId) => {
+
+  for (let i = 0; i < comments?.length; i++) {
+    let comment = comments[i]
+    if (comment.id == commentId) {
+     comment.Votes = comment.Votes.filter((v) => v.id !== voteId)
+    }
+    else if (comment.Replies?.length) {
+      replies(comment.Replies, reply)
+    }
+
+  }
+
+}
+
+
+const removeReply = (comments, replyId) => {
+
+  comments = comments.filter((c) => c.id !== replyId)
+
+  for (let i = 0; i < comments?.length; i++) {
+    let comment = comments[i]
+    if (comment.Replies.length) {
+      removeReply(comment.Replies, replyId)
+    }
+  }
+
+  return comments
+
+}
+
+const re = (comments, reply) => {
+
+  for (let i = 0; i < comments?.length; i++) {
+    let comment = comments[i]
+    if (comment.id == reply.parent) {
+      comment.Replies = comment.Replies.filter((c) => c.id !== reply.id)
+      comment.Replies.push(reply)
+    }
+    else if (comment.Replies?.length) {
+      re(comment.Replies, reply)
     }
 
   }
@@ -1561,7 +1641,9 @@ const postsReducer = (state = initialState, action) => {
     case GET_VOTE_DETAILS2: {
       newState = { ...state };
       const vote = action.details;
-      if (Object.values(newState.singlePost.Comments).length) newState.singlePost.Comments.filter((c) => c.id === action.commentId)[0].Votes[vote.id] = { ...vote };
+      if (Object.values(newState.singlePost.Comments).length) {
+          voteReply(newState.singlePost.Comments, vote)
+      }
       return newState;
     }
     case REMOVE_VOTE: {
@@ -1620,7 +1702,7 @@ const postsReducer = (state = initialState, action) => {
     case REMOVE_VOTE2: {
       newState = { ...state };
       let votes = newState.singlePost.Votes
-      if (Object.values(newState.singlePost.Comments).length) newState.singlePost.Comments.filter((c) => c.id === action.commentId)[0].Votes = votes.filter((v) => v.id !== action.voteId)
+      if (Object.values(newState.singlePost.Comments).length) unvoteReply(newState.singlePost.Comments, action.commentId, action.voteId)
       return newState;
     }
     case GET_UPDATES: {
@@ -1685,10 +1767,14 @@ const postsReducer = (state = initialState, action) => {
     case GET_COMMENT_UPDATES: {
       newState = { ...state };
       let comment = action.updates;
-      newState.singlePost.Comments = newState.singlePost.Comments.filter((c) => c.id !== comment.id)
-      newState.singlePost.Comments[comment.id] = comment
+
+      newState.singlePost.Comments = re(newState.singlePost.Comments, comment)
+
+      // newState.singlePost.Comments = newState.singlePost.Comments.filter((c) => c.id !== comment.id)
       let post = newState.posts[comment.postId]
-      if (post && post.Comments) post.Comments[comment.id] = comment
+      if (post && post.Comments) {
+          post.Comments = re(post.Comments, comment)
+      }
       return newState
     }
     case REMOVE_POST: {
@@ -1717,92 +1803,91 @@ const postsReducer = (state = initialState, action) => {
     }
     case REMOVE_COMMENT: {
       newState = { ...state };
-      newState.singlePost.Comments = newState.singlePost.Comments.filter((c) => c.id !== action.commentId);
-      newState.singlePost.Comments = newState.singlePost.Comments.filter((c) => c.id !== action.commentId);
+      newState.singlePost.Comments = replies(newState.singlePost.Comments, action.commentId)
 
       let post = newState.posts[newState.singlePost.id];
       if (post && post.Comments) {
-      newState.posts[newState.singlePost.id].Comments = post.Comments.filter((c) => c.id !== action.commentId);
+      newState.posts[newState.singlePost.id].Comments = replies(post.Comments, action.commentId)
       }
 
       let communityPost = newState.communityPosts[newState.singlePost.id];
       if (communityPost && communityPost.Comments) {
-      newState.communityPosts[newState.singlePost.id].Comments = communityPost.Comments.filter((c) => c.id !== action.commentId);
+      newState.communityPosts[newState.singlePost.id].Comments = replies(communityPost.Comments, action.commentId)
       }
 
       let topPosts = newState.topPosts[newState.singlePost.id];
       if (topPosts && topPosts.Comments) {
-      newState.topPosts[newState.singlePost.id].Comments = topPosts.Comments.filter((c) => c.id !== action.commentId);
+      newState.topPosts[newState.singlePost.id].Comments = replies(topPosts.Comments, action.commentId)
       }
 
       let bestPosts = newState.bestPosts[newState.singlePost.id];
       if (bestPosts && bestPosts.Comments) {
-      newState.bestPosts[newState.singlePost.id].Comments = bestPosts.Comments.filter((c) => c.id !== action.commentId);
+      newState.bestPosts[newState.singlePost.id].Comments = replies(bestPosts.Comments, action.commentId);
       }
 
       let userPosts = newState.userPosts[newState.singlePost.id];
       if (userPosts && userPosts.Comments) {
-      newState.userPosts[newState.singlePost.id].Comments = userPosts.Comments.filter((c) => c.id !== action.commentId);
+      newState.userPosts[newState.singlePost.id].Comments = replies(userPosts.Comments, action.commentId);
       }
 
       let userHotPosts = newState.userHotPosts[newState.singlePost.id];
       if (userHotPosts && userHotPosts.Comments) {
-      newState.userHotPosts[newState.singlePost.id].Comments = userHotPosts.Comments.filter((c) => c.id !== action.commentId);
+      newState.userHotPosts[newState.singlePost.id].Comments = replies(userHotPosts.Comments, action.commentId)
       }
 
       let userTopPosts = newState.userTopPosts[newState.singlePost.id];
       if (userTopPosts && userTopPosts.Comments) {
-      newState.userTopPosts[newState.singlePost.id].Comments = userTopPosts.Comments.filter((c) => c.id !== action.commentId);
+      newState.userTopPosts[newState.singlePost.id].Comments = replies(userTopPosts.Comments, action.commentId)
       }
 
       let postsFavorites = newState.postsFavorites[newState.singlePost.id];
       if (postsFavorites && postsFavorites.Comments) {
-      newState.postsFavorites[newState.singlePost.id].Comments = postsFavorites.Comments.filter((c) => c.id !== action.commentId);
+      newState.postsFavorites[newState.singlePost.id].Comments = replies(postsFavorites.Comments, action.commentId)
       }
 
       let postsComments = newState.postsComments[newState.singlePost.id];
       if (postsComments && postsComments.Comments) {
-      newState.postsComments[newState.singlePost.id].Comments = postsComments.Comments.filter((c) => c.id !== action.commentId);
+      newState.postsComments[newState.singlePost.id].Comments = replies(postsComments.Comments, action.commentId)
       }
 
       let postsHotComments = newState.postsHotComments[newState.singlePost.id];
       if (postsHotComments && postsHotComments.Comments) {
-      newState.postsHotComments[newState.singlePost.id].Comments = postsHotComments.Comments.filter((c) => c.id !== action.commentId);
+      newState.postsHotComments[newState.singlePost.id].Comments = replies(postsHotComments.Comments, action.commentId)
       }
 
       let postsTopComments = newState.postsTopComments[newState.singlePost.id];
       if (postsTopComments && postsTopComments.Comments) {
-      newState.postsTopComments[newState.singlePost.id].Comments = postsTopComments.Comments.filter((c) => c.id !== action.commentId);
+      newState.postsTopComments[newState.singlePost.id].Comments = replies(postsTopComments.Comments, action.commentId)
       }
 
       let postsOverview = newState.postsOverview[newState.singlePost.id];
       if (postsOverview && postsOverview.Comments) {
-      newState.postsOverview[newState.singlePost.id].Comments = postsOverview.Comments.filter((c) => c.id !== action.commentId);
+      newState.postsOverview[newState.singlePost.id].Comments = replies(postsOverview.Comments, action.commentId)
       }
 
       let postsHotOverview = newState.postsHotOverview[newState.singlePost.id];
       if (postsHotOverview && postsHotOverview.Comments) {
-      newState.postsHotOverview[newState.singlePost.id].Comments = postsHotOverview.Comments.filter((c) => c.id !== action.commentId);
+      newState.postsHotOverview[newState.singlePost.id].Comments = replies(postsHotOverview.Comments, action.commentId)
       }
 
       let postsTopOverview = newState.postsTopOverview[newState.singlePost.id];
       if (postsTopOverview && postsTopOverview.Comments) {
-      newState.postsTopOverview[newState.singlePost.id].Comments = postsTopOverview.Comments.filter((c) => c.id !== action.commentId);
+      newState.postsTopOverview[newState.singlePost.id].Comments = replies(postsTopOverview.Comments, action.commentId)
       }
 
       let searchs = newState.searchs[newState.singlePost.id];
       if (searchs && searchs.Comments) {
-      newState.searchs[newState.singlePost.id].Comments = searchs.Comments.filter((c) => c.id !== action.commentId);
+      newState.searchs[newState.singlePost.id].Comments = replies(searchs.Comments, action.commentId)
       }
 
       let hotCommunityPosts = newState.hotCommunityPosts[newState.singlePost.id];
       if (hotCommunityPosts && hotCommunityPosts.Comments) {
-      newState.hotCommunityPosts[newState.singlePost.id].Comments = hotCommunityPosts.Comments.filter((c) => c.id !== action.commentId);
+      newState.hotCommunityPosts[newState.singlePost.id].Comments = replies(hotCommunityPosts.Comments, action.commentId)
       }
 
       let topCommunityPosts = newState.topCommunityPosts[newState.singlePost.id];
       if (topCommunityPosts && topCommunityPosts.Comments) {
-      newState.topCommunityPosts[newState.singlePost.id].Comments = topCommunityPosts.Comments.filter((c) => c.id !== action.commentId);
+      newState.topCommunityPosts[newState.singlePost.id].Comments = replies(topCommunityPosts.Comments, action.commentId)
       }
       return newState;
     }

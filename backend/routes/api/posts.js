@@ -715,9 +715,6 @@ router.get("/:id", async (req, res) => {
 
         replies = await includeReply(replies)
 
-        console.log(replies)
-
-
         c.dataValues.Replies = replies
 
         c.dataValues.Profile = profile

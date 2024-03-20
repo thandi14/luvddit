@@ -279,7 +279,7 @@ function Comments({ postId, cId, vis3, replyId }) {
 
         async function fetchData() {
             let response
-            if (c && c.id) response = await dispatch(postActions.thunkUpdateComment(data3, c.id))
+            if (c && c.id) response = await dispatch(postActions.thunkUpdateComment(data3, c?.id))
         }
         fetchData()
 
@@ -537,6 +537,8 @@ function Comments({ postId, cId, vis3, replyId }) {
         }
     }
 
+    console.log(data3)
+
     if (sComments.length) comments = comments.filter((c) => c.comment.toLowerCase().includes(sComments.toLowerCase()))
 
     return (
@@ -611,6 +613,7 @@ function Comments({ postId, cId, vis3, replyId }) {
                                         setCommentM(true)
                                         setIsVisible3(false)
                                         setCommentId2(c.id)
+                                        setC(c)
                                        // if (commentId !== i) setCommentM(!commentM)
                                         })}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
                                      {c.userId === user.id ? null : <p onClick={((e) => {

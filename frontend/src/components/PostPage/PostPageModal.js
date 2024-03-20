@@ -286,26 +286,26 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
     let comments
     if (singlePost.Comments && singlePost.Comments.length) comments = Object.values(singlePost.Comments).sort((a, b) => a.createdAt - b.createdAt)
 
-    useEffect( () => {
+    // useEffect( () => {
 
-        async function fetchData() {
-            const response = await dispatch(postActions.thunkCreateComment(data2, singlePost.id))
-        }
-        fetchData()
+    //     async function fetchData() {
+    //         const response = await dispatch(postActions.thunkCreateComment(data2, singlePost.id))
+    //     }
+    //     fetchData()
 
-    }, [dispatch, data2, singlePost.id])
+    // }, [dispatch, data2, singlePost.id])
 
-    console.log(data2)
+    // console.log(data2)
 
-    useEffect( () => {
+    // useEffect( () => {
 
-        async function fetchData() {
-            let response
-            if (c && c.id) response = await dispatch(postActions.thunkUpdateComment(data3, c.id))
-        }
-        fetchData()
+    //     async function fetchData() {
+    //         let response
+    //         if (c && c.id) response = await dispatch(postActions.thunkUpdateComment(data3, c.id))
+    //     }
+    //     fetchData()
 
-    }, [dispatch, c, data3])
+    // }, [dispatch, c, data3])
 
     const scrollToTop = () => {
         const container = document.querySelector('.post-modal'); // Adjust the selector as needed
