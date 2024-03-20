@@ -969,18 +969,21 @@ const reply = (comments, replyId) => {
 
 }
 
-const voteReply = (comments, reply) => {
+const voteReply = (comments, vote) => {
 
   for (let i = 0; i < comments?.length; i++) {
     let comment = comments[i]
-    if (comment.id == reply.Id) {
-      comment.Votes.push(reply)
+    if (comment.id == vote.commentId) {
+      if (!comment.Votes) comment.Votes = []
+      comment.Votes.push(vote)
     }
     else if (comment.Replies?.length) {
-      replies(comment.Replies, reply)
+      voteReply(comment.Replies, vote)
     }
 
   }
+
+  return comments
 
 }
 
@@ -992,10 +995,12 @@ const unvoteReply = (comments, commentId, voteId) => {
      comment.Votes = comment.Votes.filter((v) => v.id !== voteId)
     }
     else if (comment.Replies?.length) {
-      replies(comment.Replies, reply)
+      unvoteReply(comment.Replies, commentId, voteId)
     }
 
   }
+
+  return comments
 
 }
 
@@ -1642,7 +1647,7 @@ const postsReducer = (state = initialState, action) => {
       newState = { ...state };
       const vote = action.details;
       if (Object.values(newState.singlePost.Comments).length) {
-          voteReply(newState.singlePost.Comments, vote)
+        newState.singlePost.Comments = voteReply(newState.singlePost.Comments, vote)
       }
       return newState;
     }
@@ -1702,7 +1707,9 @@ const postsReducer = (state = initialState, action) => {
     case REMOVE_VOTE2: {
       newState = { ...state };
       let votes = newState.singlePost.Votes
-      if (Object.values(newState.singlePost.Comments).length) unvoteReply(newState.singlePost.Comments, action.commentId, action.voteId)
+      if (Object.values(newState.singlePost.Comments).length) {
+        newState.singlePost.Comments = unvoteReply(newState.singlePost.Comments, action.commentId, action.voteId)
+      }
       return newState;
     }
     case GET_UPDATES: {
