@@ -31,7 +31,7 @@ function YourHotProfilePage() {
     const [ votePost, setVotePost ] = useState(null);
     const [ isLiked, setIsLiked ] = useState([]);
     const history = useHistory()
-    const { setModalContent, setScroll, setTheadId } = useModal()
+    const { setModalContent, setScroll, setThreadId } = useModal()
     const [ scrolling, setScrolling ] = useState(null)
     const targetRef4 = useRef()
     const  { setModalContent2, modalRef2 } = useModal2()
@@ -476,7 +476,8 @@ function YourHotProfilePage() {
                         {post.Comments && post.Comments.length ? <div id="p-border"></div> : null }
                         <div onClick={((e) => {
                             e.stopPropagation()
-                            setModalContent(<PostPageModal postId={post.id} scroll={true} />)
+                            setScroll(true)
+                            setModalContent(<PostPageModal postId={post.id} />)
                             })} className="a-comment2">
                             <div id="left-csec4">
                             <div id="c-line2"></div>

@@ -39,7 +39,7 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId 
     const [ postH, setPostH ] = useState([])
     const [ sortComment, setSortComment ] = useState(false)
     const [ commentM, setCommentM ] = useState(vis3 ? true : false)
-    const [ commentR, setCommentR ] = useState(false)
+    const [ commentR, setCommentR ] = useState(threadId ? true : false)
     const [ commentId2, setCommentId2 ] = useState(cId ? cId : null);
     const [ p, setP ] = useState(null)
     const [ message, setMessage ] = useState(false)
@@ -55,7 +55,7 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId 
     const [ focus5, setFocus5 ] = useState(false)
     const [ focus6, setFocus6 ] = useState(false)
     const [ length, setLength ] = useState(7)
-    const [ parent, setParent ] = useState(par)
+    const [ parent, setParent ] = useState(threadId ? threadId : par)
     const [ more, setMore ] = useState(false)
 
 
@@ -183,17 +183,28 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId 
     };
 
     useEffect(() => {
-        if (scrolling) {
-          // Replace "targetElementId" with the actual ID of the target element
-          const targetElement = document.getElementById("go-to-c");
 
-          if (targetElement) {
-            targetElement.scrollIntoView({ behavior: "smooth" });
-          }
+        const scrollToTarget2 = () => {
+            const handleScrollOrNavigate = () => {
+                const targetElement = document.getElementById(`${threadId}`);
+                if (targetElement && threadId) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                } else if (!targetElement && threadId) {
+                    closeModal();
+                    history.push(`/posts/${postId}/comments/${threadId}`);
+                }
+            };
 
-          // Reset the flag after scrolling
-        }
-    }, [scrolling]);
+            if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                handleScrollOrNavigate();
+            } else {
+                document.addEventListener('DOMContentLoaded', handleScrollOrNavigate);
+            }
+        };
+
+        scrollToTarget2();
+
+    }, [threadId, scroll]);
 
 
     if (!Object.values(singlePost).length) return <h1></h1>
@@ -300,8 +311,6 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId 
         }
 
 
-
-
         const handleReplying = (e) => {
             e.stopPropagation()
 
@@ -316,6 +325,7 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId 
             setC("")
 
         }
+
 
         return (
             <>{level >= 7 ? null : <div style={{marginLeft: "-15px"}} id="if-comments">

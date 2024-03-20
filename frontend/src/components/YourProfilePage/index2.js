@@ -35,7 +35,7 @@ function OtherProfilePage() {
     const [ votePost, setVotePost ] = useState(null);
     const [ isLiked, setIsLiked ] = useState([]);
     const history = useHistory()
-    const { setModalContent, setScroll } = useModal()
+    const { setModalContent, setScroll, setThreadId } = useModal()
     const [ scrolling, setScrolling ] = useState(null)
     const targetRef4 = useRef()
     const targetRef3 = useRef()
@@ -518,8 +518,9 @@ function OtherProfilePage() {
                         {post.Comments && post.Comments.length ? <div id="p-border"></div> : null }
                         <div onClick={((e) => {
                             e.stopPropagation()
-                            setModalContent(<PostPageModal postId={post.id} scroll={true} />)
-                            })} className="a-comment2">
+                            setScroll(true)
+                            setModalContent(<PostPageModal postId={post.id} />)
+                            })}  className="a-comment2">
                             <div id="left-csec4">
                             <div id="c-line2"></div>
                             </div>

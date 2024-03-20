@@ -421,31 +421,27 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
     useEffect(() => {
 
         let scrollToTarget = () => {
+            const handleScrollOrNavigate = () => {
+
                 const targetElements = document.getElementsByClassName('comments-for-post');
                 if (targetElements.length > 0 && scroll) {
                     setScroll(false)
                     const targetElement = targetElements[0];
                     targetElement.scrollIntoView({ behavior: 'smooth' });
                 }
-        };
+            };
+
+
+            if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                handleScrollOrNavigate();
+            } else {
+                document.addEventListener('DOMContentLoaded', handleScrollOrNavigate);
+            }
+        }
 
         scrollToTarget();
 
-        let scrollToTarget2 = () => {
-            setTimeout(() => {
-                const targetElement = document.getElementById(`${threadId}`);
-                if (targetElement && threadId) {
-                    targetElement.scrollIntoView({ behavior: 'smooth' });
-                } else if (!targetElement && threadId) {
-                    closeModal();
-                    history.push(`/posts/${postId}/comments/${threadId}`);
-                }
-            }, 500);
-         };
-
-        scrollToTarget2();
-
-    }, []);
+    }, [threadId, scroll]);
 
 
     useEffect(() => {

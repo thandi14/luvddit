@@ -49,7 +49,7 @@ function Comments({ postId, scroll, cId, vis3, replyId }) {
     const [ focus4, setFocus4 ] = useState(false)
     const [ sortComment, setSortComment ] = useState(false)
     const [ commentM, setCommentM ] = useState(vis3 ? true : false)
-    const [ commentR, setCommentR ] = useState(replyId ? true : false)
+    const [ commentR, setCommentR ] = useState(threadId ? true : false)
     const [ commentId2, setCommentId2 ] = useState(cId ? cId : null);
     const [ p, setP ] = useState(null)
     const [ message, setMessage ] = useState(false)
@@ -60,7 +60,7 @@ function Comments({ postId, scroll, cId, vis3, replyId }) {
     const { setModalContent } = useModal()
     const [ sComments, setSComments ] = useState("")
     const [ sComments2, setSComments2 ] = useState("Best")
-    const [ parent, setParent ] = useState(replyId)
+    const [ parent, setParent ] = useState(threadId ? threadId : null)
 
 
     let joined = null
@@ -491,6 +491,8 @@ function Comments({ postId, scroll, cId, vis3, replyId }) {
     }
 
 
+
+
   function openEmailClient() {
     const emailAddress = 'thandimpofu2003@gmail.com';  // Replace with the desired recipient's email address
     const subject = 'Subject of the Email';  // Replace with the desired subject
@@ -523,7 +525,6 @@ function Comments({ postId, scroll, cId, vis3, replyId }) {
     }
 
     if (sComments.length) comments = comments.filter((c) => c.comment.toLowerCase().includes(sComments.toLowerCase()))
-
 
     return (
                 <div id="if-comments">
