@@ -128,10 +128,6 @@
     text-decoration: underline;
 }
 
-#thread:hover {
-    color: #0078d357
-}
-
 #content30 {
     background-color: #e9f5fd;
     padding: 1%;
@@ -242,4 +238,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+#thread:hover {
+    color: rgb(0, 82, 145)
+}
+
+#thread {
+    color: rgb(0, 121, 211);
+
 }

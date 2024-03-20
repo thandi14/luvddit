@@ -27,7 +27,7 @@ function SearchComments() {
     const [ votePost, setVotePost ] = useState(null);
     const [ isLiked, setIsLiked ] = useState([]);
     const history = useHistory()
-    const { setModalContent } = useModal()
+    const { setModalContent, setThreadId } = useModal()
     const [ scrolling, setScrolling ] = useState(null)
     const targetRef = useRef()
     const { page } = useParams();
@@ -257,12 +257,14 @@ function SearchComments() {
                     </div>
                     </div>
                     </div>
-                    <span id="thread" onClick={(() => setModalContent(<PostPageModal postId={comment.Post?.id} scroll={true} />))} style={{ color: "#0079D3", height: "30px", fontSize: "12px", marginLeft: "18px", display: "flex" }} >Go to thread</span>
+                    <span id="thread" onClick={(() => {
+                      setThreadId(comment.id)
+                      setModalContent(<PostPageModal postId={comment.Post?.id}/>)
+                      })} style={{ height: "30px", fontSize: "12px", marginLeft: "18px", display: "flex" }} >Go to thread</span>
                     <div id="post-extras50" >
                         <span>{comment.Post?.Votes?.length} upvotes</span>
                         <span>{comment.Post?.Comments?.length} comments</span>
                         <span>0 awards</span>
-
                     </div>
                     </div>
                     <div style={{ marginRight: "0.5%"}}></div>

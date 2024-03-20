@@ -14,7 +14,7 @@ import CommentLikes from "../../HomePage/likesC";
 import Replies from "./Replies";
 import SignupFormModal from "../../SignupFormPage";
 
-function Comments2({ postId, scroll, cId, vis3 }) {
+function Comments2({ postId, cId, vis3 }) {
     const { communities, singleCommunity, communityMemberships, memberships, userCommunities } = useSelector((state) => state.communities);
     const { singlePost, postsHistory, singleComment } = useSelector((state) => state.posts)
     const { user } = useSelector((state) => state.session)
@@ -30,7 +30,7 @@ function Comments2({ postId, scroll, cId, vis3 }) {
     const [ data2, setData2 ] = useState({})
     const [ data3, setData3 ] = useState({})
     const history = useHistory()
-    const { closeModal } = useModal();
+    const { closeModal, threadId, scroll } = useModal();
     const targetRef2 = useRef(null);
     const targetRef3 = useRef(null)
     const targetRef5 = useRef(null)
@@ -40,7 +40,6 @@ function Comments2({ postId, scroll, cId, vis3 }) {
     const [ scrolling, setScrolling ] = useState(scroll)
     const [isVisible3, setIsVisible3] = useState(false);
     const [ commentId, setCommentId ] = useState(null);
-    const [ threadId, setThreadId ] = useState(null);
     const [ c, setC ] = useState(null)
     const [ button, setButton ] = useState(false)
     const [ postH, setPostH ] = useState([])
@@ -50,7 +49,7 @@ function Comments2({ postId, scroll, cId, vis3 }) {
     const [ focus4, setFocus4 ] = useState(false)
     const [ sortComment, setSortComment ] = useState(false)
     const [ commentM, setCommentM ] = useState(vis3 ? true : false)
-    const [ commentR, setCommentR ] = useState(false)
+    const [ commentR, setCommentR ] = useState(threadId ? true : false)
     const [ commentId2, setCommentId2 ] = useState(cId ? cId : null);
     const [ p, setP ] = useState(null)
     const [ message, setMessage ] = useState(false)
@@ -61,7 +60,7 @@ function Comments2({ postId, scroll, cId, vis3 }) {
     const { setModalContent } = useModal()
     const [ sComments, setSComments ] = useState("")
     const [ sComments2, setSComments2 ] = useState("Best")
-    const [ parent, setParent ] = useState(null)
+    const [ parent, setParent ] = useState(threadId ? threadId : null)
 
 
     let joined = null
@@ -377,6 +376,31 @@ function Comments2({ postId, scroll, cId, vis3 }) {
         };
 
     }, []);
+
+    useEffect(() => {
+
+
+        const scrollToTarget2 = () => {
+            const handleScrollOrNavigate = () => {
+                const targetElement = document.getElementById(`if-comments`);
+                if (targetElement && scroll) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+                else if (targetElement && threadId) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            };
+
+            if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                handleScrollOrNavigate();
+            } else {
+                document.addEventListener('DOMContentLoaded', handleScrollOrNavigate);
+            }
+        };
+
+        scrollToTarget2();
+
+    }, [threadId, scroll]);
 
 
     if (!Object.values(singlePost).length) return <h1></h1>

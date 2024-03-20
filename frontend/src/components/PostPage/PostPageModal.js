@@ -418,30 +418,30 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
     }, []);
 
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        let scrollToTarget = () => {
-            const handleScrollOrNavigate = () => {
+    //     let scrollToTarget = () => {
+    //         const handleScrollOrNavigate = () => {
 
-                const targetElements = document.getElementsByClassName('comments-for-post');
-                if (targetElements.length > 0 && scroll) {
-                    setScroll(false)
-                    const targetElement = targetElements[0];
-                    targetElement.scrollIntoView({ behavior: 'smooth' });
-                }
-            };
+    //             const targetElements = document.getElementsByClassName('comments-for-post');
+    //             if (targetElements.length > 0 && scroll) {
+    //                 setScroll(false)
+    //                 const targetElement = targetElements[0];
+    //                 targetElement.scrollIntoView({ behavior: 'smooth' });
+    //             }
+    //         };
 
 
-            if (document.readyState === 'complete' || document.readyState === 'interactive') {
-                handleScrollOrNavigate();
-            } else {
-                document.addEventListener('DOMContentLoaded', handleScrollOrNavigate);
-            }
-        }
+    //         if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    //             handleScrollOrNavigate();
+    //         } else {
+    //             document.addEventListener('DOMContentLoaded', handleScrollOrNavigate);
+    //         }
+    //     }
 
-        scrollToTarget();
+    //     scrollToTarget();
 
-    }, [threadId, scroll]);
+    // }, [threadId, scroll]);
 
 
     useEffect(() => {

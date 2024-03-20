@@ -14,7 +14,7 @@ import CommentLikes from "../../HomePage/likesC";
 import Replies from "./Replies";
 import SignupFormModal from "../../SignupFormPage";
 
-function Comments({ postId, scroll, cId, vis3, replyId }) {
+function Comments({ postId, cId, vis3, replyId }) {
     const { communities, singleCommunity, communityMemberships, memberships, userCommunities } = useSelector((state) => state.communities);
     const { singlePost, postsHistory } = useSelector((state) => state.posts)
     const { user } = useSelector((state) => state.session)
@@ -30,7 +30,7 @@ function Comments({ postId, scroll, cId, vis3, replyId }) {
     const [ data2, setData2 ] = useState({})
     const [ data3, setData3 ] = useState({})
     const history = useHistory()
-    const { closeModal, threadId } = useModal();
+    const { closeModal, threadId, scroll } = useModal();
     const targetRef2 = useRef(null);
     const targetRef3 = useRef(null)
     const targetRef5 = useRef(null)
@@ -379,19 +379,6 @@ function Comments({ postId, scroll, cId, vis3, replyId }) {
     };
 
     useEffect(() => {
-        if (scrolling) {
-          // Replace "targetElementId" with the actual ID of the target element
-          const targetElement = document.getElementById("go-to-c");
-
-          if (targetElement) {
-            targetElement.scrollIntoView({ behavior: "smooth" });
-          }
-
-          // Reset the flag after scrolling
-        }
-    }, [scrolling]);
-
-    useEffect(() => {
 
         const handleDocumentClick = (event) => {
             if ((modalRef2.current && !modalRef2.current.contains(event.target)) && (targetRef2.current && !targetRef2.current.contains(event.target)) && (targetRef3.current && !targetRef3.current.contains(event.target))) {
@@ -423,6 +410,32 @@ function Comments({ postId, scroll, cId, vis3, replyId }) {
             };
 
     }, []);
+
+
+    useEffect(() => {
+
+
+        const scrollToTarget2 = () => {
+            const handleScrollOrNavigate = () => {
+                const targetElement = document.getElementById(`if-comments`);
+                if (targetElement && scroll) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+                else if (targetElement && threadId) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            };
+
+            if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                handleScrollOrNavigate();
+            } else {
+                document.addEventListener('DOMContentLoaded', handleScrollOrNavigate);
+            }
+        };
+
+        scrollToTarget2();
+
+    }, [threadId, scroll]);
 
     useEffect(() => {
 
