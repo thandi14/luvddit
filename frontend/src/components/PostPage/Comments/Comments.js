@@ -30,7 +30,7 @@ function Comments({ postId, scroll, cId, vis3, replyId }) {
     const [ data2, setData2 ] = useState({})
     const [ data3, setData3 ] = useState({})
     const history = useHistory()
-    const { closeModal } = useModal();
+    const { closeModal, threadId } = useModal();
     const targetRef2 = useRef(null);
     const targetRef3 = useRef(null)
     const targetRef5 = useRef(null)
@@ -523,15 +523,13 @@ function Comments({ postId, scroll, cId, vis3, replyId }) {
     }
 
     if (sComments.length) comments = comments.filter((c) => c.comment.toLowerCase().includes(sComments.toLowerCase()))
-   // let thread = comments
 
-   console.log(replyId)
 
     return (
                 <div id="if-comments">
                     {comments.map((c, i) =>
                         <div style={{ position: "relative"}}>
-                        {replyId === c.id ? <div id="replying"></div> : null}
+                        {threadId == c.id ? <div id="replying"></div> : null}
                         <div onClick={(() => setC(c))} id={`${c.id}`} style={{ position: "relative", zIndex: "10"}} className="a-comment">
                             <div id="left-csec">
                             { !c.Profile?.CommunityStyle ? <img id="avatar6" src={pfp}></img> : null}
@@ -667,7 +665,7 @@ function Comments({ postId, scroll, cId, vis3, replyId }) {
                                 </div>
                         </div> : null}
                         { c.Replies?.length ? <div onClick={((e) => e.stopPropagation())} id="replies">
-                            <Replies comments={c.Replies} level={2} id={c.id} />
+                            <Replies comments={c.Replies} level={2} id={c.id} replyId={replyId} />
                         </div> : null}
                                 </>
                             </div>

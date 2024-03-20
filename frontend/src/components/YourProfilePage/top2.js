@@ -34,7 +34,7 @@ function OtherTopProfilePage() {
     const [ votePost, setVotePost ] = useState(null);
     const [ isLiked, setIsLiked ] = useState([]);
     const history = useHistory()
-    const { setModalContent } = useModal()
+    const { setModalContent, setScroll, setThreadId } = useModal()
     const [ scrolling, setScrolling ] = useState(null)
     const targetRef3 = useRef()
     const  { setModalContent2, modalRef2 } = useModal2()
@@ -360,8 +360,10 @@ function OtherTopProfilePage() {
             </div>
             {post.userId !== user?.id ?
             <div id="post-extras9">
-            <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="comment">
-            <i class="fa-regular fa-message"></i>
+            <div onClick={(() => {
+                      setScroll(true)
+                      setModalContent(<PostPageModal postId={post.id}  />)
+                      })} id="comment">            <i class="fa-regular fa-message"></i>
             <p id={`${post.id}`} >{post.Comments ? Object.values(post.Comments)?.length : 0} Comments</p>
             </div>
             <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="comment">
@@ -401,7 +403,8 @@ function OtherTopProfilePage() {
             <div id="comment5">
                 <i onClick={((e) => {
                     e.stopPropagation()
-                    setModalContent(<PostPageModal postId={post.id} scroll={true} />)
+                    setScroll(true)
+                    setModalContent(<PostPageModal postId={post.id} />)
                     })} class="fa-regular fa-message"></i>
                 <p>{post.Comments && post.Comments.length}</p>
                 </div>
@@ -503,7 +506,11 @@ function OtherTopProfilePage() {
                                 <span><span id="username45">{other.username}</span> { other.id === post.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.updatedAt)}</div></span>
                                 <p>{c.comment}</p>
                                 <div id="comment-extras90">
-                                    <div>
+                                <div onClick={((e) => {
+                                      e.stopPropagation()
+                                      setThreadId(c.id)
+                                      setModalContent(<PostPageModal postId={post.id} />)
+                                    })}>
                                         <i class="fa-regular fa-message"></i>
                                         <p>Reply</p>
                                     </div>

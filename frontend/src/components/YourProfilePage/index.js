@@ -31,7 +31,7 @@ function YourProfilePage() {
     const [ votePost, setVotePost ] = useState(null);
     const [ isLiked, setIsLiked ] = useState([]);
     const history = useHistory()
-    const { setModalContent } = useModal()
+    const { setModalContent, setScroll, setThreadId } = useModal()
     const [ scrolling, setScrolling ] = useState(null)
     const targetRef4 = useRef()
     const  { setModalContent2, modalRef2 } = useModal2()
@@ -370,8 +370,10 @@ function YourProfilePage() {
             </div>
 
             {post.userId !== user?.id ? <div id="post-extras9">
-            <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="comment">
-            <i class="fa-regular fa-message"></i>
+            <div onClick={(() => {
+                      setScroll(true)
+                      setModalContent(<PostPageModal postId={post.id}  />)
+                      })} id="comment">            <i class="fa-regular fa-message"></i>
             <p id={`${post.id}`} >{post.Comments ? Object.values(post.Comments)?.length : 0} Comments</p>
             </div>
             <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="comment">
@@ -410,8 +412,9 @@ function YourProfilePage() {
             : <div id="post-extras2">
             <div id="comment5">
                 <i onClick={((e) => {
+                    setScroll(true)
+                    setModalContent(<PostPageModal postId={post.id}  />)
                     e.stopPropagation()
-                    setModalContent(<PostPageModal postId={post.id} scroll={true} />)
                     })} class="fa-regular fa-message"></i>
                 <p>{post.Comments && post.Comments.length}</p>
                 </div>
@@ -513,7 +516,8 @@ function YourProfilePage() {
                                 <div id="comment-extras90">
                                     <div onClick={((e) => {
                                       e.stopPropagation()
-                                      setModalContent(<PostPageModal postId={post.id} replyId={c.id}/>)
+                                      setThreadId(c.id)
+                                      setModalContent(<PostPageModal postId={post.id} />)
                                     })}>
                                         <i class="fa-regular fa-message"></i>
                                         <p>Reply</p>

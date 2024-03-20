@@ -25,7 +25,7 @@ function HomePage() {
   const [isVisible2, setIsVisible2] = useState(false);
   const [ isLiked, setIsLiked ] = useState([]);
   const history = useHistory()
-  const { setModalContent } = useModal()
+  const { setModalContent, setScroll } = useModal()
   const { page } = useParams(); // Retrieve the page parameter from the URL
   const targetRef = useRef()
   const [ hiddenBox, setHiddenbox ] = useState(false)
@@ -304,8 +304,10 @@ useEffect(() => {
                        </div>}
                      </div>
                      <div id="post-extras9">
-                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="comment">
-                     <i class="fa-regular fa-message"></i>
+                     <div onClick={(() => {
+                      setScroll(true)
+                      setModalContent(<PostPageModal postId={post.id}  />)
+                      })} id="comment">                     <i class="fa-regular fa-message"></i>
                      <p id={`${post.id}`} >{post.Comments ? Object.values(post.Comments)?.length : 0} Comments</p>
                      </div>
                      <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="comment">

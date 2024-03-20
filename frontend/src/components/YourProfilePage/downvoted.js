@@ -29,7 +29,7 @@ function DownvotedPosts() {
     const [isVisible4, setIsVisible4] = useState(false)
     const [ votePost, setVotePost ] = useState(null);
     const history = useHistory()
-    const { setModalContent } = useModal()
+    const { setModalContent, setScroll } = useModal()
     const [ scrolling, setScrolling ] = useState(null)
     const targetRef = useRef()
     const  { setModalContent2, modalRef2 } = useModal2()
@@ -291,7 +291,8 @@ function DownvotedPosts() {
             <div id="comment5">
                 <i onClick={((e) => {
                     e.stopPropagation()
-                    setModalContent(<PostPageModal postId={post.id} scroll={true} />)
+                    setScroll(true)
+                    setModalContent(<PostPageModal postId={post.id}/>)
                     })} class="fa-regular fa-message"></i>
                 <p>{post.Comments && post.Comments.length}</p>
                 </div>
@@ -377,7 +378,8 @@ function DownvotedPosts() {
             <div id="comment5">
                 <i onClick={((e) => {
                     e.stopPropagation()
-                    setModalContent(<PostPageModal postId={post.id} scroll={true} />)
+                    setScroll(true)
+                    setModalContent(<PostPageModal postId={post.id} />)
                     })} class="fa-regular fa-message"></i>
                 <p>{post.Comments && post.Comments.length} Comments</p>
                 </div>

@@ -27,7 +27,7 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId 
     const [ data2, setData2 ] = useState({})
     const [ data3, setData3 ] = useState({})
     const history = useHistory()
-    const { closeModal } = useModal();
+    const { closeModal, threadId } = useModal();
     const [ comment, setComment ] = useState("")
     const [ comment2, setComment2 ] = useState("")
     const [ comment3, setComment3 ] = useState("")
@@ -321,7 +321,7 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId 
             <>{level >= 7 ? null : <div style={{marginLeft: "-15px"}} id="if-comments">
             {comments.map((c, i) =>
                 <div style={{ position: "relative" }}>
-                {scroll && replyId=== c.id && <div id="replying"></div>}
+                {threadId == c.id ? <div id="replying"></div> : null}
                { i <= (!more ? 6 : comments.length )? <>
                <div onClick={(() => setC(c)
                     )} id={`${c.id}`} style={{ position: "relative", zIndex: "10", margin: "0px", marginTop: "5px", overflow: "hidden"}} className="a-comment">

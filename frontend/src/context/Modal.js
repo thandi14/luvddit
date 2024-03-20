@@ -8,6 +8,9 @@ const ModalContext = React.createContext();
 export function ModalProvider({ children }) {
   const modalRef = useRef();
   const [modalContent, setModalContent] = useState(null);
+  const [scroll, setScroll] = useState(false);
+  const [threadId, setThreadId] = useState(null);
+
 
   // callback function that will be called when modal is closing
   const [onModalClose, setOnModalClose] = useState(null);
@@ -23,6 +26,10 @@ export function ModalProvider({ children }) {
   };
 
   const contextValue = {
+    scroll,
+    setScroll,
+    threadId,
+    setThreadId,
     modalRef, // reference to modal div
     modalContent, // React component to render inside modal
     setModalContent, // function to set the React component to render inside modal
@@ -41,7 +48,7 @@ export function ModalProvider({ children }) {
 }
 
 export function Modal() {
-  let { modalRef, modalContent, closeModal } = useContext(ModalContext);
+  let { modalRef, modalContent, closeModal, scroll, setScroll, setThreadId, threadId } = useContext(ModalContext);
   const targetRef = useRef()
   // If there is no div referenced by the modalRef or modalContent is not a
   // truthy value, render nothing:

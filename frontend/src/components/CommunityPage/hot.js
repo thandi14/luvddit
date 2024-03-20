@@ -24,7 +24,7 @@ function HotCommunityPage() {
   const { communities, communityMemberships, singleCommunity, memberships, userCommunities } = useSelector((state) => state.communities);
   const { hotCommunityPosts, singlePost } = useSelector((state) => state.posts);
   const { user } = useSelector((state) => state.session);
-  const { setModalContent } = useModal()
+  const { setModalContent, setScroll } = useModal()
   const dispatch = useDispatch()
   const [isVisible, setIsVisible] = useState(false);
   const [isVisible2, setIsVisible2] = useState(false);
@@ -502,8 +502,10 @@ const handleNsfw = (e) => {
                       </div>}
                     </div>
                     {user && post.User?.id !== user?.id ?<div id="post-extras9">
-                    <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="comment">
-                    <i class="fa-regular fa-message"></i>
+                    <div onClick={(() => {
+                      setScroll(true)
+                      setModalContent(<PostPageModal postId={post.id}  />)
+                      })} id="comment">                    <i class="fa-regular fa-message"></i>
                     <p >{post.Comments?.length} Comments</p>
                     </div>
                     <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))}id="comment">
@@ -540,8 +542,10 @@ const handleNsfw = (e) => {
                     </i>
                     </div> :
                     <div id="post-extras9">
-                    <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="comment">
-                    <i class="fa-regular fa-message"></i>
+                      <div onClick={(() => {
+                      setScroll(true)
+                      setModalContent(<PostPageModal postId={post.id}  />)
+                      })} id="comment">                    <i class="fa-regular fa-message"></i>
                     <p>{post.Comments.length}</p>
                     </div>
                     <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))}id="comment">

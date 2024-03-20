@@ -35,7 +35,7 @@ function OtherProfilePage() {
     const [ votePost, setVotePost ] = useState(null);
     const [ isLiked, setIsLiked ] = useState([]);
     const history = useHistory()
-    const { setModalContent } = useModal()
+    const { setModalContent, setScroll } = useModal()
     const [ scrolling, setScrolling ] = useState(null)
     const targetRef4 = useRef()
     const targetRef3 = useRef()
@@ -382,8 +382,10 @@ function OtherProfilePage() {
             </div>
             {post.userId !== user?.id ?
             <div id="post-extras9">
-            <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="comment">
-            <i class="fa-regular fa-message"></i>
+              <div onClick={(() => {
+                      setScroll(true)
+                      setModalContent(<PostPageModal postId={post.id}  />)
+                      })} id="comment">            <i class="fa-regular fa-message"></i>
             <p id={`${post.id}`} >{post.Comments ? Object.values(post.Comments)?.length : 0} Comments</p>
             </div>
             <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="comment">
@@ -525,7 +527,11 @@ function OtherProfilePage() {
                                 <span><span id="username45">{other.username}</span> { other.id === post.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.updatedAt)}</div></span>
                                 <p>{c.comment}</p>
                                 <div id="comment-extras90">
-                                    <div>
+                                <div onClick={((e) => {
+                                      e.stopPropagation()
+                                      setThreadId(c.id)
+                                      setModalContent(<PostPageModal postId={post.id} />)
+                                    })}>
                                         <i class="fa-regular fa-message"></i>
                                         <p>Reply</p>
                                     </div>

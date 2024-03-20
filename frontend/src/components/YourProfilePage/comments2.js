@@ -33,7 +33,7 @@ function Commented2Posts() {
     const [ votePost, setVotePost ] = useState(null);
     const [ isLiked, setIsLiked ] = useState([]);
     const history = useHistory()
-    const { setModalContent } = useModal()
+    const { setModalContent, setThreadId } = useModal()
     const [ scrolling, setScrolling ] = useState(null)
     const targetRef4 = useRef()
     const  { setModalContent2, modalRef2 } = useModal2()
@@ -316,7 +316,11 @@ function Commented2Posts() {
                                 <span><span id="username45">{other.username}</span> { user?.id === post.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(c.updatedAt)}</div></span>
                                 <p>{c.comment}</p>
                                 <div id="comment-extras90">
-                                    <div>
+                                <div onClick={((e) => {
+                                      e.stopPropagation()
+                                      setThreadId(c.id)
+                                      setModalContent(<PostPageModal postId={post.id} />)
+                                    })}>
                                         <i class="fa-regular fa-message"></i>
                                         <p>Reply</p>
                                     </div>

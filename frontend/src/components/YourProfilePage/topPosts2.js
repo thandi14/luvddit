@@ -33,7 +33,7 @@ function OthersTopPosts() {
     const [ votePost, setVotePost ] = useState(null);
     const history = useHistory()
     const { id } = useParams()
-    const { setModalContent } = useModal()
+    const { setModalContent, setScroll, setThreadId } = useModal()
     const [ scrolling, setScrolling ] = useState(null)
     const targetRef = useRef()
     const  { setModalContent2, modalRef2 } = useModal2()
@@ -293,7 +293,8 @@ function OthersTopPosts() {
            <div id="comment5">
                <i onClick={((e) => {
                    e.stopPropagation()
-                   setModalContent(<PostPageModal postId={post.id} scroll={true} />)
+                   setScroll(true)
+                   setModalContent(<PostPageModal postId={post.id} />)
                    })} class="fa-regular fa-message"></i>
                <p>{post.Comments && post.Comments.length} Comments</p>
                </div>

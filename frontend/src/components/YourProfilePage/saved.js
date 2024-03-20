@@ -30,7 +30,7 @@ function SavedPosts() {
     const [isVisible4, setIsVisible4] = useState(false)
     const [ votePost, setVotePost ] = useState(null);
     const history = useHistory()
-    const { setModalContent } = useModal()
+    const { setModalContent, setScroll, setThreadId } = useModal()
     const [ scrolling, setScrolling ] = useState(null)
     const targetRef = useRef()
     const  { setModalContent2, modalRef2 } = useModal2()
@@ -289,10 +289,14 @@ function SavedPosts() {
                              <span><span id="username45">{post.User?.username}</span> { post.User?.id === post.comment.userId ? <div id="OP">OP</div> : null} <div id="time-comm"> · {getTimeDifferenceString(post.updatedAt)}</div></span>
                                  <p>{post.comment}</p>
                                  <div id="comment-extras90">
-                                     <div>
-                                         <i class="fa-regular fa-message"></i>
-                                         <p>Reply</p>
-                                     </div>
+                                 <div onClick={((e) => {
+                                      e.stopPropagation()
+                                      setThreadId(post.comment.id)
+                                      setModalContent(<PostPageModal postId={post.id} />)
+                                    })}>
+                                        <i class="fa-regular fa-message"></i>
+                                        <p>Reply</p>
+                                    </div>
                                      <div >
                                          <i class="fi fi-rs-heart-arrow"></i>
                                          <p>Share</p>
@@ -360,7 +364,8 @@ function SavedPosts() {
             <div id="comment5">
                 <i onClick={((e) => {
                     e.stopPropagation()
-                    setModalContent(<PostPageModal postId={post.id} scroll={true} />)
+                    setScroll(true)
+                    setModalContent(<PostPageModal postId={post.id} />)
                     })} class="fa-regular fa-message"></i>
                 <p>{post.Comments && post.Comments.length}</p>
                 </div>
@@ -446,7 +451,8 @@ function SavedPosts() {
             <div id="comment5">
                 <i onClick={((e) => {
                     e.stopPropagation()
-                    setModalContent(<PostPageModal postId={post.id} scroll={true} />)
+                    setScroll(true)
+                    setModalContent(<PostPageModal postId={post.id} />)
                     })} class="fa-regular fa-message"></i>
                 <p>{post.Comments && post.Comments.length} Comments</p>
                 </div>

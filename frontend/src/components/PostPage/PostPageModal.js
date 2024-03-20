@@ -22,7 +22,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import SignupFormModal from "../SignupFormPage";
 import Comments from "./Comments/Comments";
 
-function PostPageModal({ postId, scroll, cId, vis3, replyId }) {
+function PostPageModal({ postId, cId, vis3, replyId }) {
     const { communities, singleCommunity, communityMemberships, memberships, userCommunities } = useSelector((state) => state.communities);
     const { singlePost, postsHistory } = useSelector((state) => state.posts)
     const { user } = useSelector((state) => state.session)
@@ -38,7 +38,7 @@ function PostPageModal({ postId, scroll, cId, vis3, replyId }) {
     const [ data2, setData2 ] = useState({})
     const [ data3, setData3 ] = useState({})
     const history = useHistory()
-    const { closeModal } = useModal();
+    const { closeModal, scroll, setScroll, setThreadId, threadId } = useModal();
     const targetRef2 = useRef(null);
     const targetRef3 = useRef(null)
     const targetRef5 = useRef(null)
@@ -423,6 +423,7 @@ function PostPageModal({ postId, scroll, cId, vis3, replyId }) {
         let scrollToTarget = () => {
                 const targetElements = document.getElementsByClassName('comments-for-post');
                 if (targetElements.length > 0 && scroll) {
+                    setScroll(false)
                     const targetElement = targetElements[0];
                     targetElement.scrollIntoView({ behavior: 'smooth' });
                 }
@@ -431,14 +432,15 @@ function PostPageModal({ postId, scroll, cId, vis3, replyId }) {
         scrollToTarget();
 
         let scrollToTarget2 = () => {
-            const targetElement = document.getElementById(`${replyId}`);
-            if (targetElement) {
-                targetElement.scrollIntoView({ behavior: 'smooth' });
-            }
-            // else if (!targetElement && replyId > -1) {
-            //     closeModal()
-            //     history.push(`/posts/${postId}/comments/${replyId}`)
-            // }
+            setTimeout(() => {
+                const targetElement = document.getElementById(`${threadId}`);
+                if (targetElement && threadId) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                } else if (!targetElement && threadId) {
+                    closeModal();
+                    history.push(`/posts/${postId}/comments/${threadId}`);
+                }
+            }, 500);
          };
 
         scrollToTarget2();
@@ -568,7 +570,9 @@ function PostPageModal({ postId, scroll, cId, vis3, replyId }) {
                 <i class="fi fi-rr-picture"></i>
                 <span id="t-head">{singlePost.title}</span>
                 </div>
-                <span onClick={(() => closeModal())} id="close-head"><i class="fi fi-rr-cross-small"></i>Close</span>
+                <span onClick={(() => {
+                    setThreadId(null)
+                    closeModal()})} id="close-head"><i class="fi fi-rr-cross-small"></i>Close</span>
                 </div>
                 <div id="2">
         <div ref={targetRef2} className="whole-post-page2">
