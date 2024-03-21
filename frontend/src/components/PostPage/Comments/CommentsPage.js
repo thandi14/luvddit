@@ -26,7 +26,7 @@ function CommentsPage() {
     const { singleCommunity, userCommunities } = useSelector((state) => state.communities)
     const { id } = useParams();
     const { commentId } = useParams();
-    const { closeModal } = useModal();
+    const { closeModal, setThreadId } = useModal();
     const targetRef5 = useRef(null)
     const dispatch = useDispatch()
     const [ deleted, setDeleted ] = useState("")
@@ -77,7 +77,19 @@ function CommentsPage() {
         fetchData()
     }, [commentId, dispatch])
 
-    console.log(singleComment)
+    useEffect(() => {
+        const handleBeforeUnload = (event) => {
+            setThreadId(null)
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+
+    }, [threadId]);
+
 
 
     useEffect(() => {
