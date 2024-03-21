@@ -19,7 +19,7 @@ import NoPosts from './none'
 import { useFilter } from '../../context/filter'
 
 function HiddenPosts() {
-    const { posts, singlePost, userPosts, postsSaved } = useSelector((state) => state.posts);
+    const { posts, singlePost, userPosts, postsHidden } = useSelector((state) => state.posts);
     const { userCommunities, communityMemberships, memberships } = useSelector((state) => state.communities);
     const { user } = useSelector((state) => state.session);
     const dispatch = useDispatch()
@@ -97,7 +97,7 @@ function HiddenPosts() {
 
 
     useEffect(() => {
-      dispatch(postsActions.thunkGetSaved(page)); // Fetch posts for the specified page
+      dispatch(postsActions.thunkGetHidden(page)); // Fetch posts for the specified page
     }, [dispatch, page]);
 
     useEffect(() => {
@@ -119,7 +119,7 @@ function HiddenPosts() {
 
         }, []);
 
-    let filterdPosts = Object.values(postsSaved)
+    let filterdPosts = Object.values(postsHidden)
     // .filter((p) => {
     //     return p.PostSetting?.userId === user.id
     // })
