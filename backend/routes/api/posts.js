@@ -119,6 +119,7 @@ router.get("/best", async (req, res) => {
 
     let paginatedPosts = posts.slice((page - 1) * pageSize, page * pageSize);
 
+
     // let posts = await Votes.findAll({
     //     order: [['upVote', 'DESC']],
     //     include: [

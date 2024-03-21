@@ -57,10 +57,12 @@ function Comments({ postId, cId, vis3, replyId }) {
     const [ cHover, setCHover] = useState(false)
     const [ scrollH, setScrollH ] = useState(false)
     const [ saveH, setSaveH ] = useState(false)
-    const { setModalContent } = useModal()
+    const { setModalContent, setCMenu, cMenu } = useModal()
     const [ sComments, setSComments ] = useState("")
     const [ sComments2, setSComments2 ] = useState("Best")
     const [ parent, setParent ] = useState(threadId ? threadId : null)
+    const [ isOverflowing, setIsOverflowing ] = useState(null)
+
 
 
     let joined = null
@@ -198,70 +200,24 @@ function Comments({ postId, cId, vis3, replyId }) {
     }, [dispatch, singlePost.tags])
 
 
-    const handleOc = (e) => {
-        e.stopPropagation()
+    useEffect(() => {
+        function findLastComment(comment) {
+            if (!comment) {
+                return null;
+            }
 
-        if (tags && tags.includes("oc")) {
-            setData1({
-                tags: singlePost.tags.split('oc,').join()
-            })
-        }
-        else if (tags && !tags.includes("oc")) {
-            setData1({
-                tags: singlePost.tags += ",oc"
-            })
-        }
-        else if (!tags) {
-            setData1({
-                tags: "oc"
-            })
-        }
-    }
+            if (comment.Replies && comment.Replies.length > 0) {
+                return findLastComment(comment.Replies[comment.Replies.length - 1]);
+            }
 
-    const handleSpoiler = (e) => {
-        e.stopPropagation()
-
-        if (tags && tags.includes("spoiler")) {
-            setData1({
-                tags: singlePost.tags.split('spoiler,').join()
-            })
-        }
-        else if (tags && !tags.includes("spoiler")) {
-            setData1({
-                tags: singlePost.tags += ",spoiler"
-            })
-        }
-        else if (!tags) {
-            setData1({
-                tags: "spoiler"
-            })
+            setIsOverflowing(comment.id);
         }
 
-    }
-
-    const handleNsfw = (e) => {
-
-        e.stopPropagation()
-
-        if (tags && tags.includes("nsfw")) {
-            setData1({
-                tags: singlePost.tags.split('nsfw').join()
-            })
+        if (singlePost && singlePost.Comments && singlePost.Comments.length > 0) {
+            const lastComment = singlePost.Comments[singlePost.Comments.length - 1];
+            findLastComment(lastComment);
         }
-        else if (tags && !tags.includes("nsfw")) {
-            setData1({
-                tags: singlePost.tags += ",nsfw"
-            })
-        }
-        else if (!tags) {
-            setData1({
-                tags: "nsfw"
-            })
-        }
-
-
-    }
-
+    }, [dispatch, singlePost, setIsOverflowing]);
 
     let comments
     if (singlePost.Comments && singlePost.Comments.length) comments = Object.values(singlePost.Comments).sort((a, b) => a.createdAt - b.createdAt)
@@ -427,8 +383,10 @@ function Comments({ postId, cId, vis3, replyId }) {
     useEffect(() => {
 
     const handleDocumentClick = (event) => {
+
         if ((targetRef.current && !targetRef.current.contains(event.target))) {
                     setIsVisible3(false);
+                    setCMenu(null)
             }
 
         };
@@ -438,7 +396,10 @@ function Comments({ postId, cId, vis3, replyId }) {
             document.removeEventListener('click', handleDocumentClick);
         };
 
+
+
     }, []);
+
 
 
     if (!Object.values(singlePost).length) return <h1></h1>
@@ -586,14 +547,15 @@ function Comments({ postId, cId, vis3, replyId }) {
                                         <i class="fi fi-rs-heart-arrow"></i>
                                         <p>Share</p>
                                     </div>
-                                    <i ref={commentId === c.id ? targetRef : null} onClick={(() => {
+                                    <i ref={cMenu === c.id ? targetRef : null} onClick={(() => {
                                         setIsVisible3(true)
                                         setCommentId(c.id)
-                                       if (commentId === c.id) setIsVisible3(!isVisible3)
+                                        setCMenu(c.id)
+                                       if (cMenu === c.id) setIsVisible3(!isVisible3)
                                     })} class="fi fi-rr-menu-dots">
-                                    { commentId === c.id ? <div className="menu">
+                                    { cMenu === c.id ? <div className="menu">
                                     <div id="comm-sec25">
-                                    <div onClick={((e) => e.stopPropagation())} id={editMenu2}>
+                                    <div style={{ bottom: isOverflowing == c.id ? "0" : ""}} onClick={((e) => e.stopPropagation())} id={editMenu2}>
                                     {c.userId !== user.id ? null : <p onClick={(() => {
                                         setCommentM(true)
                                         setIsVisible3(false)

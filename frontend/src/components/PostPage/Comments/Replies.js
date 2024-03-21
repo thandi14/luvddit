@@ -47,7 +47,7 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId 
     const [ cHover, setCHover] = useState(false)
     const [ scrollH, setScrollH ] = useState(false)
     const [ saveH, setSaveH ] = useState(false)
-    const { setModalContent } = useModal()
+    const { setModalContent, setCMenu, cMenu } = useModal()
     const [ sComments, setSComments ] = useState("")
     const [ sComments2, setSComments2 ] = useState("Best")
     level++
@@ -57,6 +57,8 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId 
     const [ length, setLength ] = useState(7)
     const [ parent, setParent ] = useState(threadId ? threadId : par)
     const [ more, setMore ] = useState(false)
+    const [ isOverflowing, setIsOverflowing ] = useState(null)
+
 
 
     let joined = null
@@ -106,6 +108,28 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId 
 
     }
 
+
+    useEffect(() => {
+        function findLastComment(comment) {
+            if (!comment) {
+                return null;
+            }
+
+            if (comment.Replies && comment.Replies.length > 0) {
+                return findLastComment(comment.Replies[comment.Replies.length - 1]);
+            }
+
+            setIsOverflowing(comment.id);
+        }
+
+        if (singlePost && singlePost.Comments && singlePost.Comments.length > 0) {
+            const lastComment = singlePost.Comments[singlePost.Comments.length - 1];
+            findLastComment(lastComment);
+        }
+    }, [dispatch, singlePost, setIsOverflowing]);
+
+    console.log(isOverflowing)
+
     // let comments
     // if (singlePost.Comments && singlePost.Comments.length) comments = Object.values(singlePost.Comments).sort((a, b) => a.createdAt - b.createdAt)
 
@@ -153,6 +177,24 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId 
         clearTimeout(timeoutId);
       };
     }, []);
+
+    useEffect(() => {
+
+        const handleDocumentClick = (event) => {
+            if ((targetRef.current && !targetRef.current.contains(event.target))) {
+                        setIsVisible3(false);
+                        setCMenu(null)
+                }
+
+            };
+
+            document.addEventListener('click', handleDocumentClick);
+            return () => {
+                document.removeEventListener('click', handleDocumentClick);
+            };
+
+    }, []);
+
 
 
     const getTimeDifferenceString = (createdAt) => {
@@ -388,14 +430,15 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId 
                                 <i class="fi fi-rs-heart-arrow"></i>
                                 <p>Share</p>
                             </div>
-                            <i ref={commentId === c.id ? targetRef : null} onClick={(() => {
+                            <i ref={cMenu === c.id ? targetRef : null} onClick={(() => {
                                 setIsVisible3(true)
                                 setCommentId(c.id)
-                               if (commentId === c.id) setIsVisible3(!isVisible3)
+                                setCMenu(c.id)
+                                if (cMenu === c.id) setIsVisible3(!isVisible3)
                             })} class="fi fi-rr-menu-dots">
-                            { commentId === c.id ? <div className="menu">
+                            { cMenu === c.id ? <div className="menu">
                             <div id="comm-sec25">
-                            <div onClick={((e) => e.stopPropagation())} id={editMenu2}>
+                            <div style={{ bottom: isOverflowing == c.id ? "0" : ""}} onClick={((e) => e.stopPropagation())} id={editMenu2}>
                             {c.userId !== user.id ? null : <p onClick={(() => {
                                 setCommentM(true)
                                 setIsVisible3(false)

@@ -1498,6 +1498,11 @@
     overflow: hidden;
     width: 70%;
     display: flex;
+    /* padding-bottom: 20%; */
+}
+
+#if-comments > :last-child > div > :last-child > :last-child > :last-child > :last-child > div > :last-child > div > i {
+    bottom: 0
 }
 
 #post-details-head {

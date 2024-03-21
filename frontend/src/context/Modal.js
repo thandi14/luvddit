@@ -10,6 +10,7 @@ export function ModalProvider({ children }) {
   const [modalContent, setModalContent] = useState(null);
   const [scroll, setScroll] = useState(false);
   const [threadId, setThreadId] = useState(null);
+  const [cMenu, setCMenu] = useState(null);
 
 
   // callback function that will be called when modal is closing
@@ -28,6 +29,8 @@ export function ModalProvider({ children }) {
   const contextValue = {
     scroll,
     setScroll,
+    cMenu,
+    setCMenu,
     threadId,
     setThreadId,
     modalRef, // reference to modal div
@@ -48,7 +51,7 @@ export function ModalProvider({ children }) {
 }
 
 export function Modal() {
-  let { modalRef, modalContent, closeModal, scroll, setScroll, setThreadId, threadId } = useContext(ModalContext);
+  let { modalRef, modalContent, closeModal, cMenu, setCMenu, scroll, setScroll, setThreadId, threadId } = useContext(ModalContext);
   const targetRef = useRef()
   // If there is no div referenced by the modalRef or modalContent is not a
   // truthy value, render nothing:

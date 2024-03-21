@@ -213,6 +213,19 @@ useEffect(() => {
         }
       };
 
+    //   const replyCount = function(comments, c) {
+    //     let count = c;
+
+    //     for (let comment of comments) {
+    //         if (comment && comment.Replies?.length) {
+    //             count += comment.Replies.length;
+    //             count += replyCount(comment.Replies, count);
+    //         }
+    //     }
+
+    //     return count;
+    // };
+
 
     return (
         <div className="splashPage">
@@ -310,7 +323,7 @@ useEffect(() => {
                       setModalContent(<PostPageModal postId={post.id}  />)
                       })} id="comment">
                     <i class="fa-regular fa-message"></i>
-                    <p id={`${post.id}`} >{post.Comments ? Object.values(post.Comments)?.length : 0} Comments</p>
+                    <p id={`${post.id}`} >{post.Comments ? post.Comments.length : 0} Comments</p>
                     </div>
                     <div onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))} id="comment">
                     <i class="fi fi-rr-box-heart"></i>
