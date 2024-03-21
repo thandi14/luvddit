@@ -679,6 +679,33 @@ router.get("/:id", async (req, res) => {
         ]
     });
 
+    if (!post) {
+        post = await Post.findByPk(postId, {
+            include: [
+                {
+                    model: Comments,
+                    include: [
+                    { model: CommentSetting},
+                    { model: User},
+                    { model: Votes }
+                ]
+                },
+                {
+                    model: Community,
+                    include: [
+                        { model: CommunityStyle }
+                    ]
+                },
+                {
+                    model: User,
+                },
+                { model: PostImages },
+                { model: Votes },
+                { model: PostSetting }
+            ]
+        });
+    }
+
         for (let c of post.dataValues.Comments) {
             let profile = await Community.findOne({
                 where: {
