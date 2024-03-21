@@ -88,7 +88,7 @@ function CommentsPage() {
         window.removeEventListener('beforeunload', handleBeforeUnload);
         };
 
-    }, [threadId]);
+    }, [setThreadId]);
 
 
 
