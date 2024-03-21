@@ -24,7 +24,7 @@ import Comments from "./Comments/Comments";
 
 function PostPageModal({ postId, cId, vis3, replyId }) {
     const { communities, singleCommunity, communityMemberships, memberships, userCommunities } = useSelector((state) => state.communities);
-    const { singlePost, postsHistory, postsComments } = useSelector((state) => state.posts)
+    const { singlePost, postsHistory, postsReplies } = useSelector((state) => state.posts)
     const { user } = useSelector((state) => state.session)
     const { id } = useParams();
     const dispatch = useDispatch()
@@ -120,12 +120,27 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
         async function fetchData() {
           if (id) await dispatch(communityActions.thunkGetCommunityMemberships(id))
           if (id) await dispatch(communityActions.thunkGetDetailsById(id))
+          if (id) await dispatch(postActions.thunkGetReplies(id))
           else return
         }
+
 
         fetchData()
 
     }, [dispatch, id])
+
+    useEffect(() => {
+
+        async function fetchData() {
+          if (singlePost.id) await dispatch(postActions.thunkGetReplies(singlePost.id))
+          else return
+        }
+
+        console.log("hello?")
+
+        fetchData()
+
+    }, [dispatch, singlePost.id])
 
     const handleJoinClick = async (e) => {
         e.stopPropagation()
@@ -630,7 +645,7 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
             {user && singlePost.User?.id !== user.id ?<div id="post-extras3">
                     <div style={{ backgroundColor: "transparent"}} id="comment">
                     <i class="fa-regular fa-message"></i>
-                    <p>{comments && comments.length ? countReply(comments) : "0"} Comments</p>
+                    <p>{comments && comments.length ? Object.values(postsReplies).length : "0"} Comments</p>
                     </div>
                     <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="comment">
                     <i class="fi fi-rr-box-heart"></i>

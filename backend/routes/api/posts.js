@@ -1277,6 +1277,50 @@ router.get("/:id/comments", async (req, res) => {
     return res.json(posts)
 })
 
+router.get("/:id/replies", async (req, res) => {
+
+    let postId = req.params.id;
+
+    let posts = await Comments.findAll({
+        order: [['createdAt', 'DESC']],
+        where: {
+            postId
+        },
+        include: [
+            {
+                model: Post,
+                include: [
+                    {
+                        model: Comments,
+                        order: [['createdAt', 'DESC']],
+                        where: {
+                            postId
+                        },
+                        include: [
+                            { model: CommentSetting }
+                        ]
+                    },
+                    {
+                        model: Community,
+                        include: [
+                            { model: CommunityStyle }
+                        ]
+                    },
+                    { model: User},
+                    { model: PostImages},
+                    { model: Votes } ,
+                    { model: PostSetting }
+                ]
+            }
+         ],
+    });
+
+
+    return res.json(posts)
+})
+
+
+
 router.get("/:id/comments/hot", async (req, res) => {
     const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
     const pageSize = 10; // Number of posts per page

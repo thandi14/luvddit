@@ -16,6 +16,7 @@ const GET_HOT_OVERVIEW = 'posts/getHotOverview';
 const GET_TOP_OVERVIEW = 'posts/getTopOverview';
 const GET_FAVORITES = 'posts/getFavorites';
 const GET_COMMENTS = 'posts/getComments';
+const GET_REPLIES = 'posts/getReplies';
 const GET_HOT_COMMENTS = 'posts/getHotComments';
 const GET_TOP_COMMENTS = 'posts/getTopComments';
 const ADD_HISTORY = 'posts/addHistory';
@@ -176,6 +177,13 @@ const getFavorites = (posts) => {
 const getComments = (posts) => {
   return {
       type: GET_COMMENTS,
+      posts
+  }
+}
+
+const getReplies = (posts) => {
+  return {
+      type: GET_REPLIES,
       posts
   }
 }
@@ -525,6 +533,14 @@ export const thunkGetComments = (id, page) => async (dispatch) => {
   const response1 = await csrfFetch(`/api/posts/${id}/comments?page=${page}`)
   let data1 = await response1.json();
   dispatch(getComments(data1));
+  return response1;
+}
+
+export const thunkGetReplies = (id) => async (dispatch) => {
+  console.log("HELLLLLO", id)
+  const response1 = await csrfFetch(`/api/posts/${id}/replies`)
+  let data1 = await response1.json();
+  dispatch(getReplies(data1));
   return response1;
 }
 
@@ -1054,6 +1070,7 @@ const re = (comments, reply) => {
 
 let initialState = {
     posts: {},
+    postsReplies: {},
     hotPosts: {},
     topPosts: {},
     bestPosts: {},
@@ -1220,6 +1237,13 @@ const postsReducer = (state = initialState, action) => {
       newState = { ...state };
       action.posts.forEach(
         (comment) => (newState.postsComments[comment.Post.id] = { ...comment.Post })
+      );
+      return newState;
+    }
+    case GET_REPLIES: {
+      newState = { ...state };
+      action.posts.forEach(
+        (comment) => (newState.postsReplies[comment.id] = { ...comment })
       );
       return newState;
     }
@@ -1755,6 +1779,7 @@ const postsReducer = (state = initialState, action) => {
       else {
         newState.singlePost.Comments.push(comment)
       }
+      newState.postsReplies.push(comment)
       if (comment.parent > 0) newState.singleComment.Replies = replies(newState.singleComment.Replies, comment)
       let post = newState.posts[comment.postId]
       if (post && post.Comments) newState.posts[comment.postId].Comments.push(comment)
@@ -1824,6 +1849,7 @@ const postsReducer = (state = initialState, action) => {
     case REMOVE_COMMENT: {
       newState = { ...state };
       newState.singlePost.Comments = removeReply2(newState.singlePost.Comments, action.commentId)
+      newState.postsReplies = removeReply2(newState.postsReplies, action.commentId)
 
       let post = newState.posts[newState.singlePost.id];
       if (post && post.Comments) {

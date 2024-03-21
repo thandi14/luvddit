@@ -222,6 +222,8 @@ router.get("/search/comments", async (req, res) => {
 })
 
 
+
+
 router.put("/:id", async (req, res) => {
     let commentId = req.params.id;
     let commentExist = await Comments.findByPk(commentId);
