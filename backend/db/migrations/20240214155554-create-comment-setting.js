@@ -45,7 +45,7 @@ module.exports = {
     }, options);
   },
   async down(queryInterface, Sequelize) {
-    options.tableName = "CommentSetting";
+    options.tableName = "CommentSettings";
     await queryInterface.dropTable(options);
   }
 };

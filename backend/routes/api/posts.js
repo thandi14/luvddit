@@ -679,6 +679,7 @@ router.get("/:id", async (req, res) => {
         ]
     });
 
+
     for (let c of post.dataValues.Comments) {
         let profile = await Community.findOne({
             where: {
@@ -700,19 +701,6 @@ router.get("/:id", async (req, res) => {
             { model: Votes }
             ]
         })
-
-        // for (let r of replies) {
-        //     let profile = await Community.findOne({
-        //         where: {
-        //             userId: r.dataValues.userId,
-        //             type: "Profile"
-        //         },
-        //         include: [
-        //               { model: CommunityStyle }
-        //         ]
-        //     })
-        //     r.dataValues.Profile = profile
-        // }
 
         replies = await includeReply(replies)
 
