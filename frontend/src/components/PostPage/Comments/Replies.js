@@ -205,8 +205,6 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId 
 
     }, [threadId, scroll]);
 
-    console.log(data3, c, commentId2)
-
     if (!Object.values(singlePost).length) return <h1></h1>
 
     let createdAt

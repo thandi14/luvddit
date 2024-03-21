@@ -314,19 +314,6 @@ function Comments({ postId, cId, vis3, replyId }) {
     }, [dispatch, data1, postId])
 
 
-    useEffect( () => {
-
-        async function fetchData() {
-
-            if (singlePost.PostSetting && singlePost.PostSetting.history) await dispatch(postActions.thunkUpdateHistory(postId))
-            else if (!singlePost.PostSetting || singlePost.PostSetting && !singlePost.PostSetting.history) await dispatch(postActions.thunkCreateHistory(postId))
-
-        }
-        fetchData()
-
-    }, [dispatch, postId])
-
-
     function isURLOrFile(str) {
         const urlRegex = /^(https?:\/\/)?([\w.-]+)\.([a-z]{2,})(\/\S*)?$/i;
         if (urlRegex) return urlRegex.test(str);
@@ -536,8 +523,6 @@ function Comments({ postId, cId, vis3, replyId }) {
             comments = comments.sort((a, b) => b.Votes?.length - a.Votes?.length)
         }
     }
-
-    console.log(data3)
 
     if (sComments.length) comments = comments.filter((c) => c.comment.toLowerCase().includes(sComments.toLowerCase()))
 

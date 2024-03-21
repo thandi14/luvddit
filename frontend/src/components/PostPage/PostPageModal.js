@@ -24,7 +24,7 @@ import Comments from "./Comments/Comments";
 
 function PostPageModal({ postId, cId, vis3, replyId }) {
     const { communities, singleCommunity, communityMemberships, memberships, userCommunities } = useSelector((state) => state.communities);
-    const { singlePost, postsHistory } = useSelector((state) => state.posts)
+    const { singlePost, postsHistory, postsComments } = useSelector((state) => state.posts)
     const { user } = useSelector((state) => state.session)
     const { id } = useParams();
     const dispatch = useDispatch()
@@ -118,7 +118,7 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
     useEffect(() => {
 
         async function fetchData() {
-          await dispatch(communityActions.thunkGetCommunityMemberships(id))
+          if (id) await dispatch(communityActions.thunkGetCommunityMemberships(id))
           if (id) await dispatch(communityActions.thunkGetDetailsById(id))
           else return
         }
