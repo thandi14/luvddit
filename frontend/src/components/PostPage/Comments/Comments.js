@@ -61,7 +61,8 @@ function Comments({ postId, cId, vis3, replyId }) {
     const [ sComments, setSComments ] = useState("")
     const [ sComments2, setSComments2 ] = useState("Best")
     const [ parent, setParent ] = useState(threadId ? threadId : null)
-    const [ isOverflowing, setIsOverflowing ] = useState(null)
+    const [ isOverflowing1, setIsOverflowing1 ] = useState(null)
+    const [ isOverflowing2, setIsOverflowing2 ] = useState(null)
 
 
 
@@ -195,11 +196,6 @@ function Comments({ postId, cId, vis3, replyId }) {
 
     }
 
-    useEffect( () => {
-        if (singlePost.tags) setTags(singlePost.tags.split(','))
-    }, [dispatch, singlePost.tags])
-
-
     useEffect(() => {
         function findLastComment(comment) {
             if (!comment) {
@@ -210,14 +206,32 @@ function Comments({ postId, cId, vis3, replyId }) {
                 return findLastComment(comment.Replies[comment.Replies.length - 1]);
             }
 
-            setIsOverflowing(comment.id);
+            if (!isOverflowing1) {
+                setIsOverflowing1(comment.id);
+            }
+        }
+
+        function findSecondToLastComment(comment) {
+            if (!comment) {
+                return null;
+            }
+
+            if (comment.Replies && comment.Replies.length > 0) {
+                return findSecondToLastComment(comment.Replies[comment.Replies.length - 1]);
+            }
+
+            if (!isOverflowing1) {
+                setIsOverflowing2(comment.parent);
+            }
         }
 
         if (singlePost && singlePost.Comments && singlePost.Comments.length > 0) {
             const lastComment = singlePost.Comments[singlePost.Comments.length - 1];
             findLastComment(lastComment);
+            findSecondToLastComment(lastComment);
         }
-    }, [dispatch, singlePost, setIsOverflowing]);
+
+    }, [dispatch, singlePost, setIsOverflowing1, setIsOverflowing2]);
 
     let comments
     if (singlePost.Comments && singlePost.Comments.length) comments = Object.values(singlePost.Comments).sort((a, b) => a.createdAt - b.createdAt)
@@ -555,7 +569,7 @@ function Comments({ postId, cId, vis3, replyId }) {
                                     })} class="fi fi-rr-menu-dots">
                                     { cMenu === c.id ? <div className="menu">
                                     <div id="comm-sec25">
-                                    <div style={{ bottom: isOverflowing == c.id ? "0" : ""}} onClick={((e) => e.stopPropagation())} id={editMenu2}>
+                                    <div style={{ bottom: (isOverflowing1 == c.id || isOverflowing2 == c.id && c.userId == user?.id) ? "0" : ""}} onClick={((e) => e.stopPropagation())} id={editMenu2}>
                                     {c.userId !== user.id ? null : <p onClick={(() => {
                                         setCommentM(true)
                                         setIsVisible3(false)

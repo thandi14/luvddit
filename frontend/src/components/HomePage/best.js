@@ -213,19 +213,6 @@ useEffect(() => {
         }
       };
 
-    //   const replyCount = function(comments, c) {
-    //     let count = c;
-
-    //     for (let comment of comments) {
-    //         if (comment && comment.Replies?.length) {
-    //             count += comment.Replies.length;
-    //             count += replyCount(comment.Replies, count);
-    //         }
-    //     }
-
-    //     return count;
-    // };
-
 
     return (
         <div className="splashPage">

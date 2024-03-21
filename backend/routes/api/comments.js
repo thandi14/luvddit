@@ -324,13 +324,40 @@ router.delete("/:id", async (req, res) => {
 
     let comment = await Comments.findByPk(commentId);
 
-    console.log(commentId)
+    let replies = await Comments.findAll({
+        where: {
+            parent: commentId
+        }
+    })
+
+    const deleteRe = async function(replies) {
+
+        if (replies.length) {
+
+            for (let reply of replies) {
+
+                let moreReplies = await Comments.findAll({
+                    where: {
+                        parent: reply.dataValues.id
+                    }
+                })
+
+                await deleteRe(moreReplies)
+
+                await reply.destroy()
+            }
+        }
+
+    }
+
+    if (replies.length) await deleteRe(replies)
 
     if (!comment) return res.status(404).json({
         "message": "Comment not found"
     })
 
     await comment.destroy()
+
     return res.json({
         message: "Successfully deleted"
     })

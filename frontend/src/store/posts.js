@@ -1005,7 +1005,7 @@ const unvoteReply = (comments, commentId, voteId) => {
 }
 
 
-const removeReply = (comments, replyId) => {
+const removeReply2 = (comments, replyId) => {
   for (let i = 0; i < comments?.length; i++) {
     let comment = comments[i];
     if (comment.id === replyId) {
@@ -1013,10 +1013,24 @@ const removeReply = (comments, replyId) => {
       i--;
     }
     if (comment && comment.Replies?.length) {
-      removeReply(comment.Replies, replyId);
+      removeReply2(comment.Replies, replyId);
     }
   }
-  return comments; 
+  return comments;
+};
+
+const removeReply = (comments, replyId) => {
+  for (let i = 0; i < comments?.length; i++) {
+    let comment = comments[i];
+    if (comment.id === replyId) {
+      comments.splice(i, 1);
+      i--;
+    }
+    else if (comment.parent == replyId) {
+      removeReply(comments, comment.id);
+    }
+  }
+  return comments;
 };
 
 const re = (comments, reply) => {
@@ -1809,7 +1823,7 @@ const postsReducer = (state = initialState, action) => {
     }
     case REMOVE_COMMENT: {
       newState = { ...state };
-      newState.singlePost.Comments = removeReply(newState.singlePost.Comments, action.commentId)
+      newState.singlePost.Comments = removeReply2(newState.singlePost.Comments, action.commentId)
 
       let post = newState.posts[newState.singlePost.id];
       if (post && post.Comments) {

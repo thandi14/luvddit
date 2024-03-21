@@ -418,30 +418,21 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
     }, []);
 
 
-    // useEffect(() => {
+    const countReply = function(comments) {
+        let count = 0; // Initialize the count
 
-    //     let scrollToTarget = () => {
-    //         const handleScrollOrNavigate = () => {
+        for (let comment of comments) {
+            // Add the number of replies for the current comment
+            count += comment.Replies ? comment.Replies.length : 0;
 
-    //             const targetElements = document.getElementsByClassName('comments-for-post');
-    //             if (targetElements.length > 0 && scroll) {
-    //                 setScroll(false)
-    //                 const targetElement = targetElements[0];
-    //                 targetElement.scrollIntoView({ behavior: 'smooth' });
-    //             }
-    //         };
+            // Recursively count replies for nested comments
+            if (comment.Replies?.length) {
+                count += countReply(comment.Replies);
+            }
+        }
 
-
-    //         if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    //             handleScrollOrNavigate();
-    //         } else {
-    //             document.addEventListener('DOMContentLoaded', handleScrollOrNavigate);
-    //         }
-    //     }
-
-    //     scrollToTarget();
-
-    // }, [threadId, scroll]);
+        return count;
+    };
 
 
     useEffect(() => {
@@ -638,7 +629,7 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
             {user && singlePost.User?.id !== user.id ?<div id="post-extras3">
                     <div style={{ backgroundColor: "transparent"}} id="comment">
                     <i class="fa-regular fa-message"></i>
-                    <p>{comments && comments.length} Comments</p>
+                    <p>{comments && comments.length ? countReply(comments) : "0"} Comments</p>
                     </div>
                     <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="comment">
                     <i class="fi fi-rr-box-heart"></i>
@@ -678,7 +669,7 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
              <div id="post-extras1">
                 <div style={{ backgroundColor: "transparent"}} id="comment5">
                 <i class="fa-regular fa-message"></i>
-                <p>{comments && comments.length}</p>
+                <p>{comments && comments.length ? countReply(comments) : "0"}</p>
                 </div>
                 <div id="comment4">
                     <i class="fi fi-rs-heart-arrow"></i>

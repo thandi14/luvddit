@@ -57,7 +57,8 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId 
     const [ length, setLength ] = useState(7)
     const [ parent, setParent ] = useState(threadId ? threadId : par)
     const [ more, setMore ] = useState(false)
-    const [ isOverflowing, setIsOverflowing ] = useState(null)
+    const [ isOverflowing1, setIsOverflowing1 ] = useState(null)
+    const [ isOverflowing2, setIsOverflowing2 ] = useState(null)
 
 
 
@@ -109,6 +110,7 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId 
     }
 
 
+
     useEffect(() => {
         function findLastComment(comment) {
             if (!comment) {
@@ -119,16 +121,34 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId 
                 return findLastComment(comment.Replies[comment.Replies.length - 1]);
             }
 
-            setIsOverflowing(comment.id);
+            if (!isOverflowing1) {
+                setIsOverflowing1(comment.id);
+            }
+        }
+
+        function findSecondToLastComment(comment) {
+            if (!comment) {
+                return null;
+            }
+
+            if (comment.Replies && comment.Replies.length > 0) {
+                return findSecondToLastComment(comment.Replies[comment.Replies.length - 1]);
+            }
+
+            if (!isOverflowing1) {
+                setIsOverflowing2(comment.parent);
+            }
         }
 
         if (singlePost && singlePost.Comments && singlePost.Comments.length > 0) {
             const lastComment = singlePost.Comments[singlePost.Comments.length - 1];
             findLastComment(lastComment);
+            findSecondToLastComment(lastComment);
         }
-    }, [dispatch, singlePost, setIsOverflowing]);
 
-    console.log(isOverflowing)
+    }, [dispatch, singlePost, setIsOverflowing1, setIsOverflowing2]);
+
+    console.log(isOverflowing1, isOverflowing2)
 
     // let comments
     // if (singlePost.Comments && singlePost.Comments.length) comments = Object.values(singlePost.Comments).sort((a, b) => a.createdAt - b.createdAt)
@@ -438,7 +458,7 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId 
                             })} class="fi fi-rr-menu-dots">
                             { cMenu === c.id ? <div className="menu">
                             <div id="comm-sec25">
-                            <div style={{ bottom: isOverflowing == c.id ? "0" : ""}} onClick={((e) => e.stopPropagation())} id={editMenu2}>
+                            <div style={{ bottom: (isOverflowing1 == c.id || isOverflowing2 == c.id && c.userId == user?.id) ? "0" : ""}} onClick={((e) => e.stopPropagation())} id={editMenu2}>
                             {c.userId !== user.id ? null : <p onClick={(() => {
                                 setCommentM(true)
                                 setIsVisible3(false)
