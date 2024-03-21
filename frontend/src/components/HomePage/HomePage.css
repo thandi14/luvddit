@@ -216,6 +216,7 @@
     border: #EDEFF1 solid 2px;
     border-radius: 4px;
     width: 120px;
+    z-index: 5;
 }
 
 
