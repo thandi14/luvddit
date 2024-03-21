@@ -120,7 +120,6 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
         async function fetchData() {
           if (id) await dispatch(communityActions.thunkGetCommunityMemberships(id))
           if (id) await dispatch(communityActions.thunkGetDetailsById(id))
-          if (id) await dispatch(postActions.thunkGetReplies(id))
           else return
         }
 
@@ -135,8 +134,6 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
           if (singlePost.id) await dispatch(postActions.thunkGetReplies(singlePost.id))
           else return
         }
-
-        console.log("hello?")
 
         fetchData()
 
@@ -685,7 +682,7 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
              <div id="post-extras1">
                 <div style={{ backgroundColor: "transparent"}} id="comment5">
                 <i class="fa-regular fa-message"></i>
-                <p>{comments && comments.length ? countReply(comments) : "0"}</p>
+                <p>{comments && comments.length ? Object.values(postsReplies).length : "0"}</p>
                 </div>
                 <div id="comment4">
                     <i class="fi fi-rs-heart-arrow"></i>

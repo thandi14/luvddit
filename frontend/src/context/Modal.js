@@ -17,6 +17,9 @@ export function ModalProvider({ children }) {
   const [onModalClose, setOnModalClose] = useState(null);
 
   const closeModal = () => {
+    setScroll(false)
+    setThreadId(null)
+    setCMenu(null)
     setModalContent(null); // clear the modal contents
     // If callback function is truthy, call the callback function and reset it
     // to null:

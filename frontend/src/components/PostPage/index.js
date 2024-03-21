@@ -27,7 +27,7 @@ import Comments from './Comments/Comments';
 
 
 function PostPage() {
-    const { singlePost } = useSelector((state) => state.posts)
+    const { singlePost, postsHistory, postsReplies } = useSelector((state) => state.posts)
     const { user } = useSelector((state) => state.session)
     const { singleCommunity, userCommunities } = useSelector((state) => state.communities)
     const { id } = useParams();
@@ -201,6 +201,16 @@ function PostPage() {
         setCommentM(false)
 
     }
+    useEffect(() => {
+
+        async function fetchData() {
+          if (singlePost.id) await dispatch(postActions.thunkGetReplies(singlePost.id))
+          else return
+        }
+
+        fetchData()
+
+    }, [dispatch, singlePost.id])
 
 
     let comments
@@ -517,7 +527,7 @@ function PostPage() {
         {user && singlePost.User?.id !== user.id ?<div id="post-extras3">
                     <div style={{ backgroundColor: "transparent"}} id="comment">
                     <i class="fa-regular fa-message"></i>
-                    <p>{comments && comments.length} Comments</p>
+                    <p>{comments && comments.length ? Object.values(postsReplies).length : "0"} Comments</p>
                     </div>
                     <div onClick={(() => window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")))} id="comment">
                     <i class="fi fi-rr-box-heart"></i>
@@ -557,7 +567,7 @@ function PostPage() {
              <div id="post-extras1">
                 <div style={{ backgroundColor: "transparent"}} id="comment5">
                 <i class="fa-regular fa-message"></i>
-                <p>{comments && comments.length}</p>
+                <p>{comments && comments.length ? Object.values(postsReplies).length : "0"}</p>
                 </div>
                 <div id="comment4">
                     <i class="fi fi-rs-heart-arrow"></i>

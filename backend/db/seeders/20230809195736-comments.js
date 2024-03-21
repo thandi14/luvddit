@@ -112,7 +112,34 @@ module.exports = {
       {userId: 2, comment: "Depth blooms like a flower in the garden of this conversation.", postId: 34},
       {userId: 3, comment: "A familiar topic is reborn through your refreshing perspective.", postId: 2},
       {userId: 18, comment: "Your comment is a mosaic of the diverse colors of understanding.", postId: 40},
-      {userId: 21, comment: "Your insights are like puzzle pieces elegantly fitting into the discourse.", postId: 10}
+      {userId: 21, comment: "Your insights are like puzzle pieces elegantly fitting into the discourse.", postId: 10},
+   ///// Replies:
+      { parent: 94, userId: 21, comment: "Thank you for your insightful comment! It adds depth to the discussion.", postId: 30 },
+      { parent: 95, userId: 6, comment: "I appreciate your perspective. It's thought-provoking and elegantly expressed.", postId: 20 },
+      { parent: 96, userId: 3, comment: "Your contribution brings a sense of harmony to this online space.", postId: 43 },
+      { parent: 97, userId: 9, comment: "Your insight enriches this conversation. Well said!", postId: 34 },
+      { parent: 98, userId: 6, comment: "Your comment resonates with me. It offers a fresh viewpoint on the topic.", postId: 2 },
+      { parent: 99, userId: 4, comment: "Well said! Your comment captures the essence of the discussion.", postId: 40 },
+      { parent: 100, userId: 7, comment: "I agree! Your comment fits seamlessly into the ongoing discourse.", postId: 10 },
+      { parent: 1, userId: 21, comment: "Thank you for sharing your insights! I found them incredibly insightful.", postId: 1 },
+      { parent: 2, userId: 20, comment: "I appreciate your perspective. It resonates with me.", postId: 2 },
+      { parent: 3, userId: 19, comment: "Great take on the subject! It's a fresh perspective.", postId: 3 },
+      { parent: 4, userId: 18, comment: "Impressive analysis! Your perspective adds depth to the discussion.", postId: 4 },
+      { parent: 5, userId: 17, comment: "Your overview of the topic is comprehensive. Well done!", postId: 5 },
+      { parent: 6, userId: 16, comment: "Thanks for sharing! Your perspective has given me a new insight.", postId: 6 },
+      { parent: 7, userId: 15, comment: "Your expertise shines through in your analysis. Well articulated!", postId: 7 },
+      { parent: 8, userId: 14, comment: "I'm grateful for the learning opportunity from this discussion.", postId: 8 },
+      { parent: 9, userId: 13, comment: "Your insights are brilliant and thought-provoking. Thank you!", postId: 9 },
+      { parent: 1, userId: 12, comment: "Your insights are truly enlightening. Thank you!", postId: 1 },
+      { parent: 109, userId: 2, comment: "I'm glad you shared your perspective. It adds depth to the discussion.", postId: 2 },
+      { parent: 110, userId: 13, comment: "I appreciate your unique take on the subject. It's thought-provoking.", postId: 3 },
+      { parent: 111, userId: 4, comment: "Your analysis brings a fresh angle to the topic. Impressive!", postId: 4 },
+      { parent: 112, userId: 8, comment: "Well explained! Your overview clarifies the topic effectively.", postId: 5 },
+      { parent: 113, userId: 15, comment: "Your perspective sheds new light on the matter. Thank you for sharing!", postId: 6 },
+      { parent: 114, userId: 11, comment: "Your expertise is evident in your analysis. Well done!", postId: 7 },
+      { parent: 1, userId: 13, comment: "I've gained valuable insights from your contribution. Thank you!", postId: 8 },
+      { parent: 12, userId: 1, comment: "Your insights provoke critical thinking. Keep sharing your thoughts!", postId: 9 }
+
     ], {})
   },
 
