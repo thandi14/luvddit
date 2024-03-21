@@ -679,45 +679,44 @@ router.get("/:id", async (req, res) => {
         ]
     });
 
+        for (let c of post.dataValues.Comments) {
+            let profile = await Community.findOne({
+                where: {
+                    userId: c.dataValues.userId,
+                    type: "Profile"
+                },
+                include: [
+                      { model: CommunityStyle }
+                ]
+            })
 
-    for (let c of post.dataValues.Comments) {
-        let profile = await Community.findOne({
-            where: {
-                userId: c.dataValues.userId,
-                type: "Profile"
-            },
-            include: [
-                  { model: CommunityStyle }
-            ]
-        })
+            let replies = await Comments.findAll({
+                where: {
+                    parent: c.dataValues.id
+                },
+                include: [
+                { model: CommentSetting},
+                { model: User},
+                { model: Votes }
+                ]
+            })
 
-        let replies = await Comments.findAll({
-            where: {
-                parent: c.dataValues.id
-            },
-            include: [
-            { model: CommentSetting},
-            { model: User},
-            { model: Votes }
-            ]
-        })
+            replies = await includeReply(replies)
 
-        replies = await includeReply(replies)
+            c.dataValues.Replies = replies
 
-        c.dataValues.Replies = replies
+            c.dataValues.Profile = profile
 
-        c.dataValues.Profile = profile
-
-    }
-
-
-    let members = await CommunityMembers.findAll({
-        where: {
-            communityId: post.dataValues.Community.dataValues.id
         }
-    });
 
-    post.dataValues.Community.dataValues.CommunityMembers = members.length
+        let members = await CommunityMembers.findAll({
+            where: {
+                communityId: post.dataValues.Community.dataValues.id
+            }
+        });
+
+        post.dataValues.Community.dataValues.CommunityMembers = members.length
+
 
     return res.json(post)
 })

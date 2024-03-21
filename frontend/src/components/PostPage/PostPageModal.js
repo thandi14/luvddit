@@ -558,6 +558,7 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
                 <span id="t-head">{singlePost.title}</span>
                 </div>
                 <span onClick={(() => {
+                    setScroll(false)
                     setThreadId(null)
                     closeModal()})} id="close-head"><i class="fi fi-rr-cross-small"></i>Close</span>
                 </div>
