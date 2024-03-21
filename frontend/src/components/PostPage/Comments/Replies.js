@@ -334,7 +334,7 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId 
                 {threadId == c.id ? <div id="replying"></div> : null}
                { i <= (!more ? 6 : comments.length )? <>
                <div onClick={(() => setC(c)
-                    )} id={`${c.id}`} style={{ position: "relative", zIndex: "10", margin: "0px", marginTop: "5px", overflow: "hidden"}} className="a-comment">
+                    )} id={`${c.id}`} style={{ position: "relative", margin: "0px", marginTop: "5px"}} className="a-comment">
                     <div id="left-csec">
                     { !c.Profile?.CommunityStyle ? <img id="avatar6" src={pfp}></img> : null}
                     { c.Profile?.CommunityStyle?.icon ? <img id="avatar6" src={c.Profile?.CommunityStyle.icon}></img> : null}

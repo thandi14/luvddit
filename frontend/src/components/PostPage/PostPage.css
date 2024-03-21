@@ -285,6 +285,7 @@
 .a-comment {
     display: flex;
     width: 100%;
+    /* z-index: 9; */
     gap: 10px;
     margin-bottom: 4%;
 }
@@ -425,7 +426,7 @@
     position: absolute;
     background-color: white;
     margin-top: 0.5%;
-    z-index: 7;
+    z-index: 12;
     overflow: hidden;
     display: flex;
     flex-direction: column;

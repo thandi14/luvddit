@@ -546,7 +546,7 @@ function Comments({ postId, cId, vis3, replyId }) {
                     {comments.map((c, i) =>
                         <div style={{ position: "relative"}}>
                         {threadId == c.id ? <div id="replying"></div> : null}
-                        <div onClick={(() => setC(c))} id={`${c.id}`} style={{ position: "relative", zIndex: "10"}} className="a-comment">
+                        <div onClick={(() => setC(c))} id={`${c.id}`} style={{ position: "relative" }} className="a-comment">
                             <div id="left-csec">
                             { !c.Profile?.CommunityStyle ? <img id="avatar6" src={pfp}></img> : null}
                             { c.Profile?.CommunityStyle?.icon ? <img id="avatar6" src={c.Profile?.CommunityStyle.icon}></img> : null}
