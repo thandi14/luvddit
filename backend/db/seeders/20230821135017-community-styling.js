@@ -39,13 +39,13 @@ module.exports = {
       {
         communityId: 4,
         icon: "https://pbs.twimg.com/media/EHnAGckWwAE1lT7.jpg",
-        banner: "https://data.whicdn.com/images/101705264/original.jpg"
+        banner: "https://i.pinimg.com/564x/7b/6c/c1/7b6cc129fa555bb58699d3d5c60e9c1a.jpg"
       },
       {
         communityId: 10,
         base: "hotpink",
         highlight: "hotpink",
-        icon: "https://drive.google.com/uc?export=view&id=14S9CgrNAztQEkvCTz5fTyACRQ8hzl6oh"
+        icon: "https://i.pinimg.com/736x/36/ad/21/36ad21ba52efe38dc92cf7372b7b8bb5.jpg"
       },
       {
         communityId: 11,

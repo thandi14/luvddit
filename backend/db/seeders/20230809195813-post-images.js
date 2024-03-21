@@ -149,23 +149,23 @@ module.exports = {
         postId: 29
       },
       {
-        imgURL: "https://drive.google.com/uc?export=view&id=1czPG1YFkAfew8_eEBofhoD_P9Xx1ATvs",
+        imgURL: "https://i.pinimg.com/736x/b9/5d/73/b95d7369b0d3a743355c1c1e9e81c093.jpg",
         postId: 69
       },
       {
-        imgURL: 'https://drive.google.com/uc?export=view&id=1bnt-Z8meSaiqrqExB3xMT7tY-7RlpNOC',
+        imgURL: 'https://i.pinimg.com/736x/00/2c/8f/002c8f51ea1092e342191c469c648d82.jpg',
         postId: 69
       },
       {
-        imgURL: 'https://drive.google.com/uc?export=view&id=1wP6nRrTIYoN_3pjO7UYgzeNRtpwwZh4k',
+        imgURL: 'https://i.pinimg.com/736x/51/ff/d6/51ffd6ec19bd8623f275fb0edc892330.jpg',
         postId: 69
       },
       {
-        imgURL: 'https://drive.google.com/uc?export=view&id=1czPG1YFkAfew8_eEBofhoD_P9Xx1ATvs',
+        imgURL: 'https://i.pinimg.com/736x/b9/5d/73/b95d7369b0d3a743355c1c1e9e81c093.jpg',
         postId: 70
       },
       {
-        imgURL: 'https://drive.google.com/uc?export=view&id=1CoX-lchXGOE9njKhIjQAd0Hv2uXrxNT2',
+        imgURL: 'https://i.pinimg.com/736x/d0/a3/88/d0a388c07e00932818f4307357f37d65.jpg',
         postId: 70
       },
     ])
