@@ -264,7 +264,7 @@ function UsersTopPosts() {
         {!filterdPosts.length ? <NoPosts name="posted anything"/> : filterdPosts?.map((post, i) =>
             // <div id={`${post.id}`} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={scrolling} />))} className="post-content">
             <div id="omg2">
-            {!post.PostSetting?.hidden ? <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id={`${post.id}`} className="post-content3">
+            {(!post.PostSetting?.hidden || user?.id !== post.PostSetting?.userId || new Date(post.PostSetting?.hidden) > new Date(Date.now() + 60000)) ? <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id={`${post.id}`} className="post-content3">
             <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side9">
             <PostLikes post={post}
             />
@@ -455,7 +455,14 @@ function UsersTopPosts() {
                       handleUnsaved(post.id)
                     })}>
                     <i class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
-                    <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
+                    {!post.PostSetting || !post.PostSetting.hidden ? <p onClick={((e) => {
+                    e.stopPropagation()
+                    !post.PostSetting ? handleHide(post.id) : handleHide2(post.id)
+                    })}><i class="fi fi-rr-eye-crossed"></i>Hide</p> :
+                    <p onClick={((e) => {
+                    e.stopPropagation()
+                    handleUnhide(post.PostSetting.id)
+                    })}><i class="fi fi-sr-eye-crossed"></i>Unhide</p>}
                     <p onClick={(() => {
                         setModalContent2(<div> <DeletePost id={singlePost.id} /></div>)
                         setIsVisible2(false)

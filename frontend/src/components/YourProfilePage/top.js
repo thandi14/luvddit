@@ -300,10 +300,14 @@ function YourTopProfilePage() {
         {filterdPosts && !filterdPosts.length ? <NoPosts name={"posted"} /> : filterdPosts?.map((post, i) =>
             // <div id={`${post.id}`} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={scrolling} />))} className="post-content">
             <div id="omg">
-            <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id={`${post.id}`} className="post-content2">
-            {post.userId !== user?.id ? <div id="pc-side104"><i id="posted-c" class="fa-regular fa-message"></i></div> : <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side8">
-            <PostLikes post={post}
-            />
+             {(post.PostSetting?.hidden && user?.id === post.PostSetting?.userId && new Date(post.PostSetting?.hidden) < new Date(Date.now() + 60000)) ? <div id="hideP2">
+                     <h2>Post hidden</h2>
+                     <button onClick={(() => handleUnhide(post.PostSetting.id))} id="undoH2">Undo</button>
+                     </div> : <>
+          <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id={`${post.id}`} className="post-content2">
+          {post.userId !== user.id ? <div id="pc-side104"><i id="posted-c" class="fa-regular fa-message"></i></div> : <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side8">
+          <PostLikes post={post}
+          />
             </div> }
             <div id="pc-side2">
             { post.userId !== user?.id ? <div id="nameOf2">
@@ -536,6 +540,7 @@ function YourTopProfilePage() {
                     </div>
                     )}
                 </div>: null}
+                </>}
             </div>
         )}
 

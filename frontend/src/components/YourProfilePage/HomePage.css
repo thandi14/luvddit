@@ -11,6 +11,11 @@
     margin-top: 4%;
 }
 
+#undoH2:hover {
+    background-color: #f0f0f1;
+
+}
+
 .post-content2 {
     background-color: white;
     width: 99.7%;
