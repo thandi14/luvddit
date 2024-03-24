@@ -639,7 +639,7 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
                     handleSave()
                     })}>Save</button>}
                     </div> : null}
-            {user && singlePost.User?.id !== user.id ?<div id="post-extras3">
+            {!user || (user && singlePost.User?.id !== user.id) ? <div id="post-extras3">
                     <div style={{ backgroundColor: "transparent"}} id="comment">
                     <i class="fa-regular fa-message"></i>
                     <p>{comments && comments.length ? Object.values(postsReplies).length : "0"} Comments</p>
@@ -672,9 +672,18 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
                       setHiddenbox(!hiddenBox)}
                       )} class="fi fi-rr-menu-dots">
                       {hiddenBox && hiddenPost == singlePost.id && <div id="hp">
-                        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-volume-mute"></i>Mute l/help</span>
-                        <span onClick={(() => singlePost.PostSetting ? handleHide2(singlePost.id) : handleHide(singlePost.id))} ><i class="fi fi-rr-eye-crossed"></i>Hide</span>
-                        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-flag"></i>Report</span>
+                        <span onClick={(() => {
+                            if (!user) setModalContent(<SignupFormModal />)
+                            window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
+                            })}><i class="fi fi-rr-volume-mute"></i>Mute l/help</span>
+                        <span onClick={(() => {
+                            if (!user) setModalContent(<SignupFormModal />)
+                            singlePost.PostSetting ? handleHide2(singlePost.id) : handleHide(singlePost.id)
+                            })} ><i class="fi fi-rr-eye-crossed"></i>Hide</span>
+                        <span onClick={(() => {
+                            if (!user) setModalContent(<SignupFormModal />)
+                            window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
+                            })}><i class="fi fi-rr-flag"></i>Report</span>
                       </div>}
                     </i>
             </div>

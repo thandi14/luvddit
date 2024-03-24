@@ -278,15 +278,15 @@ useEffect(() => {
                 </div>
                 {ePost?.map((post, i) =>
                     <div id={`${post.id}`} className="post-content">
-                    {post.PostSetting?.hidden && <div style={{ width: "100%"}}  id="hideP">
+                    {post.PostSetting?.hidden && user?.id === post.PostSetting.userId && <div style={{ width: "100%"}}  id="hideP">
                       <h2>Post hidden</h2>
                       <button onClick={(() => handleUnhide(post.PostSetting.id))} id="undoH">Undo</button>
                       </div>}
-                   {!post.PostSetting?.hidden && <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side1">
+                   {(!post.PostSetting?.hidden || user?.id !== post.PostSetting.userId) && <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side1">
                     <PostLikes post={post}
                     />
                     </div>}
-                   {!post.PostSetting?.hidden && <div id="pc-side2">
+                   {(!post.PostSetting?.hidden || user?.id !== post.PostSetting.userId) && <div id="pc-side2">
                     <div id="nameOf">
                     {post.Community?.CommunityStyle?.icon ? <img onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} src={post.Community?.CommunityStyle?.icon}></img> : <div style={{ backgroundColor: `${post.Community?.CommunityStyle?.base}`, color: "white" }} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pfp30">l/</div>}
                     <span onClick={(() => history.push(`/communities/${post.communityId}/:page`))} className="userName" id="community">l/{post.Community?.name}</span>

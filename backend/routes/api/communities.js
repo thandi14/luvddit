@@ -253,14 +253,35 @@ router.get("/other", async (req, res) => {
 
 router.get("/:id/hot", async (req, res) => {
     const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
-
-    const pageSize = 10; // Number of posts per page
-
+    const { user } = req
     let communityId = req.params.id
+    let userId
+    if (user) userId = user?.dataValues.id
+    const pageSize = 10;
+
+    let ps
+
+    if (user) {
+         ps = await PostSetting.findAll({
+             order: [['hidden', 'DESC']],
+             where: {
+                 userId,
+                 [Op.or]: [
+                     { hidden: { [Op.ne]: null } },
+                 ]
+             }
+         });
+    }
+
+     let postIds = []
+     if (ps) postIds = ps.map(post => post.dataValues.postId);
 
     let posts = await Post.findAll({
         where: {
-            communityId
+            communityId,
+            id: {
+                [Op.notIn]: postIds
+            }
 
         },
         include: [
@@ -296,14 +317,35 @@ router.get("/:id/hot", async (req, res) => {
 
 router.get("/:id/top", async (req, res) => {
     const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
-
-    const pageSize = 10; // Number of posts per page
-
+    const { user } = req
     let communityId = req.params.id
+    let userId
+    if (user) userId = user?.dataValues.id
+    const pageSize = 10;
+
+    let ps
+
+    if (user) {
+         ps = await PostSetting.findAll({
+             order: [['hidden', 'DESC']],
+             where: {
+                 userId,
+                 [Op.or]: [
+                     { hidden: { [Op.ne]: null } },
+                 ]
+             }
+         });
+    }
+
+     let postIds = []
+     if (ps) postIds = ps.map(post => post.dataValues.postId);
 
     let posts = await Post.findAll({
         where: {
-            communityId
+            communityId,
+            id: {
+                [Op.notIn]: postIds
+            }
 
         },
         include: [
@@ -458,6 +500,7 @@ router.get("/:id/posts", async (req, res) => {
     const search = req.query.search
     let communityId = req.params.id;
     let communityExist = await Post.findByPk(communityId);
+    const { user } = req
 
     if (!communityExist) {
 
@@ -465,12 +508,34 @@ router.get("/:id/posts", async (req, res) => {
 
     }
 
-    const pageSize = 10; // Number of posts per page
+    let userId
+    if (user) userId = user?.dataValues.id
+    const pageSize = 10;
+
+    let ps
+
+    if (user) {
+         ps = await PostSetting.findAll({
+             order: [['hidden', 'DESC']],
+             where: {
+                 userId,
+                 [Op.or]: [
+                     { hidden: { [Op.ne]: null } },
+                 ]
+             }
+         });
+    }
+
+     let postIds = []
+     if (ps) postIds = ps.map(post => post.dataValues.postId);
 
     let posts = await Post.findAll({
         order: [['id', 'DESC']],
         where: {
             communityId,
+            id: {
+                [Op.notIn]: postIds
+            },
             title: {
                 [Op.substring]: search
 
@@ -922,7 +987,8 @@ async (req, res) => {
 router.get('/:id/memberships', async (req, res) => {
     const communityId = req.params.id
     const { user } = req
-    const userId = user.dataValues.id
+    let userId
+    if (user) userId = user.dataValues.id
 
     let communitiesExist = await CommunityMembers.findAll({
         where: {

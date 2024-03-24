@@ -24,9 +24,11 @@ const upload = multer({
 
 
 router.get("/", async (req, res) => {
-    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
-
-    const pageSize = 10; // Number of posts per page
+    const page = parseInt(req.query.page) || 1;
+    const { user } = req
+    let userId
+    if (user) userId = user?.dataValues.id
+    const pageSize = 10;
 
     let communityId = await Community.findAll({
         attributes: ['id'],
@@ -34,6 +36,23 @@ router.get("/", async (req, res) => {
             type: 'Private'
         },
     })
+
+    let ps
+
+    if (user) {
+         ps = await PostSetting.findAll({
+             order: [['hidden', 'DESC']],
+             where: {
+                 userId,
+                 [Op.or]: [
+                     { hidden: { [Op.ne]: null } },
+                 ]
+             }
+         });
+    }
+
+     let postIds = []
+     if (ps) postIds = ps.map(post => post.dataValues.postId);
 
 
 
@@ -44,7 +63,9 @@ router.get("/", async (req, res) => {
                 communityId: {
                     [Op.notIn]: communityId
                 },
-
+                id: {
+                    [Op.notIn]: postIds
+                }
             },
             include: [
                 {
@@ -73,8 +94,10 @@ router.get("/", async (req, res) => {
 
 router.get("/best", async (req, res) => {
     const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
-
-    const pageSize = 10; // Number of posts per page
+    const { user } = req
+    let userId
+    if (user) userId = user?.dataValues.id
+    const pageSize = 10;
 
     let communityId = await Community.findAll({
         attributes: ['id'],
@@ -83,11 +106,32 @@ router.get("/best", async (req, res) => {
         },
     })
 
+    let ps
+
+    if (user) {
+         ps = await PostSetting.findAll({
+             order: [['hidden', 'DESC']],
+             where: {
+                 userId,
+                 [Op.or]: [
+                     { hidden: { [Op.ne]: null } },
+                 ]
+             }
+         });
+    }
+
+    let postIds = []
+    if (ps) postIds = ps.map(post => post.dataValues.postId);
+
+
     let posts = await Post.findAll({
         where: {
             communityId: {
                 [Op.notIn]: communityId
             },
+            id: {
+                [Op.notIn]: postIds
+            }
         },
         include: [
             {
@@ -123,48 +167,16 @@ router.get("/best", async (req, res) => {
 
     let paginatedPosts = posts.slice((page - 1) * pageSize, page * pageSize);
 
-
-    // let posts = await Votes.findAll({
-    //     order: [['upVote', 'DESC']],
-    //     include: [
-    //         { model: Post,
-    //             where: {
-    //                 communityId: {
-    //                     [Op.notIn]: communityId
-    //                 },
-
-    //             },
-    //             include: [
-    //                 { model: Comments },
-    //                 {
-    //                     model: Community,
-    //                     include: [
-    //                         { model: CommunityStyle }
-    //                     ]
-    //                 },
-    //                 { model: User},
-    //                 { model: PostImages},
-    //                 {
-    //                     model: Votes,
-
-    //                 } ,
-    //                 { model: PostSetting }
-    //             ],
-
-    //         }
-    //     ],
-    //     limit: pageSize, // Limit the number of results per page
-    //     offset: (page - 1) * pageSize
-    // })
-
     return res.json(posts)
 })
 
 
 router.get("/hot", async (req, res) => {
     const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
-
-    const pageSize = 10; // Number of posts per page
+    const { user } = req
+    let userId
+    if (user) userId = user?.dataValues.id
+    const pageSize = 10;
 
     let communityId = await Community.findAll({
         attributes: ['id'],
@@ -173,14 +185,32 @@ router.get("/hot", async (req, res) => {
         },
     })
 
+    let ps
+
+    if (user) {
+         ps = await PostSetting.findAll({
+             order: [['hidden', 'DESC']],
+             where: {
+                 userId,
+                 [Op.or]: [
+                     { hidden: { [Op.ne]: null } },
+                 ]
+             }
+         });
+    }
+
+     let postIds = []
+     if (ps) postIds = ps.map(post => post.dataValues.postId);
+
     let posts = await Post.findAll({
         where: {
             communityId: {
                 [Op.notIn]: communityId
             },
-
+            id: {
+                [Op.notIn]: postIds
+            }
         },
-
         include: [
             {
                 model: Comments,
@@ -217,8 +247,10 @@ router.get("/hot", async (req, res) => {
 
 router.get("/top", async (req, res) => {
     const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
-
-    const pageSize = 10; // Number of posts per page
+    const { user } = req
+    let userId
+    if (user) userId = user?.dataValues.id
+    const pageSize = 10;
 
     let communityId = await Community.findAll({
         attributes: ['id'],
@@ -227,13 +259,31 @@ router.get("/top", async (req, res) => {
         },
     })
 
+    let ps
+
+    if (user) {
+         ps = await PostSetting.findAll({
+             order: [['hidden', 'DESC']],
+             where: {
+                 userId,
+                 [Op.or]: [
+                     { hidden: { [Op.ne]: null } },
+                 ]
+             }
+         });
+    }
+
+     let postIds = []
+     if (ps) postIds = ps.map(post => post.dataValues.postId);
 
     let posts = await Post.findAll({
         where: {
             communityId: {
                 [Op.notIn]: communityId
             },
-
+            id: {
+                [Op.notIn]: postIds
+            }
         },
         include: [
             {
@@ -412,7 +462,7 @@ router.get("/saved", async (req, res) => {
 
 router.get("/hidden", async (req, res) => {
     const page = parseInt(req.query.page) || 1;
-    const pageSize = 10; 
+    const pageSize = 10;
 
     const { user } = req
     const userId = user.dataValues.id
@@ -502,51 +552,6 @@ router.get("/votes", async (req, res) => {
     return res.json(posts)
     })
 
-    // router.get("/best", async (req, res) => {
-    //     const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
-    //     const pageSize = 10; // Number of posts per page
-
-    //     const { user } = req
-    //     let userId = user.dataValues.id
-
-    //     let posts = await Votes.findAll({
-    //         order: [['upVote', 'ASC']],
-    //         where: {
-    //             userId
-    //         },
-    //         include: [
-    //             {
-    //                 model: Post,
-    //                 include: [
-    //                     { model: Comments },
-    //                     {
-    //                         model: Community,
-    //                         include: [
-    //                             { model: CommunityStyle }
-    //                         ]
-    //                     },
-    //                     { model: User},
-    //                     { model: PostImages},
-    //                     {
-    //                         model: Votes,
-    //                         order: [['createdAt', 'DESC']],
-    //                         where: {
-    //                             userId
-    //                         },
-    //                      },
-    //                     { model: PostSetting }
-    //                 ]
-    //             }
-    //          ],
-    //          limit: pageSize, // Limit the number of results per page
-    //          offset: (page - 1) * pageSize
-    //     });
-
-
-    //     return res.json(posts)
-    //     })
-
-
     router.get("/votes/current", async (req, res) => {
         const { user } = req
 
@@ -566,15 +571,35 @@ router.get("/votes", async (req, res) => {
     router.get("/search", async (req, res) => {
         const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
         const search = req.query.search
+        const { user } = req
+        let userId
+    if (user) userId = user?.dataValues.id
+    const pageSize = 10;
 
-        const pageSize = 10; // Number of posts per page
+    let communityId = await Community.findAll({
+        attributes: ['id'],
+        where: {
+            type: 'Private'
+        },
+    })
 
-        let communityId = await Community.findAll({
-            attributes: ['id'],
-            where: {
-                type: 'Private'
-            },
-        })
+    let ps
+
+    if (user) {
+         ps = await PostSetting.findAll({
+             order: [['hidden', 'DESC']],
+             where: {
+                 userId,
+                 [Op.or]: [
+                     { hidden: { [Op.ne]: null } },
+                 ]
+             }
+         });
+    }
+
+    let postIds = []
+    if (ps) postIds = ps.map(post => post.dataValues.postId);
+
 
         communityId = communityId.map(community => community.dataValues.id);
         let posts = await Post.findAll({
@@ -582,6 +607,9 @@ router.get("/votes", async (req, res) => {
             where: {
                 communityId: {
                     [Op.notIn]: communityId
+                },
+                id: {
+                    [Op.notIn]: postIds
                 },
                 title: {
                     [Op.substring]: search
@@ -759,11 +787,34 @@ router.get("/:id", async (req, res) => {
 
 router.get("/hot", async (req, res) => {
     const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
+    const { user } = req
+    let userId
+    if (user) userId = user?.dataValues.id
+    const pageSize = 10;
 
-    const pageSize = 10; // Number of posts per page
+    let communityId = await Community.findAll({
+        attributes: ['id'],
+        where: {
+            type: 'Private'
+        },
+    })
 
-    let userId = req.params.id
+    let ps
 
+    if (user) {
+         ps = await PostSetting.findAll({
+             order: [['hidden', 'DESC']],
+             where: {
+                 userId,
+                 [Op.or]: [
+                     { hidden: { [Op.ne]: null } },
+                 ]
+             }
+         });
+    }
+
+     let postIds = []
+     if (ps) postIds = ps.map(post => post.dataValues.postId);
 
     let posts = await Post.findAll({
         where: {
@@ -853,11 +904,30 @@ router.get('/:id/overview', async (req, res) => {
     const { user } = req
     let userId = req.params.id;
 
+    let ps
+
+    if (user) {
+         ps = await PostSetting.findAll({
+             order: [['hidden', 'DESC']],
+             where: {
+                 userId,
+                 [Op.or]: [
+                     { hidden: { [Op.ne]: null } },
+                 ]
+             }
+         });
+    }
+
+    const postIds = ps.map(post => post.dataValues.postId);
+
     const [posts, comments] = await Promise.all([
         Post.findAll({
             order: [['updatedAt', 'DESC']],
             where: {
-                userId
+                userId,
+                id: {
+                    [Op.notIn]: postIds
+                }
             },
             include: [
                 {
@@ -952,13 +1022,33 @@ router.get('/:id/overview/top', async (req, res) => {
     const pageSize = 5; // Number of posts per page
 
     const { user } = req
-    let userId = req.params.id;
+    let userId
+    if (user) userId = user?.dataValues.id
 
+    let ps
+
+    if (user) {
+         ps = await PostSetting.findAll({
+             order: [['hidden', 'DESC']],
+             where: {
+                 userId,
+                 [Op.or]: [
+                     { hidden: { [Op.ne]: null } },
+                 ]
+             }
+         });
+    }
+
+     let postIds = []
+     if (ps) postIds = ps.map(post => post.dataValues.postId);
     const [posts, comments] = await Promise.all([
         Post.findAll({
             order: [['updatedAt', 'DESC']],
             where: {
-                userId
+                userId,
+                id: {
+                    [Op.notIn]: postIds
+                }
             },
             include: [
                 {
@@ -1021,13 +1111,10 @@ router.get('/:id/overview/top', async (req, res) => {
         }),
     ]);
 
-    // Sort posts by the number of comments
     const sortedPosts = posts.sort((a, b) => b.dataValues.Votes.filter((v) => v.dataValues.upVote === 1).length - a.dataValues.Votes.filter((v) => v.dataValues.upVote === 1).length);
 
-    // Sort comments by updatedAt if needed
     const sortedComments = comments.sort((a, b) => b.dataValues.Votes.filter((v) => v.dataValues.upVote === 1).length - a.dataValues.Votes.filter((v) => v.dataValues.upVote === 1).length);
 
-    // Paginate the sorted posts and comments
     const paginatedPosts = sortedPosts.slice((page - 1) * pageSize, page * pageSize);
     const paginatedComments = sortedComments.slice((page - 1) * pageSize, page * pageSize);
 
@@ -1043,13 +1130,33 @@ router.get('/:id/overview/hot', async (req, res) => {
     const pageSize = 5; // Number of posts per page
 
     const { user } = req
-    let userId = req.params.id;
+    let userId
+    if (user) userId = user?.dataValues.id
 
+    let ps
+
+    if (user) {
+         ps = await PostSetting.findAll({
+             order: [['hidden', 'DESC']],
+             where: {
+                 userId,
+                 [Op.or]: [
+                     { hidden: { [Op.ne]: null } },
+                 ]
+             }
+         });
+    }
+
+     let postIds = []
+     if (ps) postIds = ps.map(post => post.dataValues.postId);
     const [posts, comments] = await Promise.all([
         Post.findAll({
             order: [['updatedAt', 'DESC']],
             where: {
-                userId
+                userId,
+                id: {
+                    [Op.notIn]: postIds
+                }
             },
             include: [
                 {
@@ -1136,10 +1243,29 @@ router.get("/:id/current", async (req, res) => {
     const { user } = req
     let userId = req.params.id;
 
+    let ps
+
+    if (user) {
+         ps = await PostSetting.findAll({
+             order: [['hidden', 'DESC']],
+             where: {
+                 userId,
+                 [Op.or]: [
+                     { hidden: { [Op.ne]: null } },
+                 ]
+             }
+         });
+     }
+
+     const postIds = ps.map(post => post.dataValues.postId);
+
     let posts = await Post.findAll({
         order: [['createdAt', 'DESC']],
         where: {
-            userId
+            userId,
+            id: {
+                [Op.notIn]: postIds
+            }
         },
         include: [
             { model: Comments },
@@ -1167,11 +1293,38 @@ router.get("/:id/current/top", async (req, res) => {
     const pageSize = 10; // Number of posts per page
 
     const { user } = req
-    let userId = req.params.id;
+    let userId
+    if (user) userId = user?.dataValues.id
 
+    let communityId = await Community.findAll({
+        attributes: ['id'],
+        where: {
+            type: 'Private'
+        },
+    })
+
+    let ps
+
+    if (user) {
+         ps = await PostSetting.findAll({
+             order: [['hidden', 'DESC']],
+             where: {
+                 userId,
+                 [Op.or]: [
+                     { hidden: { [Op.ne]: null } },
+                 ]
+             }
+         });
+    }
+
+     let postIds = []
+     if (ps) postIds = ps.map(post => post.dataValues.postId);
     let posts = await Post.findAll({
         where: {
-            userId
+            userId,
+            id: {
+                [Op.notIn]: postIds
+            }
         },
         include: [
             { model: Comments },
@@ -1202,12 +1355,33 @@ router.get("/:id/current/hot", async (req, res) => {
     const pageSize = 10; // Number of posts per page
 
     const { user } = req
-    let userId = req.params.id;
+    let userId
+    if (user) userId = user?.dataValues.id
+
+    let ps
+
+    if (user) {
+         ps = await PostSetting.findAll({
+             order: [['hidden', 'DESC']],
+             where: {
+                 userId,
+                 [Op.or]: [
+                     { hidden: { [Op.ne]: null } },
+                 ]
+             }
+         });
+    }
+
+     let postIds = []
+     if (ps) postIds = ps.map(post => post.dataValues.postId);
 
     let posts = await Post.findAll({
         order: [['createdAt', 'DESC']],
         where: {
-            userId
+            userId,
+            id: {
+                [Op.notIn]: postIds
+            }
         },
         include: [
             { model: Comments },

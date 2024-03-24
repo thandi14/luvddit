@@ -471,15 +471,15 @@ const handleNsfw = (e) => {
                 </div>
                 {ePost && !ePost.length ? <NoPosts name={"posted"} /> : ePost.map((post, i) =>
                    <div className="post-content">
-                       {post.PostSetting?.hidden && <div style={{ width: "100%"}} id="hideP">
+                       {post.PostSetting?.hidden && user?.id === post.PostSetting.userId && <div style={{ width: "100%"}}  id="hideP">
                       <h2>Post hidden</h2>
                       <button onClick={(() => handleUnhide(post.PostSetting.id))} id="undoH">Undo</button>
                       </div>}
-                      { !post.PostSetting?.hidden && <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={true} />))} id="pc-side1">
-                      <PostLikes post={post}
-                      />
-                      </div>}
-                      { !post.PostSetting?.hidden && <div id="pc-side2">
+                   {(!post.PostSetting?.hidden || user?.id !== post.PostSetting.userId) && <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side1">
+                    <PostLikes post={post}
+                    />
+                    </div>}
+                   {(!post.PostSetting?.hidden || user?.id !== post.PostSetting.userId) && <div id="pc-side2">
                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={scrolling} />))} id="nameOf">
                     {/* <img src={pfp}></img> */}
                     <p id="cp">Posted by <span onClick={((e) => {
