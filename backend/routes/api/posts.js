@@ -904,30 +904,12 @@ router.get('/:id/overview', async (req, res) => {
     const { user } = req
     let userId = req.params.id;
 
-    let ps
-
-    if (user) {
-         ps = await PostSetting.findAll({
-             order: [['hidden', 'DESC']],
-             where: {
-                 userId,
-                 [Op.or]: [
-                     { hidden: { [Op.ne]: null } },
-                 ]
-             }
-         });
-    }
-
-    const postIds = ps.map(post => post.dataValues.postId);
-
     const [posts, comments] = await Promise.all([
         Post.findAll({
             order: [['updatedAt', 'DESC']],
             where: {
                 userId,
-                id: {
-                    [Op.notIn]: postIds
-                }
+
             },
             include: [
                 {
@@ -1025,30 +1007,12 @@ router.get('/:id/overview/top', async (req, res) => {
     let userId
     if (user) userId = user?.dataValues.id
 
-    let ps
 
-    if (user) {
-         ps = await PostSetting.findAll({
-             order: [['hidden', 'DESC']],
-             where: {
-                 userId,
-                 [Op.or]: [
-                     { hidden: { [Op.ne]: null } },
-                 ]
-             }
-         });
-    }
-
-     let postIds = []
-     if (ps) postIds = ps.map(post => post.dataValues.postId);
     const [posts, comments] = await Promise.all([
         Post.findAll({
             order: [['updatedAt', 'DESC']],
             where: {
                 userId,
-                id: {
-                    [Op.notIn]: postIds
-                }
             },
             include: [
                 {
@@ -1133,30 +1097,11 @@ router.get('/:id/overview/hot', async (req, res) => {
     let userId
     if (user) userId = user?.dataValues.id
 
-    let ps
-
-    if (user) {
-         ps = await PostSetting.findAll({
-             order: [['hidden', 'DESC']],
-             where: {
-                 userId,
-                 [Op.or]: [
-                     { hidden: { [Op.ne]: null } },
-                 ]
-             }
-         });
-    }
-
-     let postIds = []
-     if (ps) postIds = ps.map(post => post.dataValues.postId);
     const [posts, comments] = await Promise.all([
         Post.findAll({
             order: [['updatedAt', 'DESC']],
             where: {
                 userId,
-                id: {
-                    [Op.notIn]: postIds
-                }
             },
             include: [
                 {
