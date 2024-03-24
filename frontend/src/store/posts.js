@@ -1372,8 +1372,13 @@ const postsReducer = (state = initialState, action) => {
         newState.postsTopOverview[saved.Comment?.postId].Comments[saved.Comment?.id] = { ...saved.Comment };
       }
       if (Object.values(newState.singlePost).length) {
-        newState.singlePost.Comments = newState.singlePost.Comments?.filter((c) => c.id != saved.commentId)
-        newState.singlePost.Comments?.push({ ...saved.Comment })
+        if (saved.Comment.parent >= 0) {
+          newState.singlePost.Comments = re(newState.singlePost.Comments, saved.Comment)
+        }
+        else {
+          newState.singlePost.Comments = newState.singlePost.Comments?.filter((c) => c.id != saved.commentId)
+          newState.singlePost.Comments?.push({ ...saved.Comment })
+        }
       }
     }
     case DELETE_SAVED2: {
@@ -1381,8 +1386,13 @@ const postsReducer = (state = initialState, action) => {
       const comment = action.comment;
       if (comment && Object.values(comment).length) newState.postsSaved[comment.id] = { ...comment };
       if (comment && Object.values(newState.singlePost).length) {
-        newState.singlePost.Comments = newState.singlePost.Comments?.filter((c) => c.id != comment.id)
-        newState.singlePost.Comments?.push({...comment })
+        if (comment.parent >= 0) {
+          newState.singlePost.Comments = re(newState.singlePost.Comments, comment)
+        }
+        else {
+          newState.singlePost.Comments = newState.singlePost.Comments?.filter((c) => c.id != comment.id)
+          newState.singlePost.Comments?.push({...comment })
+        }
       }
       if (comment && Object.values(newState.postsComments).length) {
         newState.postsComments[comment.postId].Comments = newState.postsComments[comment.postId].Comments?.filter((c) => c.id != comment.id)

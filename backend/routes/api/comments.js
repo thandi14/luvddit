@@ -390,7 +390,7 @@ router.post('/:id/saved', async (req, res) => {
             {
             model: Comments,
             include:[
-           { model: CommentSetting} ,
+            { model: CommentSetting} ,
             { model: User,
                 // include: [
                 //     {
@@ -442,6 +442,59 @@ router.post('/:id/saved', async (req, res) => {
                 { model: CommunityStyle }
         ]
     })
+
+    const includeReply = async function(replies) {
+
+        for (let r of replies) {
+            let profile = await Community.findOne({
+                where: {
+                    userId: r.dataValues.userId,
+                    type: "Profile"
+                },
+                include: [
+                      { model: CommunityStyle }
+                ]
+            })
+
+            r.dataValues.Profile = profile
+
+            let moreReplies = await Comments.findAll({
+                where: {
+                    parent: r.dataValues.id
+                },
+                include: [
+                { model: CommentSetting},
+                { model: User},
+                { model: Votes }
+                ]
+            })
+
+
+            moreReplies = await includeReply(moreReplies)
+            r.dataValues.Replies = moreReplies
+
+
+        }
+
+        return replies
+
+    }
+
+    let moreReplies = await Comments.findAll({
+        where: {
+            parent: saved2.dataValues.commentId
+        },
+        include: [
+        { model: CommentSetting},
+        { model: User},
+        { model: Votes }
+        ]
+    })
+
+
+    moreReplies = await includeReply(moreReplies)
+
+    saved2.dataValues.Comment.dataValues.Replies = moreReplies
 
     saved2.dataValues.Comment.dataValues.Profile = profile
 
@@ -542,6 +595,59 @@ router.put('/saved/:id', async (req, res) => {
                 { model: CommunityStyle }
         ]
     })
+
+    const includeReply = async function(replies) {
+
+        for (let r of replies) {
+            let profile = await Community.findOne({
+                where: {
+                    userId: r.dataValues.userId,
+                    type: "Profile"
+                },
+                include: [
+                      { model: CommunityStyle }
+                ]
+            })
+
+            r.dataValues.Profile = profile
+
+            let moreReplies = await Comments.findAll({
+                where: {
+                    parent: r.dataValues.id
+                },
+                include: [
+                { model: CommentSetting},
+                { model: User},
+                { model: Votes }
+                ]
+            })
+
+
+            moreReplies = await includeReply(moreReplies)
+            r.dataValues.Replies = moreReplies
+
+
+        }
+
+        return replies
+
+    }
+
+    let moreReplies = await Comments.findAll({
+        where: {
+            parent: comment.dataValues.id
+        },
+        include: [
+        { model: CommentSetting},
+        { model: User},
+        { model: Votes }
+        ]
+    })
+
+
+    moreReplies = await includeReply(moreReplies)
+
+    comment.dataValues.Replies = moreReplies
 
     comment.dataValues.Profile = profile
 

@@ -321,8 +321,8 @@ router.get("/history", async (req, res) => {
 })
 
 router.get("/saved", async (req, res) => {
-    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
-    const pageSize = 10; // Number of posts per page
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = 10;
 
     const { user } = req
     const userId = user.dataValues.id
@@ -330,7 +330,10 @@ router.get("/saved", async (req, res) => {
     let comments = await CommentSetting.findAll({
         order: [['saved', 'DESC']],
         where: {
-            userId
+            userId,
+            saved: {
+                [Op.ne]: null
+            }
         },
         include:
             { model: Comments,
@@ -361,14 +364,15 @@ router.get("/saved", async (req, res) => {
                 ]
             }
          ]},
-        //  limit: pageSize, // Limit the number of results per page
-        //  offset: (page - 1) * pageSize
     });
 
     let posts = await PostSetting.findAll({
         order: [['saved', 'DESC']],
         where: {
-            userId
+            userId,
+            saved: {
+                [Op.ne]: null
+            }
         },
         include: [
             {
@@ -392,16 +396,13 @@ router.get("/saved", async (req, res) => {
                 ]
             }
          ],
-        //  limit: pageSize, // Limit the number of results per page
-        //  offset: (page - 1) * pageSize
     });
 
-    // console.log(posts)
-    // console.log(comments)
+
 
     posts = posts.concat(comments)
 
-    posts = posts.filter((p) => p.dataValues.saved).sort((a, b) => a.dataValues.saved - b.dataValues.saved)
+    // posts = posts.filter((p) => p.dataValues.saved).sort((a, b) => a.dataValues.saved - b.dataValues.saved)
 
     let paginated = posts.slice((page - 1) * pageSize, page * pageSize);
 
@@ -410,8 +411,8 @@ router.get("/saved", async (req, res) => {
 })
 
 router.get("/hidden", async (req, res) => {
-    const page = parseInt(req.query.page) || 1; // Get the requested page from the query parameter
-    const pageSize = 10; // Number of posts per page
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = 10; 
 
     const { user } = req
     const userId = user.dataValues.id
