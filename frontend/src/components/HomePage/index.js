@@ -277,15 +277,15 @@ useEffect(() => {
                 </div>
                 {ePost?.map((post, i) =>
                      <div id={`${post.id}`} className="post-content">
-                     {post.PostSetting?.hidden && user?.id === post.PostSetting.userId && <div style={{ width: "100%"}}  id="hideP">
+                     {post.PostSetting?.hidden && user?.id === post.PostSetting?.userId && <div style={{ width: "100%"}}  id="hideP">
                       <h2>Post hidden</h2>
-                      <button onClick={(() => handleUnhide(post.PostSetting.id))} id="undoH">Undo</button>
+                      <button onClick={(() => handleUnhide(post.PostSetting?.id))} id="undoH">Undo</button>
                       </div>}
-                   {!post.PostSetting?.hidden || user?.id !== post.PostSetting.userId && <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side1">
+                   {!post.PostSetting?.hidden || user?.id !== post.PostSetting?.userId && <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side1">
                     <PostLikes post={post}
                     />
                     </div>}
-                   {(!post.PostSetting?.hidden || user?.id !== post.PostSetting.userId) && <div id="pc-side2">
+                   {(!post.PostSetting?.hidden || user?.id !== post.PostSetting?.userId) && <div id="pc-side2">
                      <div id="nameOf">
                      {post.Community?.CommunityStyle?.icon ? <img onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} src={post.Community?.CommunityStyle?.icon}></img> : <div style={{ backgroundColor: `${post.Community?.CommunityStyle?.base}`, color: "white" }} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pfp30">l/</div>}
                      <span onClick={(() => history.push(`/communities/${post.communityId}/:page`))} className="userName" id="community">l/{post.Community?.name}</span>
@@ -318,7 +318,7 @@ useEffect(() => {
                      <i class="fi fi-rs-heart-arrow"></i>
                      <p>Share</p>
                      </div>
-                     { !post.PostSetting || !post.PostSetting.saved ? <div onClick={(() => {
+                     { post.PostSetting?.userId !== user?.id || !post.PostSetting?.saved ? <div onClick={(() => {
                        post.PostSetting ? handleSaved2(post.id) : handleSaved(post.id)
                      })} id="comment">
                      <i class="fi fi-rr-bookmark"></i>
@@ -338,7 +338,8 @@ useEffect(() => {
                       )} class="fi fi-rr-menu-dots">
                       {hiddenBox && hiddenPost == post.id && <div id="hp">
                         <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-volume-mute"></i>Mute l/help</span>
-                        <span onClick={(() => post.PostSetting ? handleHide2(post.id) : handleHide(post.id))} ><i class="fi fi-rr-eye-crossed"></i>Hide</span>
+                        {post.PostSetting && post.PostSetting?.hidden && post.PostSetting?.userId == user.id ? <span onClick={(() => handleUnhide(post.PostSetting.id))} ><i class="fi fi-sr-eye-crossed"></i>Unide</span> :
+                        <span onClick={(() => post.PostSetting ? handleHide2(post.id) : handleHide(post.id))} ><i class="fi fi-rr-eye-crossed"></i>Hide</span> }
                         <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-flag"></i>Report</span>
                       </div>}
                     </i>

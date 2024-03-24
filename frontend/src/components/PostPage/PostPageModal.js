@@ -139,6 +139,11 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
 
     }, [dispatch, singlePost.id])
 
+
+    const handleUnhide = async (id) => {
+        await dispatch(postActions.thunkUpdateHidden2(id))
+    }
+
     const handleJoinClick = async (e) => {
         e.stopPropagation()
         let response
@@ -297,27 +302,6 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
 
     let comments
     if (singlePost.Comments && singlePost.Comments.length) comments = Object.values(singlePost.Comments).sort((a, b) => a.createdAt - b.createdAt)
-
-    // useEffect( () => {
-
-    //     async function fetchData() {
-    //         const response = await dispatch(postActions.thunkCreateComment(data2, singlePost.id))
-    //     }
-    //     fetchData()
-
-    // }, [dispatch, data2, singlePost.id])
-
-    // console.log(data2)
-
-    // useEffect( () => {
-
-    //     async function fetchData() {
-    //         let response
-    //         if (c && c.id) response = await dispatch(postActions.thunkUpdateComment(data3, c.id))
-    //     }
-    //     fetchData()
-
-    // }, [dispatch, c, data3])
 
     const scrollToTop = () => {
         const container = document.querySelector('.post-modal'); // Adjust the selector as needed
@@ -653,14 +637,13 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
                     <p>Share</p>
                     </div>
                     { !singlePost.PostSetting || !singlePost.PostSetting.saved ? <div onClick={(() => {
-                      // setSaved(post.id)
-                      handleSaved(singlePost.id)
+                      singlePost.PostSetting ? handleSaved2(singlePost.id) : handleSaved2(singlePost.id)
                     })} id="comment">
                     <i class="fi fi-rr-bookmark"></i>
                     <p>Save</p>
                     </div> :
                     <div onClick={(() => {
-                      handleUnsaved(singlePost.id)
+                      handleUnsaved(singlePost.PostSetting.id)
                     })} id="comment">
                     <i class="fi fi-rr-bookmark-slash"></i>
                     <p>Unsave</p>
@@ -676,10 +659,15 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
                             if (!user) setModalContent(<SignupFormModal />)
                             window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
                             })}><i class="fi fi-rr-volume-mute"></i>Mute l/help</span>
-                        <span onClick={(() => {
+                        {singlePost.PostSetting?.hidden ?
+                            <span onClick={(() => {
+                            if (!user) setModalContent(<SignupFormModal />)
+                            handleUnhide(singlePost.PostSetting.id)
+                            })} ><i class="fi fi-rr-eye-crossed"></i>Unhide</span> :
+                            <span onClick={(() => {
                             if (!user) setModalContent(<SignupFormModal />)
                             singlePost.PostSetting ? handleHide2(singlePost.id) : handleHide(singlePost.id)
-                            })} ><i class="fi fi-rr-eye-crossed"></i>Hide</span>
+                            })} ><i class="fi fi-rr-eye-crossed"></i>Hide</span> }
                         <span onClick={(() => {
                             if (!user) setModalContent(<SignupFormModal />)
                             window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
@@ -720,14 +708,22 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
                 <div className="menu">
                 <div ref={targetRef5} id={editMenu}>
                    {singlePost.PostImages.length && singlePost.PostImages[0].imgURL ? null : <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
+                   {singlePost.PostSetting?.saved && singlePost.PostSetting?.userId == user?.id ? <p onClick={((e) => {
+                        e.stopPropagation()
+                         handleUnsaved(singlePost.PostSetting.id)
+                    })}><i class="fi fi-rr-bookmark-slash"></i>Unsave</p> :
                     <p onClick={((e) => {
                         e.stopPropagation()
-                        window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))
-                    })}><i class="fi fi-rr-bookmark"></i>Save</p>
+                        singlePost.PostSetting ? handleSaved2(singlePost.id) : handleSaved2(singlePost.id)
+                    })}><i class="fi fi-rr-bookmark"></i>Save</p>}
+                   { singlePost.PostSetting.hidden && singlePost.PostSetting?.userId == user?.id ? <p onClick={((e) => {
+                        handleUnhide(singlePost.PostSetting.id)
+                    })}><i class="fi fi-rr-eye-crossed"></i>Unhide</p> :
                     <p onClick={((e) => {
                         e.stopPropagation()
-                        window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))
-                    })}><i class="fi fi-rr-eye-crossed"></i>Hide</p>
+                        if (!user) setModalContent(<SignupFormModal />)
+                        singlePost.PostSetting ? handleHide2(singlePost.id) : handleHide(singlePost.id)
+                    })}><i class="fi fi-rr-eye-crossed"></i>Hide</p>}
                     <p onClick={(() => {
                         setModalContent2(<div> <DeletePost id={singlePost.id} /></div>)
                         setIsVisible(false)

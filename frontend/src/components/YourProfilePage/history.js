@@ -330,15 +330,15 @@ function HistoryPosts() {
                 <div className="menu">
                 <div id={editMenu}>
                    {post.PostImages && post.PostImages.length && post.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                   { !post.PostSetting || (!post.PostSetting && !post.PostSetting.saved) ? <p onClick={(() => {
-                      handleSaved(post.id)
-                    })}>
+                   { post.PostSetting.userId !== user?.id || (!post.PostSetting && !post.PostSetting.saved) ? <p onClick={(() => {
+                    !post.PostSetting ? handleSaved(post.id) : handleSaved2(post.id)
+                  })}>
                     <i class="fi fi-rr-bookmark"></i>Save</p> :
                     <p onClick={(() => {
                       handleUnsaved(post.PostSetting.id)
                     })}>
                     <i class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
-                    {!post.PostSetting.hidden ? <p onClick={(() => {
+                    {post.PostSetting.userId !== user?.id || (!post.PostSetting && !post.PostSetting.hidden) ? <p onClick={(() => {
                       post.PostSetting ? handleHide2(post.id) : handleHide(post.id)
                     })}><i class="fi fi-rr-eye-crossed"></i>Hide</p> : <p onClick={(() => {
                       post.PostSetting ? handleHide2(post.id) : handleHide(post.id)
@@ -385,8 +385,8 @@ function HistoryPosts() {
                 </div>
                 { !post.PostSetting || (!post.PostSetting && !post.PostSetting?.saved) ? <div onClick={((e) => {
                     e.stopPropagation()
-                    handleSaved(post.id)
-                    })} id="comment4">
+                    post.PostSetting ? handleSaved2(post.id) : handleSaved2(post.id)
+                  })} id="comment4">
                     <i class="fi fi-rr-bookmark"></i>
                     <p>Save</p>
                 </div> : <div onClick={((e) => {
@@ -396,7 +396,7 @@ function HistoryPosts() {
                     <i class="fi fi-rr-bookmark-slash"></i>
                     <p>Unsave</p>
                 </div>}
-                {!post.PostSetting?.hidden ? <div onClick={((e) => {
+                {post.PostSetting.userId !== user?.id || !post.PostSetting?.hidden  ? <div onClick={((e) => {
                     e.stopPropagation()
                     post.PostSetting ? handleHide2(post.id) : handleHide(post.id)
                     })} id="comment4">
@@ -407,7 +407,7 @@ function HistoryPosts() {
                     handleUnhide(post.PostSetting?.id)
                     })} id="comment4">
                     <i class="fi fi-sr-eye-crossed"></i>
-                    <p>Unide</p>
+                    <p>Unhide</p>
                 </div> }
                 <div onClick={((e) => {
                     e.stopPropagation()

@@ -466,15 +466,15 @@ const handleNsfw = (e) => {
                 </div>
                 {ePost && !ePost.length ? <NoPosts name={"posted"} /> : ePost.map((post, i) =>
                    <div className="post-content">
-                  {post.PostSetting?.hidden && user?.id === post.PostSetting.userId && <div style={{ width: "100%"}}  id="hideP">
+                  {post.PostSetting?.hidden && user?.id === post.PostSetting?.userId && <div style={{ width: "100%"}}  id="hideP">
                       <h2>Post hidden</h2>
-                      <button onClick={(() => handleUnhide(post.PostSetting.id))} id="undoH">Undo</button>
+                      <button onClick={(() => handleUnhide(post.PostSetting?.id))} id="undoH">Undo</button>
                       </div>}
-                   {(!post.PostSetting?.hidden || user?.id !== post.PostSetting.userId) && <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side1">
+                   {(!post.PostSetting?.hidden || user?.id !== post.PostSetting?.userId) && <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side1">
                     <PostLikes post={post}
                     />
                     </div>}
-                   {(!post.PostSetting?.hidden || user?.id !== post.PostSetting.userId) && <div id="pc-side2">
+                   {(!post.PostSetting?.hidden || user?.id !== post.PostSetting?.userId) && <div id="pc-side2">
                 <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={scrolling} />))} id="nameOf">
                 {/* <img src={pfp}></img> */}
                 <p id="cp">Posted by <span onClick={((e) => {
@@ -505,27 +505,28 @@ const handleNsfw = (e) => {
                 <i class="fi fi-rs-heart-arrow"></i>
                 <p>Share</p>
                 </div>
-                { !post.PostSetting || !post.PostSetting.saved ? <div onClick={(() => {
-                  post.PostSetting ? handleSaved2(post.id) : handleSaved(post.id)
-                })} id="comment">
-                <i class="fi fi-rr-bookmark"></i>
-                <p>Save</p>
-                </div> :
-                <div onClick={(() => {
-                  handleUnsaved(post.id)
-                })} id="comment">
-                <i class="fi fi-rr-bookmark-slash"></i>
-                <p>Unsave</p>
-                </div>
-                }
-                 <i id="hideP" ref={targetRef2} onClick={((e) => {
+                { post.PostSetting?.userId !== user?.id || !post.PostSetting?.saved ? <div onClick={(() => {
+                      post.PostSetting ? handleSaved2(post.id) : handleSaved(post.id)
+                    })} id="comment">
+                    <i class="fi fi-rr-bookmark"></i>
+                    <p>Save</p>
+                    </div> :
+                    <div onClick={(() => {
+                      handleUnsaved(post.id)
+                    })} id="comment">
+                    <i class="fi fi-rr-bookmark-slash"></i>
+                    <p>Unsave</p>
+                    </div>
+                    }
+                 <i id="hideP" ref={targetRef} onClick={((e) => {
                       e.stopPropagation()
                       setHiddenPost(post.id)
                       setHiddenbox(!hiddenBox)}
                       )} class="fi fi-rr-menu-dots">
-                      {hiddenBox && hiddenPost == post.id && <div style={{top: "15px"}} id="hp">
+                      {hiddenBox && hiddenPost == post.id && <div id="hp">
                         <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-volume-mute"></i>Mute l/help</span>
-                        <span onClick={(() => post.PostSetting ? handleHide2(post.id) : handleHide(post.id))} ><i class="fi fi-rr-eye-crossed"></i>Hide</span>
+                        {post.PostSetting && post.PostSetting?.hidden && post.PostSetting?.userId == user.id ? <span onClick={(() => handleUnhide(post.PostSetting.id))} ><i class="fi fi-sr-eye-crossed"></i>Unide</span> :
+                        <span onClick={(() => post.PostSetting ? handleHide2(post.id) : handleHide(post.id))} ><i class="fi fi-rr-eye-crossed"></i>Hide</span> }
                         <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-flag"></i>Report</span>
                       </div>}
                     </i>

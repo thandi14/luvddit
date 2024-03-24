@@ -42,6 +42,7 @@ function SavedPosts() {
     const [threshold, setThreshold] = useState(450);
     const { filter, setFilter } = useFilter()
     const [ seeMore, setSeeMore ] = useState(false)
+    const targetRef3 = useRef()
 
     const handleSaved = async (id) => {
       await dispatch(postsActions.thunkCreateSaved(id))
@@ -301,31 +302,54 @@ function SavedPosts() {
                                          <i class="fi fi-rs-heart-arrow"></i>
                                          <p>Share</p>
                                      </div>
-                                     <i onClick={(() => {
-                                         setIsVisible4(true)
-                                     //     setCommentId(i)
-                                     //    if (commentId === i) setIsVisible4(!isVisible4)
-                                     })} class="fi fi-rr-menu-dots">
-                                     { commentId === i ? <div className="menu">
-                                     <div id="comm-sec25">
-                                     <div onClick={((e) => e.stopPropagation())} id={editMenu2}>
-                                     {post.PostImages.length && post.PostImages[0].imgURL ? null : <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                                      <p><i class="fi fi-rr-bookmark"></i>Save</p>
-                                      <p><i class="fi fi-rr-eye-crossed"></i>Hide</p>
-                                      <p onClick={(() => {
-                                      setModalContent2(<div> <DeleteComment id={post.comment.id} /></div>)
-                                      setIsVisible(false)
-                                      setIsVisible3(false)
-                                      })}><i class="fi fi-rr-trash-xmark"></i>Delete</p>
-                                      <label>
-                                      <input type="checkbox" />
-                                      Send me reply notifications
-                                      </label>
-                                      </div>
-                                      </div>
-                                     </div>
-                                      : null }
-                                     </i>
+                                     <i  ref={targetRef2} onClick={((e) => {
+                    e.stopPropagation()
+                    setIsVisible2(true)
+                    setPostId(i)
+                    if (postId === i) setIsVisible2(!isVisible2)
+                    })} id="menu" class="fi fi-rr-menu-dots">
+                { postId === i ? <div id="post-menu25">
+                <div className="menu">
+                <div id={editMenu}>
+                   {post.PostImages && post.PostImages.length && post.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
+                    { post.PostSetting.userId !== user?.id || !post.PostSetting.saved ? <p onClick={(() => {
+                      post.PostSetting ? handleSaved2(post.id) : handleSaved2(post.id)
+                    })}>
+                    <i class="fi fi-rr-bookmark"></i>Save</p> :
+                    <p onClick={(() => {
+                      handleUnsaved(post.PostSetting.id)
+                    })}>
+                    <i onClick={(() => handleUnsaved)} class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
+                    { post.PostSetting.userId !== user?.id || !post.PostSetting.saved ? <p onClick={(() => {
+                      post.PostSetting ? handleHide2(post.id) : handleHide(post.id)
+                    })}><i class="fi fi-rr-eye-crossed"></i>Hide</p> :
+                    <p onClick={(() => {
+                      handleUnhide(post.PostSetting.id)
+                    })}><i class="fi fi-sr-eye-crossed"></i>Unhide</p>}
+                    <p onClick={(() => {
+                        setModalContent2(<div> <DeletePost id={singlePost.id} /></div>)
+                        setIsVisible2(false)
+                    })}><i class="fi fi-rr-trash-xmark"></i>Delete</p>
+                    <label>
+                    <input type="checkbox" />
+                    Mark as OC
+                    </label>
+                    <label>
+                    <input type="checkbox" />
+                    Mark as Spolier
+                    </label>
+                    <label>
+                    <input type="checkbox" />
+                    Mark as NSFW
+                    </label>
+                    <label>
+                    <input type="checkbox" />
+                    Send me reply notifications
+                    </label>
+                </div>
+                </div>
+                </div> : null }
+                </i>
 
                                  </div>
                              </div>
@@ -410,15 +434,15 @@ function SavedPosts() {
                 <div className="menu">
                 <div id={editMenu}>
                     {post.PostImages && post.PostImages.length && post.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                    { !post.PostSetting || (!post.PostSetting && !post.PostSetting.saved) ? <p onClick={(() => {
-                      handleSaved(post.id)
-                    })}>
+                    { post.PostSetting.userId !== user?.id || !post.PostSetting?.saved ? <p onClick={(() => {
+                    !post.PostSetting ? handleSaved(post.id) : handleSaved2(post.id)
+                  })}>
                     <i class="fi fi-rr-bookmark"></i>Save</p> :
                     <p onClick={(() => {
                       handleUnsaved(post.PostSetting.id)
                     })}>
                     <i class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
-                    {!post.PostSetting.hidden ? <p onClick={(() => {
+                    {post.PostSetting.userId !== user?.id || !post.PostSetting?.hidden ? <p onClick={(() => {
                       post.PostSetting ? handleHide2(post.id) : handleHide(post.id)
                     })}><i class="fi fi-rr-eye-crossed"></i>Hide</p> : <p onClick={(() => {
                       post.PostSetting ? handleHide2(post.id) : handleHide(post.id)
@@ -463,10 +487,10 @@ function SavedPosts() {
                     <i class="fi fi-rs-heart-arrow"></i>
                     <p>Share</p>
                 </div>
-                { !post.PostSetting || (!post.PostSetting && !post.PostSetting?.saved) ? <div onClick={((e) => {
+                { post.PostSetting.userId !== user?.id || !post.PostSetting?.saved ? <div onClick={((e) => {
                     e.stopPropagation()
-                    handleSaved(post.id)
-                    })} id="comment4">
+                    !post.PostSetting ? handleSaved(post.id) : handleSaved2(post.id)
+                  })} id="comment4">
                     <i class="fi fi-rr-bookmark"></i>
                     <p>Save</p>
                 </div> : <div onClick={((e) => {
@@ -476,7 +500,7 @@ function SavedPosts() {
                     <i class="fi fi-rr-bookmark-slash"></i>
                     <p>Unsave</p>
                 </div>}
-                {!post.PostSetting?.hidden ? <div onClick={((e) => {
+                { post.PostSetting.userId !== user?.id || !post.PostSetting?.hidden ? <div onClick={((e) => {
                     e.stopPropagation()
                     post.PostSetting ? handleHide2(post.id) : handleHide(post.id)
                     })} id="comment4">
@@ -487,7 +511,7 @@ function SavedPosts() {
                     handleUnhide(post.PostSetting?.id)
                     })} id="comment4">
                     <i class="fi fi-sr-eye-crossed"></i>
-                    <p>Unide</p>
+                    <p>Unhide</p>
                 </div> }
                 <div onClick={((e) => {
                     e.stopPropagation()

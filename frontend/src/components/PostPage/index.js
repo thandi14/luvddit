@@ -123,12 +123,16 @@ function PostPage() {
     const handleHide = async (id) => {
         if (!user) return setModalContent(<SignupFormModal />)
         await dispatch(postActions.thunkCreateHidden(id))
-        }
+    }
 
-        const handleHide2 = async (id) => {
+    const handleHide2 = async (id) => {
         if (!user) return setModalContent(<SignupFormModal />)
         await dispatch(postActions.thunkUpdateHidden(id))
-        }
+    }
+
+    const handleUnhide = async (id) => {
+        await dispatch(postActions.thunkUpdateHidden2(id))
+    }
 
     useEffect( () => {
 
@@ -551,15 +555,29 @@ function PostPage() {
                     <p>Unsave</p>
                     </div>
                     }
-                    <i id="hideP" style={{ padding: "0.5%"}} ref={targetRef6} onClick={((e) => {
+                      <i id="hideP" style={{ padding: "0.5%"}} ref={targetRef6} onClick={((e) => {
                       e.stopPropagation()
                       setHiddenPost(singlePost.id)
                       setHiddenbox(!hiddenBox)}
                       )} class="fi fi-rr-menu-dots">
                       {hiddenBox && hiddenPost == singlePost.id && <div id="hp">
-                        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-volume-mute"></i>Mute l/help</span>
-                        <span onClick={(() => singlePost.PostSetting ? handleHide2(singlePost.id) : handleHide(singlePost.id))} ><i class="fi fi-rr-eye-crossed"></i>Hide</span>
-                        <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-flag"></i>Report</span>
+                        <span onClick={(() => {
+                            if (!user) setModalContent(<SignupFormModal />)
+                            window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
+                            })}><i class="fi fi-rr-volume-mute"></i>Mute l/help</span>
+                        {singlePost.PostSetting?.hidden ?
+                            <span onClick={(() => {
+                            if (!user) setModalContent(<SignupFormModal />)
+                            handleUnhide(singlePost.PostSetting.id)
+                            })} ><i class="fi fi-rr-eye-crossed"></i>Unhide</span> :
+                            <span onClick={(() => {
+                            if (!user) setModalContent(<SignupFormModal />)
+                            singlePost.PostSetting ? handleHide2(singlePost.id) : handleHide(singlePost.id)
+                            })} ><i class="fi fi-rr-eye-crossed"></i>Hide</span> }
+                        <span onClick={(() => {
+                            if (!user) setModalContent(<SignupFormModal />)
+                            window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications")
+                            })}><i class="fi fi-rr-flag"></i>Report</span>
                       </div>}
                     </i>
             </div>
@@ -595,15 +613,23 @@ function PostPage() {
                 <div id="post-menu25">
                 <div className="menu">
                 <div ref={targetRef5} id={editMenu}>
-                   {singlePost.PostImages.length && singlePost.PostImages[0].imgURL ? null : <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
+                {singlePost.PostImages.length && singlePost.PostImages[0].imgURL ? null : <p onClick={(() => setIsVisible2(true))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
+                   {singlePost.PostSetting?.saved && singlePost.PostSetting?.userId == user?.id ? <p onClick={((e) => {
+                        e.stopPropagation()
+                         handleUnsaved(singlePost.PostSetting.id)
+                    })}><i class="fi fi-rr-bookmark-slash"></i>Unsave</p> :
                     <p onClick={((e) => {
                         e.stopPropagation()
-                        window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))
-                    })}><i class="fi fi-rr-bookmark"></i>Save</p>
+                        singlePost.PostSetting ? handleSaved2(singlePost.id) : handleSaved2(singlePost.id)
+                    })}><i class="fi fi-rr-bookmark"></i>Save</p>}
+                   { singlePost.PostSetting.hidden && singlePost.PostSetting?.userId == user?.id ? <p onClick={((e) => {
+                        handleUnhide(singlePost.PostSetting.id)
+                    })}><i class="fi fi-rr-eye-crossed"></i>Unhide</p> :
                     <p onClick={((e) => {
                         e.stopPropagation()
-                        window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))
-                    })}><i class="fi fi-rr-eye-crossed"></i>Hide</p>
+                        if (!user) setModalContent(<SignupFormModal />)
+                        singlePost.PostSetting ? handleHide2(singlePost.id) : handleHide(singlePost.id)
+                    })}><i class="fi fi-rr-eye-crossed"></i>Hide</p>}
                     <p onClick={(() => {
                         setModalContent2(<div> <DeletePost id={singlePost.id} /></div>)
                         setIsVisible(false)

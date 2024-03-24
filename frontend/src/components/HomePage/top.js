@@ -277,32 +277,32 @@ useEffect(() => {
                 </div>
                 {ePost?.map((post, i) =>
                      <div id={`${post.id}`} className="post-content">
-                     {post.PostSetting?.hidden && <div id="hideP">
-                       <h2>Post hidden</h2>
-                       <button onClick={(() => handleUnhide(post.PostSetting.id))} id="undoH">Undo</button>
-                       </div>}
-                    {!post.PostSetting?.hidden && <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side1">
-                     <PostLikes post={post}
-                     />
-                     </div>}
-                    {!post.PostSetting?.hidden && <div id="pc-side2">
-                     <div id="nameOf">
-                     {post.Community?.CommunityStyle?.icon ? <img onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} src={post.Community?.CommunityStyle?.icon}></img> : <div style={{ backgroundColor: `${post.Community?.CommunityStyle?.base}`, color: "white" }} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pfp30">l/</div>}
-                     <span onClick={(() => history.push(`/communities/${post.communityId}/:page`))} className="userName" id="community">l/{post.Community?.name}</span>
-                     <p>·</p>
-                     <p style={{ marginLeft: "0px"}} id="cp">Posted by <span onClick={((e) => {
-                         e.stopPropagation()
-                         post.userId !== user.id ? history.push(`/profile2/${post.userId}/:page`) : history.push('/profile/:page')})} className="userName">u/{post.User?.username}</span> {getTimeDifferenceString(post.createdAt)}</p>                          </div>
-                     <h3  id="p-tit" onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title"><h3 id="title-content">{post.title}{ post.tags && post.tags.includes("oc") ? <div id="oc5">OC</div> : null} {post.tags && post.tags.includes("spoiler") ? <span id="spoiler5">Spoiler</span> : null } { post.tags && post.tags.includes("nsfw") ? <span id="nsfw5">NSFW</span> : null}</h3></h3>
-                     <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="content">
-                   {post.PostImages?.length !== 0 && <div id="img2">
-                     {post.PostImages?.length === 1 ? <img style={{ maxWidth: "100%", maxHeight: "511px", alignSelf: "flex-end" }} src={post.PostImages[0]?.imgURL} alt="meaningful-text"></img> : <MyCarousel images={post.PostImages}/>}
-                     </div>}
-                     { post.description && <div style={{position: "relative"}} id="finishing2">
-                       <span id="post-des">{post.description}</span>
-                       { post.description.length > 140 && <div id="faded"></div>}
-                       </div>}
-                     </div>
+                     {post.PostSetting?.hidden && user?.id === post.PostSetting?.userId && <div style={{ width: "100%"}}  id="hideP">
+                      <h2>Post hidden</h2>
+                      <button onClick={(() => handleUnhide(post.PostSetting.id))} id="undoH">Undo</button>
+                      </div>}
+                   {(!post.PostSetting?.hidden || user?.id !== post.PostSetting?.userId) && <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side1">
+                    <PostLikes post={post}
+                    />
+                    </div>}
+                   {(!post.PostSetting?.hidden || user?.id !== post.PostSetting?.userId) && <div id="pc-side2">
+                    <div id="nameOf">
+                    {post.Community?.CommunityStyle?.icon ? <img onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} src={post.Community?.CommunityStyle?.icon}></img> : <div style={{ backgroundColor: `${post.Community?.CommunityStyle?.base}`, color: "white" }} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pfp30">l/</div>}
+                    <span onClick={(() => history.push(`/communities/${post.communityId}/:page`))} className="userName" id="community">l/{post.Community?.name}</span>
+                    <p>·</p>
+                    <p style={{ marginLeft: "0px"}} id="cp">Posted by <span onClick={((e) => {
+                        e.stopPropagation()
+                        post.userId !== user.id ? history.push(`/profile2/${post.userId}/:page`) : history.push('/profile/:page')})} className="userName">u/{post.User?.username}</span> {getTimeDifferenceString(post.createdAt)}</p>                          </div>
+                    <h3  id="p-tit" onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="title"><h3 id="title-content">{post.title}{ post.tags && post.tags.includes("oc") ? <div id="oc5">OC</div> : null} {post.tags && post.tags.includes("spoiler") ? <span id="spoiler5">Spoiler</span> : null } { post.tags && post.tags.includes("nsfw") ? <span id="nsfw5">NSFW</span> : null}</h3></h3>
+                    <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="content">
+                  {post.PostImages?.length !== 0 && <div id="img2">
+                    {post.PostImages?.length === 1 ? <img style={{ maxWidth: "100%", maxHeight: "511px", alignSelf: "flex-end" }} src={post.PostImages[0]?.imgURL} alt="meaningful-text"></img> : <MyCarousel images={post.PostImages}/>}
+                    </div>}
+                    { post.description && <div style={{position: "relative"}} id="finishing2">
+                      <span id="post-des">{post.description}</span>
+                      { post.description.length > 140 && <div id="faded"></div>}
+                      </div>}
+                    </div>
                      <div id="post-extras9">
                      <div onClick={(() => {
                       setScroll(true)
@@ -319,7 +319,7 @@ useEffect(() => {
                      <i class="fi fi-rs-heart-arrow"></i>
                      <p>Share</p>
                      </div>
-                     { !post.PostSetting || !post.PostSetting.saved ? <div onClick={(() => {
+                     { post.PostSetting?.userId !== user?.id || !post.PostSetting?.saved ? <div onClick={(() => {
                        post.PostSetting ? handleSaved2(post.id) : handleSaved(post.id)
                      })} id="comment">
                      <i class="fi fi-rr-bookmark"></i>
@@ -339,7 +339,8 @@ useEffect(() => {
                       )} class="fi fi-rr-menu-dots">
                       {hiddenBox && hiddenPost == post.id && <div id="hp">
                         <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-volume-mute"></i>Mute l/help</span>
-                        <span onClick={(() => post.PostSetting ? handleHide2(post.id) : handleHide(post.id))} ><i class="fi fi-rr-eye-crossed"></i>Hide</span>
+                        {post.PostSetting && post.PostSetting?.hidden && post.PostSetting?.userId == user.id ? <span onClick={(() => handleUnhide(post.PostSetting.id))} ><i class="fi fi-sr-eye-crossed"></i>Unide</span> :
+                        <span onClick={(() => post.PostSetting ? handleHide2(post.id) : handleHide(post.id))} ><i class="fi fi-rr-eye-crossed"></i>Hide</span> }
                         <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-flag"></i>Report</span>
                       </div>}
                     </i>

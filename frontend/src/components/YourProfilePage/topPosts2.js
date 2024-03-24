@@ -46,6 +46,7 @@ function OthersTopPosts() {
     const [threshold, setThreshold] = useState(450);
     const { filter, setFilter } = useFilter()
     const [ seeMore, setSeeMore ] = useState(false)
+    const targetRef3 = useRef()
 
 
     useEffect(() => {
@@ -256,7 +257,7 @@ function OthersTopPosts() {
         </div>
         {!filterdPosts.length ? <NoPosts name="posted anything"/> : filterdPosts?.map((post, i) =>
            <div id="omg2">
-           { (!post.PostSetting?.hidden || user?.id !== post.PostSetting?.userId || new Date(post.PostSetting?.hidden) > new Date(Date.now() + 60000)) ? <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id={`${post.id}`} className="post-content3">
+           { (!post.PostSetting?.hidden || user?.id !== post.PostSetting?.userId || new Date(post.PostSetting?.hidden) < new Date(Date.now() - 60000)) ? <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id={`${post.id}`} className="post-content3">
            <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side9">
            <PostLikes post={post}
            />
@@ -305,7 +306,7 @@ function OthersTopPosts() {
                    <i class="fi fi-rs-heart-arrow"></i>
                    <p>Share</p>
                </div>
-               { !post.PostSetting || !post.PostSetting.saved ? <div onClick={((e) => {
+               { post.PostSetting.userId !== user?.id || !post.PostSetting?.saved  ? <div onClick={((e) => {
                    e.stopPropagation()
                    !post.PostSetting ? handleSaved(post.id) : handleSaved2(post.id)
                    })} id="comment4">
@@ -319,7 +320,7 @@ function OthersTopPosts() {
                    <i class="fi fi-rr-bookmark-slash"></i>
                    <p>Unsave</p>
                </div>}
-               {!post.PostSetting || !post.PostSetting.hidden ? <div onClick={((e) => {
+               {post.PostSetting.userId !== user?.id || !post.PostSetting?.hidden  ? <div onClick={((e) => {
                    e.stopPropagation()
                    !post.PostSetting ? handleHide(post.id) : handleHide2(post.id)
                    })} id="comment4">

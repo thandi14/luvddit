@@ -42,6 +42,7 @@ function UsersPosts() {
     const [threshold, setThreshold] = useState(450);
     const { filter, setFilter } = useFilter()
     const [ seeMore, setSeeMore ] = useState(false)
+    const targetRef3 = useRef()
 
   useEffect(() => {
     setFilter(false)
@@ -265,7 +266,7 @@ function UsersPosts() {
             // <div id={`${post.id}`} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={scrolling} />))} className="post-content">
             <div id="omg2">
 
-            {(!post.PostSetting?.hidden || user?.id !== post.PostSetting?.userId || new Date(post.PostSetting?.hidden) > new Date(Date.now() + 60000)) ? <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id={`${post.id}`} className="post-content3">
+            {(!post.PostSetting?.hidden || user?.id !== post.PostSetting?.userId || new Date(post.PostSetting?.hidden) > new Date(Date.now() - 60000)) ? <div onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id={`${post.id}`} className="post-content3">
             <div  onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} />))} id="pc-side9">
             <PostLikes post={post}
             />
@@ -348,7 +349,7 @@ function UsersPosts() {
                 <div className="menu">
                 <div id={editMenu}>
                    {singlePost.PostImages && singlePost.PostImages.length && singlePost.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                   { !post.PostSetting || !post.PostSetting.saved ? <p onClick={(() => {
+                   { post.PostSetting.userId !== user?.id || !post.PostSetting.saved ? <p onClick={(() => {
                       !post.PostSetting ? handleSaved(post.id) : handleSaved2(post.id)
                     })}>
                     <i class="fi fi-rr-bookmark"></i>Save</p> :
@@ -356,11 +357,11 @@ function UsersPosts() {
                       handleUnsaved(post.PostSetting?.id)
                     })}>
                     <i class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
-                    { !post.PostSetting || !post.PostSetting.saved ? <p onClick={(() => {
+                    { post.PostSetting.userId !== user?.id || !post.PostSetting.hidden ? <p onClick={(() => {
                       !post.PostSetting ? handleHide(post.id) : handleHide2(post.id)
                     })}><i class="fi fi-rr-eye-crossed"></i>Hide</p> :
                     <p onClick={(() => {
-                      handleUnhide(post.id)
+                      handleUnhide(post.PostSetting.id)
                     })}><i class="fi fi-sr-eye-crossed"></i>Unhide</p>}
                     <p onClick={(() => {
                         setModalContent2(<div> <DeletePost id={singlePost.id} /></div>)
@@ -410,7 +411,7 @@ function UsersPosts() {
                     <i class="fi fi-rr-magic-wand"></i>
                     <p>Edit Post</p>
                 </div> }
-                { !post.PostSetting || !post.PostSetting.saved ? <div onClick={((e) => {
+                { post.PostSetting.userId !== user?.id || !post.PostSetting?.saved ? <div onClick={((e) => {
                     e.stopPropagation()
                     !post.PostSetting ? handleSaved(post.id) : handleSaved2(post.id)
                     })} id="comment4">
@@ -424,7 +425,7 @@ function UsersPosts() {
                     <i class="fi fi-rr-bookmark-slash"></i>
                     <p>Unsave</p>
                 </div>}
-                {!post.PostSetting || !post.PostSetting.hidden ? <div onClick={((e) => {
+                {post.PostSetting.userId !== user?.id || !post.PostSetting?.hidden ? <div onClick={((e) => {
                     e.stopPropagation()
                     !post.PostSetting ? handleHide(post.id) : handleHide2(post.id)
                     })} id="comment4">

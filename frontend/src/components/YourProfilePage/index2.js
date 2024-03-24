@@ -336,7 +336,7 @@ function OtherProfilePage() {
         {filterdPosts && !filterdPosts.length ? <NoPosts name={"posted"} /> : filterdPosts?.map((post, i) =>
             // <div id={`${post.id}`} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={scrolling} />))} className="post-content">
             <div id="omg">
-              {(post.PostSetting?.hidden && user?.id === post.PostSetting?.userId && new Date(post.PostSetting?.hidden) < new Date(Date.now() + 60000)) ? <div id="hideP2">
+              {(post.PostSetting?.hidden && user?.id === post.PostSetting?.userId && new Date(post.PostSetting?.hidden) > new Date(Date.now() - 60000)) ? <div id="hideP2">
                        <h2>Post hidden</h2>
                        <button onClick={(() => handleUnhide(post.PostSetting.id))} id="undoH2">Undo</button>
                        </div> : <>
@@ -396,7 +396,7 @@ function OtherProfilePage() {
             <i class="fi fi-rs-heart-arrow"></i>
             <p>Share</p>
             </div>
-            { !post.PostSetting || !post.PostSetting.saved ? <div onClick={(() => {
+            { post.PostSetting.userId !== user?.id || !post.PostSetting.saved ? <div onClick={(() => {
                       post.PostSetting ? handleSaved2(post.id) : handleSaved(post.id)
                     })} id="comment">
                     <i class="fi fi-rr-bookmark"></i>
@@ -416,7 +416,8 @@ function OtherProfilePage() {
                       )} class="fi fi-rr-menu-dots">
                       {hiddenBox && hiddenPost == post.id && <div id="hp">
                         <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-volume-mute"></i>Mute l/help</span>
-                        <span onClick={(() => post.PostSetting ? handleHide2(post.id) : handleHide(post.id))} ><i class="fi fi-rr-eye-crossed"></i>Hide</span>
+                        {post.PostSetting && post.PostSetting?.hidden && post.PostSetting?.userId == user.id ? <span onClick={(() => handleUnhide(post.PostSetting.id))} ><i class="fi fi-sr-eye-crossed"></i>Unide</span> :
+                        <span onClick={(() => post.PostSetting ? handleHide2(post.id) : handleHide(post.id))} ><i class="fi fi-rr-eye-crossed"></i>Hide</span> }
                         <span onClick={(() => window.alert("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))}><i class="fi fi-rr-flag"></i>Report</span>
                       </div>}
                     </i>
@@ -470,7 +471,7 @@ function OtherProfilePage() {
                 <div className="menu">
                 <div id={editMenu}>
                    {post.PostImages && post.PostImages.length && post.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                   { !post.PostSetting || !post.PostSetting?.saved ? <p onClick={(() => {
+                   { post.PostSetting.userId !== user?.id || !post.PostSetting?.saved ? <p onClick={(() => {
                       post.PostSetting ? handleSaved2(post.id) : handleSaved(post.id)
                     })}>
                     <i class="fi fi-rr-bookmark"></i>Save</p> :
@@ -478,7 +479,7 @@ function OtherProfilePage() {
                       handleUnsaved(post.PostSetting.id)
                     })}>
                     <i class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
-                    {!post.PostSetting || !post.PostSetting.hidden ? <p onClick={(() => {
+                    { post.PostSetting.userId !== user?.id || !post.PostSetting.hidden ? <p onClick={(() => {
                       post.PostSetting ? handleHide2(post.id) : handleHide(post.id)
                     })}><i class="fi fi-rr-eye-crossed"></i>Hide</p> : <p onClick={(() => {
                       handleUnhide(post.PostSettingid)
