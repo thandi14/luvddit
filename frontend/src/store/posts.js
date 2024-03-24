@@ -1212,7 +1212,8 @@ const postsReducer = (state = initialState, action) => {
       );
       return newState;
     }
-    case GET_SAVED: {
+
+    case GET_HIDDEN: {
       newState = { ...state };
       action.posts.forEach(
         (hidden) => (newState.postsHidden[hidden.Post.id] = { ...hidden.Post })

@@ -88,7 +88,6 @@ router.get("/best", async (req, res) => {
             communityId: {
                 [Op.notIn]: communityId
             },
-
         },
         include: [
             {
@@ -108,7 +107,12 @@ router.get("/best", async (req, res) => {
             {
                 model: Votes,
             } ,
-            { model: PostSetting }
+            {
+                model: PostSetting,
+                // where: {
+                //     hidden: null
+                // }
+             }
         ],
         limit: pageSize, // Limit the number of results per page
         offset: (page - 1) * pageSize
@@ -415,7 +419,10 @@ router.get("/hidden", async (req, res) => {
     let posts = await PostSetting.findAll({
         order: [['hidden', 'DESC']],
         where: {
-            userId
+            userId,
+            hidden: {
+                [Op.ne]: null
+            }
         },
         include: [
             {
@@ -435,15 +442,13 @@ router.get("/hidden", async (req, res) => {
                     },
                     {
                         model: PostSetting,
-                     }
+                    }
                 ]
             }
          ],
-        //  limit: pageSize, // Limit the number of results per page
-        //  offset: (page - 1) * pageSize
     });
 
-    posts = posts.filter((p) => p.dataValues.saved)
+   // posts = posts.filter((p) => p.dataValues.hidden)
 
     let paginatedPosts = posts.slice((page - 1) * pageSize, page * pageSize);
 
