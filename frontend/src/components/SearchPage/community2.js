@@ -238,7 +238,7 @@ function SearchCommunityComments() {
                       setThreadId(comment.id)
                       setScroll(true)
                       setModalContent(<PostPageModal postId={comment.Post?.id}/>)
-                      })} >Go to thread</span>
+                      })} style={{ height: "30px", fontSize: "12px", marginLeft: "18px", display: "flex" }}>Go to thread</span>
                     <div id="post-extras50" >
                         <span>{comment.Post?.Votes?.length} upvotes</span>
                         <span>{comment.Post?.Comments?.length} comments</span>
