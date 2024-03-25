@@ -396,13 +396,15 @@ function OtherProfilePage() {
             <i class="fi fi-rs-heart-arrow"></i>
             <p>Share</p>
             </div>
-            { post.PostSetting?.userId !== user?.id || !post.PostSetting.saved ? <div onClick={(() => {
+            { post.PostSetting?.userId !== user?.id || !post.PostSetting.saved ? <div onClick={((e) => {
+                      e.stopPropagation()
                       post.PostSetting ? handleSaved2(post.id) : handleSaved(post.id)
                     })} id="comment">
                     <i class="fi fi-rr-bookmark"></i>
                     <p>Save</p>
                     </div> :
-                    <div onClick={(() => {
+                    <div onClick={((e) => {
+                      e.stopPropagation()
                       handleUnsaved(post.PostSetting.id)
                     })} id="comment">
                     <i class="fi fi-rr-bookmark-slash"></i>
@@ -471,11 +473,13 @@ function OtherProfilePage() {
                 <div className="menu">
                 <div id={editMenu}>
                    {post.PostImages && post.PostImages.length && post.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                   { post.PostSetting?.userId !== user?.id || !post.PostSetting?.saved ? <p onClick={(() => {
+                   { post.PostSetting?.userId !== user?.id || !post.PostSetting?.saved ? <p onClick={((e) => {
+                      e.stopPropagation()
                       post.PostSetting ? handleSaved2(post.id) : handleSaved(post.id)
                     })}>
                     <i class="fi fi-rr-bookmark"></i>Save</p> :
-                    <p onClick={(() => {
+                    <p onClick={((e) => {
+                      e.stopPropagation()
                       handleUnsaved(post.PostSetting.id)
                     })}>
                     <i class="fi fi-rr-bookmark-slash"></i>Unsave</p> }

@@ -359,13 +359,15 @@ function YourHotProfilePage() {
             <i class="fi fi-rs-heart-arrow"></i>
             <p>Share</p>
             </div>
-            { post.PostSetting?.userId !== user?.id || !post.PostSetting?.saved ? <div onClick={(() => {
+            { post.PostSetting?.userId !== user?.id || !post.PostSetting?.saved ? <div onClick={((e) => {
+                      e.stopPropagation()
                       post.PostSetting ? handleSaved2(post.id) : handleSaved2(post.id)
                     })} id="comment">
                     <i class="fi fi-rr-bookmark"></i>
                     <p>Save</p>
                     </div> :
-                    <div onClick={(() => {
+                    <div onClick={((e) => {
+                      e.stopPropagation()
                       handleUnsaved(post.PostSetting.id)
                     })} id="comment">
                     <i class="fi fi-rr-bookmark-slash"></i>

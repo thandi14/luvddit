@@ -311,7 +311,7 @@ function OthersPosts() {
                     <p>Share</p>
                 </div>
                 { post.PostSetting?.userId !== user?.id || !post.PostSetting?.saved ? <div onClick={((e) => {
-                    e.stopPropagation()
+                     e.stopPropagation()
                     !post.PostSetting ? handleSaved(post.id) : handleSaved2(post.id)
                     })} id="comment4">
                     <i class="fi fi-rr-bookmark"></i>

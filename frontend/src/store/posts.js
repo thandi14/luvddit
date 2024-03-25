@@ -566,7 +566,6 @@ export const thunkGetOverview = (id, page) => async (dispatch) => {
 }
 
 export const thunkGetHotOverview = (id, page) => async (dispatch) => {
-  // console.log(id, page)
   const response1 = await csrfFetch(`/api/posts/${id}/overview/hot?page=${page}`)
   let data1 = await response1.json();
   dispatch(getHotOverview(data1));
