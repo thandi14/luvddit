@@ -517,7 +517,7 @@ const handleNsfw = (e) => {
                     <p>Save</p>
                     </div> :
                     <div onClick={(() => {
-                      handleUnsaved(post.id)
+                      handleUnsaved(post.PostSetting.id)
                     })} id="comment">
                     <i class="fi fi-rr-bookmark-slash"></i>
                     <p>Unsave</p>
@@ -575,7 +575,7 @@ const handleNsfw = (e) => {
                    { !post.PostSetting || !post.PostSetting.saved ? <p onClick={(() => {
                       post.PostSetting ? handleSaved2(post.id) : handleSaved(post.id)
                     })} ><i class="fi fi-rr-bookmark"></i>Save</p> : <p onClick={(() => {
-                      handleUnsaved(post.id)
+                      handleUnsaved(post.PostSetting.id)
                     })} ><i class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
                     <p onClick={(() => post.PostSetting ? handleHide2(post.id) : handleHide(post.id))} ><i class="fi fi-rr-eye-crossed"></i>Hide</p>
                     <p onClick={(() => {

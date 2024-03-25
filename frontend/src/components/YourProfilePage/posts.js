@@ -454,7 +454,7 @@ function UsersPosts() {
                     })}>
                     <i class="fi fi-rr-bookmark"></i>Save</p> :
                     <p onClick={(() => {
-                      handleUnsaved(post.id)
+                      handleUnsaved(post.PostSetting.id)
                     })}>
                     <i class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
                     {!post.PostSetting || !post.PostSetting.hidden ? <p onClick={((e) => {

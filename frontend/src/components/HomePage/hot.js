@@ -326,7 +326,7 @@ function HotPage() {
                     <p>Save</p>
                     </div> :
                     <div onClick={(() => {
-                      handleUnsaved(post.id)
+                      handleUnsaved(post.PostSetting.id)
                     })} id="comment">
                     <i class="fi fi-rr-bookmark-slash"></i>
                     <p>Unsave</p>
