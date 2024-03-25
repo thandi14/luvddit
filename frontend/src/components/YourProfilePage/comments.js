@@ -336,7 +336,7 @@ function CommentedPosts() {
                                     <p onClick={(() => {
                                       setModalContent(<PostPageModal postId={post.id} scroll={true} cId={c.id} vis3={true} />)
                                     })} ><i class="fi fi-rr-magic-wand"></i>Edit</p>
-                                    {c.CommentSetting && c.CommentSetting.saved ? <p onClick={((e) => {
+                                    {c.CommentSetting?.userId == user?.id && c.CommentSetting?.saved ? <p onClick={((e) => {
                                         e.stopPropagation()
                                         handleUnsaved2(c.CommentSetting.id)
                                     })}><i class="fi fi-rr-bookmark-slash"></i>Unsave</p> : <p onClick={((e) => {

@@ -340,7 +340,7 @@ function Commented2HotPosts() {
                                     { c.userId === other.id && commentId == c.id? <div className="menu">
                                     <div id="comm-sec25">
                                     <div onClick={((e) => e.stopPropagation())} id={editMenu2}>
-                                    {c.CommentSetting && c.CommentSetting.saved ? <p onClick={((e) => {
+                                    {c.CommentSetting?.userId == user?.id && c.CommentSetting?.saved ? <p onClick={((e) => {
                                         e.stopPropagation()
                                         handleUnsaved2(c.CommentSetting.id)
                                     })}><i class="fi fi-rr-bookmark-slash"></i>Unsave</p> : <p onClick={((e) => {
