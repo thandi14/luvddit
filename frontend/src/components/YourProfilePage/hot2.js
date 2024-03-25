@@ -288,13 +288,13 @@ function OtherHotProfilePage() {
     <div className="posts">
     <div className="filter">
         <div id="filter-side1">
-        <div style={{ backgroundColor: "#EDEFF1"}} onClick={(() => history.push(`/profile2/${id}/:page`))} id="best">
-        <i style={{ color: '#0079D3'}} class="fi fi-sr-bahai"></i>
-        <p style={{ color: '#0079D3'}}>New</p>
+        <div onClick={(() => history.push(`/profile2/${id}/:page`))} id="best">
+        <i class="fi fi-sr-bahai"></i>
+        <p>New</p>
         </div>
-        <div onClick={(() => history.push(`/profile2/hot/${id}/:page`))} id="best">
-        <i class="fi fi-rs-flame"></i>
-        <p>Hot</p>
+        <div style={{ backgroundColor: "#EDEFF1"}} onClick={(() => history.push(`/profile2/hot/${id}/:page`))} id="best">
+        <i style={{ color: '#0079D3'}} class="fi fi-rs-flame"></i>
+        <p style={{ color: '#0079D3'}} >Hot</p>
         </div>
         <div onClick={(() => history.push(`/profile2/top/${id}/:page`))}id="best">
         <i class="fi fi-ts-signal-bars-good"></i>

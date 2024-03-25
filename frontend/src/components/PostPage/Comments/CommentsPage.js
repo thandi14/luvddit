@@ -26,7 +26,7 @@ function CommentsPage() {
     const { singleCommunity, userCommunities } = useSelector((state) => state.communities)
     const { id } = useParams();
     const { commentId } = useParams();
-    const { closeModal, setThreadId } = useModal();
+    const { closeModal, setThreadId, threadId } = useModal();
     const targetRef5 = useRef(null)
     const dispatch = useDispatch()
     const [ deleted, setDeleted ] = useState("")
@@ -467,10 +467,10 @@ function CommentsPage() {
                                         e.stopPropagation()
                                         window.alert(("Feature comming soon: Messages/Live Chat, Mods, Proflie and Notifications"))
                                     })}class="fi fi-rs-cowbell"></i></p>
-        <h1 style={{ color: "#878A8C"}}>{singlePost?.title}</h1>
+        <h1 style={{ color: threadId ? "#878A8C" : ""}}>{singlePost?.title}</h1>
         <span id="tags">{ tags && tags.includes("oc") ? <div id="oc6">OC</div> : null} {tags && tags.includes("spoiler") ? <div id="spoiler6">Spoiler</div> : null } { tags && tags.includes("nsfw") ? <div id="nsfw6">NSFW</div> : null}</span>
         {singlePost.description && <div id="post-info1">
-        { isVisible2 ? null : !isLink(singlePost.description) ? <p style={{ color: "#878A8C"}}>{singlePost?.description}</p> : null}
+        { isVisible2 ? null : !isLink(singlePost.description) ? <p style={{ color: threadId ? "#878A8C" : ""}}>{singlePost?.description}</p> : null}
         { isVisible2 ? null : isLink(singlePost.description) ? <a href={`${singlePost?.description}`}>{singlePost?.description}</a> : null}
         { isVisible2 ? <div className="post-input7">
                      <div id={ focus2 ? "add-to11" : "add-to7"}>

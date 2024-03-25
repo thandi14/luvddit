@@ -30,7 +30,8 @@ function Comments2({ postId, cId, vis3 }) {
     const [ data2, setData2 ] = useState({})
     const [ data3, setData3 ] = useState({})
     const history = useHistory()
-    const { closeModal, threadId, scroll } = useModal();
+    const { commentId } = useParams();
+    const { closeModal, threadId, scroll, setThreadId } = useModal();
     const targetRef2 = useRef(null);
     const targetRef3 = useRef(null)
     const targetRef5 = useRef(null)
@@ -39,7 +40,7 @@ function Comments2({ postId, cId, vis3 }) {
     const [ comment3, setComment3 ] = useState("")
     const [ scrolling, setScrolling ] = useState(scroll)
     const [isVisible3, setIsVisible3] = useState(false);
-    const [ commentId, setCommentId ] = useState(null);
+    const [ commentId3, setCommentId3 ] = useState(null);
     const [ c, setC ] = useState(null)
     const [ button, setButton ] = useState(false)
     const [ postH, setPostH ] = useState([])
@@ -490,8 +491,14 @@ function Comments2({ postId, cId, vis3 }) {
     return (
                 <div style={{marginTop: "0px"}} id="if-comments">
                     <div style={{marginLeft: "15px"}} id="parent-comments">
-                        <p onClick={(() => setSingle(false))} >Show all comments</p>
-                        <p onClick={(() => setSingle(true))} >Show parent comments</p>
+                        <p onClick={(() => {
+                            setThreadId(null)
+                            setSingle(false)
+                            })} >Show all comments</p>
+                        <p onClick={(() => {
+                            setThreadId(commentId)
+                            setSingle(true)
+                            })} >Show parent comments</p>
                     </div>
                     {
                     single ?
@@ -552,12 +559,12 @@ function Comments2({ postId, cId, vis3 }) {
                                         <i class="fi fi-rs-heart-arrow"></i>
                                         <p>Share</p>
                                     </div>
-                                    <i ref={commentId === singleComment.id ? targetRef : null} onClick={(() => {
+                                    <i ref={commentId3 === singleComment.id ? targetRef : null} onClick={(() => {
                                         setIsVisible3(true)
-                                        setCommentId(singleComment.id)
-                                       if (commentId === singleComment.id) setIsVisible3(!isVisible3)
+                                        setCommentId3(singleComment.id)
+                                       if (commentId3 === singleComment.id) setIsVisible3(!isVisible3)
                                     })} class="fi fi-rr-menu-dots">
-                                    { commentId === singleComment.id ? <div className="menu">
+                                    { commentId3 === singleComment.id ? <div className="menu">
                                     <div id="comm-sec25">
                                     <div onClick={((e) => e.stopPropagation())} id={editMenu2}>
                                     {c.userId !== user.id ? null : <p onClick={(() => {
@@ -697,9 +704,9 @@ function Comments2({ postId, cId, vis3 }) {
                                         <i class="fi fi-rs-heart-arrow"></i>
                                         <p>Share</p>
                                     </div>
-                                    <i ref={commentId === c.id ? targetRef : null} onClick={(() => {
+                                    <i ref={commentId3 === c.id ? targetRef : null} onClick={(() => {
                                         setIsVisible3(true)
-                                        setCommentId(c.id)
+                                        setCommentId3(c.id)
                                        if (commentId === c.id) setIsVisible3(!isVisible3)
                                     })} class="fi fi-rr-menu-dots">
                                     { commentId === c.id ? <div className="menu">
