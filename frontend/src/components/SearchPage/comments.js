@@ -27,7 +27,7 @@ function SearchComments() {
     const [ votePost, setVotePost ] = useState(null);
     const [ isLiked, setIsLiked ] = useState([]);
     const history = useHistory()
-    const { setModalContent, setThreadId } = useModal()
+    const { setModalContent, setThreadId, setScroll } = useModal()
     const [ scrolling, setScrolling ] = useState(null)
     const targetRef = useRef()
     const { page } = useParams();
@@ -234,16 +234,18 @@ function SearchComments() {
                     <div style={{ margin: "1% 0%"}} id="pc-side2">
                     <div style={{ width: "100%"}}>
                     <div style={{ marginLeft: "1%"}} id="nameOf">
-                    {comment.Post.Community?.CommunityStyle?.icon ? <img style={{ margin: "0%" }} onClick={(() => setModalContent(<PostPageModal postId={comment.Post?.id} scroll={false} />))} src={comment.Post.Community?.CommunityStyle?.icon}></img> : <div style={{ backgroundColor: `${comment.Post?.Community?.CommunityStyle?.base}`, color: "white" }} onClick={(() => setModalContent(<PostPageModal postId={comment.Post?.id} scroll={false} />))} id="pfp30">l/</div>}
+                    {comment.Post.Community?.CommunityStyle?.icon ? <img style={{ margin: "0%" }} onClick={(() => {
+                      setModalContent(<PostPageModal postId={comment.Post?.id} />)
+                      })} src={comment.Post.Community?.CommunityStyle?.icon}></img> : <div style={{ backgroundColor: `${comment.Post?.Community?.CommunityStyle?.base}`, color: "white" }} onClick={(() => setModalContent(<PostPageModal postId={comment.Post?.id} scroll={false} />))} id="pfp30">l/</div>}
                     <span style={{ fontWeight: "500"}} onClick={(() => history.push(`/communities/${comment.Post?.communityId}/:page`))} className="userName" id="community">l/{comment?.Post?.Community?.name}</span>
                     <p>·</p>
                     <p >Posted by <span onClick={(() => {
-                     if (comment.Post.userId === user?.id) history.push(`/profile/${comment.Post.userId}/:page`)
-                     if (comment.Post.userId !== user?.id) history.push(`/profile2/${comment.Post.userId}/:page`)
+                     if (comment.Post?.userId === user?.id) history.push(`/profile/${comment.Post.userId}/:page`)
+                     if (comment.Post?.userId !== user?.id) history.push(`/profile2/${comment.Post.userId}/:page`)
                     })} className="userName">u/{comment.Post?.User?.username}</span> {getTimeDifferenceString(comment.Post?.createdAt)}</p>
                     </div>
-                    <h3  style={{ padding: "0px", margin: "0px" , marginBottom: "1%", marginLeft: "0%"}} onClick={(() => setModalContent(<PostPageModal postId={comment.Post.id} scroll={false} />))} id="title"><h3 style={{ fontSize: "12px", color: "#979798" }} id="title-content">{comment.Post?.title}</h3></h3>
-                    <div style={{ marginBottom: "10px", marginLeft: "18px", marginRight: "18px"}} onClick={(() => setModalContent(<PostPageModal postId={comment.Post?.id} scroll={false} />))} id="content30">
+                    <h3  style={{ padding: "0px", margin: "0px" , marginBottom: "1%", marginLeft: "0%"}} onClick={(() => setModalContent(<PostPageModal postId={comment.Post.id} />))} id="title"><h3 style={{ fontSize: "12px", color: "#979798" }} id="title-content">{comment.Post?.title}</h3></h3>
+                    <div style={{ marginBottom: "10px", marginLeft: "18px", marginRight: "18px"}} onClick={(() => setModalContent(<PostPageModal postId={comment.Post?.id} />))} id="content30">
                     { !comment.User.Communities?.length || !comment.User.Communities[0].CommunityStyle?.icon ? <img id="pfp30" src={avatar}></img> : null}
                     { comment.User.Communities?.length && comment.User.Communities[0].CommunityStyle?.icon ? <img id="pfp30" src={comment.User.Communities[0].CommunityStyle?.icon}></img> : null}
                     <div style={{ display: "flex", gap: "10px", flexDirection: "column"}}>
@@ -259,6 +261,7 @@ function SearchComments() {
                     </div>
                     <span id="thread" onClick={(() => {
                       setThreadId(comment.id)
+                      setScroll(true)
                       setModalContent(<PostPageModal postId={comment.Post?.id}/>)
                       })} style={{ height: "30px", fontSize: "12px", marginLeft: "18px", display: "flex" }} >Go to thread</span>
                     <div id="post-extras50" >
