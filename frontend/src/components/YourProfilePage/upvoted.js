@@ -346,7 +346,7 @@ function UpvotedPosts() {
                 <div className="menu">
                 <div id={editMenu}>
                    {singlePost.PostImages && singlePost.PostImages.length && singlePost.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                   { post.PostSetting.userId !== user?.id || !post.PostSetting?.saved  ? <p onClick={(() => {
+                   { post.PostSetting?.userId !== user?.id || !post.PostSetting?.saved  ? <p onClick={(() => {
                       !post.PostSetting ? handleSaved(post.id) : handleSaved2(post.id)
                     })}>
                     <i class="fi fi-rr-bookmark"></i>Save</p> :
@@ -354,7 +354,7 @@ function UpvotedPosts() {
                       handleUnsaved(post.PostSetting?.id)
                     })}>
                     <i class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
-                    { post.PostSetting.userId !== user?.id || !post.PostSetting?.hidden  ? <p onClick={(() => {
+                    { post.PostSetting?.userId !== user?.id || !post.PostSetting?.hidden  ? <p onClick={(() => {
                       !post.PostSetting ? handleHide(post.id) : handleHide2(post.id)
                     })}><i class="fi fi-rr-eye-crossed"></i>Hide</p> :
                     <p onClick={(() => {
@@ -408,7 +408,7 @@ function UpvotedPosts() {
                     <i class="fi fi-rr-magic-wand"></i>
                     <p>Edit Post</p>
                 </div> }
-                { post.PostSetting.userId !== user?.id || !post.PostSetting?.saved  ? <div onClick={((e) => {
+                { post.PostSetting?.userId !== user?.id || !post.PostSetting?.saved  ? <div onClick={((e) => {
                     e.stopPropagation()
                     !post.PostSetting ? handleSaved(post.id) : handleSaved2(post.id)
                     })} id="comment4">
@@ -422,7 +422,7 @@ function UpvotedPosts() {
                     <i class="fi fi-rr-bookmark-slash"></i>
                     <p>Unsave</p>
                 </div>}
-                {post.PostSetting.userId !== user?.id || !post.PostSetting?.hidden  ? <div onClick={((e) => {
+                {post.PostSetting?.userId !== user?.id || !post.PostSetting?.hidden  ? <div onClick={((e) => {
                     e.stopPropagation()
                     !post.PostSetting ? handleHide(post.id) : handleHide2(post.id)
                     })} id="comment4">
@@ -446,7 +446,7 @@ function UpvotedPosts() {
                 <div className="menu">
                 <div id={editMenu}>
                    {post.PostImages && post.PostImages.length && post.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                   { post.PostSetting.userId !== user?.id || !post.PostSetting?.saved  ? <p onClick={(() => {
+                   { post.PostSetting?.userId !== user?.id || !post.PostSetting?.saved  ? <p onClick={(() => {
                     !post.PostSetting ? handleSaved(post.id) : handleSaved2(post.id)
                   })}>
                     <i class="fi fi-rr-bookmark"></i>Save</p> :
@@ -454,7 +454,7 @@ function UpvotedPosts() {
                       handleUnsaved(post.id)
                     })}>
                     <i class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
-                    {post.PostSetting.userId !== user?.id || !post.PostSetting?.hidden  ? <p onClick={((e) => {
+                    {post.PostSetting?.userId !== user?.id || !post.PostSetting?.hidden  ? <p onClick={((e) => {
                     e.stopPropagation()
                     !post.PostSetting ? handleHide(post.id) : handleHide2(post.id)
                     })}><i class="fi fi-rr-eye-crossed"></i>Hide</p> :

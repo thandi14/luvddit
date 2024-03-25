@@ -312,7 +312,7 @@ function SavedPosts() {
                 <div className="menu">
                 <div id={editMenu}>
                    {post.PostImages && post.PostImages.length && post.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                    { post.PostSetting.userId !== user?.id || !post.PostSetting.saved ? <p onClick={(() => {
+                    { post.PostSetting?.userId !== user?.id || !post.PostSetting.saved ? <p onClick={(() => {
                       post.PostSetting ? handleSaved2(post.id) : handleSaved2(post.id)
                     })}>
                     <i class="fi fi-rr-bookmark"></i>Save</p> :
@@ -320,7 +320,7 @@ function SavedPosts() {
                       handleUnsaved(post.PostSetting.id)
                     })}>
                     <i onClick={(() => handleUnsaved)} class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
-                    { post.PostSetting.userId !== user?.id || !post.PostSetting.saved ? <p onClick={(() => {
+                    { post.PostSetting?.userId !== user?.id || !post.PostSetting.saved ? <p onClick={(() => {
                       post.PostSetting ? handleHide2(post.id) : handleHide(post.id)
                     })}><i class="fi fi-rr-eye-crossed"></i>Hide</p> :
                     <p onClick={(() => {
@@ -434,7 +434,7 @@ function SavedPosts() {
                 <div className="menu">
                 <div id={editMenu}>
                     {post.PostImages && post.PostImages.length && post.PostImages[0].imgURL ? null : <p onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={false} edit={true} />))}><i class="fi fi-rr-magic-wand"></i>Edit</p> }
-                    { post.PostSetting.userId !== user?.id || !post.PostSetting?.saved ? <p onClick={(() => {
+                    { post.PostSetting?.userId !== user?.id || !post.PostSetting?.saved ? <p onClick={(() => {
                     !post.PostSetting ? handleSaved(post.id) : handleSaved2(post.id)
                   })}>
                     <i class="fi fi-rr-bookmark"></i>Save</p> :
@@ -442,7 +442,7 @@ function SavedPosts() {
                       handleUnsaved(post.PostSetting.id)
                     })}>
                     <i class="fi fi-rr-bookmark-slash"></i>Unsave</p> }
-                    {post.PostSetting.userId !== user?.id || !post.PostSetting?.hidden ? <p onClick={(() => {
+                    {post.PostSetting?.userId !== user?.id || !post.PostSetting?.hidden ? <p onClick={(() => {
                       post.PostSetting ? handleHide2(post.id) : handleHide(post.id)
                     })}><i class="fi fi-rr-eye-crossed"></i>Hide</p> : <p onClick={(() => {
                       post.PostSetting ? handleHide2(post.id) : handleHide(post.id)
@@ -487,7 +487,7 @@ function SavedPosts() {
                     <i class="fi fi-rs-heart-arrow"></i>
                     <p>Share</p>
                 </div>
-                { post.PostSetting.userId !== user?.id || !post.PostSetting?.saved ? <div onClick={((e) => {
+                { post.PostSetting?.userId !== user?.id || !post.PostSetting?.saved ? <div onClick={((e) => {
                     e.stopPropagation()
                     !post.PostSetting ? handleSaved(post.id) : handleSaved2(post.id)
                   })} id="comment4">
@@ -500,7 +500,7 @@ function SavedPosts() {
                     <i class="fi fi-rr-bookmark-slash"></i>
                     <p>Unsave</p>
                 </div>}
-                { post.PostSetting.userId !== user?.id || !post.PostSetting?.hidden ? <div onClick={((e) => {
+                { post.PostSetting?.userId !== user?.id || !post.PostSetting?.hidden ? <div onClick={((e) => {
                     e.stopPropagation()
                     post.PostSetting ? handleHide2(post.id) : handleHide(post.id)
                     })} id="comment4">

@@ -305,7 +305,7 @@ function OthersHotPosts() {
                     <i class="fi fi-rs-heart-arrow"></i>
                     <p>Share</p>
                 </div>
-                { post.PostSetting.userId !== user?.id || !post.PostSetting?.saved ? <div onClick={((e) => {
+                { post.PostSetting?.userId !== user?.id || !post.PostSetting?.saved ? <div onClick={((e) => {
                     e.stopPropagation()
                     !post.PostSetting ? handleSaved(post.id) : handleSaved2(post.id)
                     })} id="comment4">
@@ -319,7 +319,7 @@ function OthersHotPosts() {
                     <i class="fi fi-rr-bookmark-slash"></i>
                     <p>Unsave</p>
                 </div>}
-                {post.PostSetting.userId !== user?.id || !post.PostSetting?.hidden ? <div onClick={((e) => {
+                {post.PostSetting?.userId !== user?.id || !post.PostSetting?.hidden ? <div onClick={((e) => {
                     e.stopPropagation()
                     !post.PostSetting ? handleHide(post.id) : handleHide2(post.id)
                     })} id="comment4">
