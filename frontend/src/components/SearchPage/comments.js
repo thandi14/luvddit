@@ -259,7 +259,8 @@ function SearchComments() {
                     </div>
                     </div>
                     </div>
-                    <span id="thread" onClick={(() => {
+                    <span id="thread" onClick={((e) => {
+                      e.stopPropagation()
                       setThreadId(comment.id)
                       setScroll(true)
                       setModalContent(<PostPageModal postId={comment.Post?.id}/>)

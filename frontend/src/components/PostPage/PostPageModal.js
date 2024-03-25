@@ -716,7 +716,7 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
                         e.stopPropagation()
                         singlePost.PostSetting ? handleSaved2(singlePost.id) : handleSaved2(singlePost.id)
                     })}><i class="fi fi-rr-bookmark"></i>Save</p>}
-                   { singlePost.PostSetting.hidden && singlePost.PostSetting?.userId == user?.id ? <p onClick={((e) => {
+                   { singlePost.PostSetting?.hidden && singlePost.PostSetting?.userId == user?.id ? <p onClick={((e) => {
                         handleUnhide(singlePost.PostSetting.id)
                     })}><i class="fi fi-rr-eye-crossed"></i>Unhide</p> :
                     <p onClick={((e) => {

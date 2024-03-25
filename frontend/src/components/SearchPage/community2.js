@@ -28,7 +28,7 @@ function SearchCommunityComments() {
     const [ votePost, setVotePost ] = useState(null);
     const [ isLiked, setIsLiked ] = useState([]);
     const history = useHistory()
-    const { setModalContent } = useModal()
+    const { setModalContent, setScroll, setThreadId } = useModal()
     const [ scrolling, setScrolling ] = useState(null)
     const { id } = useParams();
     const targetRef = useRef()
@@ -233,7 +233,12 @@ function SearchCommunityComments() {
                     </div>
                     </div>
                     </div>
-                    <span id="thread" onClick={(() => setModalContent(<PostPageModal postId={comment.Post?.id} scroll={true} />))} style={{ color: "#0079D3", height: "30px", fontSize: "12px", marginLeft: "18px", display: "flex" }} >Go to thread</span>
+                    <span id="thread" onClick={((e) => {
+                      e.stopPropagation()
+                      setThreadId(comment.id)
+                      setScroll(true)
+                      setModalContent(<PostPageModal postId={comment.Post?.id}/>)
+                      })} >Go to thread</span>
                     <div id="post-extras50" >
                         <span>{comment.Post?.Votes?.length} upvotes</span>
                         <span>{comment.Post?.Comments?.length} comments</span>
