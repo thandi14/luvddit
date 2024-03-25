@@ -695,6 +695,7 @@ function Comments2({ postId, cId, vis3 }) {
                                         <CommentLikes comment={c} />
                                     </div>
                                     <div onClick={(() => {
+                                        if (!user) setModalContent(<SignupFormModal />)
                                         setParent(c.id)
                                         setCommentR(!commentR)})}>
                                         <i class="fa-regular fa-message"></i>

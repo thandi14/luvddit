@@ -441,6 +441,7 @@ function Replies({ postId, scroll, cId, vis3, comments, level, id, par, replyId 
                             </div>
                             <div onClick={((e) => {
                                 e.stopPropagation()
+                                if (!user) setModalContent(<SignupFormModal />)
                                 setParent(c.id)
                                 setCommentR(!commentR)})}>
                                 <i class="fa-regular fa-message"></i>
