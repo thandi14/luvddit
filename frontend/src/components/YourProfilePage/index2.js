@@ -336,7 +336,7 @@ function OtherProfilePage() {
         {filterdPosts && !filterdPosts.length ? <NoPosts name={"posted"} /> : filterdPosts?.map((post, i) =>
             // <div id={`${post.id}`} onClick={(() => setModalContent(<PostPageModal postId={post.id} scroll={scrolling} />))} className="post-content">
             <div id="omg">
-              {(post.PostSetting?.hidden && user?.id === post.PostSetting?.userId && new Date(post.PostSetting?.hidden) > new Date(Date.now() - 60000)) ? <div id="hideP2">
+              {(post.PostSetting?.hidden && user?.id === post.PostSetting?.userId && new Date(post.PostSetting?.hidden) < new Date(Date.now() - 60000)) ? <div id="hideP2">
                        <h2>Post hidden</h2>
                        <button onClick={(() => handleUnhide(post.PostSetting.id))} id="undoH2">Undo</button>
                        </div> : <>
