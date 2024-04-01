@@ -567,9 +567,11 @@ const communitiesReducer = (state = initialState, action) => {
     case GET_MEMBERSHIPS: {
         newState = { ...state };
         newState.memberships = {};
-        action.memberships?.forEach(
+        if (action.memberships?.length) {
+            action.memberships?.forEach(
           (memberships) => (newState.memberships[memberships.Community.id] = memberships.Community)
         );
+        }
         return newState;
     }
     case ADD_COMMUNITY_MEMBERSHIPS: {

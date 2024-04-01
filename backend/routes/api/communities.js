@@ -169,20 +169,26 @@ router.get("/search2", async (req, res) => {
 
 router.get("/current", async (req, res) => {
     const { user } = req
-    const userId = user.dataValues.id
+    let userId
+    if (user) userId = user.dataValues.id
 
-    let communities = await Community.findAll({
-       where: {
-        userId,
-       },
-       include: [
-        { model: Post },
-        { model: User },
-        { model: CommunityStyle }
-     ]
-    });
+    let communities = []
 
-    for (let i = 0; i < communities.length; i++) {
+    if (userId) {
+        communities = await Community.findAll({
+            where: {
+                userId,
+            },
+            include: [
+                { model: Post },
+                { model: User },
+                { model: CommunityStyle }
+            ]
+        });
+    }
+
+    if (communities.length) {
+        for (let i = 0; i < communities.length; i++) {
         let members = await CommunityMembers.findAll({
           where: {
             communityId: communities[i].id
@@ -191,6 +197,7 @@ router.get("/current", async (req, res) => {
 
         communities[i].dataValues.CommunityMembers = members.length
 
+        }
     }
 
     return res.json(communities)
@@ -198,9 +205,11 @@ router.get("/current", async (req, res) => {
 
 router.get("/other", async (req, res) => {
     const { user } = req
-    const userId = user.dataValues.id
+    let userId = null
+    if (user) userId = user?.dataValues.id
 
-    let communitiesExist = await CommunityMembers.findAll({
+    let communitiesExist = []
+    if (userId) communitiesExist = await CommunityMembers.findAll({
         where: {
             userId
         },

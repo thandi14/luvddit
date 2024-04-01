@@ -909,7 +909,6 @@ router.get('/:id/overview', async (req, res) => {
             order: [['updatedAt', 'DESC']],
             where: {
                 userId,
-
             },
             include: [
                 {
@@ -1096,20 +1095,18 @@ router.get('/:id/overview/hot', async (req, res) => {
     const { user } = req
     let userId
     if (user) userId = user?.dataValues.id
+    const whereClause = userId ? { userId } : {};
+
 
     const [posts, comments] = await Promise.all([
         Post.findAll({
             order: [['updatedAt', 'DESC']],
-            where: {
-                userId,
-            },
+            where: whereClause,
             include: [
                 {
                     model: Comments,
                     order: [['updatedAt', 'DESC']],
-                    where: {
-                        userId
-                    },
+                    where: whereClause,
                     include: [
                     { model: CommentSetting},
                     { model: User,
@@ -1144,9 +1141,7 @@ router.get('/:id/overview/hot', async (req, res) => {
                 {
                     model: Comments,
                     order: [['updatedAt', 'DESC']],
-                    where: {
-                        userId
-                    }
+                    where: whereClause
                 },
                 {
                     model: Community,
@@ -1202,7 +1197,8 @@ router.get("/:id/current", async (req, res) => {
          });
      }
 
-     const postIds = ps.map(post => post.dataValues.postId);
+     let postIds = []
+     if (ps?.length) postIds = ps?.map(post => post.dataValues.postId);
 
     let posts = await Post.findAll({
         order: [['createdAt', 'DESC']],

@@ -396,7 +396,7 @@ function OtherProfilePage() {
             <i class="fi fi-rs-heart-arrow"></i>
             <p>Share</p>
             </div>
-            { post.PostSetting?.userId !== user?.id || !post.PostSetting.saved ? <div onClick={((e) => {
+            { post.PostSetting?.userId !== user?.id || !post.PostSetting?.saved ? <div onClick={((e) => {
                       e.stopPropagation()
                       post.PostSetting ? handleSaved2(post.id) : handleSaved(post.id)
                     })} id="comment">
