@@ -73,30 +73,27 @@ function PostPage() {
     const [ parent, setParent ] = useState(null)
     const [ hiddenBox, setHiddenbox ] = useState(false)
     const [ hiddenPost, setHiddenPost ] = useState(null)
+    const modalRef = useRef(null);
 
     useEffect(() => {
         const handleScroll = () => {
-          if (window.scrollY < 450) {
-              setIsVisible5(false)
+          const scrollTop = modalRef.current?.scrollTop || 0;
 
-          }
-          else if (window.scrollY > 460) {
+          if (scrollTop < 450) {
+            setIsVisible5(false);
+          } else if (scrollTop > 460) {
             setIsVisible5(true);
-
           } else {
             setIsVisible5(false);
-
           }
         };
 
-      window.addEventListener('scroll', handleScroll);
+        const el = modalRef.current;
+        if (!el) return;
 
-      return () => {
-        window.removeEventListener('scroll', handleScroll);
-      };
-
-
-      }, [])
+        el.addEventListener('scroll', handleScroll);
+        return () => el.removeEventListener('scroll', handleScroll);
+      }, []);
 
 
 
@@ -476,7 +473,7 @@ function PostPage() {
     { myCommunity.length && myCommunity[0].id !== singlePost.communityId ? <div style={{ opacity: "0.5", backgroundColor: `${singlePost.Community.CommunityStyle.base}`}}id="comm-head10">
         <p style={{ filter: "brightness(5)", fontWeight: "900", color: `${singlePost.Community.CommunityStyle.highlight}`, borderColor: `${singlePost.Community.CommunityStyle.highlight}`}}>Posts</p>
     </div> : null}
-    <div className="whole-post-page">
+    <div ref={modalRef} className="whole-post-page">
         <div className="post-page">
         <div id="vote-side">
         <PostLikes post={singlePost} />

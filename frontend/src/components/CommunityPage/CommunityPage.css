@@ -254,6 +254,7 @@
     flex-direction: column;
     gap: 14.5px;
     align-items: center;
+    position: relative
 }
 
 #ad, #terms {
@@ -973,10 +974,10 @@
 }
 
 .top {
-    width: 8%;
+    /* width: 8%; */
     height: 32px;
     position: fixed;
-    top: 790px;
+    bottom: 5px;
     background-color: #0079D3;
     color: white;
     border-radius: 20px;

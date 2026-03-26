@@ -74,12 +74,14 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
 
     let joined = null
 
-    // useEffect(() => {
+    const [showScrollButton, setShowScrollButton] = useState(false);
+    const modalRef = useRef(null);
 
-    //     if (scroll) setScrolling(true)
-    //     if (!scroll) setScrolling(false)
-
-    // }, [scroll])
+    const scrollToTop = () => {
+        if (modalRef.current) {
+            modalRef.current.scrollTo({ top: 0, behavior: "smooth" });
+        }
+    };
 
     const handleSaved = async (id) => {
         if (!user) return setModalContent(<SignupFormModal />)
@@ -138,6 +140,22 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
         fetchData()
 
     }, [dispatch, singlePost.id])
+
+    useEffect(() => {
+        const modal = modalRef.current;
+        if (!modal) return;
+
+        const handleScroll = () => {
+            setShowScrollButton(modal.scrollTop > 50); // show button if scrolled down
+        };
+
+        modal.addEventListener("scroll", handleScroll);
+
+        // initial check
+        handleScroll();
+
+        return () => modal.removeEventListener("scroll", handleScroll);
+    }, []);
 
 
     const handleUnhide = async (id) => {
@@ -303,14 +321,6 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
     let comments
     if (singlePost.Comments && singlePost.Comments.length) comments = Object.values(singlePost.Comments).sort((a, b) => a.createdAt - b.createdAt)
 
-    const scrollToTop = () => {
-        const container = document.querySelector('.post-modal'); // Adjust the selector as needed
-        if (container) {
-            container.scrollTo({ top: 0, behavior: 'smooth' });
-            // container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-        }
-    };
 
     let pHistory
     if (postsHistory) pHistory = Object.values(postsHistory)
@@ -542,7 +552,7 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
    // let thread = comments
 
     return (
-        <div className="post-modal">
+        <div ref={modalRef} className="post-modal">
             <div id="one">
                 <div ref={targetRef3} id="post-details-head">
                 <div>
@@ -891,8 +901,27 @@ function PostPageModal({ postId, cId, vis3, replyId }) {
                 </div>
                 </div>
                 </div> }
-                { !scrollH && <button onMouseEnter={(() => setScrollH(true))} style={{ backgroundColor: `${singlePost.Community.CommunityStyle?.base}`}} className="top2" onClick={scrollToTop}>Back to Top</button>}
-                { scrollH && <button onMouseLeave={(() => setScrollH(false))} style={{ backgroundColor: `${reduceOpacity(singlePost.Community.CommunityStyle?.base, 0.5)}`}} className="top2" onClick={scrollToTop}>Back to Top</button>}
+                {!scrollH && showScrollButton && (
+  <button
+    onMouseEnter={() => setScrollH(true)}
+    style={{ backgroundColor: `${singlePost.Community.CommunityStyle?.base}`}}
+    className="top2"
+    onClick={scrollToTop}
+  >
+    Back to Top
+  </button>
+)}
+
+{scrollH && showScrollButton && (
+  <button
+    onMouseLeave={() => setScrollH(false)}
+    style={{ backgroundColor: `${reduceOpacity(singlePost.Community.CommunityStyle?.base, 0.5)}`}}
+    className="top2"
+    onClick={scrollToTop}
+  >
+    Back to Top
+  </button>
+)}
                 </div>
                 </div>
                 </div>

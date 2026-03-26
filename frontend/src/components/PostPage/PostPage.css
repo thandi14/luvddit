@@ -743,6 +743,10 @@
     margin: 0px
 }
 
+.hidden {
+    display: none;
+}
+
 .hideP:hover {
     background: #e4e4e4;
     border-radius: 4px;
@@ -766,11 +770,12 @@
     border-radius: 4px;
 }
 
+
 .top2 {
     width: 8%;
     height: 32px;
     position: fixed;
-    top: 780px;
+    bottom: 10px;
     background-color: #0079D3;
     color: white;
     border-radius: 20px;
